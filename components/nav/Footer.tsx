@@ -7,6 +7,7 @@ import type { Locale } from "@/types/locale";
 
 export async function Footer({ locale }: { locale: Locale }) {
   const t = await getTranslations("footer");
+  const tNav = await getTranslations("nav");
   const year = new Date().getFullYear();
 
   return (
@@ -70,17 +71,17 @@ export async function Footer({ locale }: { locale: Locale }) {
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pt-8 text-bone/50 text-xs font-mono">
-          <p>
-            © {year} Diva Flowers · {t("rights")}
-          </p>
-          <div className="flex gap-6">
-            <Link href={`/${locale}/legal/privacy`} className="hover:text-bone transition-colors">
-              {t("legal.privacy")}
-            </Link>
-            <Link href={`/${locale}/legal/terms`} className="hover:text-bone transition-colors">
-              {t("legal.terms")}
-            </Link>
+        <div className="flex flex-col gap-4 pt-8">
+          <div className="flex flex-wrap gap-6 font-mono text-[11px] uppercase tracking-[0.18em] text-ink/55">
+            <Link href={`/${locale}/journal`} className="hover:text-ink transition-colors">{tNav("journal")}</Link>
+            <Link href={`/${locale}/contact`} className="hover:text-ink transition-colors">{tNav("contact")}</Link>
+            <Link href={`/${locale}/legal/privacy`} className="hover:text-ink transition-colors">{t("legal.privacy")}</Link>
+            <Link href={`/${locale}/legal/terms`} className="hover:text-ink transition-colors">{t("legal.terms")}</Link>
+          </div>
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-bone/50 text-xs font-mono">
+            <p>
+              © {year} Diva Flowers · {t("rights")}
+            </p>
           </div>
         </div>
       </div>
