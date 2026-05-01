@@ -42,6 +42,7 @@ next-env.d.ts
 
 # Diva Flowers
 .env.local
+pending-orders.json
 pending-inquiries.json
 .DS_Store
 playwright-report/
