@@ -28,9 +28,8 @@ export function CartLineItem({ resolved, locale, onQtyChange, onRemove, variant 
     >
       <div className={`overflow-hidden rounded-xl bg-bone ${isPage ? "aspect-[4/5]" : "aspect-square h-16"}`}>
         <ProductImage
-          src={image.src}
-          alt={image.alt[locale]}
-          aspect={isPage ? "4/5" : "1/1"}
+          image={image}
+          locale={locale}
           sizes={isPage ? "100px" : "64px"}
         />
       </div>
