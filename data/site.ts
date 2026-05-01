@@ -33,6 +33,30 @@ export const SITE = {
     { city: "Bayside", time: "2 hr ago" },
   ],
   press: ["The Cut", "Vogue", "Brides", "New York Magazine", "Town & Country", "Refinery29"],
+  tagline: {
+    en: "Romance, by the stem.",
+    es: "Romance, tallo a tallo.",
+  },
+  metadata: {
+    title: {
+      en: "Diva Flowers — Romance, by the stem.",
+      es: "Diva Flowers — Romance, tallo a tallo.",
+    },
+    description: {
+      en: "Romantic, abundant florals from Long Island. Same-day delivery across Nassau, Queens & western Suffolk.",
+      es: "Florales románticos y abundantes desde Long Island. Entrega el mismo día en Nassau, Queens y oeste de Suffolk.",
+    },
+  },
+  marquee: {
+    tokens: [
+      "DIVA FLOWERS",
+      "ROMANCE BY THE STEM",
+      "LONG ISLAND",
+      "DESDE 2014",
+      "ENVÍOS HOY",
+      "SAME-DAY DELIVERY",
+    ],
+  },
 } as const;
 
 export type SiteData = typeof SITE;

@@ -1,11 +1,12 @@
 "use client";
 import { memo } from "react";
+import { SITE } from "@/data/site";
 import type { Locale } from "@/types/locale";
 
-// Hardcoded copy — delivery zones and cutoff time are inlined here
-// to avoid coupling the accordion to a site config shape.
-const DELIVERY_ZONES = "Nassau County, Queens, Brooklyn (select zip codes), Western Suffolk";
-const CUTOFF = "2:00 PM";
+// Source from data/site.ts so cutoff and delivery zones stay consistent
+// across PDP, footer, legal copy, and metadata.
+const DELIVERY_ZONES = SITE.deliveryZones.join(", ");
+const CUTOFF = SITE.cutoffTime;
 
 const COPY = {
   stems_label: { en: "Stems & care", es: "Tallos y cuidado" },

@@ -125,7 +125,6 @@
       "cta_primary": "Shop arrangements",
       "cta_secondary": "Plan a wedding"
     },
-    "marquee": "DIVA FLOWERS · ROMANCE BY THE STEM · LONG ISLAND · DESDE 2014 · ENVÍOS HOY · SAME-DAY DELIVERY",
     "bento": {
       "console_eyebrow": "Inside the studio",
       "console_title": "Live from Hempstead Turnpike.",
@@ -220,7 +219,7 @@
       },
       "contact": {
         "heading": "Contact Us",
-        "p1": "DRAFT: If you have questions about this Privacy Policy or how we handle your personal information, please contact us at hello@divaflowers.com or by mail at Diva Flowers, 1077 Hempstead Tpke, Franklin Square, NY 11010.",
+        "p1": "DRAFT: If you have questions about this Privacy Policy or how we handle your personal information, please contact us at hello@divaflowers.com or by mail at Diva Flowers, {address}.",
         "p2": "DRAFT: We reserve the right to update this Privacy Policy at any time. Changes will be posted on this page with an updated effective date. Your continued use of our website after any changes constitutes your acceptance of the updated policy. This document is a draft and should not be published without attorney review."
       }
     },
@@ -261,7 +260,7 @@
       },
       "contact": {
         "heading": "Contact",
-        "p1": "DRAFT: If you have questions about these Terms of Service, please contact us at hello@divaflowers.com or by mail at Diva Flowers, 1077 Hempstead Tpke, Franklin Square, NY 11010.",
+        "p1": "DRAFT: If you have questions about these Terms of Service, please contact us at hello@divaflowers.com or by mail at Diva Flowers, {address}.",
         "p2": "DRAFT: These Terms of Service are governed by the laws of the State of New York. Any disputes arising under these terms shall be resolved in the courts of Nassau County, New York. This document is a draft and must be reviewed and approved by a licensed attorney before use."
       }
     }
@@ -342,14 +341,14 @@
     "title": "Come find us.",
     "studio": {
       "address_label": "Studio",
-      "address_value": "1077 Hempstead Tpke, Franklin Square, NY 11010",
+      "address_value": "{address}",
       "hours_label": "Hours",
       "hours_value": "Mon–Sat 9am–6pm · Sun 10am–4pm",
       "phone_label": "Phone",
       "email_label": "Email"
     },
     "map": {
-      "alt": "Map showing Diva Flowers at 1077 Hempstead Turnpike, Franklin Square, NY"
+      "alt": "Map showing Diva Flowers at {address}"
     },
     "zones": {
       "eyebrow": "Delivery coverage",

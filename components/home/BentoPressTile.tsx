@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { SITE } from "@/data/site";
 
+// Refinery29 quote tokenizes the tagline so it stays in lockstep with SITE.tagline.en.
 const QUOTES: Record<string, string> = {
   "The Cut":
     "The hot-pink storefront on Hempstead Turnpike has become a Long Island pilgrimage.",
@@ -12,7 +13,7 @@ const QUOTES: Record<string, string> = {
     "If you want flowers that look like they belong in a magazine, this is the studio.",
   "New York Magazine": "A florist with a real point of view — rare in 2025.",
   "Town & Country": "Maximalist arrangements with the discipline of a couture atelier.",
-  Refinery29: "Romance, by the stem — and they mean it.",
+  Refinery29: `${SITE.tagline.en.replace(/\.$/, "")} — and they mean it.`,
 };
 
 function BentoPressTileImpl() {

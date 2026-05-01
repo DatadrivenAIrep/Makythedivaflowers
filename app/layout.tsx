@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, JetBrains_Mono } from "next/font/google";
 import localFont from "next/font/local";
+import { SITE } from "@/data/site";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -28,8 +29,8 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Diva Flowers — Romance, by the stem.",
-  description: "Long Island floral studio. Signature arrangements, weddings, events.",
+  title: SITE.metadata.title.en,
+  description: SITE.metadata.description.en,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -1,5 +1,21 @@
 import type { Locale } from "@/types/locale";
 
+type AddressLike = {
+  line1: string;
+  locality: string;
+  region: string;
+  postal?: string;
+};
+
+/**
+ * One-line address composed from `SITE.address` (or any address-like value).
+ * Example: "1077 Hempstead Turnpike, Franklin Square, NY 11010".
+ */
+export function formatAddressLine(addr: AddressLike): string {
+  const tail = [addr.region, addr.postal].filter(Boolean).join(" ");
+  return [addr.line1, addr.locality, tail].filter(Boolean).join(", ");
+}
+
 export function formatMoneyCents(cents: number, locale: Locale): string {
   const value = cents / 100;
   const isWhole = cents % 100 === 0;
