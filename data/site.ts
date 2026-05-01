@@ -15,9 +15,9 @@ export const SITE = {
     country: "USA",
   },
   hours: [
-    { day: "Mon–Fri", value: "9:00 AM – 7:00 PM" },
-    { day: "Sat", value: "9:00 AM – 6:00 PM" },
-    { day: "Sun", value: "10:00 AM – 4:00 PM" },
+    { day: "Mon–Fri", value: "9:00 AM – 7:00 PM", schema: "Mo-Fr 09:00-19:00" },
+    { day: "Sat", value: "9:00 AM – 6:00 PM", schema: "Sa 09:00-18:00" },
+    { day: "Sun", value: "10:00 AM – 4:00 PM", schema: "Su 10:00-16:00" },
   ],
   deliveryZones: ["Nassau County", "Queens", "Brooklyn (select zip codes)", "Western Suffolk"],
   cutoffTime: "2:00 PM",

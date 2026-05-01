@@ -34,6 +34,7 @@ describe("structured data", () => {
     expect(parsed.address["@type"]).toBe("PostalAddress");
     expect(parsed.address.streetAddress).toBe(SITE.address.line1);
     expect(parsed.telephone).toBe(SITE.phone);
+    expect(parsed.openingHours[0]).toMatch(/^Mo/);
   });
 
   it("BreadcrumbListLD renders valid JSON-LD", () => {

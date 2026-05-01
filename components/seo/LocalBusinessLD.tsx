@@ -16,7 +16,7 @@ export function LocalBusinessLD() {
       postalCode: SITE.address.postal,
       addressCountry: "US",
     },
-    openingHours: SITE.hours.map((h) => `${h.day} ${h.value}`),
+    openingHours: SITE.hours.map((h) => h.schema),
   };
   return (
     <script

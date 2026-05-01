@@ -22,7 +22,7 @@ export async function generateMetadata({
     title: SITE.metadata.title[lang],
     description: SITE.metadata.description[lang],
     alternates: {
-      canonical: `/${locale}`,
+      canonical: `${SITE.url}/${locale}`,
       languages: {
         en: "/en",
         es: "/es",
