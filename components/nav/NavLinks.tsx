@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/locale";
+import { MegaMenu } from "./MegaMenu";
 
 export async function NavLinks({ locale }: { locale: Locale }) {
   const t = await getTranslations("nav");
   const links: { href: string; label: string }[] = [
-    { href: `/${locale}/shop`, label: t("shop") },
     { href: `/${locale}/shop/subscriptions`, label: t("subscriptions") },
     { href: `/${locale}/weddings`, label: t("weddings") },
     { href: `/${locale}/events`, label: t("events") },
@@ -13,6 +13,9 @@ export async function NavLinks({ locale }: { locale: Locale }) {
   ];
   return (
     <ul className="hidden md:flex items-center gap-7">
+      <li>
+        <MegaMenu locale={locale} label={t("shop")} />
+      </li>
       {links.map((l) => (
         <li key={l.href}>
           <Link
