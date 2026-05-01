@@ -103,6 +103,16 @@
     "skip_to_content": "Saltar al contenido",
     "loading": "Cargando"
   },
+  "journal": {
+    "page_title": "Editorial — Diva Flowers",
+    "page_description": "Notas desde el estudio: color, oficio y el pensamiento detrás de cada arreglo.",
+    "eyebrow": "Editorial",
+    "title": "Notas desde el estudio.",
+    "article": {
+      "back": "Volver al editorial",
+      "reading": "{minutes} min de lectura"
+    }
+  },
   "story": {
     "page_title": "Nuestra Historia — Diva Flowers",
     "page_description": "Cómo Diva Flowers se convirtió en la floristería más reconocida de Long Island — desde el arco rosa hasta los tallos frescos de granja.",

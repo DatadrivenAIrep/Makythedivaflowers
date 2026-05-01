@@ -103,6 +103,16 @@
     "skip_to_content": "Skip to content",
     "loading": "Loading"
   },
+  "journal": {
+    "page_title": "Journal — Diva Flowers",
+    "page_description": "Notes from the studio: color, craft, and the thinking behind every arrangement.",
+    "eyebrow": "Journal",
+    "title": "Notes from the studio.",
+    "article": {
+      "back": "Back to journal",
+      "reading": "{minutes} min read"
+    }
+  },
   "story": {
     "page_title": "Our Story — Diva Flowers",
     "page_description": "How Diva Flowers became Long Island's most recognizable florist — from the hot-pink arch to the farm-fresh stems.",
