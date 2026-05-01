@@ -1,56 +1,42 @@
-import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { BloomImage } from "@/components/motion/BloomImage";
+import { CategoryOrbit } from "@/components/home/CategoryOrbit";
 import type { Locale } from "@/types/locale";
 
 const CATEGORIES = [
-  { slug: "arrangements", seed: "cat-arrangements" },
-  { slug: "bouquets", seed: "cat-bouquets" },
-  { slug: "plants", seed: "cat-plants" },
-  { slug: "gifts", seed: "cat-gifts" },
-  { slug: "sympathy", seed: "cat-sympathy" },
-  { slug: "subscriptions", seed: "cat-subscriptions" },
+  { slug: "arrangements", seed: "cat-arrangements", index: "01" },
+  { slug: "bouquets", seed: "cat-bouquets", index: "02" },
+  { slug: "plants", seed: "cat-plants", index: "03" },
+  { slug: "gifts", seed: "cat-gifts", index: "04" },
+  { slug: "sympathy", seed: "cat-sympathy", index: "05" },
+  { slug: "subscriptions", seed: "cat-subscriptions", index: "06" },
 ] as const;
 
 export async function CategoryStrip({ locale }: { locale: Locale }) {
   const t = await getTranslations();
 
+  const items = CATEGORIES.map((c) => ({
+    slug: c.slug,
+    seed: c.seed,
+    index: c.index,
+    name: t(`categories.${c.slug}`),
+    href: `/${locale}/shop/${c.slug}`,
+  }));
+
+  const eyebrow =
+    locale === "es"
+      ? "La Colección · 06 Categorías"
+      : "The Collection · 06 Categories";
+  const hoverHint =
+    locale === "es" ? "[pasa el cursor para entrar]" : "[hover to enter]";
+  const shopLabel = locale === "es" ? "Ver" : "Shop";
+
   return (
-    <section className="py-20 md:py-28">
-      <div className="max-w-[1400px] mx-auto px-6 flex items-end justify-between mb-8">
-        <h2 className="font-display text-4xl md:text-6xl tracking-tighter leading-none">
-          {t("home.categories_title")}
-        </h2>
-      </div>
-      <div className="overflow-x-auto snap-x snap-mandatory pl-6 pb-4 scrollbar-thin">
-        <ul className="flex gap-5 pr-6 max-w-[1400px] mx-auto">
-          {CATEGORIES.map((c) => (
-            <li
-              key={c.slug}
-              className="snap-start shrink-0 w-[78vw] sm:w-[44vw] md:w-[28vw] lg:w-[22vw]"
-            >
-              <Link
-                href={`/${locale}/shop/${c.slug}`}
-                className="group block space-y-4"
-              >
-                <BloomImage
-                  src={`https://picsum.photos/seed/${c.seed}/600/750`}
-                  alt={t(`categories.${c.slug}`)}
-                  className="aspect-[4/5] rounded-[var(--radius-product)]"
-                />
-                <div className="flex items-center justify-between">
-                  <span className="font-display text-xl tracking-tighter">
-                    {t(`categories.${c.slug}`)}
-                  </span>
-                  <span className="font-mono text-xs uppercase tracking-[0.18em] text-mute-500 group-hover:text-rouge transition-colors">
-                    Shop →
-                  </span>
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
+    <CategoryOrbit
+      title={t("home.categories_title")}
+      eyebrow={eyebrow}
+      hoverHint={hoverHint}
+      shopLabel={shopLabel}
+      items={items}
+    />
   );
 }
