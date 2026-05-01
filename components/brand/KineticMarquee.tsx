@@ -15,7 +15,7 @@ import { cn } from "@/lib/cn";
 
 function KineticMarqueeImpl({
   text,
-  speed = 60,
+  speed = 28,
   className,
 }: {
   text: string;
