@@ -1,16 +1,14 @@
 "use client";
 import { memo } from "react";
 import { useTranslations } from "next-intl";
-import type { Locale } from "@/types/locale";
 
 type Props = {
-  locale: Locale;
   value: string;
   onChange: (next: string) => void;
   maxLength?: number;
 };
 
-function CardMessageImpl({ locale: _locale, value, onChange, maxLength = 200 }: Props) {
+function CardMessageImpl({ value, onChange, maxLength = 200 }: Props) {
   const t = useTranslations("product");
   return (
     <div className="flex flex-col gap-2">

@@ -63,7 +63,7 @@ function PdpConfiguratorImpl({ product, locale, cutoff, motionMode }: Props) {
         <DeliveryDatePicker locale={locale} cutoff={cutoff} value={date} onChange={setDate} />
       </div>
 
-      <CardMessage locale={locale} value={message} onChange={setMessage} />
+      <CardMessage value={message} onChange={setMessage} />
 
       <AddToBag
         productId={product.id}
