@@ -41,6 +41,7 @@ function AddToBagImpl({ productId, variantId, addOnIds, totalCents, disabled, lo
       disabled={disabled || state === "added"}
       onClick={onClick}
       className="w-full justify-between"
+      wrapperClassName="w-full"
     >
       <AnimatePresence mode="wait">
         {state === "idle" ? (

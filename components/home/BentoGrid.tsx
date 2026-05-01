@@ -1,10 +1,11 @@
 import { getTranslations } from "next-intl/server";
+import { motion } from "framer-motion";
 import { BentoFeaturedTile } from "./BentoFeaturedTile";
 import { BentoSubscriptionsTile } from "./BentoSubscriptionsTile";
 import { BentoLiveStatusTile } from "./BentoLiveStatusTile";
 import { BentoPressTile } from "./BentoPressTile";
 import { BentoStudioClock } from "./BentoStudioClock";
-import { StaggerGroup } from "@/components/motion/StaggerGroup";
+import { StaggerGroup, staggerItemVariants } from "@/components/motion/StaggerGroup";
 import type { Locale } from "@/types/locale";
 
 export async function BentoGrid({ locale }: { locale: Locale }) {
@@ -33,21 +34,21 @@ export async function BentoGrid({ locale }: { locale: Locale }) {
         className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-5"
         style={{ gridAutoRows: "minmax(140px, auto)" }}
       >
-        <div className="md:col-span-2 md:row-span-3">
+        <motion.div variants={staggerItemVariants} className="md:col-span-2 md:row-span-3">
           <BentoFeaturedTile locale={locale} />
-        </div>
-        <div className="md:col-span-2 md:row-span-2">
+        </motion.div>
+        <motion.div variants={staggerItemVariants} className="md:col-span-2 md:row-span-2">
           <BentoLiveStatusTile />
-        </div>
-        <div className="md:col-span-1">
+        </motion.div>
+        <motion.div variants={staggerItemVariants} className="md:col-span-1">
           <BentoSubscriptionsTile locale={locale} />
-        </div>
-        <div className="md:col-span-1">
+        </motion.div>
+        <motion.div variants={staggerItemVariants} className="md:col-span-1">
           <BentoStudioClock />
-        </div>
-        <div className="md:col-span-4">
+        </motion.div>
+        <motion.div variants={staggerItemVariants} className="md:col-span-4">
           <BentoPressTile />
-        </div>
+        </motion.div>
       </StaggerGroup>
     </section>
   );

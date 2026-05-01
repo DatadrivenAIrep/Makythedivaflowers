@@ -1,5 +1,6 @@
+import { motion } from "framer-motion";
 import { ProductCard } from "./ProductCard";
-import { StaggerGroup } from "@/components/motion/StaggerGroup";
+import { StaggerGroup, staggerItemVariants } from "@/components/motion/StaggerGroup";
 import type { Product } from "@/types/product";
 import type { Locale } from "@/types/locale";
 
@@ -15,7 +16,9 @@ export function PairsWellWith({ products, locale }: Props) {
       </div>
       <StaggerGroup className="grid grid-cols-2 gap-x-5 gap-y-10 md:grid-cols-4">
         {products.slice(0, 4).map((p) => (
-          <ProductCard key={p.id} product={p} locale={locale} />
+          <motion.div key={p.id} variants={staggerItemVariants}>
+            <ProductCard product={p} locale={locale} />
+          </motion.div>
         ))}
       </StaggerGroup>
     </div>

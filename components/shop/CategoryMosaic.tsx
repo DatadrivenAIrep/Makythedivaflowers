@@ -1,7 +1,8 @@
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { getTranslations } from "next-intl/server";
 import { BloomImage } from "@/components/motion/BloomImage";
-import { StaggerGroup } from "@/components/motion/StaggerGroup";
+import { StaggerGroup, staggerItemVariants } from "@/components/motion/StaggerGroup";
 import type { Locale } from "@/types/locale";
 
 const TILES: { slug: string; seed: string; col: string; row: string; aspect: string }[] = [
@@ -21,27 +22,28 @@ export async function CategoryMosaic({ locale }: { locale: Locale }) {
         {TILES.map((tile) => {
           const name = t(tile.slug as Parameters<typeof t>[0]);
           return (
-            <Link
-              key={tile.slug}
-              href={`/${locale}/shop/${tile.slug}`}
-              className={`group relative overflow-hidden rounded-[var(--radius-bento)] bg-mute-100 ${tile.col} ${tile.row} ${tile.aspect}`}
-            >
-              <BloomImage
-                src={`https://picsum.photos/seed/${tile.seed}/1400/1400`}
-                alt={name}
-                className="h-full w-full"
-                sizes="(min-width: 768px) 50vw, 100vw"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent" />
-              <div className="absolute inset-x-5 bottom-5 flex items-end justify-between">
-                <h2 className="font-display text-3xl leading-none tracking-tighter text-bone md:text-4xl">
-                  {name}
-                </h2>
-                <span className="font-mono text-[10px] uppercase tracking-wider text-bone/85">
-                  {locale === "es" ? "Ver →" : "Shop →"}
-                </span>
-              </div>
-            </Link>
+            <motion.div key={tile.slug} variants={staggerItemVariants} className={`${tile.col} ${tile.row}`}>
+              <Link
+                href={`/${locale}/shop/${tile.slug}`}
+                className={`group relative overflow-hidden rounded-[var(--radius-bento)] bg-mute-100 block ${tile.aspect}`}
+              >
+                <BloomImage
+                  src={`https://picsum.photos/seed/${tile.seed}/1400/1400`}
+                  alt={name}
+                  className="h-full w-full"
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent" />
+                <div className="absolute inset-x-5 bottom-5 flex items-end justify-between">
+                  <h2 className="font-display text-3xl leading-none tracking-tighter text-bone md:text-4xl">
+                    {name}
+                  </h2>
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-bone/85">
+                    {locale === "es" ? "Ver →" : "Shop →"}
+                  </span>
+                </div>
+              </Link>
+            </motion.div>
           );
         })}
       </StaggerGroup>

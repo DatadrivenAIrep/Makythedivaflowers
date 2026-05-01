@@ -1,5 +1,6 @@
 "use client";
 import { memo, useRef } from "react";
+import Link from "next/link";
 import {
   motion,
   useMotionValue,
@@ -14,6 +15,7 @@ type Props = {
   onClick?: () => void;
   variant?: "primary" | "ghost";
   className?: string;
+  wrapperClassName?: string;
   ariaLabel?: string;
   type?: "button" | "submit";
   disabled?: boolean;
@@ -25,6 +27,7 @@ function MagneticButtonImpl({
   onClick,
   variant = "primary",
   className,
+  wrapperClassName,
   ariaLabel,
   type = "button",
   disabled,
@@ -76,13 +79,13 @@ function MagneticButtonImpl({
 
   if (href) {
     return (
-      <a href={href} aria-label={ariaLabel} className="inline-block">
+      <Link href={href} aria-label={ariaLabel} className={cn("inline-block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rouge focus-visible:ring-offset-2", wrapperClassName)}>
         {inner}
-      </a>
+      </Link>
     );
   }
   return (
-    <button type={type} onClick={onClick} aria-label={ariaLabel} disabled={disabled} className="inline-block disabled:opacity-50">
+    <button type={type} onClick={onClick} aria-label={ariaLabel} disabled={disabled} className={cn("inline-block disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rouge focus-visible:ring-offset-2", wrapperClassName)}>
       {inner}
     </button>
   );
