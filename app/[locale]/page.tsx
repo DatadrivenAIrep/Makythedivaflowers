@@ -6,6 +6,7 @@ import { KineticMarquee } from "@/components/brand/KineticMarquee";
 import { BentoGrid } from "@/components/home/BentoGrid";
 import { CategoryStrip } from "@/components/home/CategoryStrip";
 import { EditorialSplit } from "@/components/home/EditorialSplit";
+import { WeddingsTeaser } from "@/components/home/WeddingsTeaser";
 
 export default async function Home({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
@@ -20,6 +21,7 @@ export default async function Home({ params }: { params: Promise<{ locale: Local
       <BentoGrid locale={locale} />
       <CategoryStrip locale={locale} />
       <EditorialSplit locale={locale} />
+      <WeddingsTeaser locale={locale} />
     </main>
   );
 }
