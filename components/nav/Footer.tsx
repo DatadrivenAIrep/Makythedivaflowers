@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { SITE } from "@/data/site";
 import { Wordmark } from "@/components/brand/Wordmark";
+import { NewsletterField } from "@/components/inquiry/NewsletterField";
 import type { Locale } from "@/types/locale";
 
 export async function Footer({ locale }: { locale: Locale }) {
@@ -60,6 +61,12 @@ export async function Footer({ locale }: { locale: Locale }) {
                 </li>
               ))}
             </ul>
+            <div className="pt-6">
+              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-bone/50 mb-3">
+                {t("newsletter_label")}
+              </p>
+              <NewsletterField locale={locale} />
+            </div>
           </div>
         </div>
 
