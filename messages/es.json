@@ -103,6 +103,33 @@
     "skip_to_content": "Saltar al contenido",
     "loading": "Cargando"
   },
+  "story": {
+    "page_title": "Nuestra Historia — Diva Flowers",
+    "page_description": "Cómo Diva Flowers se convirtió en la floristería más reconocida de Long Island — desde el arco rosa hasta los tallos frescos de granja.",
+    "hero": {
+      "eyebrow": "Nuestra historia",
+      "title": "Construida alrededor de un solo arco en Hempstead Turnpike.",
+      "quote": "No planeamos ser un punto de referencia. Solo seguimos apareciendo.",
+      "cite": "Diva Flowers, fundada en 2014"
+    },
+    "arch": {
+      "eyebrow": "El arco",
+      "title": "El lugar más fotografiado de la cuadra.",
+      "figure_alt": "Arco de Diva Flowers en plena floración",
+      "p1": "El arco comenzó pequeño — un experimento de fin de semana con dalias y malla de gallinero que supuestamente se iba a desmontar el lunes. No se desmontó. Se convirtió en la razón por la que la gente detenía sus autos, sacaba el teléfono y nos encontraba.",
+      "p2": "Cada primavera lo reconstruimos desde cero. El marco es el mismo acero soldado que usamos desde el segundo año. Lo que cambia es la temporada y cómo nos sentimos. En abril son ranúnculos y blanco. En junio, peonías y rouge. En otoño es amaranto en tonos que combinan con las hojas de los arces del frente.",
+      "p3": "El arco es temporal por diseño. Se marchita, y ese es el punto. La permanencia lo convertiría en decoración. La impermanencia lo mantiene vivo."
+    },
+    "founder": {
+      "portrait_alt": "Fundadora de Diva Flowers trabajando en el estudio",
+      "eyebrow": "El equipo",
+      "title": "Hecho a mano desde el primer día.",
+      "body": "Diva Flowers fue fundada en 2014 con la creencia de que las flores deben sentirse personales, no empaquetadas. Cada tallo que sale de nuestro estudio es elegido pensando en un espacio específico — y en una persona específica. Más de una década después, eso no ha cambiado."
+    },
+    "press": {
+      "eyebrow": "Visto en"
+    }
+  },
   "contact": {
     "page_title": "Contacto — Diva Flowers",
     "page_description": "Visítanos en Hempstead Turnpike, llámanos o envíanos un mensaje. Entrega el mismo día en Long Island y Queens.",

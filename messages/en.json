@@ -103,6 +103,33 @@
     "skip_to_content": "Skip to content",
     "loading": "Loading"
   },
+  "story": {
+    "page_title": "Our Story — Diva Flowers",
+    "page_description": "How Diva Flowers became Long Island's most recognizable florist — from the hot-pink arch to the farm-fresh stems.",
+    "hero": {
+      "eyebrow": "Our story",
+      "title": "Built around a single arch on Hempstead Turnpike.",
+      "quote": "We didn't set out to be a landmark. We just kept showing up.",
+      "cite": "Diva Flowers, founded 2014"
+    },
+    "arch": {
+      "eyebrow": "The arch",
+      "title": "The most photographed spot on the block.",
+      "figure_alt": "Diva Flowers storefront arch in full bloom",
+      "p1": "The arch started small — a weekend experiment with dahlias and chicken wire that was supposed to come down by Monday. It didn't come down. It became a reason people stopped their cars, pulled out their phones, and found us.",
+      "p2": "Every spring, we rebuild it from scratch. The frame is the same welded steel we've used since year two. What changes is the season and what we're feeling. April means ranunculus and white. June means peony and rouge. By autumn it's amaranthus in shades that match the leaves on the maples out front.",
+      "p3": "The arch is temporary by design. It wilts, and that's the point. Permanence would make it decoration. Impermanence makes it alive."
+    },
+    "founder": {
+      "portrait_alt": "Founder of Diva Flowers at work in the studio",
+      "eyebrow": "The team",
+      "title": "Hand-built from day one.",
+      "body": "Diva Flowers was founded in 2014 on the belief that flowers should feel personal, not packaged. Every stem that leaves our studio is chosen with a specific space — and a specific person — in mind. Over a decade later, that hasn't changed."
+    },
+    "press": {
+      "eyebrow": "As seen in"
+    }
+  },
   "contact": {
     "page_title": "Contact — Diva Flowers",
     "page_description": "Visit our studio on Hempstead Turnpike, call us, or send a message. Same-day delivery across Long Island and Queens.",
