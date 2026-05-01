@@ -30,8 +30,8 @@ export default async function WeddingsPage({
     <>
       <WeddingsHero locale={locale} />
       <ProcessStrip />
-      <MasonryGallery locale={locale} />
       <PricingIntent locale={locale} />
+      <MasonryGallery locale={locale} />
       <WeddingsFAQ locale={locale} />
       <section id="inquire" className="py-24 bg-petal/20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

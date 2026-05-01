@@ -8,6 +8,16 @@ import { useTranslations } from "next-intl";
 import { weddingPortfolio, type PortfolioPhoto } from "@/data/wedding-portfolio";
 import type { Locale } from "@/types/locale";
 
+function aspectDimensions(aspect: PortfolioPhoto["aspect"]): [number, number] {
+  switch (aspect) {
+    case "1/1":  return [1200, 1200];
+    case "16/9": return [2400, 1350];
+    case "3/4":  return [1500, 2000];
+    case "4/5":
+    default:     return [1200, 1500];
+  }
+}
+
 export function MasonryGallery({ locale }: { locale: Locale }) {
   const t = useTranslations("weddings.gallery");
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
@@ -34,24 +44,27 @@ export function MasonryGallery({ locale }: { locale: Locale }) {
           <h2 className="mt-3 font-display text-5xl text-ink leading-[0.95] tracking-tighter">{t("title")}</h2>
         </header>
         <div className="columns-2 md:columns-3 gap-4 [&>*]:mb-4 [&>*]:break-inside-avoid">
-          {weddingPortfolio.map((photo, i) => (
-            <button
-              key={photo.id}
-              type="button"
-              onClick={() => setActiveIdx(i)}
-              aria-label={photo.alt[locale]}
-              className="group block w-full overflow-hidden rounded-2xl bg-bone"
-            >
-              <Image
-                src={photo.src}
-                alt={photo.alt[locale]}
-                width={1200}
-                height={1500}
-                sizes="(max-width: 768px) 50vw, 33vw"
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-              />
-            </button>
-          ))}
+          {weddingPortfolio.map((photo, i) => {
+            const [w, h] = aspectDimensions(photo.aspect);
+            return (
+              <button
+                key={photo.id}
+                type="button"
+                onClick={() => setActiveIdx(i)}
+                aria-label={photo.alt[locale]}
+                className="group block w-full overflow-hidden rounded-2xl bg-bone"
+              >
+                <Image
+                  src={photo.src}
+                  alt={photo.alt[locale]}
+                  width={w}
+                  height={h}
+                  sizes="(max-width: 768px) 50vw, 33vw"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                />
+              </button>
+            );
+          })}
         </div>
       </div>
       <AnimatePresence>
@@ -79,7 +92,9 @@ export function MasonryGallery({ locale }: { locale: Locale }) {
               <CaretRight size={18} />
             </button>
             <div className="relative h-[90vh] w-[90vw]">
-              <Image src={active.src} alt={active.alt[locale]} fill sizes="90vw" className="object-contain" priority />
+              {(() => { const [lw, lh] = aspectDimensions(active.aspect); return (
+                <Image src={active.src} alt={active.alt[locale]} width={lw} height={lh} sizes="90vw" className="h-full w-full object-contain" priority />
+              ); })()}
             </div>
           </motion.div>
         )}

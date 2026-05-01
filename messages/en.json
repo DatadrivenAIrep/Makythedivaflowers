@@ -101,5 +101,70 @@
   "a11y": {
     "skip_to_content": "Skip to content",
     "loading": "Loading"
+  },
+  "weddings": {
+    "page_title": "Weddings — Diva Flowers",
+    "meta_description": "Full-service wedding florals on Long Island. Arches, tablescapes, bouquets, and installations — hand-built by Diva Flowers.",
+    "eyebrow": "Weddings",
+    "hero_alt": "Cascading floral arch installation by Diva Flowers",
+    "hero_title": "Your wedding, in full bloom.",
+    "hero_sub": "From intimate ceremonies to grand receptions — we design and install every stem.",
+    "hero_cta": "Start planning",
+    "form_eyebrow": "Inquire",
+    "form_title": "Let's build something beautiful.",
+    "process": {
+      "eyebrow": "How it works",
+      "title": "Four steps to your perfect day.",
+      "consult": {
+        "title": "Consult",
+        "body": "We sit down with you to understand your vision, venue, and budget — then shape a floral direction that feels entirely yours."
+      },
+      "design": {
+        "title": "Design",
+        "body": "Our team develops a full floral proposal: mood boards, stem counts, and a detailed quote — no guesswork."
+      },
+      "source": {
+        "title": "Source",
+        "body": "We hand-pick every stem from our trusted network of farms, selecting for peak bloom on your wedding day."
+      },
+      "install": {
+        "title": "Install",
+        "body": "Our crew arrives early, sets every arrangement, and stays through ceremony to make sure everything is perfect."
+      }
+    },
+    "pricing": {
+      "eyebrow": "Pricing",
+      "statement_full": "Every wedding is priced to the proposal — no packages, no surprises.",
+      "statement_personal": "We build a detailed quote after your consultation so you know exactly what you're getting and what it costs."
+    },
+    "gallery": {
+      "eyebrow": "Portfolio",
+      "title": "From the studio floor.",
+      "close": "Close lightbox",
+      "prev": "Previous photo",
+      "next": "Next photo"
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Questions we hear most."
+    },
+    "form": {
+      "name": "Full name",
+      "email": "Email",
+      "phone": "Phone",
+      "date": "Wedding date",
+      "venue": "Venue",
+      "guests": "Guest count",
+      "budget": "Budget",
+      "vibe": "Tell us about your vision",
+      "source": "How did you hear about us?",
+      "submit": "Send inquiry",
+      "submitting": "Sending…",
+      "success_title": "We'll be in touch.",
+      "success_body": "Thank you for reaching out. We typically respond within one business day.",
+      "errors": {
+        "unknown_error": "Something went wrong. Please try again or call us directly."
+      }
+    }
   }
 }

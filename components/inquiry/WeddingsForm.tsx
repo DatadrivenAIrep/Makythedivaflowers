@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
 import { HoneypotField } from "@/components/inquiry/HoneypotField";
+import { Button } from "@/components/ui/Button";
 import { weddingInquirySchema, type WeddingInquiry } from "@/schemas/inquiry";
 import type { Locale } from "@/types/locale";
 
@@ -80,6 +81,7 @@ export function WeddingsForm({ locale }: { locale: Locale }) {
         <Field label={t("date")} type="date" {...form.register("date")} />
         <Field label={t("venue")} placeholder="Glen Cove Mansion" {...form.register("venue")} />
       </div>
+      <Field label={t("guests")} type="number" inputMode="numeric" min={1} max={2000} error={errors.guests?.message} {...form.register("guests")} />
       <div>
         <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 mb-2">{t("budget")}</p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -94,14 +96,17 @@ export function WeddingsForm({ locale }: { locale: Locale }) {
         </div>
       </div>
       <Textarea label={t("vibe")} required rows={5} error={errors.vibe?.message} {...form.register("vibe")} />
+      <Field label={t("source")} error={errors.source?.message} {...form.register("source")} />
       {errorMsg && <p className="font-mono text-[11px] text-error">{t(`errors.${errorMsg}`)}</p>}
-      <button
+      <Button
         type="submit"
+        variant="primary"
+        size="lg"
         disabled={state === "submitting"}
-        className="inline-flex items-center px-6 py-3 rounded-full bg-rouge text-bone font-mono text-[11px] uppercase tracking-[0.18em] disabled:opacity-50"
+        className="w-full"
       >
         {state === "submitting" ? t("submitting") : t("submit")}
-      </button>
+      </Button>
     </form>
   );
 }

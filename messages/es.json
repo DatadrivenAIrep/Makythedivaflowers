@@ -101,5 +101,70 @@
   "a11y": {
     "skip_to_content": "Saltar al contenido",
     "loading": "Cargando"
+  },
+  "weddings": {
+    "page_title": "Bodas — Diva Flowers",
+    "meta_description": "Florales completos para bodas en Long Island. Arcos, mesas, ramos e instalaciones — hechos a mano por Diva Flowers.",
+    "eyebrow": "Bodas",
+    "hero_alt": "Instalación de arco floral en cascada por Diva Flowers",
+    "hero_title": "Tu boda, en plena flor.",
+    "hero_sub": "Desde ceremonias íntimas hasta recepciones grandiosas — diseñamos e instalamos cada tallo.",
+    "hero_cta": "Empezar a planear",
+    "form_eyebrow": "Cotizar",
+    "form_title": "Construyamos algo hermoso.",
+    "process": {
+      "eyebrow": "Cómo funciona",
+      "title": "Cuatro pasos hacia tu día perfecto.",
+      "consult": {
+        "title": "Consulta",
+        "body": "Nos sentamos contigo para entender tu visión, lugar y presupuesto — y luego damos forma a una dirección floral que se siente totalmente tuya."
+      },
+      "design": {
+        "title": "Diseño",
+        "body": "Nuestro equipo desarrolla una propuesta floral completa: paneles de inspiración, conteos de tallos y una cotización detallada — sin conjeturas."
+      },
+      "source": {
+        "title": "Selección",
+        "body": "Elegimos cada tallo a mano de nuestra red de confianza de fincas, seleccionando para el punto máximo de floración en el día de tu boda."
+      },
+      "install": {
+        "title": "Instalación",
+        "body": "Nuestro equipo llega temprano, coloca cada arreglo y permanece durante la ceremonia para asegurarse de que todo esté perfecto."
+      }
+    },
+    "pricing": {
+      "eyebrow": "Precios",
+      "statement_full": "Cada boda tiene precio según la propuesta — sin paquetes, sin sorpresas.",
+      "statement_personal": "Elaboramos una cotización detallada después de tu consulta para que sepas exactamente qué recibes y cuánto cuesta."
+    },
+    "gallery": {
+      "eyebrow": "Portafolio",
+      "title": "Desde el piso del estudio.",
+      "close": "Cerrar visor",
+      "prev": "Foto anterior",
+      "next": "Foto siguiente"
+    },
+    "faq": {
+      "eyebrow": "Preguntas frecuentes",
+      "title": "Las preguntas que más nos hacen."
+    },
+    "form": {
+      "name": "Nombre completo",
+      "email": "Correo electrónico",
+      "phone": "Teléfono",
+      "date": "Fecha de la boda",
+      "venue": "Lugar",
+      "guests": "Número de invitados",
+      "budget": "Presupuesto",
+      "vibe": "Cuéntanos tu visión",
+      "source": "¿Cómo nos encontraste?",
+      "submit": "Enviar consulta",
+      "submitting": "Enviando…",
+      "success_title": "Nos pondremos en contacto.",
+      "success_body": "Gracias por comunicarte. Normalmente respondemos en un día hábil.",
+      "errors": {
+        "unknown_error": "Algo salió mal. Intenta de nuevo o llámanos directamente."
+      }
+    }
   }
 }

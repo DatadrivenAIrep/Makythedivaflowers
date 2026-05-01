@@ -3,7 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
-const STEPS = ["discover", "design", "install", "memory"] as const;
+const STEPS = ["consult", "design", "source", "install"] as const;
 
 export function ProcessStrip() {
   const t = useTranslations("weddings.process");
