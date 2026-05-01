@@ -103,6 +103,85 @@
     "skip_to_content": "Saltar al contenido",
     "loading": "Cargando"
   },
+  "legal": {
+    "privacy": {
+      "page_title": "Política de Privacidad — Diva Flowers",
+      "page_description": "Cómo Diva Flowers recopila, usa y protege tu información personal.",
+      "title": "Política de Privacidad",
+      "updated": "Última actualización: 1 de mayo de 2026 · Borrador — consultar a un abogado antes de publicar",
+      "data_collected": {
+        "heading": "Información que recopilamos",
+        "p1": "BORRADOR: Recopilamos información que proporcionas directamente, como tu nombre, correo electrónico, número de teléfono y dirección de entrega cuando realizas un pedido o envías una consulta. También recopilamos información de pago, aunque esta es procesada por nuestro proveedor de pagos externo y no se almacena en nuestros servidores.",
+        "p2": "BORRADOR: Podemos recopilar automáticamente cierta información técnica cuando visitas nuestro sitio web, incluida tu dirección IP, tipo de navegador y páginas visitadas. Esta información nos ayuda a mejorar nuestro servicio y diagnosticar problemas técnicos. Consulta a un abogado calificado para verificar que esto refleje tus prácticas reales de datos antes de publicar."
+      },
+      "how_we_use": {
+        "heading": "Cómo usamos tu información",
+        "p1": "BORRADOR: Usamos tu información personal para procesar y completar tus pedidos, responder a tus consultas y comunicarnos contigo sobre tu cuenta y compras. También podemos enviarte comunicaciones de marketing si has optado por recibirlas.",
+        "p2": "BORRADOR: No vendemos tu información personal a terceros. Podemos compartir información con proveedores de servicios que nos ayudan a operar nuestro sitio web y realizar nuestro negocio, sujeto a acuerdos de confidencialidad. Consulta a un abogado para confirmar que esta sección cumple con la ley aplicable."
+      },
+      "sharing": {
+        "heading": "Compartir información",
+        "p1": "BORRADOR: Compartimos tu información personal solo cuando es necesario para prestar nuestros servicios — por ejemplo, con socios de entrega para completar tu pedido, o con procesadores de pago para manejar transacciones. Cada una de estas partes está obligada a proteger tu información.",
+        "p2": "BORRADOR: También podemos divulgar información cuando lo requiera la ley, para hacer cumplir nuestros términos de servicio, o para proteger los derechos y la seguridad de Diva Flowers y nuestros clientes. Esta sección debe ser revisada por asesores legales para garantizar que refleje con precisión sus prácticas de divulgación."
+      },
+      "cookies": {
+        "heading": "Cookies y seguimiento",
+        "p1": "BORRADOR: Nuestro sitio web utiliza cookies para recordar tus preferencias, mantenerte conectado y entender cómo los visitantes usan nuestro sitio. Puedes deshabilitar las cookies a través de la configuración de tu navegador, aunque esto puede afectar algunas funciones de nuestro sitio web.",
+        "p2": "BORRADOR: Podemos usar herramientas de análisis de terceros que colocan sus propias cookies. Estas herramientas nos ayudan a entender los patrones de tráfico agregados. No usamos estas herramientas para identificar visitantes individuales. Revisa con tu abogado si se requiere un banner completo de consentimiento de cookies en tu jurisdicción."
+      },
+      "rights": {
+        "heading": "Tus derechos",
+        "p1": "BORRADOR: Dependiendo de tu ubicación, puedes tener el derecho de acceder, corregir o eliminar tu información personal. También puedes tener el derecho de oponerte a ciertas actividades de procesamiento o de recibir una copia de tus datos en un formato portátil.",
+        "p2": "BORRADOR: Para ejercer cualquiera de estos derechos, contáctanos en hello@divaflowers.com. Responderemos en un tiempo razonable. Ten en cuenta que cierta información puede retenerse según lo requiera la ley o para fines comerciales legítimos. Consulta a un abogado para verificar el cumplimiento con la CCPA, GDPR u otras regulaciones aplicables."
+      },
+      "contact": {
+        "heading": "Contáctanos",
+        "p1": "BORRADOR: Si tienes preguntas sobre esta Política de Privacidad o sobre cómo manejamos tu información personal, contáctanos en hello@divaflowers.com o por correo en Diva Flowers, 1077 Hempstead Tpke, Franklin Square, NY 11010.",
+        "p2": "BORRADOR: Nos reservamos el derecho de actualizar esta Política de Privacidad en cualquier momento. Los cambios se publicarán en esta página con una fecha de vigencia actualizada. Tu uso continuado de nuestro sitio web después de cualquier cambio constituye tu aceptación de la política actualizada. Este documento es un borrador y no debe publicarse sin revisión legal."
+      }
+    },
+    "terms": {
+      "page_title": "Términos de Servicio — Diva Flowers",
+      "page_description": "Los términos y condiciones que rigen tu uso de Diva Flowers y la compra de nuestros productos.",
+      "title": "Términos de Servicio",
+      "updated": "Última actualización: 1 de mayo de 2026 · Borrador — consultar a un abogado antes de publicar",
+      "acceptance": {
+        "heading": "Aceptación de los términos",
+        "p1": "BORRADOR: Al acceder o usar el sitio web de Diva Flowers y al realizar pedidos de nuestros productos, aceptas estar sujeto a estos Términos de Servicio. Si no aceptas estos términos, no uses nuestro sitio web ni nuestros servicios.",
+        "p2": "BORRADOR: Nos reservamos el derecho de modificar estos términos en cualquier momento. El uso continuado de nuestro sitio web después de que se publiquen los cambios constituye la aceptación de los términos modificados. Este documento es un borrador; consulta a un abogado calificado antes de publicarlo como tus términos de servicio oficiales."
+      },
+      "orders": {
+        "heading": "Pedidos y pago",
+        "p1": "BORRADOR: Todos los pedidos están sujetos a disponibilidad y confirmación del precio del pedido. Nos reservamos el derecho de rechazar o cancelar cualquier pedido por cualquier motivo, incluidas imprecisiones en precios o descripciones de productos, o actividad fraudulenta sospechada.",
+        "p2": "BORRADOR: El pago se realiza en el momento del pedido. Aceptamos las principales tarjetas de crédito y otros métodos de pago indicados en el proceso de compra. Todos los precios están en dólares estadounidenses y están sujetos al impuesto sobre las ventas aplicable. Consulta a un abogado para verificar el cumplimiento con la ley de protección al consumidor de Nueva York."
+      },
+      "delivery": {
+        "heading": "Entrega",
+        "p1": "BORRADOR: Ofrecemos entrega el mismo día en áreas selectas del Condado de Nassau, Queens y el oeste de Suffolk. Las ventanas de entrega son estimaciones y no podemos garantizar horarios de entrega exactos debido al tráfico y otras variables fuera de nuestro control.",
+        "p2": "BORRADOR: Eres responsable de proporcionar información de entrega precisa. Si un intento de entrega falla debido a una dirección incorrecta o a que nadie esté disponible para recibir el pedido, pueden aplicarse cargos adicionales de entrega. Los productos florales son perecederos; no somos responsables de daños resultantes de la recepción retrasada después de una entrega exitosa."
+      },
+      "returns": {
+        "heading": "Devoluciones y reembolsos",
+        "p1": "BORRADOR: Dado que nuestros productos son perecederos, no aceptamos devoluciones. Si no estás satisfecho con tu pedido, contáctanos dentro de las 24 horas posteriores a la entrega con fotos del arreglo. Revisaremos cada caso individualmente.",
+        "p2": "BORRADOR: Los reembolsos o reemplazos se emiten a nuestra entera discreción y generalmente se limitan a situaciones en las que el producto fue materialmente diferente a lo pedido o llegó en condición significativamente dañada por nuestro error. Esta sección debe ser revisada por un abogado para cumplir con las leyes de protección al consumidor aplicables."
+      },
+      "subscriptions": {
+        "heading": "Suscripciones",
+        "p1": "BORRADOR: Los planes de suscripción floral se facturan de forma recurrente como se describe en el momento de la compra. Puedes pausar o cancelar tu suscripción en cualquier momento antes de tu próxima fecha de facturación. Las cancelaciones después de que se haya realizado la facturación tendrán efecto para el siguiente período de facturación.",
+        "p2": "BORRADOR: Nos reservamos el derecho de modificar los precios de suscripción con aviso previo. La falta de disponibilidad estacional de flores específicas puede resultar en sustituciones de valor igual o mayor. Siempre comunicaremos cambios materiales a tu plan de suscripción antes de que entren en vigor."
+      },
+      "limitation": {
+        "heading": "Limitación de responsabilidad",
+        "p1": "BORRADOR: En la medida máxima permitida por la ley, Diva Flowers no será responsable de ningún daño indirecto, incidental, especial, consecuente o punitivo que surja del uso de nuestros productos o servicios, incluso si hemos sido advertidos de la posibilidad de tales daños.",
+        "p2": "BORRADOR: Nuestra responsabilidad total hacia ti por cualquier reclamación que surja de tu compra o uso de nuestros productos no excederá el monto que pagaste por el producto o servicio específico que dio lugar a la reclamación. Esta cláusula de limitación de responsabilidad requiere revisión legal para garantizar su aplicabilidad bajo la ley de Nueva York."
+      },
+      "contact": {
+        "heading": "Contacto",
+        "p1": "BORRADOR: Si tienes preguntas sobre estos Términos de Servicio, contáctanos en hello@divaflowers.com o por correo en Diva Flowers, 1077 Hempstead Tpke, Franklin Square, NY 11010.",
+        "p2": "BORRADOR: Estos Términos de Servicio se rigen por las leyes del Estado de Nueva York. Cualquier disputa que surja de estos términos se resolverá en los tribunales del Condado de Nassau, Nueva York. Este documento es un borrador y debe ser revisado y aprobado por un abogado con licencia antes de su uso."
+      }
+    }
+  },
   "account": {
     "eyebrow": "Cuenta",
     "title": "Tu cuenta.",

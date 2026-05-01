@@ -103,6 +103,85 @@
     "skip_to_content": "Skip to content",
     "loading": "Loading"
   },
+  "legal": {
+    "privacy": {
+      "page_title": "Privacy Policy — Diva Flowers",
+      "page_description": "How Diva Flowers collects, uses, and protects your personal information.",
+      "title": "Privacy Policy",
+      "updated": "Last updated: May 1, 2026 · Draft — consult an attorney before publishing",
+      "data_collected": {
+        "heading": "Information We Collect",
+        "p1": "DRAFT: We collect information you provide directly, such as your name, email address, phone number, and delivery address when you place an order or submit an inquiry. We also collect payment information, though this is processed by our third-party payment provider and not stored on our servers.",
+        "p2": "DRAFT: We may automatically collect certain technical information when you visit our website, including your IP address, browser type, and pages visited. This information helps us improve our service and diagnose technical issues. Consult a qualified attorney to verify this reflects your actual data practices before publishing."
+      },
+      "how_we_use": {
+        "heading": "How We Use Your Information",
+        "p1": "DRAFT: We use your personal information to process and fulfill your orders, respond to your inquiries, and communicate with you about your account and purchases. We may also send you marketing communications if you have opted in to receive them.",
+        "p2": "DRAFT: We do not sell your personal information to third parties. We may share information with service providers who assist us in operating our website and conducting our business, subject to confidentiality agreements. Please consult an attorney to confirm this section complies with applicable law."
+      },
+      "sharing": {
+        "heading": "Information Sharing",
+        "p1": "DRAFT: We share your personal information only as necessary to provide our services — for example, with delivery partners to fulfill your order, or with payment processors to handle transactions. Each of these parties is required to protect your information.",
+        "p2": "DRAFT: We may also disclose information when required by law, to enforce our terms of service, or to protect the rights and safety of Diva Flowers and our customers. This section should be reviewed by legal counsel to ensure it accurately reflects your disclosure practices."
+      },
+      "cookies": {
+        "heading": "Cookies and Tracking",
+        "p1": "DRAFT: Our website uses cookies to remember your preferences, keep you signed in, and understand how visitors use our site. You can disable cookies through your browser settings, though this may affect some features of our website.",
+        "p2": "DRAFT: We may use third-party analytics tools that place their own cookies. These tools help us understand aggregate traffic patterns. We do not use these tools to identify individual visitors. Review with your attorney to determine if a full cookie consent banner is required in your jurisdiction."
+      },
+      "rights": {
+        "heading": "Your Rights",
+        "p1": "DRAFT: Depending on your location, you may have the right to access, correct, or delete your personal information. You may also have the right to object to certain processing activities or to receive a copy of your data in a portable format.",
+        "p2": "DRAFT: To exercise any of these rights, please contact us at hello@divaflowers.com. We will respond within a reasonable time. Note that certain information may be retained as required by law or for legitimate business purposes. Consult an attorney to verify compliance with CCPA, GDPR, or other applicable regulations."
+      },
+      "contact": {
+        "heading": "Contact Us",
+        "p1": "DRAFT: If you have questions about this Privacy Policy or how we handle your personal information, please contact us at hello@divaflowers.com or by mail at Diva Flowers, 1077 Hempstead Tpke, Franklin Square, NY 11010.",
+        "p2": "DRAFT: We reserve the right to update this Privacy Policy at any time. Changes will be posted on this page with an updated effective date. Your continued use of our website after any changes constitutes your acceptance of the updated policy. This document is a draft and should not be published without attorney review."
+      }
+    },
+    "terms": {
+      "page_title": "Terms of Service — Diva Flowers",
+      "page_description": "The terms and conditions governing your use of Diva Flowers and purchase of our products.",
+      "title": "Terms of Service",
+      "updated": "Last updated: May 1, 2026 · Draft — consult an attorney before publishing",
+      "acceptance": {
+        "heading": "Acceptance of Terms",
+        "p1": "DRAFT: By accessing or using the Diva Flowers website and placing orders for our products, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our website or services.",
+        "p2": "DRAFT: We reserve the right to modify these terms at any time. Continued use of our website after changes are posted constitutes acceptance of the modified terms. This document is a draft; consult a qualified attorney before publishing as your official terms of service."
+      },
+      "orders": {
+        "heading": "Orders and Payment",
+        "p1": "DRAFT: All orders are subject to availability and confirmation of the order price. We reserve the right to refuse or cancel any order for any reason, including inaccuracies in pricing or product descriptions, or suspected fraudulent activity.",
+        "p2": "DRAFT: Payment is due at the time of order. We accept major credit cards and other payment methods as indicated at checkout. All prices are in US dollars and subject to applicable sales tax. Please have an attorney review this section for compliance with New York consumer protection law."
+      },
+      "delivery": {
+        "heading": "Delivery",
+        "p1": "DRAFT: We offer same-day delivery to select areas in Nassau County, Queens, and Western Suffolk. Delivery windows are estimates and we cannot guarantee exact delivery times due to traffic and other variables beyond our control.",
+        "p2": "DRAFT: You are responsible for providing accurate delivery information. If a delivery attempt fails due to an incorrect address or no one being available to receive the order, additional delivery fees may apply. Floral products are perishable; we are not responsible for damage resulting from delayed receipt after a successful delivery."
+      },
+      "returns": {
+        "heading": "Returns and Refunds",
+        "p1": "DRAFT: Because our products are perishable, we do not accept returns. If you are unsatisfied with your order, please contact us within 24 hours of delivery with photos of the arrangement. We will review each case individually.",
+        "p2": "DRAFT: Refunds or replacements are issued at our sole discretion and are generally limited to situations where the product was materially different from what was ordered or arrived in significantly damaged condition due to our error. This section should be reviewed by an attorney for compliance with applicable consumer protection laws."
+      },
+      "subscriptions": {
+        "heading": "Subscriptions",
+        "p1": "DRAFT: Floral subscription plans are billed on a recurring basis as described at the time of purchase. You may pause or cancel your subscription at any time before your next billing date. Cancellations after billing has occurred will take effect for the following billing period.",
+        "p2": "DRAFT: We reserve the right to modify subscription pricing with advance notice. Seasonal unavailability of specific flowers may result in substitutions of equal or greater value. We will always communicate material changes to your subscription plan before they take effect."
+      },
+      "limitation": {
+        "heading": "Limitation of Liability",
+        "p1": "DRAFT: To the fullest extent permitted by law, Diva Flowers shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of your use of our products or services, even if we have been advised of the possibility of such damages.",
+        "p2": "DRAFT: Our total liability to you for any claim arising from your purchase or use of our products shall not exceed the amount you paid for the specific product or service giving rise to the claim. This limitation of liability clause requires attorney review to ensure it is enforceable under New York law."
+      },
+      "contact": {
+        "heading": "Contact",
+        "p1": "DRAFT: If you have questions about these Terms of Service, please contact us at hello@divaflowers.com or by mail at Diva Flowers, 1077 Hempstead Tpke, Franklin Square, NY 11010.",
+        "p2": "DRAFT: These Terms of Service are governed by the laws of the State of New York. Any disputes arising under these terms shall be resolved in the courts of Nassau County, New York. This document is a draft and must be reviewed and approved by a licensed attorney before use."
+      }
+    }
+  },
   "account": {
     "eyebrow": "Account",
     "title": "Your account.",
