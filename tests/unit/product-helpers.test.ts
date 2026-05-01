@@ -63,43 +63,51 @@ describe("filterProducts", () => {
     variants: [{ id: "s", label: { en: "", es: "" }, priceCents: 38000 }],
     active: false,
   });
+  const d = fx({
+    id: "d",
+    occasions: ["congrats"],
+    colorFamily: ["white"],
+    tags: [],
+    variants: [{ id: "s", label: { en: "", es: "" }, priceCents: 38000 }],
+    active: true,
+  });
 
   it("hides inactive products", () => {
-    expect(filterProducts([a, b, c], {} as Filter).map((p) => p.id)).toEqual(["a", "b"]);
+    expect(filterProducts([a, b, c, d], {} as Filter).map((p) => p.id)).toEqual(["a", "b", "d"]);
   });
 
   it("filters by occasion", () => {
-    const r = filterProducts([a, b, c], { occasion: "romance" } as Filter);
+    const r = filterProducts([a, b, c, d], { occasion: "romance" } as Filter);
     expect(r.map((p) => p.id)).toEqual(["a"]);
   });
 
   it("filters by color", () => {
-    const r = filterProducts([a, b, c], { color: "red" } as Filter);
+    const r = filterProducts([a, b, c, d], { color: "red" } as Filter);
     expect(r.map((p) => p.id)).toEqual(["b"]);
   });
 
   it("filters by same-day", () => {
-    const r = filterProducts([a, b, c], { sameDay: true } as Filter);
+    const r = filterProducts([a, b, c, d], { sameDay: true } as Filter);
     expect(r.map((p) => p.id)).toEqual(["a"]);
   });
 
   it("filters by price band: under-$200", () => {
-    const r = filterProducts([a, b, c], { price: "under-200" } as Filter);
+    const r = filterProducts([a, b, c, d], { price: "under-200" } as Filter);
     expect(r.map((p) => p.id)).toEqual(["a"]);
   });
 
   it("filters by price band: 200-300", () => {
-    const r = filterProducts([a, b, c], { price: "200-300" } as Filter);
+    const r = filterProducts([a, b, c, d], { price: "200-300" } as Filter);
     expect(r.map((p) => p.id)).toEqual(["b"]);
   });
 
   it("filters by price band: 300-plus", () => {
-    const r = filterProducts([a, b, c], { price: "300-plus" } as Filter);
-    expect(r.map((p) => p.id)).toEqual([]);
+    const r = filterProducts([a, b, c, d], { price: "300-plus" } as Filter);
+    expect(r.map((p) => p.id)).toEqual(["d"]);
   });
 
   it("combines filters with AND", () => {
-    const r = filterProducts([a, b, c], { color: "pink", sameDay: true } as Filter);
+    const r = filterProducts([a, b, c, d], { color: "pink", sameDay: true } as Filter);
     expect(r.map((p) => p.id)).toEqual(["a"]);
   });
 });

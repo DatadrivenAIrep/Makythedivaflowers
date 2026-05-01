@@ -1,12 +1,4 @@
-export type PriceBand = "under-200" | "200-300" | "300-plus";
-export type Sort = "newest" | "price-asc" | "price-desc" | "staff-pick";
-export type Filter = {
-  occasion?: "birthday" | "anniversary" | "sympathy" | "romance" | "congrats" | "just-because";
-  color?: "pink" | "red" | "white" | "mixed" | "green" | "pastel";
-  size?: "standard" | "grand" | "diva";
-  price?: PriceBand;
-  sameDay?: boolean;
-};
+import type { Filter, Sort } from "@/data/product-helpers";
 
 const OCCASIONS = ["birthday", "anniversary", "sympathy", "romance", "congrats", "just-because"] as const;
 const COLORS = ["pink", "red", "white", "mixed", "green", "pastel"] as const;
