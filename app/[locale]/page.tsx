@@ -3,6 +3,7 @@ import type { Locale } from "@/types/locale";
 import { Grain } from "@/components/brand/Grain";
 import { Hero } from "@/components/home/Hero";
 import { KineticMarquee } from "@/components/brand/KineticMarquee";
+import { BentoGrid } from "@/components/home/BentoGrid";
 
 export default async function Home({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
@@ -14,6 +15,7 @@ export default async function Home({ params }: { params: Promise<{ locale: Local
       <Grain />
       <Hero locale={locale} />
       <KineticMarquee text={`${t("marquee")}  ·  `} />
+      <BentoGrid locale={locale} />
     </main>
   );
 }
