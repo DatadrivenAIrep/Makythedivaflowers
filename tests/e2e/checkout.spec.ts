@@ -9,7 +9,7 @@ test.describe("checkout", () => {
     await expect(drawer).toBeVisible();
     await drawer.getByRole("link", { name: /continue to checkout/i }).click();
     await expect(page.getByRole("heading", { name: /checkout/i })).toBeVisible();
-    await page.getByLabel(/email/i).fill("test@example.com");
+    await page.getByRole("textbox", { name: "Email", exact: true }).fill("test@example.com");
     await page.getByLabel(/phone/i).first().fill("5165550100");
     await page.getByRole("button", { name: /continue/i }).first().click();
     const future = new Date();
@@ -17,11 +17,11 @@ test.describe("checkout", () => {
     const futureStr = future.toISOString().slice(0, 10);
     await page.getByLabel(/recipient name/i).fill("Lola Cardona");
     await page.getByLabel(/recipient phone/i).fill("5165550101");
-    await page.getByLabel(/^street address$/i).fill("1077 Hempstead Tpke");
+    await page.getByLabel(/street address/i).fill("1077 Hempstead Tpke");
     await page.getByLabel(/^city$/i).fill("Franklin Square");
     await page.getByLabel(/^state$/i).fill("NY");
-    await page.getByLabel(/^zip$/i).fill("11010");
-    await page.getByLabel(/delivery date/i).fill(futureStr);
+    await page.getByLabel(/zip code/i).fill("11010");
+    await page.locator('input[type="date"]').fill(futureStr);
     await page.getByLabel(/midday/i).check();
     await page.getByRole("button", { name: /continue/i }).nth(1).click();
     await page.getByRole("button", { name: /place order/i }).click();

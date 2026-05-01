@@ -29,6 +29,7 @@ Built using the [taste-skill](https://github.com/Leonxlnx/taste-skill) framework
 - Plan 1 complete: foundation, brand system, bilingual home page.
 - Plan 2 complete: catalog (shop hub + category pages with sticky filter bar), PDP (variants, add-ons, delivery picker, card message, add-to-bag), sympathy variant, subscriptions, mega-menu, sitemap.
 - Plan 3 complete: cart drawer, /cart, /checkout (3-step accordion), /order/[id]/confirmation. Inquiry pages: /weddings, /events, /contact. Editorial: /story, /journal, /journal/[slug] (3 articles). Stubbed: /account. Legal: /legal/privacy, /legal/terms.
+- Plan 4 complete: launch-readiness polish — content centralization, motion coverage (stagger, grain, arch, magnetic CTAs), a11y (axe-core e2e, reduced-motion, focus rings), SEO (LocalBusiness + Breadcrumb JSON-LD, OG images, robots.txt, hreflang), error/loading/not-found states, perf (next/image migration), i18n gap sweep, v2 roadmap. Branch: plan-4-quality-polish.
 
 ## v1 status (post-Plan 3)
 

@@ -10,10 +10,10 @@ test("journal index links to articles", async ({ page }) => {
 
 test("journal article renders pull-quote", async ({ page }) => {
   await page.goto("/en/journal/color-of-the-season-rouge");
-  await expect(page.getByText(/rouge only sings when it's surrounded by quiet/i)).toBeVisible();
+  await expect(page.getByRole("blockquote").filter({ hasText: /rouge only sings when it's surrounded by quiet/i })).toBeVisible();
 });
 
 test("ES locale renders Spanish article", async ({ page }) => {
   await page.goto("/es/journal/color-of-the-season-rouge");
-  await expect(page.getByText(/rouge solo canta/i)).toBeVisible();
+  await expect(page.getByRole("blockquote").filter({ hasText: /rouge solo canta/i })).toBeVisible();
 });

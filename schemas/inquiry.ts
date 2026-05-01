@@ -23,7 +23,7 @@ export const weddingInquirySchema = z.object({
   ...baseShared,
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().or(z.literal("")),
   venue: z.string().max(120).optional().or(z.literal("")),
-  guests: z.coerce.number().int().min(1).max(2000).optional(),
+  guests: z.union([z.coerce.number().int().min(1).max(2000), z.literal("").transform(() => undefined)]).optional(),
   source: z.string().max(60).optional().or(z.literal("")),
 });
 
@@ -32,7 +32,7 @@ export const eventInquirySchema = z.object({
   ...baseShared,
   company: z.string().min(2).max(120),
   frequency: z.enum(["one-time", "weekly", "biweekly", "monthly", "quarterly"]),
-  guests: z.coerce.number().int().min(1).max(2000).optional(),
+  guests: z.union([z.coerce.number().int().min(1).max(2000), z.literal("").transform(() => undefined)]).optional(),
 });
 
 export type WeddingInquiry = z.infer<typeof weddingInquirySchema>;
