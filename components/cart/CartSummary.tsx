@@ -19,7 +19,7 @@ export function CartSummary({ subtotalCents, locale, onCheckout }: Props) {
         <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60">
           {t("subtotal")}
         </span>
-        <span className="font-mono text-base tabular-nums text-ink">
+        <span data-testid="cart-subtotal" className="font-mono text-base tabular-nums text-ink">
           {formatMoneyCents(subtotalCents, locale)}
         </span>
       </div>

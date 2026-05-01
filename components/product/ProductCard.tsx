@@ -31,7 +31,7 @@ function ProductCardImpl({ product, locale, reduceMotion, priority }: Props) {
       : null;
 
   return (
-    <Link href={href} className="group block focus-visible:outline-none">
+    <Link href={href} data-testid="product-card" className="group block focus-visible:outline-none">
       <div className="relative overflow-hidden rounded-[var(--radius-product)] bg-mute-100">
         {cover && reduceMotion ? (
           <ProductImage
