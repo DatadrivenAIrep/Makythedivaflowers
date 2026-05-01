@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { defaultLocale } from "@/types/locale";
 
 export default function NotFound() {
   return (
@@ -15,7 +16,7 @@ export default function NotFound() {
       </p>
       <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
         <Link
-          href="/en/shop"
+          href={`/${defaultLocale}/shop`}
           className="rounded-full bg-rouge px-8 py-3 text-sm font-medium text-bone transition-opacity hover:opacity-90"
         >
           Browse flowers
