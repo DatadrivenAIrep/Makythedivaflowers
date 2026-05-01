@@ -24,6 +24,7 @@ export async function EditorialSplit({ locale: _locale }: { locale: Locale }) {
             src="https://picsum.photos/seed/diva-storefront/1200/900"
             alt="Diva Flowers storefront with floral arch"
             className="aspect-[4/3] rounded-[var(--radius-bento)]"
+            sizes="(min-width: 1024px) 58vw, 100vw"
           />
         </div>
       </div>
