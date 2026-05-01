@@ -12,6 +12,9 @@
     "open_menu": "Abrir menú",
     "close_menu": "Cerrar menú"
   },
+  "cart": {
+    "toast_added": "Agregado a la bolsa"
+  },
   "categories": {
     "arrangements": "Arreglos",
     "bouquets": "Ramos",

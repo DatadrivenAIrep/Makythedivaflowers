@@ -3,6 +3,7 @@ import { memo, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { useCartStore } from "@/lib/cart-store";
+import { useUIStore } from "@/lib/ui-store";
 import { formatMoneyCents } from "@/lib/format";
 import type { Locale } from "@/types/locale";
 
@@ -17,12 +18,16 @@ type Props = {
 
 function AddToBagImpl({ productId, variantId, addOnIds, totalCents, disabled, locale }: Props) {
   const add = useCartStore((s) => s.add);
+  const showToast = useUIStore((s) => s.showToast);
+  const openDrawer = useUIStore((s) => s.openDrawer);
   const [state, setState] = useState<"idle" | "added">("idle");
   const reduce = useReducedMotion();
 
   const onClick = () => {
     if (disabled) return;
     add({ productId, variantId, addOnIds, qty: 1 });
+    showToast({ kind: "added-to-bag", productId });
+    openDrawer();
     setState("added");
     window.setTimeout(() => setState("idle"), 1800);
   };
