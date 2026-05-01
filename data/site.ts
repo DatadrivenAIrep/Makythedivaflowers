@@ -1,5 +1,6 @@
 export const SITE = {
   brand: "Diva Flowers",
+  url: "https://divaflowers.com",
   founded: 2014,
   phone: "+1 (516) 484-3456",
   phoneDisplay: "516 484 3456",

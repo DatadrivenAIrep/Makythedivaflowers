@@ -16,6 +16,7 @@ import { FilterBar } from "@/components/product/FilterBar";
 import { EmptyFilterState } from "@/components/product/EmptyFilterState";
 import { Grain } from "@/components/brand/Grain";
 import { SITE } from "@/data/site";
+import { BreadcrumbListLD } from "@/components/seo/BreadcrumbListLD";
 
 const ALLOWED: ProductCategory[] = [
   "arrangements",
@@ -113,6 +114,13 @@ export default async function CategoryPage({
 
   return (
     <main className="bg-bone text-ink">
+      <BreadcrumbListLD
+        items={[
+          { name: locale === "es" ? "Inicio" : "Home", href: `/${locale}` },
+          { name: locale === "es" ? "Tienda" : "Shop", href: `/${locale}/shop` },
+          { name: CATEGORY_TITLES[cat][locale], href: `/${locale}/shop/${cat}` },
+        ]}
+      />
       {isSympathy && <Grain />}
       <header className="mx-auto max-w-[var(--container-max)] px-6 pt-12 pb-6 md:pt-20">
         <p className="font-mono text-[10px] uppercase tracking-wider text-mute-500">

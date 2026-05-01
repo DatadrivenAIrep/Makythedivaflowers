@@ -11,6 +11,7 @@ import { PdpAccordion } from "@/components/product/PdpAccordion";
 import { PairsWellWith } from "@/components/product/PairsWellWith";
 import { JournalTile } from "@/components/product/JournalTile";
 import { PdpStructuredData } from "@/components/product/PdpStructuredData";
+import { BreadcrumbListLD } from "@/components/seo/BreadcrumbListLD";
 
 export async function generateStaticParams() {
   return PRODUCTS.filter((p) => p.active).map((p) => ({ slug: p.slug }));
@@ -68,6 +69,14 @@ export default async function ProductPage({
   return (
     <main className="bg-bone text-ink">
       <PdpStructuredData product={product} locale={locale} origin={origin} />
+      <BreadcrumbListLD
+        items={[
+          { name: locale === "es" ? "Inicio" : "Home", href: `/${locale}` },
+          { name: locale === "es" ? "Tienda" : "Shop", href: `/${locale}/shop` },
+          { name: categoryLabel(product.category, locale), href: `/${locale}/shop/${product.category}` },
+          { name: product.title[locale], href: `/${locale}/product/${product.slug}` },
+        ]}
+      />
 
       <section className="mx-auto grid max-w-[var(--container-max)] grid-cols-1 gap-10 px-6 pt-10 pb-16 lg:grid-cols-12 lg:gap-12 lg:pt-16">
         <div className="lg:col-span-7">
