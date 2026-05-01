@@ -7,6 +7,7 @@ import { BentoGrid } from "@/components/home/BentoGrid";
 import { CategoryStrip } from "@/components/home/CategoryStrip";
 import { EditorialSplit } from "@/components/home/EditorialSplit";
 import { WeddingsTeaser } from "@/components/home/WeddingsTeaser";
+import { NewsletterField } from "@/components/home/NewsletterField";
 
 export default async function Home({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
@@ -22,6 +23,7 @@ export default async function Home({ params }: { params: Promise<{ locale: Local
       <CategoryStrip locale={locale} />
       <EditorialSplit locale={locale} />
       <WeddingsTeaser locale={locale} />
+      <NewsletterField />
     </main>
   );
 }
