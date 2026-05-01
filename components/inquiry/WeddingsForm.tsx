@@ -3,10 +3,15 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { useTranslations } from "next-intl";
 import { HoneypotField } from "@/components/inquiry/HoneypotField";
 import { weddingInquirySchema, type WeddingInquiry } from "@/schemas/inquiry";
 import type { Locale } from "@/types/locale";
+
+// The input type (before Zod transforms/coercion) is used for useForm field values.
+// guests is a raw string from the input before z.coerce.number() transforms it.
+type WeddingInquiryInput = z.input<typeof weddingInquirySchema>;
 
 const BUDGETS = ["5-10k", "10-25k", "25k+", "open"] as const;
 
@@ -15,7 +20,7 @@ export function WeddingsForm({ locale }: { locale: Locale }) {
   const [state, setState] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const form = useForm<WeddingInquiry>({
+  const form = useForm<WeddingInquiryInput, unknown, WeddingInquiry>({
     resolver: zodResolver(weddingInquirySchema),
     mode: "onBlur",
     defaultValues: {
