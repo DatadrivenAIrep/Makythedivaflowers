@@ -1,6 +1,7 @@
 "use client";
 import { memo } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import type { Locale } from "@/types/locale";
 import type { Product } from "@/types/product";
 import { ProductImage } from "./ProductImage";
@@ -16,18 +17,15 @@ type Props = {
 };
 
 function ProductCardImpl({ product, locale, reduceMotion, priority }: Props) {
+  const t = useTranslations("product");
   const href = `/${locale}/product/${product.slug}`;
   const cover = product.images[0];
   const fromPrice = formatMoneyCents(startingPriceCents(product), locale);
-  const startingFrom = locale === "es" ? "Desde" : "From";
+  const startingFrom = t("from_price");
   const eyebrow = product.tags.includes("new")
-    ? locale === "es"
-      ? "Nuevo"
-      : "New"
+    ? t("badge_new")
     : product.tags.includes("staff-pick")
-      ? locale === "es"
-        ? "Selección"
-        : "Staff pick"
+      ? t("badge_staff_pick")
       : null;
 
   return (
@@ -51,7 +49,7 @@ function ProductCardImpl({ product, locale, reduceMotion, priority }: Props) {
         ) : null}
         {product.tags.includes("same-day") && (
           <span className="absolute left-3 top-3 rounded-full border border-ink/15 bg-bone/90 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-ink">
-            {locale === "es" ? "Hoy" : "Today"}
+            {t("badge_today")}
           </span>
         )}
       </div>

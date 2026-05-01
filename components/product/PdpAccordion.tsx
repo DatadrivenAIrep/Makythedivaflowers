@@ -1,28 +1,12 @@
 "use client";
 import { memo } from "react";
+import { useTranslations } from "next-intl";
 import { SITE } from "@/data/site";
-import type { Locale } from "@/types/locale";
 
 // Source from data/site.ts so cutoff and delivery zones stay consistent
 // across PDP, footer, legal copy, and metadata.
 const DELIVERY_ZONES = SITE.deliveryZones.join(", ");
 const CUTOFF = SITE.cutoffTime;
-
-const COPY = {
-  stems_label: { en: "Stems & care", es: "Tallos y cuidado" },
-  stems_body: {
-    en: "Each stem is conditioned for 24 hours before the build. Trim half an inch and change the water every other day. Keep out of direct sun. Bloom window: 7–9 days.",
-    es: "Cada tallo se acondiciona durante 24 horas antes del montaje. Corta medio centímetro y cambia el agua cada dos días. Mantén fuera del sol directo. Florescencia: 7–9 días.",
-  },
-  sub_label: { en: "Substitution policy", es: "Política de sustitución" },
-  sub_body: {
-    en: "Markets vary. We may substitute a stem of equal or greater value to keep the silhouette and palette intact. We always confirm major substitutions in advance.",
-    es: "Los mercados varían. Podemos sustituir un tallo por uno de igual o mayor valor para mantener silueta y paleta. Siempre confirmamos sustituciones mayores con antelación.",
-  },
-  delivery_label: { en: "Delivery zones", es: "Zonas de entrega" },
-  delivery_body_en: `We deliver across ${DELIVERY_ZONES}. Same-day cutoff is ${CUTOFF}.`,
-  delivery_body_es: `Entregamos en ${DELIVERY_ZONES}. El corte para el mismo día es a las ${CUTOFF}.`,
-} as const;
 
 function Item({ label, body }: { label: string; body: string }) {
   return (
@@ -38,14 +22,15 @@ function Item({ label, body }: { label: string; body: string }) {
   );
 }
 
-function PdpAccordionImpl({ locale }: { locale: Locale }) {
+function PdpAccordionImpl() {
+  const t = useTranslations("product.accordion");
   return (
     <div className="border-t border-ink/10">
-      <Item label={COPY.stems_label[locale]} body={COPY.stems_body[locale]} />
-      <Item label={COPY.sub_label[locale]} body={COPY.sub_body[locale]} />
+      <Item label={t("stems_label")} body={t("stems_body")} />
+      <Item label={t("sub_label")} body={t("sub_body")} />
       <Item
-        label={COPY.delivery_label[locale]}
-        body={locale === "es" ? COPY.delivery_body_es : COPY.delivery_body_en}
+        label={t("delivery_label")}
+        body={t("delivery_body", { zones: DELIVERY_ZONES, cutoff: CUTOFF })}
       />
     </div>
   );

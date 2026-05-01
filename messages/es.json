@@ -117,6 +117,25 @@
     "delivery_zone_error": "No entregamos a ese código postal aún — llámanos al {phone}.",
     "no_results_title": "Nada coincide aún."
   },
+  "product": {
+    "accordion": {
+      "stems_label": "Tallos y cuidado",
+      "stems_body": "Cada tallo se acondiciona durante 24 horas antes del montaje. Corta medio centímetro y cambia el agua cada dos días. Mantén fuera del sol directo. Florescencia: 7–9 días.",
+      "sub_label": "Política de sustitución",
+      "sub_body": "Los mercados varían. Podemos sustituir un tallo por uno de igual o mayor valor para mantener silueta y paleta. Siempre confirmamos sustituciones mayores con antelación.",
+      "delivery_label": "Zonas de entrega",
+      "delivery_body": "Entregamos en {zones}. El corte para el mismo día es a las {cutoff}."
+    },
+    "pairs_well_with": "Combina bien con",
+    "add_to_bag": "Añadir a la bolsa",
+    "added": "Añadido",
+    "card_message_label": "Mensaje de tarjeta (opcional)",
+    "card_message_placeholder": "Para alguien especial…",
+    "from_price": "Desde",
+    "badge_new": "Nuevo",
+    "badge_staff_pick": "Selección",
+    "badge_today": "Hoy"
+  },
   "home": {
     "hero": {
       "eyebrow": "Long Island, Nueva York",

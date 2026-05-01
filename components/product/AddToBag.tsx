@@ -1,6 +1,7 @@
 "use client";
 import { memo, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { useCartStore } from "@/lib/cart-store";
 import { useUIStore } from "@/lib/ui-store";
@@ -22,6 +23,7 @@ function AddToBagImpl({ productId, variantId, addOnIds, totalCents, disabled, lo
   const openDrawer = useUIStore((s) => s.openDrawer);
   const [state, setState] = useState<"idle" | "added">("idle");
   const reduce = useReducedMotion();
+  const t = useTranslations("product");
 
   const onClick = () => {
     if (disabled) return;
@@ -32,8 +34,8 @@ function AddToBagImpl({ productId, variantId, addOnIds, totalCents, disabled, lo
     window.setTimeout(() => setState("idle"), 1800);
   };
 
-  const idleLabel = locale === "es" ? "Añadir a la bolsa" : "Add to bag";
-  const addedLabel = locale === "es" ? "Añadido" : "Added";
+  const idleLabel = t("add_to_bag");
+  const addedLabel = t("added");
 
   return (
     <MagneticButton

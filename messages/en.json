@@ -117,6 +117,25 @@
     "delivery_zone_error": "We don't deliver to that ZIP yet — call us at {phone}.",
     "no_results_title": "Nothing matches yet."
   },
+  "product": {
+    "accordion": {
+      "stems_label": "Stems & care",
+      "stems_body": "Each stem is conditioned for 24 hours before the build. Trim half an inch and change the water every other day. Keep out of direct sun. Bloom window: 7–9 days.",
+      "sub_label": "Substitution policy",
+      "sub_body": "Markets vary. We may substitute a stem of equal or greater value to keep the silhouette and palette intact. We always confirm major substitutions in advance.",
+      "delivery_label": "Delivery zones",
+      "delivery_body": "We deliver across {zones}. Same-day cutoff is {cutoff}."
+    },
+    "pairs_well_with": "Pairs well with",
+    "add_to_bag": "Add to bag",
+    "added": "Added",
+    "card_message_label": "Card message (optional)",
+    "card_message_placeholder": "For someone special…",
+    "from_price": "From",
+    "badge_new": "New",
+    "badge_staff_pick": "Staff pick",
+    "badge_today": "Today"
+  },
   "home": {
     "hero": {
       "eyebrow": "Long Island, New York",
