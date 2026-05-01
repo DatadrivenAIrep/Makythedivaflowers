@@ -2,10 +2,11 @@
 import Link from "next/link";
 import { Bag } from "@phosphor-icons/react/dist/ssr";
 import { useTranslations } from "next-intl";
+import { useCartStore } from "@/lib/cart-store";
 
 export function CartButton({ locale }: { locale: "en" | "es" }) {
   const t = useTranslations("nav");
-  const count = 0;
+  const count = useCartStore((s) => s.count());
   return (
     <Link
       href={`/${locale}/cart`}

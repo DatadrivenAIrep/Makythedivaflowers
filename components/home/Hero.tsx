@@ -7,6 +7,7 @@ import type { Locale } from "@/types/locale";
 
 export async function Hero({ locale }: { locale: Locale }) {
   const t = await getTranslations("home.hero");
+  const [heroLine1, heroLine2] = t("title").split(/, (.+)/);
 
   return (
     <section className="relative min-h-[100dvh] overflow-hidden">
@@ -57,10 +58,10 @@ export async function Hero({ locale }: { locale: Locale }) {
               style={{ fontVariationSettings: "'WONK' 1, 'SOFT' 0, 'opsz' 144" }}
             >
               <span style={{ fontStyle: "italic" }}>
-                Romance,
+                {heroLine1},
               </span>
               <br />
-              <span>by the stem.</span>
+              <span>{heroLine2}</span>
             </h1>
           </div>
           <div>

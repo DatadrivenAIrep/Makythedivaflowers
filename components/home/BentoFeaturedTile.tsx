@@ -85,7 +85,7 @@ function BentoFeaturedTileImpl({ locale }: { locale: "en" | "es" }) {
           className="font-display text-[clamp(3rem,6vw,5.5rem)] italic tracking-tighter leading-[0.88] text-ink"
           style={{ fontVariationSettings: "'WONK' 1, 'SOFT' 30, 'opsz' 144" }}
         >
-          The Ingrid<br />Bouquet
+          The Ingrid Bouquet
         </h3>
         <Link
           href={`/${locale}/product/the-ingrid-bouquet`}

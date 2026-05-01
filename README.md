@@ -26,4 +26,5 @@ Built using the [taste-skill](https://github.com/Leonxlnx/taste-skill) framework
 
 ## Status
 
-Plan 1 complete: foundation, brand system, bilingual home page.
+- Plan 1 complete: foundation, brand system, bilingual home page.
+- Plan 2 complete: catalog (shop hub + category pages with sticky filter bar), PDP (variants, add-ons, delivery picker, card message, add-to-bag), sympathy variant, subscriptions, mega-menu, sitemap.
