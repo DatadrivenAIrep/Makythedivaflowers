@@ -47,6 +47,7 @@ export const SITE = {
       es: "Florales románticos y abundantes desde Long Island. Entrega el mismo día en Nassau, Queens y oeste de Suffolk.",
     },
   },
+  // Bilingual by design — the marquee is a single brand loop, not localized. See spec §5.1.
   marquee: {
     tokens: [
       "DIVA FLOWERS",

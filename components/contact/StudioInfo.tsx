@@ -7,20 +7,45 @@ import type { Locale } from "@/types/locale";
 export async function StudioInfo({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: "contact.studio" });
   const address = formatAddressLine(SITE.address);
-  const items = [
-    { label: t("address_label"), value: t("address_value", { address }) },
-    { label: t("hours_label"),   value: t("hours_value") },
-    { label: t("phone_label"),   value: formatPhoneUS("5164843456") },
-    { label: t("email_label"),   value: "hello@divaflowers.com" },
-  ];
   return (
     <dl className="space-y-6">
-      {items.map((i) => (
-        <div key={i.label}>
-          <dt className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/55">{i.label}</dt>
-          <dd className="mt-1 font-display text-2xl text-ink leading-snug">{i.value}</dd>
-        </div>
-      ))}
+      <div>
+        <dt className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/55">
+          {t("address_label")}
+        </dt>
+        <dd className="mt-1 font-display text-2xl text-ink leading-snug">
+          {t("address_value", { address })}
+        </dd>
+      </div>
+      <div>
+        <dt className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/55">
+          {t("hours_label")}
+        </dt>
+        <dd className="mt-1 font-display text-2xl text-ink leading-snug space-y-1">
+          {SITE.hours.map((row) => (
+            <div key={row.day}>
+              <span className="text-ink/55">{row.day}</span>{" "}
+              <span>{row.value}</span>
+            </div>
+          ))}
+        </dd>
+      </div>
+      <div>
+        <dt className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/55">
+          {t("phone_label")}
+        </dt>
+        <dd className="mt-1 font-display text-2xl text-ink leading-snug">
+          {formatPhoneUS(SITE.phone)}
+        </dd>
+      </div>
+      <div>
+        <dt className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/55">
+          {t("email_label")}
+        </dt>
+        <dd className="mt-1 font-display text-2xl text-ink leading-snug">
+          {SITE.email}
+        </dd>
+      </div>
     </dl>
   );
 }

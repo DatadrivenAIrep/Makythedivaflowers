@@ -22,9 +22,10 @@ export default async function TermsPage({ params }: { params: Promise<{ locale: 
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "legal.terms" });
   const address = formatAddressLine(SITE.address);
+  const email = SITE.email;
   const sections = SECTIONS.map((key) => ({
     heading: t(`${key}.heading`),
-    body: [t(`${key}.p1`, { address }), t(`${key}.p2`)],
+    body: [t(`${key}.p1`, { address, email }), t(`${key}.p2`, { email })],
   }));
   return (
     <LegalShell

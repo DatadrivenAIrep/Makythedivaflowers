@@ -29,7 +29,10 @@ export function formatMoneyCents(cents: number, locale: Locale): string {
 }
 
 export function formatPhoneUS(digits: string): string {
-  const d = digits.replace(/\D/g, "");
+  let d = digits.replace(/\D/g, "");
+  // Tolerate a leading US country code (e.g. "+1 (516) 484-3456") so callers
+  // can pass `SITE.phone` directly without pre-stripping.
+  if (d.length === 11 && d.startsWith("1")) d = d.slice(1);
   if (d.length !== 10) return digits;
   return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
 }

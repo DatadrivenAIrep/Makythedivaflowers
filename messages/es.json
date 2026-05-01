@@ -215,11 +215,11 @@
       "rights": {
         "heading": "Tus derechos",
         "p1": "BORRADOR: Dependiendo de tu ubicación, puedes tener el derecho de acceder, corregir o eliminar tu información personal. También puedes tener el derecho de oponerte a ciertas actividades de procesamiento o de recibir una copia de tus datos en un formato portátil.",
-        "p2": "BORRADOR: Para ejercer cualquiera de estos derechos, contáctanos en hello@divaflowers.com. Responderemos en un tiempo razonable. Ten en cuenta que cierta información puede retenerse según lo requiera la ley o para fines comerciales legítimos. Consulta a un abogado para verificar el cumplimiento con la CCPA, GDPR u otras regulaciones aplicables."
+        "p2": "BORRADOR: Para ejercer cualquiera de estos derechos, contáctanos en {email}. Responderemos en un tiempo razonable. Ten en cuenta que cierta información puede retenerse según lo requiera la ley o para fines comerciales legítimos. Consulta a un abogado para verificar el cumplimiento con la CCPA, GDPR u otras regulaciones aplicables."
       },
       "contact": {
         "heading": "Contáctanos",
-        "p1": "BORRADOR: Si tienes preguntas sobre esta Política de Privacidad o sobre cómo manejamos tu información personal, contáctanos en hello@divaflowers.com o por correo en Diva Flowers, {address}.",
+        "p1": "BORRADOR: Si tienes preguntas sobre esta Política de Privacidad o sobre cómo manejamos tu información personal, contáctanos en {email} o por correo en Diva Flowers, {address}.",
         "p2": "BORRADOR: Nos reservamos el derecho de actualizar esta Política de Privacidad en cualquier momento. Los cambios se publicarán en esta página con una fecha de vigencia actualizada. Tu uso continuado de nuestro sitio web después de cualquier cambio constituye tu aceptación de la política actualizada. Este documento es un borrador y no debe publicarse sin revisión legal."
       }
     },
@@ -260,7 +260,7 @@
       },
       "contact": {
         "heading": "Contacto",
-        "p1": "BORRADOR: Si tienes preguntas sobre estos Términos de Servicio, contáctanos en hello@divaflowers.com o por correo en Diva Flowers, {address}.",
+        "p1": "BORRADOR: Si tienes preguntas sobre estos Términos de Servicio, contáctanos en {email} o por correo en Diva Flowers, {address}.",
         "p2": "BORRADOR: Estos Términos de Servicio se rigen por las leyes del Estado de Nueva York. Cualquier disputa que surja de estos términos se resolverá en los tribunales del Condado de Nassau, Nueva York. Este documento es un borrador y debe ser revisado y aprobado por un abogado con licencia antes de su uso."
       }
     }
@@ -343,7 +343,6 @@
       "address_label": "Estudio",
       "address_value": "{address}",
       "hours_label": "Horario",
-      "hours_value": "Lun–Sáb 9am–6pm · Dom 10am–4pm",
       "phone_label": "Teléfono",
       "email_label": "Correo"
     },

@@ -23,6 +23,10 @@ describe("formatPhoneUS", () => {
   it("returns input unchanged if not 10 digits", () => {
     expect(formatPhoneUS("123")).toBe("123");
   });
+  it("strips a leading US country code", () => {
+    expect(formatPhoneUS("+1 (516) 484-3456")).toBe("(516) 484-3456");
+    expect(formatPhoneUS("15164843456")).toBe("(516) 484-3456");
+  });
 });
 
 describe("formatDeliveryWindow", () => {
