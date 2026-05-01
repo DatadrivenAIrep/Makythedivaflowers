@@ -1,0 +1,60 @@
+@import "tailwindcss";
+@import "../styles/tokens.css";
+
+@theme inline {
+  --color-petal: var(--color-petal);
+  --color-rouge: var(--color-rouge);
+  --color-rouge-glow: var(--color-rouge-glow);
+  --color-ink: var(--color-ink);
+  --color-bone: var(--color-bone);
+  --color-charcoal: var(--color-charcoal);
+  --color-lilac: var(--color-lilac);
+  --color-mute-100: var(--color-mute-100);
+  --color-mute-200: var(--color-mute-200);
+  --color-mute-300: var(--color-mute-300);
+  --color-mute-400: var(--color-mute-400);
+  --color-mute-500: var(--color-mute-500);
+  --color-mute-600: var(--color-mute-600);
+  --color-mute-700: var(--color-mute-700);
+  --color-success: var(--color-success);
+  --color-warn: var(--color-warn);
+  --color-error: var(--color-error);
+
+  --radius-chip: var(--radius-chip);
+  --radius-product: var(--radius-product);
+  --radius-bento: var(--radius-bento);
+  --radius-arch-top: var(--radius-arch-top);
+
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+html, body {
+  background: var(--color-bone);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-rouge);
+  color: var(--color-bone);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-rouge);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

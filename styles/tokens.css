@@ -1,0 +1,50 @@
+:root {
+  /* Color tokens — see spec §4.1 */
+  --color-petal: #F2C2D0;
+  --color-rouge: #B8345E;
+  --color-rouge-glow: #D24E78;
+  --color-ink: #0E0D0C;
+  --color-bone: #FAF6F0;
+  --color-charcoal: #1A1816;
+  --color-lilac: #C9B6D6;
+
+  --color-mute-100: #EDE8E0;
+  --color-mute-200: #DCD5C9;
+  --color-mute-300: #BAB1A2;
+  --color-mute-400: #968D7E;
+  --color-mute-500: #6F685B;
+  --color-mute-600: #4A453B;
+  --color-mute-700: #2E2B25;
+
+  --color-success: #1F6E3D;
+  --color-warn: #A75A1F;
+  --color-error: #8B1F1F;
+
+  /* Radii */
+  --radius-chip: 9999px;
+  --radius-product: 1rem;
+  --radius-bento: 2rem;
+  --radius-arch-top: 10rem;
+
+  /* Shadows */
+  --shadow-diffusion: 0 30px 80px -40px rgb(14 13 12 / 0.18);
+  --shadow-tile-rest: 0 1px 0 rgb(14 13 12 / 0.04), 0 12px 30px -20px rgb(14 13 12 / 0.06);
+
+  /* Easings */
+  --ease-elegant: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-overshoot: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Typography */
+  --font-display: "Fraunces", "Times New Roman", serif;
+  --font-sans: "Cabinet Grotesk", "Helvetica Neue", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", monospace;
+
+  /* Layout */
+  --container-max: 1400px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* keep light palette as default; dark mode handled per-component when needed */
+  }
+}

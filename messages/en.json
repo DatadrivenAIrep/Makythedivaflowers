@@ -1,0 +1,542 @@
+{
+  "nav": {
+    "shop": "Shop",
+    "subscriptions": "Subscriptions",
+    "weddings": "Weddings",
+    "events": "Events",
+    "story": "Story",
+    "journal": "Journal",
+    "contact": "Contact",
+    "cart": "Bag",
+    "search": "Search",
+    "open_menu": "Open menu",
+    "close_menu": "Close menu"
+  },
+  "cart": {
+    "title": "Your Bag",
+    "close": "Close bag",
+    "subtotal": "Subtotal",
+    "calculated_at_checkout": "Taxes and delivery calculated at checkout.",
+    "checkout_cta": "Continue to checkout",
+    "view_full": "View full bag",
+    "remove": "Remove",
+    "qty_label": "Quantity",
+    "qty_increase": "Increase quantity",
+    "qty_decrease": "Decrease quantity",
+    "empty_title": "Your bag is empty.",
+    "empty_body": "Add something beautiful to get started.",
+    "empty_cta": "Shop arrangements",
+    "summary_title": "Order summary",
+    "page_eyebrow": "Bag",
+    "page_title": "Your Bag — Diva Flowers",
+    "page_description": "Review the items in your bag before checking out.",
+    "toast_added": "Added to bag"
+  },
+  "checkout": {
+    "eyebrow": "Checkout",
+    "page_title": "Checkout — Diva Flowers",
+    "page_description": "Complete your order — secure checkout with same-day delivery available.",
+    "step_contact": "Contact",
+    "step_delivery": "Delivery",
+    "step_payment": "Payment",
+    "continue": "Continue",
+    "back": "Back",
+    "place_order": "Place order",
+    "placing": "Placing order…",
+    "summary": "Summary",
+    "subtotal": "Subtotal",
+    "delivery": "Delivery",
+    "tax": "Tax",
+    "total": "Total",
+    "email": "Email",
+    "phone": "Phone",
+    "recipient_name": "Recipient name",
+    "recipient_phone": "Recipient phone",
+    "address_street1": "Street address",
+    "address_street2": "Apt, suite, etc. (optional)",
+    "address_city": "City",
+    "address_state": "State",
+    "address_zip": "ZIP code",
+    "delivery_date": "Delivery date",
+    "delivery_window": "Delivery window",
+    "slot_morning": "Morning (9am–12pm)",
+    "slot_midday": "Midday (12pm–3pm)",
+    "slot_afternoon": "Afternoon (3pm–6pm)",
+    "slot_evening": "Evening (6pm–8pm)",
+    "card_message": "Card message",
+    "card_message_hint": "Optional — up to 160 characters",
+    "payment_stub_label": "Payment",
+    "payment_stub_body": "Secure payment processing is enabled. Your card details are never stored.",
+    "payment_stub_processing": "Processing payment…",
+    "errors": {
+      "email_invalid": "Please enter a valid email address.",
+      "phone_too_short": "Please enter a valid phone number.",
+      "name_too_short": "Please enter a name.",
+      "street_required": "Please enter a street address.",
+      "city_required": "Please enter a city.",
+      "state_invalid": "Please enter a valid 2-letter state code.",
+      "zip_invalid": "Please enter a valid ZIP code.",
+      "date_invalid": "Please select a delivery date.",
+      "date_in_past": "Please select a future delivery date.",
+      "card_too_long": "Card message must be 160 characters or fewer.",
+      "cart_empty": "Your bag is empty. Add items before checking out.",
+      "unknown_error": "Something went wrong. Please try again or call us directly."
+    }
+  },
+  "confirmation": {
+    "page_title": "Order Confirmed — Diva Flowers",
+    "page_description": "Your Diva Flowers order has been placed. We'll be in touch soon.",
+    "paid_label": "Payment received",
+    "title": "Thank you, {name}.",
+    "body": "Your order is confirmed. We'll send you a message when it's on its way.",
+    "body_subscription": "Your subscription is active. Your first delivery will arrive on the next scheduled Thursday.",
+    "order_id": "Order",
+    "delivery_to": "Delivering to",
+    "totals": "Order total",
+    "subtotal": "Subtotal",
+    "delivery": "Delivery",
+    "tax": "Tax",
+    "total": "Total",
+    "back_to_shop": "Continue shopping"
+  },
+  "categories": {
+    "arrangements": "Arrangements",
+    "bouquets": "Bouquets",
+    "plants": "Plants & Orchids",
+    "gifts": "Gifts",
+    "sympathy": "Sympathy",
+    "subscriptions": "Subscriptions"
+  },
+  "catalog": {
+    "filter_label": "Filter",
+    "sort_label": "Sort",
+    "clear": "Clear",
+    "newest_arrivals": "Newest arrivals",
+    "from_price_prefix": "From",
+    "out_of_stock": "Sold out",
+    "delivery_zone_error": "We don't deliver to that ZIP yet — call us at {phone}.",
+    "no_results_title": "Nothing matches yet."
+  },
+  "product": {
+    "accordion": {
+      "stems_label": "Stems & care",
+      "stems_body": "Each stem is conditioned for 24 hours before the build. Trim half an inch and change the water every other day. Keep out of direct sun. Bloom window: 7–9 days.",
+      "sub_label": "Substitution policy",
+      "sub_body": "Markets vary. We may substitute a stem of equal or greater value to keep the silhouette and palette intact. We always confirm major substitutions in advance.",
+      "delivery_label": "Delivery zones",
+      "delivery_body": "We deliver across {zones}. Same-day cutoff is {cutoff}."
+    },
+    "pairs_well_with": "Pairs well with",
+    "add_to_bag": "Add to bag",
+    "added": "Added",
+    "card_message_label": "Card message (optional)",
+    "card_message_placeholder": "For someone special…",
+    "from_price": "From",
+    "badge_new": "New",
+    "badge_staff_pick": "Staff pick",
+    "badge_today": "Today"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Long Island, New York",
+      "title": "Romance, by the stem.",
+      "sub": "Signature arrangements, hand-built daily under our hot-pink arch on Hempstead Turnpike.",
+      "cta_primary": "Shop arrangements",
+      "cta_secondary": "Plan a wedding"
+    },
+    "bento": {
+      "console_eyebrow": "Inside the studio",
+      "console_title": "Live from Hempstead Turnpike.",
+      "featured_issue": "Issue 047 · Week 17",
+      "featured_eyebrow": "Featured this week",
+      "featured_cta": "Shop now",
+      "featured_limited": "Limited · 12 left",
+      "subscriptions_title": "Weekly blooms, on rotation.",
+      "subscriptions_body": "A new arrangement at your door every week. Pause anytime.",
+      "subscriptions_cta": "Start a subscription",
+      "subscriptions_cadence_label": "Delivery every Thursday",
+      "live_status_label": "Live",
+      "live_status_zone": "Nassau & Queens",
+      "live_status_cutoff": "to cutoff",
+      "live_status_stems_label": "Stems prepped today",
+      "live_status_recent_label": "Last delivery",
+      "press_eyebrow": "As seen in",
+      "press_index": "of",
+      "clock_label": "Studio time",
+      "clock_open": "Open",
+      "clock_closed": "Closed",
+      "clock_closes_at": "Closes at",
+      "clock_opens_at": "Opens at"
+    },
+    "categories_title": "Find your bloom.",
+    "editorial_split": {
+      "eyebrow": "Visit the studio",
+      "title": "Built around our floral arch on Hempstead Turnpike.",
+      "body": "We've been arranging flowers under the same pink awning since 2014. Walk in, call ahead, or order online — same-day delivery across Long Island and Queens."
+    },
+    "weddings_teaser": {
+      "eyebrow": "Weddings",
+      "title": "Installations, by Diva.",
+      "cta": "Inquire"
+    },
+    "newsletter": {
+      "eyebrow": "Stay in bloom",
+      "title": "Letters from the studio.",
+      "placeholder": "you@email.com",
+      "cta": "Subscribe",
+      "success": "Welcome aboard.",
+      "error": "Something went wrong. Try again?"
+    }
+  },
+  "footer": {
+    "address_label": "Studio",
+    "hours_label": "Hours",
+    "phone_label": "Phone",
+    "email_label": "Email",
+    "social_label": "Follow",
+    "newsletter_label": "Stay in bloom",
+    "rights": "All rights reserved.",
+    "legal": {
+      "privacy": "Privacy",
+      "terms": "Terms"
+    }
+  },
+  "a11y": {
+    "skip_to_content": "Skip to content",
+    "loading": "Loading"
+  },
+  "legal": {
+    "privacy": {
+      "page_title": "Privacy Policy — Diva Flowers",
+      "page_description": "How Diva Flowers collects, uses, and protects your personal information.",
+      "title": "Privacy Policy",
+      "updated": "Last updated: May 1, 2026 · Draft — consult an attorney before publishing",
+      "data_collected": {
+        "heading": "Information We Collect",
+        "p1": "DRAFT: We collect information you provide directly, such as your name, email address, phone number, and delivery address when you place an order or submit an inquiry. We also collect payment information, though this is processed by our third-party payment provider and not stored on our servers.",
+        "p2": "DRAFT: We may automatically collect certain technical information when you visit our website, including your IP address, browser type, and pages visited. This information helps us improve our service and diagnose technical issues. Consult a qualified attorney to verify this reflects your actual data practices before publishing."
+      },
+      "how_we_use": {
+        "heading": "How We Use Your Information",
+        "p1": "DRAFT: We use your personal information to process and fulfill your orders, respond to your inquiries, and communicate with you about your account and purchases. We may also send you marketing communications if you have opted in to receive them.",
+        "p2": "DRAFT: We do not sell your personal information to third parties. We may share information with service providers who assist us in operating our website and conducting our business, subject to confidentiality agreements. Please consult an attorney to confirm this section complies with applicable law."
+      },
+      "sharing": {
+        "heading": "Information Sharing",
+        "p1": "DRAFT: We share your personal information only as necessary to provide our services — for example, with delivery partners to fulfill your order, or with payment processors to handle transactions. Each of these parties is required to protect your information.",
+        "p2": "DRAFT: We may also disclose information when required by law, to enforce our terms of service, or to protect the rights and safety of Diva Flowers and our customers. This section should be reviewed by legal counsel to ensure it accurately reflects your disclosure practices."
+      },
+      "cookies": {
+        "heading": "Cookies and Tracking",
+        "p1": "DRAFT: Our website uses cookies to remember your preferences, keep you signed in, and understand how visitors use our site. You can disable cookies through your browser settings, though this may affect some features of our website.",
+        "p2": "DRAFT: We may use third-party analytics tools that place their own cookies. These tools help us understand aggregate traffic patterns. We do not use these tools to identify individual visitors. Review with your attorney to determine if a full cookie consent banner is required in your jurisdiction."
+      },
+      "rights": {
+        "heading": "Your Rights",
+        "p1": "DRAFT: Depending on your location, you may have the right to access, correct, or delete your personal information. You may also have the right to object to certain processing activities or to receive a copy of your data in a portable format.",
+        "p2": "DRAFT: To exercise any of these rights, please contact us at {email}. We will respond within a reasonable time. Note that certain information may be retained as required by law or for legitimate business purposes. Consult an attorney to verify compliance with CCPA, GDPR, or other applicable regulations."
+      },
+      "contact": {
+        "heading": "Contact Us",
+        "p1": "DRAFT: If you have questions about this Privacy Policy or how we handle your personal information, please contact us at {email} or by mail at Diva Flowers, {address}.",
+        "p2": "DRAFT: We reserve the right to update this Privacy Policy at any time. Changes will be posted on this page with an updated effective date. Your continued use of our website after any changes constitutes your acceptance of the updated policy. This document is a draft and should not be published without attorney review."
+      }
+    },
+    "terms": {
+      "page_title": "Terms of Service — Diva Flowers",
+      "page_description": "The terms and conditions governing your use of Diva Flowers and purchase of our products.",
+      "title": "Terms of Service",
+      "updated": "Last updated: May 1, 2026 · Draft — consult an attorney before publishing",
+      "acceptance": {
+        "heading": "Acceptance of Terms",
+        "p1": "DRAFT: By accessing or using the Diva Flowers website and placing orders for our products, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our website or services.",
+        "p2": "DRAFT: We reserve the right to modify these terms at any time. Continued use of our website after changes are posted constitutes acceptance of the modified terms. This document is a draft; consult a qualified attorney before publishing as your official terms of service."
+      },
+      "orders": {
+        "heading": "Orders and Payment",
+        "p1": "DRAFT: All orders are subject to availability and confirmation of the order price. We reserve the right to refuse or cancel any order for any reason, including inaccuracies in pricing or product descriptions, or suspected fraudulent activity.",
+        "p2": "DRAFT: Payment is due at the time of order. We accept major credit cards and other payment methods as indicated at checkout. All prices are in US dollars and subject to applicable sales tax. Please have an attorney review this section for compliance with New York consumer protection law."
+      },
+      "delivery": {
+        "heading": "Delivery",
+        "p1": "DRAFT: We offer same-day delivery to select areas in Nassau County, Queens, and Western Suffolk. Delivery windows are estimates and we cannot guarantee exact delivery times due to traffic and other variables beyond our control.",
+        "p2": "DRAFT: You are responsible for providing accurate delivery information. If a delivery attempt fails due to an incorrect address or no one being available to receive the order, additional delivery fees may apply. Floral products are perishable; we are not responsible for damage resulting from delayed receipt after a successful delivery."
+      },
+      "returns": {
+        "heading": "Returns and Refunds",
+        "p1": "DRAFT: Because our products are perishable, we do not accept returns. If you are unsatisfied with your order, please contact us within 24 hours of delivery with photos of the arrangement. We will review each case individually.",
+        "p2": "DRAFT: Refunds or replacements are issued at our sole discretion and are generally limited to situations where the product was materially different from what was ordered or arrived in significantly damaged condition due to our error. This section should be reviewed by an attorney for compliance with applicable consumer protection laws."
+      },
+      "subscriptions": {
+        "heading": "Subscriptions",
+        "p1": "DRAFT: Floral subscription plans are billed on a recurring basis as described at the time of purchase. You may pause or cancel your subscription at any time before your next billing date. Cancellations after billing has occurred will take effect for the following billing period.",
+        "p2": "DRAFT: We reserve the right to modify subscription pricing with advance notice. Seasonal unavailability of specific flowers may result in substitutions of equal or greater value. We will always communicate material changes to your subscription plan before they take effect."
+      },
+      "limitation": {
+        "heading": "Limitation of Liability",
+        "p1": "DRAFT: To the fullest extent permitted by law, Diva Flowers shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of your use of our products or services, even if we have been advised of the possibility of such damages.",
+        "p2": "DRAFT: Our total liability to you for any claim arising from your purchase or use of our products shall not exceed the amount you paid for the specific product or service giving rise to the claim. This limitation of liability clause requires attorney review to ensure it is enforceable under New York law."
+      },
+      "contact": {
+        "heading": "Contact",
+        "p1": "DRAFT: If you have questions about these Terms of Service, please contact us at {email} or by mail at Diva Flowers, {address}.",
+        "p2": "DRAFT: These Terms of Service are governed by the laws of the State of New York. Any disputes arising under these terms shall be resolved in the courts of Nassau County, New York. This document is a draft and must be reviewed and approved by a licensed attorney before use."
+      }
+    }
+  },
+  "account": {
+    "eyebrow": "Account",
+    "title": "Your account.",
+    "tabs": {
+      "sign-in": "Sign in",
+      "sign-up": "Sign up",
+      "orders": "Orders"
+    },
+    "sign-in": {
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "stub_title": "You're signed in.",
+      "stub_body": "Authentication is coming soon. We'll notify you when your account is ready.",
+      "stub_notice": "Stub — full auth not yet implemented"
+    },
+    "sign-up": {
+      "name": "Full name",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Create account",
+      "stub_title": "Account created.",
+      "stub_body": "Thank you for signing up. We'll send you an email when your account is fully ready.",
+      "stub_notice": "Stub — full auth not yet implemented"
+    },
+    "orders": {
+      "empty_title": "No orders yet.",
+      "empty_body": "When you place an order, it will appear here. Start by browsing our arrangements.",
+      "empty_cta": "Shop now",
+      "stub_notice": "Stub — order history coming soon"
+    }
+  },
+  "journal": {
+    "page_title": "Journal — Diva Flowers",
+    "page_description": "Notes from the studio: color, craft, and the thinking behind every arrangement.",
+    "eyebrow": "Journal",
+    "title": "Notes from the studio.",
+    "article": {
+      "back": "Back to journal",
+      "reading": "{minutes} min read"
+    }
+  },
+  "story": {
+    "page_title": "Our Story — Diva Flowers",
+    "page_description": "How Diva Flowers became Long Island's most recognizable florist — from the hot-pink arch to the farm-fresh stems.",
+    "hero": {
+      "eyebrow": "Our story",
+      "title": "Built around a single arch on Hempstead Turnpike.",
+      "quote": "We didn't set out to be a landmark. We just kept showing up.",
+      "cite": "Diva Flowers, founded 2014"
+    },
+    "arch": {
+      "eyebrow": "The arch",
+      "title": "The most photographed spot on the block.",
+      "figure_alt": "Diva Flowers storefront arch in full bloom",
+      "p1": "The arch started small — a weekend experiment with dahlias and chicken wire that was supposed to come down by Monday. It didn't come down. It became a reason people stopped their cars, pulled out their phones, and found us.",
+      "p2": "Every spring, we rebuild it from scratch. The frame is the same welded steel we've used since year two. What changes is the season and what we're feeling. April means ranunculus and white. June means peony and rouge. By autumn it's amaranthus in shades that match the leaves on the maples out front.",
+      "p3": "The arch is temporary by design. It wilts, and that's the point. Permanence would make it decoration. Impermanence makes it alive."
+    },
+    "founder": {
+      "portrait_alt": "Founder of Diva Flowers at work in the studio",
+      "eyebrow": "The team",
+      "title": "Hand-built from day one.",
+      "body": "Diva Flowers was founded in 2014 on the belief that flowers should feel personal, not packaged. Every stem that leaves our studio is chosen with a specific space — and a specific person — in mind. Over a decade later, that hasn't changed."
+    },
+    "press": {
+      "eyebrow": "As seen in"
+    }
+  },
+  "contact": {
+    "page_title": "Contact — Diva Flowers",
+    "page_description": "Visit our studio on Hempstead Turnpike, call us, or send a message. Same-day delivery across Long Island and Queens.",
+    "eyebrow": "Contact",
+    "title": "Come find us.",
+    "studio": {
+      "address_label": "Studio",
+      "address_value": "{address}",
+      "hours_label": "Hours",
+      "phone_label": "Phone",
+      "email_label": "Email"
+    },
+    "map": {
+      "alt": "Map showing Diva Flowers at {address}"
+    },
+    "zones": {
+      "eyebrow": "Delivery coverage",
+      "title": "We deliver to your neighborhood.",
+      "note": "Don't see your area? Call us — we'll do our best."
+    },
+    "form": {
+      "eyebrow": "Send a message",
+      "title": "We'd love to hear from you.",
+      "name": "Full name",
+      "email": "Email",
+      "subject": "Subject",
+      "body": "Message",
+      "submit": "Send message",
+      "submitting": "Sending…",
+      "success_title": "Message received.",
+      "success_body": "Thank you for writing. We'll reply within one business day.",
+      "errors": {
+        "unknown_error": "Something went wrong. Please try again or call us directly."
+      }
+    }
+  },
+  "events": {
+    "page_title": "Events — Diva Flowers",
+    "page_description": "Corporate and recurring floral design for restaurants, offices, galleries, and private events on Long Island.",
+    "eyebrow": "Events",
+    "hero_alt": "Elegant floral installation at a corporate event by Diva Flowers",
+    "hero_title": "Flowers that work as hard as you do.",
+    "hero_sub": "From weekly office arrangements to press-day installations — we design and deliver, on schedule.",
+    "hero_cta": "Get a quote",
+    "cases": {
+      "eyebrow": "Who we work with",
+      "title": "Built for every setting.",
+      "restaurants": {
+        "title": "Restaurants",
+        "body": "Weekly table arrangements and bar displays that match your menu, season, and service style — refreshed on a schedule that fits your operations."
+      },
+      "offices": {
+        "title": "Offices",
+        "body": "Lobby installations, reception arrangements, and meeting-room centerpieces that make your team and clients feel the care that goes into your space."
+      },
+      "galleries": {
+        "title": "Galleries",
+        "body": "Opening-night florals and run-of-show arrangements designed to complement the work on the wall — not compete with it."
+      },
+      "private": {
+        "title": "Private Events",
+        "body": "Dinner parties, birthday dinners, and at-home celebrations — fully styled florals for the moments that matter most."
+      },
+      "press": {
+        "title": "Press Days",
+        "body": "Product launch florals, press-kit styling, and photogenic arrangements built to perform in every frame of coverage."
+      },
+      "hotels": {
+        "title": "Hotels",
+        "body": "Lobby anchors, suite amenity florals, and event-room installs — managed weekly or for peak seasons, always on time."
+      }
+    },
+    "process": {
+      "eyebrow": "How it works",
+      "title": "Four steps to flawless events.",
+      "consult": {
+        "title": "Consult",
+        "body": "We learn your space, brand, and cadence — then build a floral program that fits your operations without creating extra work for your team."
+      },
+      "design": {
+        "title": "Design",
+        "body": "We develop a signature look for your venue or event, complete with stem selections, color palette, and a detailed service agreement."
+      },
+      "source": {
+        "title": "Source",
+        "body": "Every delivery is built from fresh stems sourced weekly to match the season — never generic, always specific to your look."
+      },
+      "install": {
+        "title": "Install",
+        "body": "We arrive, set everything, and remove spent arrangements — you handle your business while we handle the flowers."
+      }
+    },
+    "form": {
+      "eyebrow": "Inquire",
+      "title": "Let's build your floral program.",
+      "body": "Tell us about your space and cadence. We'll follow up within one business day with a proposal.",
+      "name": "Contact name",
+      "company": "Company or venue",
+      "email": "Email",
+      "phone": "Phone",
+      "frequency": "Frequency",
+      "budget": "Budget",
+      "brief": "Tell us about your space and vision",
+      "submit": "Send inquiry",
+      "submitting": "Sending…",
+      "success_title": "We'll be in touch.",
+      "success_body": "Thank you for reaching out. We typically respond within one business day with a custom proposal.",
+      "freq_one-time": "One-time",
+      "freq_weekly": "Weekly",
+      "freq_biweekly": "Bi-weekly",
+      "freq_monthly": "Monthly",
+      "freq_quarterly": "Quarterly",
+      "budget_5-10k": "$5–10k",
+      "budget_10-25k": "$10–25k",
+      "budget_25k+": "$25k+",
+      "budget_open": "Open",
+      "errors": {
+        "unknown_error": "Something went wrong. Please try again or call us directly."
+      }
+    }
+  },
+  "weddings": {
+    "page_title": "Weddings — Diva Flowers",
+    "meta_description": "Full-service wedding florals on Long Island. Arches, tablescapes, bouquets, and installations — hand-built by Diva Flowers.",
+    "eyebrow": "Weddings",
+    "hero_alt": "Cascading floral arch installation by Diva Flowers",
+    "hero_title": "Your wedding, in full bloom.",
+    "hero_sub": "From intimate ceremonies to grand receptions — we design and install every stem.",
+    "hero_cta": "Start planning",
+    "form_eyebrow": "Inquire",
+    "form_title": "Let's build something beautiful.",
+    "process": {
+      "eyebrow": "How it works",
+      "title": "Four steps to your perfect day.",
+      "consult": {
+        "title": "Consult",
+        "body": "We sit down with you to understand your vision, venue, and budget — then shape a floral direction that feels entirely yours."
+      },
+      "design": {
+        "title": "Design",
+        "body": "Our team develops a full floral proposal: mood boards, stem counts, and a detailed quote — no guesswork."
+      },
+      "source": {
+        "title": "Source",
+        "body": "We hand-pick every stem from our trusted network of farms, selecting for peak bloom on your wedding day."
+      },
+      "install": {
+        "title": "Install",
+        "body": "Our crew arrives early, sets every arrangement, and stays through ceremony to make sure everything is perfect."
+      }
+    },
+    "pricing": {
+      "eyebrow": "Pricing",
+      "statement_full": "Every wedding is priced to the proposal — no packages, no surprises.",
+      "statement_personal": "We build a detailed quote after your consultation so you know exactly what you're getting and what it costs."
+    },
+    "gallery": {
+      "eyebrow": "Portfolio",
+      "title": "From the studio floor.",
+      "close": "Close lightbox",
+      "prev": "Previous photo",
+      "next": "Next photo"
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Questions we hear most."
+    },
+    "form": {
+      "name": "Full name",
+      "email": "Email",
+      "phone": "Phone",
+      "date": "Wedding date",
+      "venue": "Venue",
+      "guests": "Guest count",
+      "budget": "Budget",
+      "vibe": "Tell us about your vision",
+      "source": "How did you hear about us?",
+      "submit": "Send inquiry",
+      "submitting": "Sending…",
+      "success_title": "We'll be in touch.",
+      "success_body": "Thank you for reaching out. We typically respond within one business day.",
+      "errors": {
+        "unknown_error": "Something went wrong. Please try again or call us directly."
+      }
+    }
+  }
+}
