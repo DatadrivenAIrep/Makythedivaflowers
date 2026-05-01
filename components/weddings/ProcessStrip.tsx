@@ -5,8 +5,8 @@ import { useTranslations } from "next-intl";
 
 const STEPS = ["consult", "design", "source", "install"] as const;
 
-export function ProcessStrip() {
-  const t = useTranslations("weddings.process");
+export function ProcessStrip({ namespace = "weddings.process" }: { namespace?: string }) {
+  const t = useTranslations(namespace as "weddings.process");
   const reduce = useReducedMotion();
   return (
     <section className="bg-petal/40 py-24">

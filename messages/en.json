@@ -102,6 +102,91 @@
     "skip_to_content": "Skip to content",
     "loading": "Loading"
   },
+  "events": {
+    "page_title": "Events — Diva Flowers",
+    "page_description": "Corporate and recurring floral design for restaurants, offices, galleries, and private events on Long Island.",
+    "eyebrow": "Events",
+    "hero_alt": "Elegant floral installation at a corporate event by Diva Flowers",
+    "hero_title": "Flowers that work as hard as you do.",
+    "hero_sub": "From weekly office arrangements to press-day installations — we design and deliver, on schedule.",
+    "hero_cta": "Get a quote",
+    "cases": {
+      "eyebrow": "Who we work with",
+      "title": "Built for every setting.",
+      "restaurants": {
+        "title": "Restaurants",
+        "body": "Weekly table arrangements and bar displays that match your menu, season, and service style — refreshed on a schedule that fits your operations."
+      },
+      "offices": {
+        "title": "Offices",
+        "body": "Lobby installations, reception arrangements, and meeting-room centerpieces that make your team and clients feel the care that goes into your space."
+      },
+      "galleries": {
+        "title": "Galleries",
+        "body": "Opening-night florals and run-of-show arrangements designed to complement the work on the wall — not compete with it."
+      },
+      "private": {
+        "title": "Private Events",
+        "body": "Dinner parties, birthday dinners, and at-home celebrations — fully styled florals for the moments that matter most."
+      },
+      "press": {
+        "title": "Press Days",
+        "body": "Product launch florals, press-kit styling, and photogenic arrangements built to perform in every frame of coverage."
+      },
+      "hotels": {
+        "title": "Hotels",
+        "body": "Lobby anchors, suite amenity florals, and event-room installs — managed weekly or for peak seasons, always on time."
+      }
+    },
+    "process": {
+      "eyebrow": "How it works",
+      "title": "Four steps to flawless events.",
+      "consult": {
+        "title": "Consult",
+        "body": "We learn your space, brand, and cadence — then build a floral program that fits your operations without creating extra work for your team."
+      },
+      "design": {
+        "title": "Design",
+        "body": "We develop a signature look for your venue or event, complete with stem selections, color palette, and a detailed service agreement."
+      },
+      "source": {
+        "title": "Source",
+        "body": "Every delivery is built from fresh stems sourced weekly to match the season — never generic, always specific to your look."
+      },
+      "install": {
+        "title": "Install",
+        "body": "We arrive, set everything, and remove spent arrangements — you handle your business while we handle the flowers."
+      }
+    },
+    "form": {
+      "eyebrow": "Inquire",
+      "title": "Let's build your floral program.",
+      "body": "Tell us about your space and cadence. We'll follow up within one business day with a proposal.",
+      "name": "Contact name",
+      "company": "Company or venue",
+      "email": "Email",
+      "phone": "Phone",
+      "frequency": "Frequency",
+      "budget": "Budget",
+      "brief": "Tell us about your space and vision",
+      "submit": "Send inquiry",
+      "submitting": "Sending…",
+      "success_title": "We'll be in touch.",
+      "success_body": "Thank you for reaching out. We typically respond within one business day with a custom proposal.",
+      "freq_one-time": "One-time",
+      "freq_weekly": "Weekly",
+      "freq_biweekly": "Bi-weekly",
+      "freq_monthly": "Monthly",
+      "freq_quarterly": "Quarterly",
+      "budget_5-10k": "$5–10k",
+      "budget_10-25k": "$10–25k",
+      "budget_25k+": "$25k+",
+      "budget_open": "Open",
+      "errors": {
+        "unknown_error": "Something went wrong. Please try again or call us directly."
+      }
+    }
+  },
   "weddings": {
     "page_title": "Weddings — Diva Flowers",
     "meta_description": "Full-service wedding florals on Long Island. Arches, tablescapes, bouquets, and installations — hand-built by Diva Flowers.",

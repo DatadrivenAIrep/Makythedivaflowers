@@ -102,6 +102,91 @@
     "skip_to_content": "Saltar al contenido",
     "loading": "Cargando"
   },
+  "events": {
+    "page_title": "Eventos — Diva Flowers",
+    "page_description": "Diseño floral corporativo y recurrente para restaurantes, oficinas, galerías y eventos privados en Long Island.",
+    "eyebrow": "Eventos",
+    "hero_alt": "Instalación floral elegante en un evento corporativo por Diva Flowers",
+    "hero_title": "Flores que trabajan tan duro como tú.",
+    "hero_sub": "Desde arreglos semanales en oficinas hasta instalaciones para días de prensa — diseñamos y entregamos a tiempo.",
+    "hero_cta": "Obtener cotización",
+    "cases": {
+      "eyebrow": "Con quién trabajamos",
+      "title": "Diseñado para cada espacio.",
+      "restaurants": {
+        "title": "Restaurantes",
+        "body": "Arreglos semanales de mesa y exhibiciones de barra que combinan con tu menú, temporada y estilo de servicio — renovados en un horario que se adapta a tus operaciones."
+      },
+      "offices": {
+        "title": "Oficinas",
+        "body": "Instalaciones en lobby, arreglos en recepción y centros de mesa para salas de reuniones que hacen que tu equipo y clientes sientan el cuidado en tu espacio."
+      },
+      "galleries": {
+        "title": "Galerías",
+        "body": "Florales para noches de apertura y exhibiciones diseñados para complementar la obra en la pared — no competir con ella."
+      },
+      "private": {
+        "title": "Eventos Privados",
+        "body": "Cenas íntimas, cumpleaños y celebraciones en casa — florales completamente estilizados para los momentos que más importan."
+      },
+      "press": {
+        "title": "Días de Prensa",
+        "body": "Florales para lanzamientos de productos, estilismo de kits de prensa y arreglos fotogénicos diseñados para lucir en cada encuadre de cobertura."
+      },
+      "hotels": {
+        "title": "Hoteles",
+        "body": "Anclas de lobby, florales de amenidades en suites e instalaciones para salones de eventos — gestionados semanalmente o por temporadas pico, siempre a tiempo."
+      }
+    },
+    "process": {
+      "eyebrow": "Cómo funciona",
+      "title": "Cuatro pasos hacia eventos impecables.",
+      "consult": {
+        "title": "Consulta",
+        "body": "Conocemos tu espacio, marca y cadencia — luego construimos un programa floral que se adapta a tus operaciones sin crear trabajo extra para tu equipo."
+      },
+      "design": {
+        "title": "Diseño",
+        "body": "Desarrollamos un look distintivo para tu lugar o evento, con selección de tallos, paleta de colores y un acuerdo de servicio detallado."
+      },
+      "source": {
+        "title": "Selección",
+        "body": "Cada entrega se construye con tallos frescos seleccionados semanalmente para combinar con la temporada — nunca genérico, siempre específico a tu look."
+      },
+      "install": {
+        "title": "Instalación",
+        "body": "Llegamos, colocamos todo y retiramos los arreglos usados — tú manejas tu negocio mientras nosotros manejamos las flores."
+      }
+    },
+    "form": {
+      "eyebrow": "Cotizar",
+      "title": "Construyamos tu programa floral.",
+      "body": "Cuéntanos sobre tu espacio y cadencia. Te contactaremos en un día hábil con una propuesta.",
+      "name": "Nombre de contacto",
+      "company": "Empresa o lugar",
+      "email": "Correo electrónico",
+      "phone": "Teléfono",
+      "frequency": "Frecuencia",
+      "budget": "Presupuesto",
+      "brief": "Cuéntanos sobre tu espacio y visión",
+      "submit": "Enviar consulta",
+      "submitting": "Enviando…",
+      "success_title": "Nos pondremos en contacto.",
+      "success_body": "Gracias por comunicarte. Normalmente respondemos en un día hábil con una propuesta personalizada.",
+      "freq_one-time": "Una vez",
+      "freq_weekly": "Semanal",
+      "freq_biweekly": "Quincenal",
+      "freq_monthly": "Mensual",
+      "freq_quarterly": "Trimestral",
+      "budget_5-10k": "$5–10k",
+      "budget_10-25k": "$10–25k",
+      "budget_25k+": "$25k+",
+      "budget_open": "Abierto",
+      "errors": {
+        "unknown_error": "Algo salió mal. Intenta de nuevo o llámanos directamente."
+      }
+    }
+  },
   "weddings": {
     "page_title": "Bodas — Diva Flowers",
     "meta_description": "Florales completos para bodas en Long Island. Arcos, mesas, ramos e instalaciones — hechos a mano por Diva Flowers.",
