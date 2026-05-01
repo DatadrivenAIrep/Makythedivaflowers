@@ -20,6 +20,16 @@
     "sympathy": "Condolencias",
     "subscriptions": "Suscripciones"
   },
+  "catalog": {
+    "filter_label": "Filtrar",
+    "sort_label": "Ordenar",
+    "clear": "Limpiar",
+    "newest_arrivals": "Lo más nuevo",
+    "from_price_prefix": "Desde",
+    "out_of_stock": "Agotado",
+    "delivery_zone_error": "No entregamos a ese código postal aún — llámanos al {phone}.",
+    "no_results_title": "Nada coincide aún."
+  },
   "home": {
     "hero": {
       "eyebrow": "Long Island, Nueva York",

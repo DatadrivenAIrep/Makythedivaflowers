@@ -20,6 +20,16 @@
     "sympathy": "Sympathy",
     "subscriptions": "Subscriptions"
   },
+  "catalog": {
+    "filter_label": "Filter",
+    "sort_label": "Sort",
+    "clear": "Clear",
+    "newest_arrivals": "Newest arrivals",
+    "from_price_prefix": "From",
+    "out_of_stock": "Sold out",
+    "delivery_zone_error": "We don't deliver to that ZIP yet — call us at {phone}.",
+    "no_results_title": "Nothing matches yet."
+  },
   "home": {
     "hero": {
       "eyebrow": "Long Island, New York",
