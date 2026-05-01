@@ -3,6 +3,8 @@ import {
   startingPriceCents,
   filterProducts,
   sortProducts,
+  productsByCategory,
+  newestArrivals,
   type Filter,
   type Sort,
 } from "@/data/product-helpers";
@@ -115,5 +117,45 @@ describe("sortProducts", () => {
   });
   it("newest puts tagged 'new' first", () => {
     expect(sortProducts([p1, p2, p3], "newest" as Sort).map((p) => p.id)[0]).toBe("p2");
+  });
+});
+
+describe("sortProducts staff-pick", () => {
+  const p1 = fx({ id: "p1", variants: [{ id: "s", label: { en: "", es: "" }, priceCents: 20000 }], tags: [] });
+  const p2 = fx({ id: "p2", variants: [{ id: "s", label: { en: "", es: "" }, priceCents: 10000 }], tags: ["staff-pick"] });
+  const p3 = fx({ id: "p3", variants: [{ id: "s", label: { en: "", es: "" }, priceCents: 30000 }], tags: [] });
+
+  it("staff-pick puts tagged products first", () => {
+    const result = sortProducts([p1, p2, p3], "staff-pick" as Sort);
+    expect(result[0].id).toBe("p2");
+  });
+});
+
+describe("productsByCategory", () => {
+  const arr = fx({ id: "arr", category: "arrangements" });
+  const bou = fx({ id: "bou", category: "bouquets" });
+  const inact = fx({ id: "inact", category: "arrangements", active: false });
+
+  it("returns only active products in the given category", () => {
+    const result = productsByCategory([arr, bou, inact], "arrangements");
+    expect(result.map((p) => p.id)).toEqual(["arr"]);
+  });
+});
+
+describe("newestArrivals", () => {
+  const n1 = fx({ id: "n1", tags: ["new"] });
+  const n2 = fx({ id: "n2", tags: [] });
+  const n3 = fx({ id: "n3", tags: ["new"] });
+  const inact = fx({ id: "inact", tags: ["new"], active: false });
+
+  it("puts 'new'-tagged products first and excludes inactive", () => {
+    const result = newestArrivals([n2, n1, n3, inact]);
+    expect(result.map((p) => p.id)).not.toContain("inact");
+    expect(result[0].id === "n1" || result[0].id === "n3").toBe(true);
+  });
+
+  it("respects the limit", () => {
+    const many = Array.from({ length: 10 }, (_, i) => fx({ id: `p${i}` }));
+    expect(newestArrivals(many, 5)).toHaveLength(5);
   });
 });

@@ -27,6 +27,7 @@ export function filterProducts(products: Product[], f: Filter): Product[] {
     if (f.occasion && !p.occasions.includes(f.occasion)) return false;
     if (f.color && !p.colorFamily.includes(f.color)) return false;
     if (f.size) {
+      // Convention: variant IDs are "standard" | "grand" | "diva" in seed data.
       const has = p.variants.some((v) => v.id === f.size);
       if (!has) return false;
     }
