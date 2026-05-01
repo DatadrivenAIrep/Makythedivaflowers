@@ -84,6 +84,9 @@ export default async function ProductPage({
             <p className="mt-4 max-w-md font-sans text-base leading-relaxed text-ink/75">
               {product.blurb[locale]}
             </p>
+            <p className="mt-5 max-w-md font-sans text-[15px] leading-relaxed text-ink/70">
+              {product.description[locale]}
+            </p>
 
             <PdpConfigurator
               product={product}

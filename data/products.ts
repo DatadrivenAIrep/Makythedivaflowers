@@ -579,6 +579,276 @@ export const PRODUCTS: Product[] = [
       description: { en: "Largest weekly arrangement subscription.", es: "Mayor suscripción semanal de arreglos." },
     },
   },
+
+  // ─── Maky catalog import — pilot (8) ─────────────────────
+  {
+    id: "p-arr-m01",
+    slug: "a-thousand-heartbeats",
+    title: { en: "A Thousand Heartbeats", es: "Mil Latidos" },
+    category: "arrangements",
+    blurb: {
+      en: "For the anniversary that deserves more than the dinner reservation — roses and dahlia, hand-built that morning.",
+      es: "Para el aniversario que merece más que la cena reservada: rosas y dalia armadas a mano la mañana misma.",
+    },
+    description: {
+      en: "Dense composition of red garden roses and burgundy dahlia over seasonal greenery, set in a low vase made for the dining table. This is the gift that says 'I remembered' before the card is even opened — the kind of gesture that takes years of practice to look this effortless. Order before 2:00 pm and it walks through her door this afternoon, hand-built today on Long Island.",
+      es: "Composición densa de rosas rojas y dalia borgoña sobre follaje de temporada, montada en jarrón bajo para la mesa del comedor. Este es el regalo que dice «me acuerdo» antes de que se abra la tarjeta — el detalle que toma años de práctica para verse así de natural. Ordénalo antes de las 2:00 pm y entra por su puerta esta tarde, hecho a mano hoy en Long Island.",
+    },
+    images: [
+      {
+        src: "/products/a-thousand-heartbeats.jpg",
+        alt: { en: "Red rose and dahlia arrangement in a low vase, front view", es: "Arreglo de rosas rojas y dalia en jarrón bajo, vista frontal" },
+        aspect: "4/5",
+      },
+    ],
+    variants: [{ id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 25500 }],
+    tags: ["same-day", "staff-pick"],
+    occasions: ["romance", "anniversary"],
+    colorFamily: ["red", "pink"],
+    active: true,
+    seo: {
+      title: { en: "A Thousand Heartbeats — Anniversary | Diva Flowers", es: "Mil Latidos — Aniversario | Diva Flowers" },
+      description: {
+        en: "Red roses and dahlia in a low vase, hand-built. Anniversary, romance. Same-day delivery on Long Island.",
+        es: "Rosas rojas y dalia en jarrón bajo, hecho a mano. Aniversario, romance. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-bou-m01",
+    slug: "dozen-roses-bouquet",
+    title: { en: "Dozen Roses Bouquet", es: "Ramo de Doce Rosas" },
+    category: "bouquets",
+    blurb: {
+      en: "Twelve red roses, hand-tied and delivered to her door — the classic, done the way it should be done.",
+      es: "Doce rosas rojas atadas a mano y entregadas en su puerta — el clásico, hecho como tiene que hacerse.",
+    },
+    description: {
+      en: "Twelve long-stem red roses, hand-tied and wrapped in matte paper — no plastic ribbon, no theatrics. These aren't the roses you grab on the way home; these are the ones that say the person thought it through before leaving the office. Order before 2:00 pm and they go out today on Long Island, fresh from the morning cut.",
+      es: "Doce rosas rojas de tallo largo, atadas a mano y envueltas en papel mate — sin cinta plástica, sin floritura. No son las rosas que uno agarra de pasada; son las que demuestran que la persona lo pensó antes de salir de la oficina. Ordénalas antes de las 2:00 pm y salen hoy mismo en Long Island, recién cortadas esa mañana.",
+    },
+    images: [
+      {
+        src: "/products/dozen-roses-bouquet.jpg",
+        alt: { en: "Twelve red roses wrapped in matte paper, tied with cord", es: "Doce rosas rojas envueltas en papel mate, atadas con cordón" },
+        aspect: "4/5",
+      },
+    ],
+    variants: [{ id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 10500 }],
+    tags: ["same-day"],
+    occasions: ["romance", "anniversary"],
+    colorFamily: ["red"],
+    active: true,
+    seo: {
+      title: { en: "Dozen Red Roses Bouquet | Diva Flowers", es: "Ramo de Doce Rosas Rojas | Diva Flowers" },
+      description: {
+        en: "Twelve hand-tied red roses in matte wrap. Romance, anniversary. Same-day delivery on Long Island.",
+        es: "Doce rosas rojas atadas a mano en papel mate. Romance, aniversario. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-arr-m02",
+    slug: "hundred-roses-vase",
+    title: { en: "Hundred Roses Vase", es: "Cien Rosas en Jarrón" },
+    category: "arrangements",
+    blurb: {
+      en: "One hundred red roses in a single tall vase — the room changes before she finishes reading the card.",
+      es: "Cien rosas rojas en un solo jarrón alto — la habitación cambia antes de que termine de leer la tarjeta.",
+    },
+    description: {
+      en: "One hundred red roses arranged in a tall glass vase, built stem by stem across the morning of delivery. This is for the anniversaries you count on two hands, the proposals planned in silence, the thank-yous that don't fit in a sentence. Reserve at least 24 hours ahead anywhere in Long Island and we'll build all hundred the day they ship — book yours before stems run out for the week.",
+      es: "Cien rosas rojas en jarrón alto de cristal, construidas tallo por tallo durante toda la mañana del envío. Es para los aniversarios que se cuentan con las dos manos, las pedidas de mano planeadas en silencio, los «gracias» que no caben en una frase. Reserva con 24 horas mínimo dentro de Long Island y armamos las cien el día de la entrega — sepárala antes de que se acaben los tallos de la semana.",
+    },
+    images: [
+      {
+        src: "/products/hundred-roses-vase.png",
+        alt: { en: "One hundred red roses arranged in a tall glass vase", es: "Cien rosas rojas dispuestas en un jarrón de cristal alto" },
+        aspect: "4/5",
+      },
+    ],
+    variants: [{ id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 62900 }],
+    tags: ["same-day", "staff-pick"],
+    occasions: ["romance", "anniversary"],
+    colorFamily: ["red"],
+    active: true,
+    seo: {
+      title: { en: "Hundred Red Roses Vase — Premium | Diva Flowers", es: "Cien Rosas Rojas en Jarrón — Premium | Diva Flowers" },
+      description: {
+        en: "One hundred red roses in a tall vase, hand-built. For anniversaries that count. Long Island, book 24 hours ahead.",
+        es: "Cien rosas rojas en jarrón alto, hecho a mano. Para los aniversarios que cuentan. Long Island, reserva con 24 horas.",
+      },
+    },
+  },
+  {
+    id: "p-bou-m02",
+    slug: "sunburst-garden",
+    title: { en: "Sunburst Garden", es: "Jardín al Sol" },
+    category: "bouquets",
+    blurb: {
+      en: "Sunflowers, gerbera, and yellow roses, hand-tied — the flowers that walk into the party first.",
+      es: "Girasoles, gerberas y rosas amarillas atados a mano — la flor que entra primero a la fiesta.",
+    },
+    description: {
+      en: "Hand-tied bouquet of sunflowers, orange gerbera, and yellow roses, bound with natural cord. This is the birthday gift that arrives before the cake and leaves the house five degrees warmer — chosen for the person who doesn't need more things, just more mornings like this one. Order before 2:00 pm and we hand them off at her door today, anywhere on Long Island.",
+      es: "Ramo de mano con girasoles, gerberas naranjas y rosas amarillas, atado con cordón natural. Es el regalo de cumpleaños que llega antes que la torta y deja la casa cinco grados más cálida — pensado para la persona que ya no necesita más cosas, sino más mañanas como esta. Ordénalo antes de las 2:00 pm y lo entregamos en su puerta hoy mismo, en cualquier parte de Long Island.",
+    },
+    images: [
+      {
+        src: "/products/sunburst-garden.jpg",
+        alt: { en: "Hand-tied bouquet of sunflowers, orange gerbera, and yellow roses", es: "Ramo atado a mano de girasoles, gerberas naranjas y rosas amarillas" },
+        aspect: "4/5",
+      },
+    ],
+    variants: [{ id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 15000 }],
+    tags: ["same-day"],
+    occasions: ["birthday", "congrats", "just-because"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Sunburst Garden — Birthday Bouquet | Diva Flowers", es: "Jardín al Sol — Ramo Cumpleaños | Diva Flowers" },
+      description: {
+        en: "Sunflowers, gerbera, and yellow roses, hand-tied. Birthday gift. Same-day delivery on Long Island.",
+        es: "Girasoles, gerberas y rosas amarillas atados a mano. Regalo de cumpleaños. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-arr-m03",
+    slug: "rainforest-rhapsody",
+    title: { en: "Rainforest Rhapsody", es: "Rapsodia Selvática" },
+    category: "arrangements",
+    blurb: {
+      en: "Anthurium, monstera, and orchid — closer to a greenhouse than a centerpiece, built to be photographed.",
+      es: "Antúrios, monstera y orquídeas — más invernadero que centro de mesa, hecho para ser fotografiado.",
+    },
+    description: {
+      en: "Tropical arrangement of red anthurium, monstera leaf, orchid, and heliconia on a low mossed base. Built for long dining tables, generous entryways, or anyone who collects pieces that get posted before the dinner guests arrive. Order before 2:00 pm and we build it the day it ships — same-afternoon delivery on Long Island while it's still in season.",
+      es: "Arreglo tropical de antúrios rojos, follaje monstera, orquídeas y heliconias sobre base baja con musgo. Hecho para mesas largas, recibidores con espacio o para quien colecciona piezas que se publican antes de que lleguen los invitados a cenar. Ordénalo antes de las 2:00 pm y lo construimos el día del envío — entrega esa misma tarde en Long Island mientras dura la temporada.",
+    },
+    images: [
+      {
+        src: "/products/rainforest-rhapsody.jpg",
+        alt: { en: "Tropical arrangement on a low base with red anthurium, monstera leaves, and orchids", es: "Arreglo tropical en base baja con antúrios rojos, hojas de monstera y orquídeas" },
+        aspect: "4/5",
+      },
+    ],
+    variants: [{ id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 33000 }],
+    tags: ["same-day", "staff-pick"],
+    occasions: ["anniversary", "just-because"],
+    colorFamily: ["green", "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Rainforest Rhapsody — Tropical Arrangement | Diva", es: "Rapsodia Selvática — Arreglo Tropical | Diva" },
+      description: {
+        en: "Tropical arrangement with anthurium, monstera, and orchid on a low base. Long Island, same-day.",
+        es: "Arreglo tropical con antúrios, monstera y orquídeas sobre base baja. Long Island, mismo día.",
+      },
+    },
+  },
+  {
+    id: "p-gif-m01",
+    slug: "designers-choice",
+    title: { en: "Designer's Choice", es: "A Elección de la Florista" },
+    category: "gifts",
+    blurb: {
+      en: "You pick the budget — the florist picks from what's freshest in the studio this week.",
+      es: "Tú pones el presupuesto — la florista escoge entre lo más fresco del taller esta semana.",
+    },
+    description: {
+      en: "You choose the amount; the florist picks the bloom from this week's market cut. This is the gift for the person who knows Monday's stems beat three days of looking for 'something nice' — and the last-minute order that still walks in looking thought through. Order before 2:00 pm and we hand-build it for same-afternoon delivery anywhere on Long Island.",
+      es: "Tú eliges el monto y la florista escoge la flor del corte fresco de esta semana. Es el regalo de quien sabe que los tallos del lunes valen más que tres días buscando «algo bonito» — y la orden de último minuto que igual termina viéndose pensada. Ordénalo antes de las 2:00 pm y lo armamos a mano para entrega esa misma tarde en cualquier parte de Long Island.",
+    },
+    images: [
+      {
+        src: "/products/designers-choice.png",
+        alt: { en: "Diva Flowers logo on a light background — designer's choice placeholder", es: "Logotipo de Diva Flowers sobre fondo claro — marcador a elección de la florista" },
+        aspect: "4/5",
+      },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard ($55)", es: "Estándar ($55)" }, priceCents: 5500 },
+      { id: "grand", label: { en: "Grand ($150)", es: "Grandes ($150)" }, priceCents: 15000 },
+      { id: "diva", label: { en: "Diva ($250)", es: "Diva ($250)" }, priceCents: 25000 },
+    ],
+    tags: ["same-day", "staff-pick"],
+    occasions: ["just-because", "congrats", "birthday"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Designer's Choice — Florist's Pick | Diva Flowers", es: "A Elección de la Florista | Diva Flowers" },
+      description: {
+        en: "You set the budget, the florist picks the day's flower. Same-day delivery on Long Island.",
+        es: "Tú eliges el presupuesto, la florista elige la flor del día. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-bou-m03",
+    slug: "velvet-sun",
+    title: { en: "Velvet Sun", es: "Sol de Terciopelo" },
+    category: "bouquets",
+    blurb: {
+      en: "A small hand-tied in warm yellows — the Wednesday flower, for days that don't ask for a reason.",
+      es: "Pequeño ramo de mano en amarillos cálidos — la flor de los miércoles, para días que no piden razón.",
+    },
+    description: {
+      en: "Right-sized hand-tied bouquet in warm yellows and cream, bound with natural cord. This is the 'thinking of you' that doesn't turn into an event — it fits the work desk, the small apartment table, the kitchen ledge, without making a fuss. Order before 2:00 pm and we hand it off at her door this same afternoon on Long Island.",
+      es: "Ramo de mano de tamaño justo en amarillos cálidos y crema, atado con cordón natural. Es el «pensé en ti» que no se vuelve evento — cabe en el escritorio del trabajo, en la mesa pequeña del apartamento, en la repisa de la cocina sin pedir permiso. Ordénalo antes de las 2:00 pm y lo entregamos esa misma tarde en su puerta, en Long Island.",
+    },
+    images: [
+      {
+        src: "/products/velvet-sun.jpg",
+        alt: { en: "Small bouquet of yellow and cream flowers tied with natural cord", es: "Ramo pequeño de flores amarillas y crema atado con cordón natural" },
+        aspect: "4/5",
+      },
+    ],
+    variants: [{ id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 7500 }],
+    tags: ["same-day"],
+    occasions: ["just-because", "birthday"],
+    colorFamily: ["mixed", "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Velvet Sun — Small Hand-Tied Bouquet | Diva Flowers", es: "Sol de Terciopelo — Ramo Pequeño | Diva Flowers" },
+      description: {
+        en: "Small bouquet in warm yellows, hand-tied. No occasion needed. Long Island, same-day.",
+        es: "Ramo pequeño en amarillos cálidos, atado a mano. Sin ocasión. Long Island, mismo día.",
+      },
+    },
+  },
+  {
+    id: "p-bou-m04",
+    slug: "katsobad",
+    title: { en: "Katsobad", es: "Katsobad" },
+    category: "bouquets",
+    blurb: {
+      en: "A hand-tied mixed bouquet in warm tones — the one that arrives with you and stays through the weekend.",
+      es: "Ramo mixto de mano en tonos cálidos — el que llega contigo y se queda hasta el fin de semana.",
+    },
+    description: {
+      en: "Mixed hand-tied bouquet of garden roses, alstroemeria, and seasonal greenery, bound with natural cord. This is the host gift that doesn't compete with the dinner or the conversation — it walks in with the guest, lands on the coffee table, and still looks good when the leftovers come out on Sunday. Order before 2:00 pm and walk in with it tonight anywhere on Long Island.",
+      es: "Ramo mixto en mano con rosas de jardín, alstroemerias y follaje de temporada, atado con cordón natural. Es el regalo de visita que no compite con la cena ni con la conversación — entra con la persona, se queda en la mesa de centro y sigue viéndose bien cuando salen las sobras el domingo. Ordénalo antes de las 2:00 pm y entra con él esta noche, en cualquier parte de Long Island.",
+    },
+    images: [
+      {
+        src: "/products/katsobad.jpg",
+        alt: { en: "Hand-tied mixed bouquet with roses and green foliage tied with cord", es: "Ramo mixto en mano con rosas y follaje verde atado con cordón" },
+        aspect: "4/5",
+      },
+    ],
+    variants: [{ id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 19000 }],
+    tags: ["same-day", "new"],
+    occasions: ["anniversary", "just-because"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Katsobad — Hand-Tied Mixed Bouquet | Diva Flowers", es: "Katsobad — Ramo Mixto Atado | Diva Flowers" },
+      description: {
+        en: "Mixed hand-tied bouquet with roses and alstroemeria. Visit gift. Long Island, same-day.",
+        es: "Ramo mixto con rosas y alstroemerias atado a mano. Regalo de visita. Long Island, mismo día.",
+      },
+    },
+  },
 ];
 
 export function getProductBySlug(slug: string): Product | undefined {
