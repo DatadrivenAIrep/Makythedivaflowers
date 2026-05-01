@@ -55,7 +55,11 @@ function PdpConfiguratorImpl({ product, locale, cutoff, motionMode }: Props) {
       <AddOnToggles product={product} locale={locale} value={addOnIds} onChange={setAddOnIds} />
 
       <div className="flex flex-col gap-2">
-        <p className="sr-only">{locale === "es" ? "Fecha de entrega" : "Delivery date"}</p>
+        {isSubscription && (
+          <p className="font-mono text-[10px] uppercase tracking-wider text-mute-500">
+            {locale === "es" ? "Primera entrega" : "First delivery"}
+          </p>
+        )}
         <DeliveryDatePicker locale={locale} cutoff={cutoff} value={date} onChange={setDate} />
       </div>
 
