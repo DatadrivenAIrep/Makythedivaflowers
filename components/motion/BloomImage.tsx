@@ -1,5 +1,6 @@
 "use client";
 import { memo } from "react";
+import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/cn";
 
@@ -8,9 +9,10 @@ type Props = {
   alt: string;
   className?: string;
   sizes?: string;
+  priority?: boolean;
 };
 
-function BloomImageImpl({ src, alt, className, sizes }: Props) {
+function BloomImageImpl({ src, alt, className, sizes, priority }: Props) {
   const reduce = useReducedMotion();
   return (
     <motion.div
@@ -18,8 +20,15 @@ function BloomImageImpl({ src, alt, className, sizes }: Props) {
       whileHover={reduce ? undefined : { scale: 1.02, rotate: -0.5 }}
       transition={{ type: "spring", stiffness: 120, damping: 16 }}
     >
-      {/* TODO(2.7): replace with next/image <Image fill> once BloomImage migration ships; raw <img> intentionally bypasses next/image alt-required lint — alt is required via the typed prop above */}
-      <img src={src} alt={alt} sizes={sizes} className="size-full object-cover" />
+      {/* → FIXED in 2.7: migrated from raw <img> to next/image <Image fill> for srcset, AVIF/WebP transcoding, and CLS prevention */}
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes={sizes}
+        priority={priority}
+        className="object-cover"
+      />
     </motion.div>
   );
 }
