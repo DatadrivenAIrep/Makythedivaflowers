@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { locales, type Locale } from "@/types/locale";
 import { TopNav } from "@/components/nav/TopNav";
 import { NavLinks } from "@/components/nav/NavLinks";
+import { Footer } from "@/components/nav/Footer";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -24,6 +25,7 @@ export default async function LocaleLayout({
     <NextIntlClientProvider locale={locale}>
       <TopNav locale={locale as Locale} navLinksSlot={<NavLinks locale={locale as Locale} />} />
       <div className="pt-16">{children}</div>
+      <Footer locale={locale as Locale} />
     </NextIntlClientProvider>
   );
 }
