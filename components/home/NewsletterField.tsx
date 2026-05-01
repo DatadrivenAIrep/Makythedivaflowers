@@ -3,6 +3,7 @@ import { memo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Check } from "@phosphor-icons/react/dist/ssr";
+import { MagneticButton } from "@/components/motion/MagneticButton";
 
 function NewsletterFieldImpl() {
   const t = useTranslations("home.newsletter");
@@ -52,13 +53,14 @@ function NewsletterFieldImpl() {
                   aria-label={t("placeholder")}
                   disabled={state === "submitting"}
                 />
-                <button
+                <MagneticButton
                   type="submit"
+                  variant="ghost"
                   disabled={state === "submitting"}
-                  className="font-sans text-sm tracking-tight px-5 py-3 rounded-full bg-ink text-bone hover:bg-rouge transition-colors disabled:opacity-50"
+                  className="bg-ink text-bone hover:bg-rouge rounded-full border-0"
                 >
                   {state === "submitting" ? "…" : t("cta")}
-                </button>
+                </MagneticButton>
               </motion.div>
             )}
             {state === "success" && (

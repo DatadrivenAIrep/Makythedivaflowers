@@ -1,7 +1,7 @@
 "use client";
 import { memo, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Button } from "@/components/ui/Button";
+import { MagneticButton } from "@/components/motion/MagneticButton";
 import { useCartStore } from "@/lib/cart-store";
 import { useUIStore } from "@/lib/ui-store";
 import { formatMoneyCents } from "@/lib/format";
@@ -36,9 +36,8 @@ function AddToBagImpl({ productId, variantId, addOnIds, totalCents, disabled, lo
   const addedLabel = locale === "es" ? "Añadido" : "Added";
 
   return (
-    <Button
-      variant="primary"
-      size="lg"
+    <MagneticButton
+      type="button"
       disabled={disabled || state === "added"}
       onClick={onClick}
       className="w-full justify-between"
@@ -67,7 +66,7 @@ function AddToBagImpl({ productId, variantId, addOnIds, totalCents, disabled, lo
         )}
       </AnimatePresence>
       <span className="font-mono text-base">{formatMoneyCents(totalCents, locale)}</span>
-    </Button>
+    </MagneticButton>
   );
 }
 

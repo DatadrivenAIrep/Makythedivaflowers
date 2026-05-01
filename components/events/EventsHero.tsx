@@ -1,8 +1,7 @@
 // components/events/EventsHero.tsx
-import Link from "next/link";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { Button } from "@/components/ui/Button";
+import { MagneticButton } from "@/components/motion/MagneticButton";
 import type { Locale } from "@/types/locale";
 
 export async function EventsHero({ locale }: { locale: Locale }) {
@@ -25,9 +24,9 @@ export async function EventsHero({ locale }: { locale: Locale }) {
             {t("hero_title")}
           </h1>
           <p className="text-bone/85 text-lg max-w-[52ch]">{t("hero_sub")}</p>
-          <Button asChild variant="primary" size="md">
-            <Link href={`/${locale}/events#inquire`}>{t("hero_cta")}</Link>
-          </Button>
+          <MagneticButton href={`/${locale}/events#inquire`} ariaLabel={t("hero_cta")}>
+            {t("hero_cta")}
+          </MagneticButton>
         </div>
       </div>
     </section>

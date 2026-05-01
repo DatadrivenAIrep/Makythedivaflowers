@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { BloomImage } from "@/components/motion/BloomImage";
+import { StaggerGroup } from "@/components/motion/StaggerGroup";
 import type { Locale } from "@/types/locale";
 
 const TILES: { slug: string; seed: string; col: string; row: string; aspect: string }[] = [
@@ -16,7 +17,7 @@ export async function CategoryMosaic({ locale }: { locale: Locale }) {
   const t = await getTranslations("categories");
   return (
     <section className="mx-auto max-w-[var(--container-max)] px-6 pb-20">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-5">
+      <StaggerGroup className="grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-5">
         {TILES.map((tile) => {
           const name = t(tile.slug as Parameters<typeof t>[0]);
           return (
@@ -43,7 +44,7 @@ export async function CategoryMosaic({ locale }: { locale: Locale }) {
             </Link>
           );
         })}
-      </div>
+      </StaggerGroup>
     </section>
   );
 }

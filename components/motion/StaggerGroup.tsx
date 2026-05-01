@@ -7,6 +7,7 @@ type Props = {
   delay?: number;
   stagger?: number;
   className?: string;
+  style?: React.CSSProperties;
 };
 
 function StaggerGroupImpl({
@@ -14,6 +15,7 @@ function StaggerGroupImpl({
   delay = 0,
   stagger = 0.09,
   className,
+  style,
 }: Props) {
   const reduce = useReducedMotion();
   const variants = {
@@ -25,6 +27,7 @@ function StaggerGroupImpl({
   return (
     <motion.div
       className={className}
+      style={style}
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: 0.2 }}

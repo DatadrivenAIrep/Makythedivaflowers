@@ -3,6 +3,7 @@ import { memo, useRef } from "react";
 import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { ArchSVG } from "@/components/brand/ArchSVG";
 import { cn } from "@/lib/cn";
 
 function BentoFeaturedTileImpl({ locale }: { locale: "en" | "es" }) {
@@ -51,6 +52,13 @@ function BentoFeaturedTileImpl({ locale }: { locale: "en" | "es" }) {
           className="size-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-petal via-petal/40 to-transparent" />
+      </div>
+
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-full z-10 text-rouge opacity-15"
+      >
+        <ArchSVG className="h-full w-full" strokeWidth={0.6} />
       </div>
 
       <span

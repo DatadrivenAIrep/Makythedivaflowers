@@ -14,6 +14,7 @@ import { parseFilterParams, type RawSearchParams } from "@/lib/search-params";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { FilterBar } from "@/components/product/FilterBar";
 import { EmptyFilterState } from "@/components/product/EmptyFilterState";
+import { Grain } from "@/components/brand/Grain";
 import { SITE } from "@/data/site";
 
 const ALLOWED: ProductCategory[] = [
@@ -112,6 +113,7 @@ export default async function CategoryPage({
 
   return (
     <main className="bg-bone text-ink">
+      {isSympathy && <Grain />}
       <header className="mx-auto max-w-[var(--container-max)] px-6 pt-12 pb-6 md:pt-20">
         <p className="font-mono text-[10px] uppercase tracking-wider text-mute-500">
           {locale === "es" ? "Categoría" : "Category"}

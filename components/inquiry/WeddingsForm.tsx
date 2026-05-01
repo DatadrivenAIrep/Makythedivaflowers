@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
 import { HoneypotField } from "@/components/inquiry/HoneypotField";
-import { Button } from "@/components/ui/Button";
+import { MagneticButton } from "@/components/motion/MagneticButton";
 import { weddingInquirySchema, type WeddingInquiry } from "@/schemas/inquiry";
 import type { Locale } from "@/types/locale";
 
@@ -98,15 +98,13 @@ export function WeddingsForm({ locale }: { locale: Locale }) {
       <Textarea label={t("vibe")} required rows={5} error={errors.vibe?.message} {...form.register("vibe")} />
       <Field label={t("source")} error={errors.source?.message} {...form.register("source")} />
       {errorMsg && <p className="font-mono text-[11px] text-error">{t(`errors.${errorMsg}`)}</p>}
-      <Button
+      <MagneticButton
         type="submit"
-        variant="primary"
-        size="lg"
         disabled={state === "submitting"}
         className="w-full"
       >
         {state === "submitting" ? t("submitting") : t("submit")}
-      </Button>
+      </MagneticButton>
     </form>
   );
 }

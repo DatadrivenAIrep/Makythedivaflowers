@@ -16,6 +16,7 @@ type Props = {
   className?: string;
   ariaLabel?: string;
   type?: "button" | "submit";
+  disabled?: boolean;
 };
 
 function MagneticButtonImpl({
@@ -26,6 +27,7 @@ function MagneticButtonImpl({
   className,
   ariaLabel,
   type = "button",
+  disabled,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
@@ -80,7 +82,7 @@ function MagneticButtonImpl({
     );
   }
   return (
-    <button type={type} onClick={onClick} aria-label={ariaLabel} className="inline-block">
+    <button type={type} onClick={onClick} aria-label={ariaLabel} disabled={disabled} className="inline-block disabled:opacity-50">
       {inner}
     </button>
   );

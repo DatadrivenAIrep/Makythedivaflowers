@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { HoneypotField } from "@/components/inquiry/HoneypotField";
-import { Button } from "@/components/ui/Button";
+import { MagneticButton } from "@/components/motion/MagneticButton";
 import { contactSchema, type ContactInput } from "@/schemas/contact";
 import type { Locale } from "@/types/locale";
 
@@ -68,15 +68,13 @@ export function ContactForm({ locale }: { locale: Locale }) {
       {errorMsg && (
         <p className="font-mono text-[11px] text-error">{t(`errors.${errorMsg}` as Parameters<typeof t>[0])}</p>
       )}
-      <Button
+      <MagneticButton
         type="submit"
-        variant="primary"
-        size="lg"
         disabled={state === "submitting"}
         className="w-full"
       >
         {state === "submitting" ? t("submitting") : t("submit")}
-      </Button>
+      </MagneticButton>
     </form>
   );
 }

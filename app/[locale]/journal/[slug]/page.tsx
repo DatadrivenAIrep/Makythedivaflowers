@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
 import { journalArticles, getArticleBySlug } from "@/data/journal";
+import { Grain } from "@/components/brand/Grain";
 import type { Locale } from "@/types/locale";
 
 export async function generateStaticParams() {
@@ -33,6 +34,7 @@ export default async function JournalArticlePage({ params }: { params: Promise<{
   const t = await getTranslations({ locale, namespace: "journal.article" });
   return (
     <main className="pt-32 pb-24">
+      <Grain />
       <article>
         <header className="mx-auto max-w-3xl px-4 sm:px-6 mb-10">
           <Link href={`/${locale}/journal`} className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60 hover:text-ink">
