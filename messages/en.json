@@ -103,6 +103,38 @@
     "skip_to_content": "Skip to content",
     "loading": "Loading"
   },
+  "account": {
+    "eyebrow": "Account",
+    "title": "Your account.",
+    "tabs": {
+      "sign-in": "Sign in",
+      "sign-up": "Sign up",
+      "orders": "Orders"
+    },
+    "sign-in": {
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "stub_title": "You're signed in.",
+      "stub_body": "Authentication is coming soon. We'll notify you when your account is ready.",
+      "stub_notice": "Stub — full auth not yet implemented"
+    },
+    "sign-up": {
+      "name": "Full name",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Create account",
+      "stub_title": "Account created.",
+      "stub_body": "Thank you for signing up. We'll send you an email when your account is fully ready.",
+      "stub_notice": "Stub — full auth not yet implemented"
+    },
+    "orders": {
+      "empty_title": "No orders yet.",
+      "empty_body": "When you place an order, it will appear here. Start by browsing our arrangements.",
+      "empty_cta": "Shop now",
+      "stub_notice": "Stub — order history coming soon"
+    }
+  },
   "journal": {
     "page_title": "Journal — Diva Flowers",
     "page_description": "Notes from the studio: color, craft, and the thinking behind every arrangement.",

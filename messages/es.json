@@ -103,6 +103,38 @@
     "skip_to_content": "Saltar al contenido",
     "loading": "Cargando"
   },
+  "account": {
+    "eyebrow": "Cuenta",
+    "title": "Tu cuenta.",
+    "tabs": {
+      "sign-in": "Iniciar sesión",
+      "sign-up": "Registrarse",
+      "orders": "Pedidos"
+    },
+    "sign-in": {
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "submit": "Iniciar sesión",
+      "stub_title": "Sesión iniciada.",
+      "stub_body": "La autenticación estará disponible próximamente. Te notificaremos cuando tu cuenta esté lista.",
+      "stub_notice": "Provisional — autenticación completa no implementada aún"
+    },
+    "sign-up": {
+      "name": "Nombre completo",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "submit": "Crear cuenta",
+      "stub_title": "Cuenta creada.",
+      "stub_body": "Gracias por registrarte. Te enviaremos un correo cuando tu cuenta esté completamente lista.",
+      "stub_notice": "Provisional — autenticación completa no implementada aún"
+    },
+    "orders": {
+      "empty_title": "Sin pedidos aún.",
+      "empty_body": "Cuando hagas un pedido, aparecerá aquí. Empieza explorando nuestros arreglos.",
+      "empty_cta": "Comprar ahora",
+      "stub_notice": "Provisional — historial de pedidos próximamente"
+    }
+  },
   "journal": {
     "page_title": "Editorial — Diva Flowers",
     "page_description": "Notas desde el estudio: color, oficio y el pensamiento detrás de cada arreglo.",
