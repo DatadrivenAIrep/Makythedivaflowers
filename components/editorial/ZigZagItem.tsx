@@ -6,6 +6,7 @@ export function ZigZagItem({ href, title, excerpt, date, cover, reverse, feature
   return (
     <Link
       href={href}
+      aria-label={title}
       className={`group grid items-center gap-8 ${featured ? "lg:grid-cols-1" : "lg:grid-cols-2"} ${reverse && !featured ? "lg:[&>*:first-child]:order-2" : ""}`}
     >
       <div className={`overflow-hidden rounded-2xl bg-bone ${featured ? "aspect-[16/9]" : "aspect-[4/5]"}`}>

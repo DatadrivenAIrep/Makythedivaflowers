@@ -37,6 +37,8 @@ export function NewsletterField({ locale }: { locale: Locale }) {
           type="email"
           placeholder={t("placeholder")}
           aria-label={t("placeholder")}
+          aria-describedby={state === "error" ? "newsletter-error" : undefined}
+          aria-invalid={state === "error" || undefined}
           {...form.register("email")}
           className="w-full rounded-full border border-ink/15 bg-transparent pl-4 pr-12 py-3 text-base text-ink placeholder:text-ink/40 focus:outline-none focus:ring-2 focus:ring-rouge/40 focus:border-rouge"
         />
@@ -50,7 +52,7 @@ export function NewsletterField({ locale }: { locale: Locale }) {
         </button>
       </div>
       {state === "success" && <p className="font-mono text-[11px] text-success">{t("success")}</p>}
-      {state === "error" && <p className="font-mono text-[11px] text-error">{t("error")}</p>}
+      {state === "error" && <p id="newsletter-error" className="font-mono text-[11px] text-error">{t("error")}</p>}
     </form>
   );
 }

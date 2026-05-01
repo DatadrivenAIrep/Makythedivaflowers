@@ -19,10 +19,10 @@ export function ProcessStrip({ namespace = "weddings.process" }: { namespace?: s
           {STEPS.map((step, i) => (
             <motion.li
               key={step}
-              initial={reduce ? { opacity: 0 } : { opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-10%" }}
-              transition={reduce ? { duration: 0 } : { duration: 0.5, delay: i * 0.08 }}
+              initial={reduce ? false : { opacity: 0, y: 24 }}
+              whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+              viewport={reduce ? undefined : { once: true, margin: "-10%" }}
+              transition={reduce ? undefined : { duration: 0.5, delay: i * 0.08 }}
               className="rounded-2xl border border-ink/10 bg-bone/80 p-8 backdrop-blur-sm"
             >
               <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-rouge">0{i + 1}</span>

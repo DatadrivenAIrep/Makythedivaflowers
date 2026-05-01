@@ -27,6 +27,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      {/* TODO: wire RHF + zodResolver + honeypot when replacing stub with real auth */}
       {mode === "sign-up" && (
         <Field label={t("name")} type="text" name="name" autoComplete="name" required />
       )}
@@ -39,16 +40,20 @@ export function AuthForm({ mode }: { mode: Mode }) {
   );
 }
 
-function Field({ label, ...rest }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
-  const id = `auth-${rest.name}`;
+function Field({ label, error, ...rest }: React.InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string }) {
+  const id = `f-${rest.name}`;
+  const errorId = error ? `${id}-error` : undefined;
   return (
     <label htmlFor={id} className="block">
       <span className="block font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 mb-1.5">{label}</span>
       <input
         id={id}
         {...rest}
+        aria-describedby={errorId}
+        aria-invalid={!!error || undefined}
         className="block w-full rounded-xl border border-ink/15 bg-bone px-4 py-3 text-base text-ink focus:outline-none focus:ring-2 focus:ring-rouge/40 focus:border-rouge"
       />
+      {error && <span id={errorId} className="mt-1 block font-mono text-[11px] text-error">{error}</span>}
     </label>
   );
 }

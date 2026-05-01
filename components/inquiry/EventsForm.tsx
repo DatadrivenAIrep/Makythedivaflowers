@@ -76,7 +76,7 @@ export function EventsForm({ locale }: { locale: Locale }) {
       </div>
       <Field label={t("phone")} type="tel" inputMode="tel" error={errors.contact?.phone?.message} {...form.register("contact.phone")} />
       <Field label={t("company")} required error={errors.company?.message} {...form.register("company")} />
-      <fieldset>
+      <fieldset aria-describedby={errors.frequency ? "frequency-error" : undefined}>
         <legend className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 mb-2">{t("frequency")}</legend>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {FREQUENCIES.map((f) => (
@@ -92,7 +92,7 @@ export function EventsForm({ locale }: { locale: Locale }) {
           <p id="frequency-error" className="mt-1 font-mono text-[11px] text-error">{errors.frequency.message}</p>
         )}
       </fieldset>
-      <fieldset>
+      <fieldset aria-describedby={errors.budgetBand ? "budgetBand-error" : undefined}>
         <legend className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 mb-2">{t("budget")}</legend>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {BUDGETS.map((b) => (
