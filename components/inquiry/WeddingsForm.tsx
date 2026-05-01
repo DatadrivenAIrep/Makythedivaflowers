@@ -82,8 +82,8 @@ export function WeddingsForm({ locale }: { locale: Locale }) {
         <Field label={t("venue")} placeholder="Glen Cove Mansion" {...form.register("venue")} />
       </div>
       <Field label={t("guests")} type="number" inputMode="numeric" min={1} max={2000} error={errors.guests?.message} {...form.register("guests")} />
-      <div>
-        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 mb-2">{t("budget")}</p>
+      <fieldset>
+        <legend className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 mb-2">{t("budget")}</legend>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {BUDGETS.map((b) => (
             <label key={b} className={`cursor-pointer rounded-xl border px-3 py-3 text-center text-sm transition-colors ${
@@ -94,7 +94,7 @@ export function WeddingsForm({ locale }: { locale: Locale }) {
             </label>
           ))}
         </div>
-      </div>
+      </fieldset>
       <Textarea label={t("vibe")} required rows={5} error={errors.vibe?.message} {...form.register("vibe")} />
       <Field label={t("source")} error={errors.source?.message} {...form.register("source")} />
       {errorMsg && <p className="font-mono text-[11px] text-error">{t(`errors.${errorMsg}`)}</p>}
@@ -114,11 +114,18 @@ export function WeddingsForm({ locale }: { locale: Locale }) {
 type FieldProps = React.InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string };
 function Field({ label, error, id, ...rest }: FieldProps) {
   const fid = id ?? `f-${label.replace(/\s+/g, "-").toLowerCase()}`;
+  const errorId = error ? `${fid}-error` : undefined;
   return (
     <label htmlFor={fid} className="block">
       <span className="block font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 mb-1.5">{label}</span>
-      <input id={fid} {...rest} className="block w-full rounded-xl border border-ink/15 bg-bone px-4 py-3 text-base text-ink focus:outline-none focus:ring-2 focus:ring-rouge/40 focus:border-rouge" />
-      {error && <span className="mt-1 block font-mono text-[11px] text-error">{error}</span>}
+      <input
+        id={fid}
+        aria-describedby={errorId}
+        aria-invalid={!!error}
+        {...rest}
+        className="block w-full rounded-xl border border-ink/15 bg-bone px-4 py-3 text-base text-ink focus:outline-none focus:ring-2 focus:ring-rouge/40 focus:border-rouge"
+      />
+      {error && <span id={errorId} className="mt-1 block font-mono text-[11px] text-error">{error}</span>}
     </label>
   );
 }
@@ -126,11 +133,18 @@ function Field({ label, error, id, ...rest }: FieldProps) {
 type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & { label: string; error?: string };
 function Textarea({ label, error, id, ...rest }: TextareaProps) {
   const fid = id ?? `f-${label.replace(/\s+/g, "-").toLowerCase()}`;
+  const errorId = error ? `${fid}-error` : undefined;
   return (
     <label htmlFor={fid} className="block">
       <span className="block font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 mb-1.5">{label}</span>
-      <textarea id={fid} {...rest} className="block w-full rounded-xl border border-ink/15 bg-bone px-4 py-3 text-base text-ink focus:outline-none focus:ring-2 focus:ring-rouge/40 focus:border-rouge resize-none" />
-      {error && <span className="mt-1 block font-mono text-[11px] text-error">{error}</span>}
+      <textarea
+        id={fid}
+        aria-describedby={errorId}
+        aria-invalid={!!error}
+        {...rest}
+        className="block w-full rounded-xl border border-ink/15 bg-bone px-4 py-3 text-base text-ink focus:outline-none focus:ring-2 focus:ring-rouge/40 focus:border-rouge resize-none"
+      />
+      {error && <span id={errorId} className="mt-1 block font-mono text-[11px] text-error">{error}</span>}
     </label>
   );
 }

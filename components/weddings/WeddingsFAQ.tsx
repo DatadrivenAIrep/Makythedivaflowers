@@ -24,23 +24,35 @@ export function WeddingsFAQ({ locale }: { locale: Locale }) {
             const isOpen = openId === item.id;
             return (
               <li key={item.id} className="border-b border-ink/10">
-                <button type="button" onClick={() => setOpenId(isOpen ? null : item.id)} aria-expanded={isOpen}
-                  className="w-full flex items-start gap-6 py-6 text-left">
+                <button
+                  type="button"
+                  id={`faq-btn-${item.id}`}
+                  aria-controls={`faq-panel-${item.id}`}
+                  aria-expanded={isOpen}
+                  onClick={() => setOpenId(isOpen ? null : item.id)}
+                  className="w-full flex items-start gap-6 py-6 text-left"
+                >
                   <span className="flex-1 font-display text-2xl text-ink leading-tight">{item.q[locale]}</span>
                   <Plus size={18} className={`mt-1 transition-transform ${isOpen ? "rotate-45" : ""}`} />
                 </button>
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div key="body"
-                      initial={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }}
-                      animate={reduce ? { opacity: 1 } : { height: "auto", opacity: 1 }}
-                      exit={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }}
-                      transition={reduce ? { duration: 0 } : springs.soft}
-                      className="overflow-hidden">
-                      <p className="pb-6 pr-12 text-base text-ink/75 leading-relaxed">{item.a[locale]}</p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <div className="overflow-hidden">
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        key="body"
+                        id={`faq-panel-${item.id}`}
+                        role="region"
+                        aria-labelledby={`faq-btn-${item.id}`}
+                        initial={{ opacity: 0, y: -8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={reduce ? { duration: 0 } : springs.soft}
+                      >
+                        <p className="pb-6 pr-12 text-base text-ink/75 leading-relaxed">{item.a[locale]}</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </li>
             );
           })}

@@ -1,6 +1,6 @@
 // components/weddings/MasonryGallery.tsx
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { X, CaretLeft, CaretRight } from "@phosphor-icons/react/dist/ssr";
@@ -22,6 +22,18 @@ export function MasonryGallery({ locale }: { locale: Locale }) {
   const t = useTranslations("weddings.gallery");
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
   const reduce = useReducedMotion();
+  const closeRef = useRef<HTMLButtonElement | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+
+  // Move focus into the lightbox when it opens
+  useEffect(() => {
+    if (activeIdx !== null) {
+      closeRef.current?.focus();
+    } else {
+      // Restore focus to the gallery button that triggered the lightbox
+      triggerRef.current?.focus();
+    }
+  }, [activeIdx]);
 
   useEffect(() => {
     if (activeIdx === null) return;
@@ -50,7 +62,10 @@ export function MasonryGallery({ locale }: { locale: Locale }) {
               <button
                 key={photo.id}
                 type="button"
-                onClick={() => setActiveIdx(i)}
+                onClick={(e) => {
+                  triggerRef.current = e.currentTarget;
+                  setActiveIdx(i);
+                }}
                 aria-label={photo.alt[locale]}
                 className="group block w-full overflow-hidden rounded-2xl bg-bone"
               >
@@ -60,7 +75,7 @@ export function MasonryGallery({ locale }: { locale: Locale }) {
                   width={w}
                   height={h}
                   sizes="(max-width: 768px) 50vw, 33vw"
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none"
                 />
               </button>
             );
@@ -79,7 +94,7 @@ export function MasonryGallery({ locale }: { locale: Locale }) {
             exit={{ opacity: 0 }}
             transition={reduce ? { duration: 0 } : { duration: 0.2 }}
           >
-            <button type="button" onClick={() => setActiveIdx(null)} aria-label={t("close")}
+            <button ref={closeRef} type="button" onClick={() => setActiveIdx(null)} aria-label={t("close")}
               className="absolute top-6 right-6 inline-flex h-10 w-10 items-center justify-center rounded-full bg-bone/10 text-bone hover:bg-bone/20">
               <X size={18} />
             </button>
