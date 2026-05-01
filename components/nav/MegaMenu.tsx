@@ -34,12 +34,16 @@ function MegaMenuImpl({ locale, label }: Props) {
       className="relative"
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setOpen(false);
+      }}
+      onKeyDown={(e) => { if (e.key === "Escape") setOpen(false); }}
     >
       <Link
         href={`/${locale}/shop`}
         className="font-sans text-sm tracking-tight text-ink/80 hover:text-ink transition-colors"
-        onFocus={() => setOpen(true)}
-        onBlur={() => setOpen(false)}
+        aria-expanded={open}
+        aria-haspopup="true"
       >
         {label}
       </Link>
@@ -56,6 +60,7 @@ function MegaMenuImpl({ locale, label }: Props) {
             <div className="mx-auto grid max-w-[var(--container-max)] grid-cols-6 gap-4">
               {CATS.map((c) => (
                 <Link
+                  role="menuitem"
                   key={c.slug}
                   href={`/${locale}/shop/${c.slug}`}
                   className="group relative aspect-[3/4] overflow-hidden rounded-[var(--radius-product)] bg-mute-100"

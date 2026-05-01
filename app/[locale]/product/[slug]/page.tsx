@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import type { Locale } from "@/types/locale";
 import { getProductBySlug, getPairsWith, PRODUCTS } from "@/data/products";
+import { SITE } from "@/data/site";
 import { ImageStack } from "@/components/product/ImageStack";
 import { PdpConfigurator } from "@/components/product/PdpConfigurator";
 import { PdpAccordion } from "@/components/product/PdpAccordion";
@@ -48,7 +49,7 @@ export default async function ProductPage({
 }) {
   const { locale, slug } = await params;
   const product = getProductBySlug(slug);
-  if (!product) notFound();
+  if (!product || !product.active) notFound();
   setRequestLocale(locale);
 
   const isSympathy = product.category === "sympathy";
@@ -87,7 +88,7 @@ export default async function ProductPage({
             <PdpConfigurator
               product={product}
               locale={locale}
-              cutoff={"14:00"}
+              cutoff={SITE.cutoff24}
               motionMode={isSympathy ? "sympathy" : "default"}
             />
 

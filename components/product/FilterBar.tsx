@@ -164,7 +164,7 @@ function FilterBarImpl({
           <FilterChip
             label={l("same_day", locale)}
             selected={Boolean(filter.sameDay)}
-            onToggle={() => toggle("sameDay", filter.sameDay ? undefined : true)}
+            onToggle={() => toggle("sameDay", true)}
           />
         )}
 

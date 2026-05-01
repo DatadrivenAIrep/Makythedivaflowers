@@ -20,6 +20,7 @@ export const SITE = {
   ],
   deliveryZones: ["Nassau County", "Queens", "Brooklyn (select zip codes)", "Western Suffolk"],
   cutoffTime: "2:00 PM",
+  cutoff24: "14:00",  // HH:mm format for parseCutoff/isSameDayEligible
   social: [
     { label: "Instagram", href: "https://instagram.com/divaflowersli" },
     { label: "TikTok", href: "https://tiktok.com/@divaflowers" },
