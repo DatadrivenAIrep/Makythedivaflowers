@@ -102,6 +102,43 @@
     "skip_to_content": "Skip to content",
     "loading": "Loading"
   },
+  "contact": {
+    "page_title": "Contact — Diva Flowers",
+    "page_description": "Visit our studio on Hempstead Turnpike, call us, or send a message. Same-day delivery across Long Island and Queens.",
+    "eyebrow": "Contact",
+    "title": "Come find us.",
+    "studio": {
+      "address_label": "Studio",
+      "address_value": "1077 Hempstead Tpke, Franklin Square, NY 11010",
+      "hours_label": "Hours",
+      "hours_value": "Mon–Sat 9am–6pm · Sun 10am–4pm",
+      "phone_label": "Phone",
+      "email_label": "Email"
+    },
+    "map": {
+      "alt": "Map showing Diva Flowers at 1077 Hempstead Turnpike, Franklin Square, NY"
+    },
+    "zones": {
+      "eyebrow": "Delivery coverage",
+      "title": "We deliver to your neighborhood.",
+      "note": "Don't see your area? Call us — we'll do our best."
+    },
+    "form": {
+      "eyebrow": "Send a message",
+      "title": "We'd love to hear from you.",
+      "name": "Full name",
+      "email": "Email",
+      "subject": "Subject",
+      "body": "Message",
+      "submit": "Send message",
+      "submitting": "Sending…",
+      "success_title": "Message received.",
+      "success_body": "Thank you for writing. We'll reply within one business day.",
+      "errors": {
+        "unknown_error": "Something went wrong. Please try again or call us directly."
+      }
+    }
+  },
   "events": {
     "page_title": "Events — Diva Flowers",
     "page_description": "Corporate and recurring floral design for restaurants, offices, galleries, and private events on Long Island.",
