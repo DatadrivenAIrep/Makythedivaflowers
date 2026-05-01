@@ -1,4 +1,16 @@
 {
+  "card_message_assist": {
+    "trigger": "Sugerir mensaje",
+    "trigger_sympathy": "Sugerir mensaje",
+    "title": "¿Para quién es?",
+    "generate": "Generar 3 ideas",
+    "generate_sympathy": "Generar 3 mensajes",
+    "regenerate": "Generar otras 3",
+    "retry": "Reintentar",
+    "close": "Cerrar",
+    "error_generic": "No pudimos generar ahora. Mientras tanto, escribe el tuyo.",
+    "error_rate_limit": "Pediste muchas en poco tiempo. Vuelve a intentarlo en una hora."
+  },
   "nav": {
     "shop": "Tienda",
     "subscriptions": "Suscripciones",
@@ -65,18 +77,6 @@
     "slot_evening": "Noche (6pm–8pm)",
     "card_message": "Mensaje en tarjeta",
     "card_message_hint": "Opcional — hasta 160 caracteres",
-    "card_message_assist": {
-      "trigger": "Sugerir mensaje",
-      "trigger_sympathy": "Sugerir mensaje",
-      "title": "¿Para quién es?",
-      "generate": "Generar 3 ideas",
-      "generate_sympathy": "Generar 3 mensajes",
-      "regenerate": "Generar otras 3",
-      "retry": "Reintentar",
-      "close": "Cerrar",
-      "error_generic": "No pudimos generar ahora. Mientras tanto, escribe el tuyo.",
-      "error_rate_limit": "Pediste muchas en poco tiempo. Vuelve a intentarlo en una hora."
-    },
     "payment_stub_label": "Pago",
     "payment_stub_body": "El procesamiento de pagos es seguro. Los datos de tu tarjeta nunca se almacenan.",
     "payment_stub_processing": "Procesando pago…",

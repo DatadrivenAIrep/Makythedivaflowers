@@ -1,4 +1,16 @@
 {
+  "card_message_assist": {
+    "trigger": "Suggest message",
+    "trigger_sympathy": "Suggest message",
+    "title": "Who's it for?",
+    "generate": "Generate 3 ideas",
+    "generate_sympathy": "Generate 3 messages",
+    "regenerate": "Generate 3 more",
+    "retry": "Retry",
+    "close": "Close",
+    "error_generic": "We couldn't generate right now. In the meantime, write your own.",
+    "error_rate_limit": "Too many requests. Please try again in an hour."
+  },
   "nav": {
     "shop": "Shop",
     "subscriptions": "Subscriptions",
@@ -65,18 +77,6 @@
     "slot_evening": "Evening (6pm–8pm)",
     "card_message": "Card message",
     "card_message_hint": "Optional — up to 160 characters",
-    "card_message_assist": {
-      "trigger": "Suggest message",
-      "trigger_sympathy": "Suggest message",
-      "title": "Who's it for?",
-      "generate": "Generate 3 ideas",
-      "generate_sympathy": "Generate 3 messages",
-      "regenerate": "Generate 3 more",
-      "retry": "Retry",
-      "close": "Close",
-      "error_generic": "We couldn't generate right now. In the meantime, write your own.",
-      "error_rate_limit": "Too many requests. Please try again in an hour."
-    },
     "payment_stub_label": "Payment",
     "payment_stub_body": "Secure payment processing is enabled. Your card details are never stored.",
     "payment_stub_processing": "Processing payment…",
