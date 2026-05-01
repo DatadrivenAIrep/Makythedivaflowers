@@ -1,7 +1,7 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
 import { useTransition, memo, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/cn";
 import { locales, type Locale } from "@/types/locale";
 
@@ -23,6 +23,7 @@ function LocaleSwitcherImpl({ current }: { current: Locale }) {
   const pathname = usePathname();
   const [, startTransition] = useTransition();
   const [display, setDisplay] = useState(`EN · ES`);
+  const reduceMotion = useReducedMotion();
 
   const switchTo = (next: Locale) => {
     if (next === current) return;
@@ -53,7 +54,7 @@ function LocaleSwitcherImpl({ current }: { current: Locale }) {
         "text-ink/70 hover:text-ink border border-ink/10 hover:border-ink/30 transition-colors",
       )}
     >
-      <motion.span layout>{display}</motion.span>
+      <motion.span layout={reduceMotion ? false : true}>{display}</motion.span>
     </button>
   );
 }

@@ -18,6 +18,7 @@ function BloomImageImpl({ src, alt, className, sizes }: Props) {
       whileHover={reduce ? undefined : { scale: 1.02, rotate: -0.5 }}
       transition={{ type: "spring", stiffness: 120, damping: 16 }}
     >
+      {/* TODO(2.7): replace with next/image <Image fill> once BloomImage migration ships; raw <img> intentionally bypasses next/image alt-required lint — alt is required via the typed prop above */}
       <img src={src} alt={alt} sizes={sizes} className="size-full object-cover" />
     </motion.div>
   );

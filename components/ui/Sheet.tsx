@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/cn";
 
 export const Sheet = Dialog.Root;
@@ -17,6 +17,11 @@ export function SheetContent({
   side?: "right" | "bottom";
   className?: string;
 }) {
+  const reduceMotion = useReducedMotion();
+  const slideInitial = side === "right" ? { x: "100%" } : { y: "100%" };
+  const slideAnimate = side === "right" ? { x: 0 } : { y: 0 };
+  const slideExit = side === "right" ? { x: "100%" } : { y: "100%" };
+
   return (
     <Dialog.Portal forceMount>
       <AnimatePresence>
@@ -26,7 +31,7 @@ export function SheetContent({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: reduceMotion ? 0 : 0.2 }}
           />
         </Dialog.Overlay>
         <Dialog.Content asChild>
@@ -38,10 +43,10 @@ export function SheetContent({
               "[box-shadow:inset_0_1px_0_rgba(255,255,255,0.6)]",
               className,
             )}
-            initial={side === "right" ? { x: "100%" } : { y: "100%" }}
-            animate={side === "right" ? { x: 0 } : { y: 0 }}
-            exit={side === "right" ? { x: "100%" } : { y: "100%" }}
-            transition={{ type: "spring", stiffness: 220, damping: 28 }}
+            initial={reduceMotion ? false : slideInitial}
+            animate={reduceMotion ? {} : slideAnimate}
+            exit={reduceMotion ? {} : slideExit}
+            transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 220, damping: 28 }}
           >
             {children}
           </motion.div>

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { motion, useScroll, useMotionValueEvent } from "framer-motion";
+import { motion, useScroll, useMotionValueEvent, useReducedMotion } from "framer-motion";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { LocaleSwitcher } from "@/components/nav/LocaleSwitcher";
 import { CartButton } from "@/components/nav/CartButton";
@@ -16,6 +16,7 @@ export function TopNav({
 }) {
   const { scrollY } = useScroll();
   const [condensed, setCondensed] = useState(false);
+  const reduceMotion = useReducedMotion();
 
   useMotionValueEvent(scrollY, "change", (v) => {
     setCondensed(v > 80);
@@ -23,12 +24,14 @@ export function TopNav({
 
   return (
     <motion.header
+      initial={false}
       className={cn(
         "fixed top-0 inset-x-0 z-40 transition-all duration-300",
         condensed
           ? "bg-bone/85 backdrop-blur-md border-b border-ink/[0.06]"
           : "bg-transparent border-b border-transparent",
       )}
+      transition={reduceMotion ? { duration: 0 } : undefined}
     >
       <div className="max-w-[1400px] mx-auto px-6 flex items-center justify-between h-16">
         <Wordmark locale={locale} />
