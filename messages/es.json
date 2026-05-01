@@ -1,0 +1,79 @@
+{
+  "nav": {
+    "shop": "Tienda",
+    "subscriptions": "Suscripciones",
+    "weddings": "Bodas",
+    "events": "Eventos",
+    "story": "Historia",
+    "journal": "Editorial",
+    "contact": "Contacto",
+    "cart": "Bolsa",
+    "search": "Buscar",
+    "open_menu": "Abrir menú",
+    "close_menu": "Cerrar menú"
+  },
+  "categories": {
+    "arrangements": "Arreglos",
+    "bouquets": "Ramos",
+    "plants": "Plantas y Orquídeas",
+    "gifts": "Regalos",
+    "sympathy": "Condolencias",
+    "subscriptions": "Suscripciones"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Long Island, Nueva York",
+      "title": "Romance, tallo a tallo.",
+      "sub": "Arreglos firmados, hechos a mano cada día bajo nuestro arco rosa en Hempstead Turnpike.",
+      "cta_primary": "Ver arreglos",
+      "cta_secondary": "Planear una boda"
+    },
+    "marquee": "DIVA FLOWERS · ROMANCE BY THE STEM · LONG ISLAND · DESDE 2014 · ENVÍOS HOY · SAME-DAY DELIVERY",
+    "bento": {
+      "featured_eyebrow": "Lo destacado",
+      "featured_cta": "Comprar",
+      "subscriptions_title": "Flores semanales, en rotación.",
+      "subscriptions_body": "Un arreglo nuevo en tu puerta cada semana. Pausa cuando quieras.",
+      "subscriptions_cta": "Empezar suscripción",
+      "live_status_label": "Entregando hoy",
+      "live_status_zone": "Nassau y Queens",
+      "live_status_cutoff": "Cierre 2:00 PM",
+      "press_eyebrow": "En prensa"
+    },
+    "categories_title": "Encuentra tu flor.",
+    "editorial_split": {
+      "eyebrow": "Visita el estudio",
+      "title": "Construido alrededor de nuestro arco floral en Hempstead Turnpike.",
+      "body": "Arreglamos flores bajo el mismo toldo rosa desde 2014. Entra, llama o pide en línea — entrega el mismo día en Long Island y Queens."
+    },
+    "weddings_teaser": {
+      "eyebrow": "Bodas",
+      "title": "Instalaciones, por Diva.",
+      "cta": "Cotizar"
+    },
+    "newsletter": {
+      "eyebrow": "Mantente en flor",
+      "title": "Cartas del estudio.",
+      "placeholder": "tu@correo.com",
+      "cta": "Suscribirme",
+      "success": "Bienvenido a bordo.",
+      "error": "Algo salió mal. ¿Intentar de nuevo?"
+    }
+  },
+  "footer": {
+    "address_label": "Estudio",
+    "hours_label": "Horario",
+    "phone_label": "Teléfono",
+    "email_label": "Correo",
+    "social_label": "Síguenos",
+    "rights": "Todos los derechos reservados.",
+    "legal": {
+      "privacy": "Privacidad",
+      "terms": "Términos"
+    }
+  },
+  "a11y": {
+    "skip_to_content": "Saltar al contenido",
+    "loading": "Cargando"
+  }
+}

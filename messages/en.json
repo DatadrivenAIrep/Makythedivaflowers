@@ -1,0 +1,79 @@
+{
+  "nav": {
+    "shop": "Shop",
+    "subscriptions": "Subscriptions",
+    "weddings": "Weddings",
+    "events": "Events",
+    "story": "Story",
+    "journal": "Journal",
+    "contact": "Contact",
+    "cart": "Bag",
+    "search": "Search",
+    "open_menu": "Open menu",
+    "close_menu": "Close menu"
+  },
+  "categories": {
+    "arrangements": "Arrangements",
+    "bouquets": "Bouquets",
+    "plants": "Plants & Orchids",
+    "gifts": "Gifts",
+    "sympathy": "Sympathy",
+    "subscriptions": "Subscriptions"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Long Island, New York",
+      "title": "Romance, by the stem.",
+      "sub": "Signature arrangements, hand-built daily under our hot-pink arch on Hempstead Turnpike.",
+      "cta_primary": "Shop arrangements",
+      "cta_secondary": "Plan a wedding"
+    },
+    "marquee": "DIVA FLOWERS · ROMANCE BY THE STEM · LONG ISLAND · DESDE 2014 · ENVÍOS HOY · SAME-DAY DELIVERY",
+    "bento": {
+      "featured_eyebrow": "Featured this week",
+      "featured_cta": "Shop now",
+      "subscriptions_title": "Weekly blooms, on rotation.",
+      "subscriptions_body": "A new arrangement at your door every week. Pause anytime.",
+      "subscriptions_cta": "Start a subscription",
+      "live_status_label": "Delivering today",
+      "live_status_zone": "Nassau & Queens",
+      "live_status_cutoff": "Cutoff 2:00 PM",
+      "press_eyebrow": "As seen in"
+    },
+    "categories_title": "Find your bloom.",
+    "editorial_split": {
+      "eyebrow": "Visit the studio",
+      "title": "Built around our floral arch on Hempstead Turnpike.",
+      "body": "We've been arranging flowers under the same pink awning since 2014. Walk in, call ahead, or order online — same-day delivery across Long Island and Queens."
+    },
+    "weddings_teaser": {
+      "eyebrow": "Weddings",
+      "title": "Installations, by Diva.",
+      "cta": "Inquire"
+    },
+    "newsletter": {
+      "eyebrow": "Stay in bloom",
+      "title": "Letters from the studio.",
+      "placeholder": "you@email.com",
+      "cta": "Subscribe",
+      "success": "Welcome aboard.",
+      "error": "Something went wrong. Try again?"
+    }
+  },
+  "footer": {
+    "address_label": "Studio",
+    "hours_label": "Hours",
+    "phone_label": "Phone",
+    "email_label": "Email",
+    "social_label": "Follow",
+    "rights": "All rights reserved.",
+    "legal": {
+      "privacy": "Privacy",
+      "terms": "Terms"
+    }
+  },
+  "a11y": {
+    "skip_to_content": "Skip to content",
+    "loading": "Loading"
+  }
+}
