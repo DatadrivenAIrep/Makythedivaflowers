@@ -1,11 +1,10 @@
 // app/[locale]/journal/page.tsx
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { motion } from "framer-motion";
 import { ZigZagItem } from "@/components/editorial/ZigZagItem";
 import { journalArticles } from "@/data/journal";
 import { Grain } from "@/components/brand/Grain";
-import { StaggerGroup, staggerItemVariants } from "@/components/motion/StaggerGroup";
+import { StaggerGroup, StaggerItem } from "@/components/motion/StaggerGroup";
 import type { Locale } from "@/types/locale";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
@@ -27,13 +26,13 @@ export default async function JournalIndex({ params }: { params: Promise<{ local
         <h1 className="mt-3 font-display text-6xl sm:text-7xl text-ink leading-[0.92] tracking-tighter">{t("title")}</h1>
       </header>
       <StaggerGroup className="space-y-20">
-        <motion.div variants={staggerItemVariants}>
+        <StaggerItem>
           <ZigZagItem href={`/${locale}/journal/${featured.slug}`} title={featured.title[locale]} excerpt={featured.excerpt[locale]} date={featured.date} cover={{ src: featured.cover.src, alt: featured.cover.alt[locale] }} featured />
-        </motion.div>
+        </StaggerItem>
         {rest.map((a, i) => (
-          <motion.div key={a.slug} variants={staggerItemVariants}>
+          <StaggerItem key={a.slug}>
             <ZigZagItem href={`/${locale}/journal/${a.slug}`} title={a.title[locale]} excerpt={a.excerpt[locale]} date={a.date} cover={{ src: a.cover.src, alt: a.cover.alt[locale] }} reverse={i % 2 === 1} />
-          </motion.div>
+          </StaggerItem>
         ))}
       </StaggerGroup>
     </main>

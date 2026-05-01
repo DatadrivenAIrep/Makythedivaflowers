@@ -113,7 +113,6 @@ export function EventsForm({ locale }: { locale: Locale }) {
       <MagneticButton
         type="submit"
         disabled={state === "submitting"}
-        className="w-full"
         wrapperClassName="w-full"
       >
         {state === "submitting" ? t("submitting") : t("submit")}

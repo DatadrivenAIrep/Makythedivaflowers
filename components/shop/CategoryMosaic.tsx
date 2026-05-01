@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { getTranslations } from "next-intl/server";
 import { BloomImage } from "@/components/motion/BloomImage";
-import { StaggerGroup, staggerItemVariants } from "@/components/motion/StaggerGroup";
+import { StaggerGroup, StaggerItem } from "@/components/motion/StaggerGroup";
 import type { Locale } from "@/types/locale";
 
 const TILES: { slug: string; seed: string; col: string; row: string; aspect: string }[] = [
@@ -22,7 +21,7 @@ export async function CategoryMosaic({ locale }: { locale: Locale }) {
         {TILES.map((tile) => {
           const name = t(tile.slug as Parameters<typeof t>[0]);
           return (
-            <motion.div key={tile.slug} variants={staggerItemVariants} className={`${tile.col} ${tile.row}`}>
+            <StaggerItem key={tile.slug} className={`${tile.col} ${tile.row}`}>
               <Link
                 href={`/${locale}/shop/${tile.slug}`}
                 className={`group relative overflow-hidden rounded-[var(--radius-bento)] bg-mute-100 block ${tile.aspect}`}
@@ -43,7 +42,7 @@ export async function CategoryMosaic({ locale }: { locale: Locale }) {
                   </span>
                 </div>
               </Link>
-            </motion.div>
+            </StaggerItem>
           );
         })}
       </StaggerGroup>

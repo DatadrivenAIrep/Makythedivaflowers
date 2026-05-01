@@ -1,11 +1,10 @@
 import { getTranslations } from "next-intl/server";
-import { motion } from "framer-motion";
 import { BentoFeaturedTile } from "./BentoFeaturedTile";
 import { BentoSubscriptionsTile } from "./BentoSubscriptionsTile";
 import { BentoLiveStatusTile } from "./BentoLiveStatusTile";
 import { BentoPressTile } from "./BentoPressTile";
 import { BentoStudioClock } from "./BentoStudioClock";
-import { StaggerGroup, staggerItemVariants } from "@/components/motion/StaggerGroup";
+import { StaggerGroup, StaggerItem } from "@/components/motion/StaggerGroup";
 import type { Locale } from "@/types/locale";
 
 export async function BentoGrid({ locale }: { locale: Locale }) {
@@ -34,21 +33,21 @@ export async function BentoGrid({ locale }: { locale: Locale }) {
         className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-5"
         style={{ gridAutoRows: "minmax(140px, auto)" }}
       >
-        <motion.div variants={staggerItemVariants} className="md:col-span-2 md:row-span-3">
+        <StaggerItem className="md:col-span-2 md:row-span-3">
           <BentoFeaturedTile locale={locale} />
-        </motion.div>
-        <motion.div variants={staggerItemVariants} className="md:col-span-2 md:row-span-2">
+        </StaggerItem>
+        <StaggerItem className="md:col-span-2 md:row-span-2">
           <BentoLiveStatusTile />
-        </motion.div>
-        <motion.div variants={staggerItemVariants} className="md:col-span-1">
+        </StaggerItem>
+        <StaggerItem className="md:col-span-1">
           <BentoSubscriptionsTile locale={locale} />
-        </motion.div>
-        <motion.div variants={staggerItemVariants} className="md:col-span-1">
+        </StaggerItem>
+        <StaggerItem className="md:col-span-1">
           <BentoStudioClock />
-        </motion.div>
-        <motion.div variants={staggerItemVariants} className="md:col-span-4">
+        </StaggerItem>
+        <StaggerItem className="md:col-span-4">
           <BentoPressTile />
-        </motion.div>
+        </StaggerItem>
       </StaggerGroup>
     </section>
   );

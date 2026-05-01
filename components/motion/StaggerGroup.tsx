@@ -48,3 +48,11 @@ export const staggerItemVariants = {
     transition: { type: "spring", stiffness: 100, damping: 20 } as const,
   },
 };
+
+export function StaggerItem({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <motion.div variants={staggerItemVariants} className={className}>
+      {children}
+    </motion.div>
+  );
+}
