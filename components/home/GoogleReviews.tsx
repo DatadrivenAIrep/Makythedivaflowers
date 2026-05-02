@@ -10,7 +10,7 @@ export async function GoogleReviews({ locale }: { locale: Locale }) {
   const jsonLd = buildReviewsJsonLd(REVIEWS, REVIEWS_AGGREGATE, SITE.brand);
 
   return (
-    <section className="py-24 md:py-32" aria-label={t("aria.section")}>
+    <section className="pt-24 pb-10 md:pt-32 md:pb-12" aria-label={t("aria.section")}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd }}
