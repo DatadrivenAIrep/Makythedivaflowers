@@ -1,8 +1,27 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { buildReviewsJsonLd, type Review } from "@/data/reviews";
 import { GoogleReviewsCard } from "@/components/home/GoogleReviewsCard";
+
+vi.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => key,
+}));
+
+vi.mock("framer-motion", () => ({
+  useReducedMotion: () => false,
+  AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  motion: {
+    article: ({ children, initial: _i, animate: _a, exit: _e, transition: _t, ...props }: any) => (
+      <article {...props}>{children}</article>
+    ),
+    span: ({ children, initial: _i, animate: _a, transition: _t, style, ...props }: any) => (
+      <span style={style} {...props}>{children}</span>
+    ),
+  },
+}));
+
+import { GoogleReviewsClient } from "@/components/home/GoogleReviewsClient";
 
 const mockAggregate = { rating: 4.9, total: 127, placeUrl: "https://g.page/r/test" } as const;
 
@@ -118,5 +137,208 @@ describe("GoogleReviewsCard", () => {
     render(<GoogleReviewsCard {...baseCardProps} onPrev={onPrev} />);
     await user.click(screen.getByRole("button", { name: "Previous review" }));
     expect(onPrev).toHaveBeenCalledTimes(1);
+  });
+});
+
+const clientReviews: Review[] = [
+  {
+    id: "r1",
+    author: "Alice B.",
+    initials: "AB",
+    rating: 5,
+    occasion: "Boda",
+    date: "2026-04",
+    text: { en: "First review in English.", es: "Primera reseña en español." },
+    originalLang: "en",
+  },
+  {
+    id: "r2",
+    author: "Carlos M.",
+    initials: "CM",
+    rating: 5,
+    date: "2026-03",
+    text: { en: "Second review in English.", es: "Segunda reseña en español." },
+    originalLang: "es",
+  },
+  {
+    id: "r3",
+    author: "Diana P.",
+    initials: "DP",
+    rating: 5,
+    date: "2026-02",
+    text: { en: "Third review in English.", es: "Tercera reseña en español." },
+    originalLang: "en",
+  },
+];
+
+describe("GoogleReviewsClient", () => {
+  it("renders the first review on mount", () => {
+    render(
+      <GoogleReviewsClient
+        reviews={clientReviews}
+        locale="en"
+        autoplayMs={0}
+      />,
+    );
+    expect(screen.getByText("First review in English.")).toBeInTheDocument();
+  });
+
+  it("advances to the next review when next arrow is clicked", async () => {
+    const user = userEvent.setup();
+    render(
+      <GoogleReviewsClient
+        reviews={clientReviews}
+        locale="en"
+        autoplayMs={0}
+      />,
+    );
+    await user.click(screen.getByRole("button", { name: "aria.next" }));
+    expect(screen.getByText("Second review in English.")).toBeInTheDocument();
+  });
+
+  it("wraps from last to first on next click", async () => {
+    const user = userEvent.setup();
+    render(
+      <GoogleReviewsClient
+        reviews={clientReviews}
+        locale="en"
+        autoplayMs={0}
+      />,
+    );
+    await user.click(screen.getByRole("button", { name: "aria.next" }));
+    await user.click(screen.getByRole("button", { name: "aria.next" }));
+    expect(screen.getByText("Third review in English.")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "aria.next" }));
+    expect(screen.getByText("First review in English.")).toBeInTheDocument();
+  });
+
+  it("goes to previous review on prev click; wraps from first to last", async () => {
+    const user = userEvent.setup();
+    render(
+      <GoogleReviewsClient
+        reviews={clientReviews}
+        locale="en"
+        autoplayMs={0}
+      />,
+    );
+    await user.click(screen.getByRole("button", { name: "aria.prev" }));
+    expect(screen.getByText("Third review in English.")).toBeInTheDocument();
+  });
+
+  it("jumps to a review when a progress segment is clicked", async () => {
+    const user = userEvent.setup();
+    render(
+      <GoogleReviewsClient
+        reviews={clientReviews}
+        locale="en"
+        autoplayMs={0}
+      />,
+    );
+    const segments = screen.getAllByRole("tab");
+    await user.click(segments[2]);
+    expect(screen.getByText("Third review in English.")).toBeInTheDocument();
+  });
+
+  it("does NOT show translate chip when locale matches originalLang", () => {
+    render(
+      <GoogleReviewsClient
+        reviews={clientReviews}
+        locale="en"
+        autoplayMs={0}
+      />,
+    );
+    // r1 has originalLang "en", locale is "en" — no chip
+    expect(screen.queryByText("translated")).not.toBeInTheDocument();
+  });
+
+  it("shows translate chip for a review in a different original language", async () => {
+    const user = userEvent.setup();
+    render(
+      <GoogleReviewsClient
+        reviews={clientReviews}
+        locale="en"
+        autoplayMs={0}
+      />,
+    );
+    // r2 has originalLang "es", locale is "en" — chip should appear
+    await user.click(screen.getByRole("button", { name: "aria.next" }));
+    expect(screen.getByText("translated")).toBeInTheDocument();
+  });
+
+  it("toggling translate chip shows original text; resets on slide change", async () => {
+    const user = userEvent.setup();
+    render(
+      <GoogleReviewsClient
+        reviews={clientReviews}
+        locale="en"
+        autoplayMs={0}
+      />,
+    );
+    // go to r2 (originalLang "es", locale "en" → shows en text, chip visible)
+    await user.click(screen.getByRole("button", { name: "aria.next" }));
+    expect(screen.getByText("Second review in English.")).toBeInTheDocument();
+    // click chip → show original (es)
+    await user.click(screen.getByText("translated"));
+    expect(screen.getByText("Segunda reseña en español.")).toBeInTheDocument();
+    // navigate away and back → resets to translated
+    await user.click(screen.getByRole("button", { name: "aria.next" }));
+    await user.click(screen.getByRole("button", { name: "aria.prev" }));
+    expect(screen.getByText("Second review in English.")).toBeInTheDocument();
+  });
+
+  it("advances review on ArrowRight keydown", () => {
+    render(
+      <GoogleReviewsClient
+        reviews={clientReviews}
+        locale="en"
+        autoplayMs={0}
+      />,
+    );
+    const container = document.querySelector("[data-reviews-client]")!;
+    fireEvent.keyDown(container, { key: "ArrowRight" });
+    expect(screen.getByText("Second review in English.")).toBeInTheDocument();
+  });
+
+  it("goes back on ArrowLeft keydown", () => {
+    render(
+      <GoogleReviewsClient
+        reviews={clientReviews}
+        locale="en"
+        autoplayMs={0}
+      />,
+    );
+    const container = document.querySelector("[data-reviews-client]")!;
+    fireEvent.keyDown(container, { key: "ArrowLeft" });
+    expect(screen.getByText("Third review in English.")).toBeInTheDocument();
+  });
+
+  it("autoplay advances review after interval", async () => {
+    vi.useFakeTimers();
+    render(
+      <GoogleReviewsClient
+        reviews={clientReviews}
+        locale="en"
+        autoplayMs={3000}
+      />,
+    );
+    expect(screen.getByText("First review in English.")).toBeInTheDocument();
+    await act(async () => {
+      vi.advanceTimersByTime(3000);
+    });
+    expect(screen.getByText("Second review in English.")).toBeInTheDocument();
+    vi.useRealTimers();
+  });
+
+  it("active progress segment has aria-selected=true", () => {
+    render(
+      <GoogleReviewsClient
+        reviews={clientReviews}
+        locale="en"
+        autoplayMs={0}
+      />,
+    );
+    const tabs = screen.getAllByRole("tab");
+    expect(tabs[0]).toHaveAttribute("aria-selected", "true");
+    expect(tabs[1]).toHaveAttribute("aria-selected", "false");
   });
 });
