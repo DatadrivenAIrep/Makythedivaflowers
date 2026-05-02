@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { buildReviewsJsonLd, type Review } from "@/data/reviews";
+import { GoogleReviewsCard } from "@/components/home/GoogleReviewsCard";
 
 const mockAggregate = { rating: 4.9, total: 127, placeUrl: "https://g.page/r/test" } as const;
 
@@ -44,8 +45,6 @@ describe("buildReviewsJsonLd", () => {
     expect(parsed.review[0].reviewRating.bestRating).toBe(5);
   });
 });
-
-import { GoogleReviewsCard } from "@/components/home/GoogleReviewsCard";
 
 const baseCardProps = {
   author: "Jessica Morales",

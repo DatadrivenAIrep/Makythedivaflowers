@@ -19,7 +19,10 @@ type GoogleReviewsCardProps = {
 };
 
 function formatDate(dateStr: string, locale: "en" | "es"): string {
-  const [year, month] = dateStr.split("-").map(Number);
+  const parts = dateStr.split("-");
+  const year = Number(parts[0]);
+  const month = Number(parts[1]);
+  if (!year || !month || month < 1 || month > 12) return dateStr;
   return new Intl.DateTimeFormat(locale === "es" ? "es-US" : "en-US", {
     month: "long",
     year: "numeric",
@@ -88,7 +91,7 @@ export function GoogleReviewsCard({
             onClick={onPrev}
             className="flex items-center justify-center w-9 h-9 rounded-full border border-mute-100 text-ink hover:border-mute-300 transition-colors"
           >
-            ←
+            <span aria-hidden="true">←</span>
           </button>
           <button
             type="button"
@@ -96,7 +99,7 @@ export function GoogleReviewsCard({
             onClick={onNext}
             className="flex items-center justify-center w-9 h-9 rounded-full bg-ink text-bone hover:bg-charcoal transition-colors"
           >
-            →
+            <span aria-hidden="true">→</span>
           </button>
         </div>
       </div>
