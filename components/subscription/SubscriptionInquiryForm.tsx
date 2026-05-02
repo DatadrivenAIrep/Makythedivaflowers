@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
@@ -44,10 +44,6 @@ export function SubscriptionInquiryForm({ locale, plan }: Props) {
       honeypot: "",
     },
   });
-
-  useEffect(() => {
-    form.setValue("plan", plan);
-  }, [plan, form]);
 
   async function onSubmit(values: SubscriptionInquiry) {
     setState("submitting");
@@ -279,7 +275,7 @@ type FieldProps = React.InputHTMLAttributes<HTMLInputElement> & {
   help?: string;
 };
 function Field({ label, error, help, id, ...rest }: FieldProps) {
-  const fid = id ?? `f-${label.replace(/\s+/g, "-").toLowerCase()}`;
+  const fid = id ?? `f-${(rest.name as string ?? label).replace(/\s+/g, "-").toLowerCase()}`;
   const errorId = error ? `${fid}-error` : undefined;
   const helpId = help ? `${fid}-help` : undefined;
   return (
@@ -294,7 +290,7 @@ function Field({ label, error, help, id, ...rest }: FieldProps) {
         {...rest}
         className="block w-full rounded-xl border border-ink/15 bg-bone px-4 py-3 text-base text-ink focus:outline-none focus:ring-2 focus:ring-rouge/40 focus:border-rouge"
       />
-      {help && !error && (
+      {help && (
         <span id={helpId} className="mt-1 block font-mono text-[11px] text-ink/55">
           {help}
         </span>
@@ -314,7 +310,7 @@ type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
   help?: string;
 };
 function Textarea({ label, error, help, id, ...rest }: TextareaProps) {
-  const fid = id ?? `f-${label.replace(/\s+/g, "-").toLowerCase()}`;
+  const fid = id ?? `f-${(rest.name as string ?? label).replace(/\s+/g, "-").toLowerCase()}`;
   const errorId = error ? `${fid}-error` : undefined;
   const helpId = help ? `${fid}-help` : undefined;
   return (
@@ -329,7 +325,7 @@ function Textarea({ label, error, help, id, ...rest }: TextareaProps) {
         {...rest}
         className="block w-full rounded-xl border border-ink/15 bg-bone px-4 py-3 text-base text-ink focus:outline-none focus:ring-2 focus:ring-rouge/40 focus:border-rouge resize-none"
       />
-      {help && !error && (
+      {help && (
         <span id={helpId} className="mt-1 block font-mono text-[11px] text-ink/55">
           {help}
         </span>
