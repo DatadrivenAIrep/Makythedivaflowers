@@ -12,6 +12,7 @@ import { PairsWellWith } from "@/components/product/PairsWellWith";
 import { JournalTile } from "@/components/product/JournalTile";
 import { PdpStructuredData } from "@/components/product/PdpStructuredData";
 import { PdpContactSubject } from "@/components/contact/PdpContactSubject";
+import { GiftAssuranceBar } from "@/components/conversion/GiftAssuranceBar";
 
 export async function generateStaticParams() {
   return PRODUCTS.filter((p) => p.active).map((p) => ({ slug: p.slug }));
@@ -96,6 +97,10 @@ export default async function ProductPage({
               cutoff={SITE.cutoff24}
               motionMode={isSympathy ? "sympathy" : "default"}
             />
+
+            <div className="mt-8 border-t border-ink/10 pt-6">
+              <GiftAssuranceBar size="md" surface="pdp" locale={locale} />
+            </div>
 
             <div className="mt-8">
               <PdpAccordion locale={locale} />
