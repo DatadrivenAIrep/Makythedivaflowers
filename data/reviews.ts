@@ -20,7 +20,7 @@ export type ReviewsAggregate = {
 export const REVIEWS_AGGREGATE = {
   rating: 4.9,
   total: 127,
-  placeUrl: "https://g.page/r/REPLACE_WITH_REAL_PLACE_URL",
+  placeUrl: "https://www.google.com/maps/place/Maky+The+Diva+Flowers/@40.7729367,-73.6493681,17z/data=!4m17!1m8!3m7!1s0x89c287d9137e7747:0xb205384ad7449685!2s1077+Willis+Ave,+Albertson,+NY+11507!3b1!8m2!3d40.7729367!4d-73.6493681!16s%2Fg%2F11rnfbbd9y!3m7!1s0x89c287d913828373:0xfac2d149a64985ed!8m2!3d40.7729367!4d-73.6493681!9m1!1b1!16s%2Fg%2F1262l8y23?hl=en-US&entry=ttu&g_ep=EgoyMDI2MDQyOS4wIKXMDSoASAFQAw%3D%3D",
 } as const;
 
 export function buildReviewsJsonLd(
