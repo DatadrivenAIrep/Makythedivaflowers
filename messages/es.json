@@ -137,7 +137,7 @@
       "cta_primary": "Ver arreglos",
       "cta_secondary": "Planear una boda"
     },
-    "marquee": "DIVA FLOWERS · ROMANCE BY THE STEM · LONG ISLAND · DESDE 2014 · ENVÍOS HOY · SAME-DAY DELIVERY",
+    "marquee": "MAKY THE DIVA FLOWERS · ROMANCE BY THE STEM · LONG ISLAND · DESDE 2014 · ENVÍOS HOY · SAME-DAY DELIVERY",
     "bento": {
       "console_eyebrow": "Dentro del estudio",
       "console_title": "En vivo desde Willis Ave.",
@@ -587,6 +587,61 @@
       "events": "me gustaría consultar sobre flores para un evento.",
       "checkout": "necesito ayuda para completar mi pedido.",
       "default": "tengo una pregunta rápida."
+    }
+  },
+  "conversion": {
+    "cutoff": {
+      "before_label": "Entrega hoy",
+      "before_body": "Pídelo en los próximos {time} y entra por su puerta esta tarde.",
+      "before_label_sym": "Entrega más temprana",
+      "before_body_sym": "Podemos entregar esta tarde si lo pides en los próximos {time}.",
+      "after_label": "Same-day cerrado",
+      "after_body": "Siguiente entrega: mañana por la tarde. Puedes ordenar a cualquier hora.",
+      "after_body_sym": "La entrega más temprana es mañana por la tarde.",
+      "time_hours_minutes": "{h}h {m}m",
+      "time_minutes": "{m}m",
+      "placeholder": "—"
+    },
+    "reviews": {
+      "rating_aggregate": "{rating} / {total} reseñas",
+      "rating_aggregate_matched": "{rating} de {count} compradores para {occasion}",
+      "read_all_cta": "Lee las {count} reseñas en Google",
+      "anniversary": "aniversario",
+      "birthday": "cumpleaños",
+      "sympathy": "condolencias",
+      "romance": "romance",
+      "congrats": "felicitaciones",
+      "just_because": "porque sí"
+    },
+    "variants": {
+      "standard": "Clásico",
+      "lush": "Generoso",
+      "opulent": "Opulento",
+      "most_popular": "Más popular"
+    },
+    "upsell": {
+      "title": "Completa el regalo",
+      "added_label": "Agregado",
+      "add_aria": "Agrega {item} por {price}"
+    },
+    "assurance": {
+      "hand_built_title": "Hecho hoy a mano",
+      "hand_built_body": "Cortado esta mañana, armado por Maky.",
+      "redo_title": "Lo rehacemos gratis si fue error nuestro",
+      "redo_body": "Si algo salió mal de nuestro lado, lo hacemos de nuevo.",
+      "local_title": "Florista de Long Island desde 2014",
+      "local_body": "Tienda real en Willis Ave. Entregamos lo que hacemos."
+    },
+    "reciprocity": {
+      "referral_eyebrow": "Invita a un amigo",
+      "referral_title": "Regala $20 a un amigo.",
+      "referral_body": "Recibe $20 para tu próximo arreglo cuando lo use.",
+      "referral_copy_cta": "Copiar código",
+      "referral_copied": "¡Copiado!",
+      "subscription_eyebrow": "Sigue floreciendo",
+      "subscription_title": "¿Te gustó enviarlo?",
+      "subscription_body": "Arreglos semanales en su puerta, hechos cada jueves. Pausa cuando quieras. Salta una semana. Cancela en dos clics.",
+      "subscription_cta": "Ver suscripciones"
     }
   }
 }
