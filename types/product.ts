@@ -20,6 +20,7 @@ export type ProductVariant = {
   id: string;
   label: Localized;
   priceCents: number;
+  subtitle?: Localized;
 };
 
 export type ProductAddOn = {
