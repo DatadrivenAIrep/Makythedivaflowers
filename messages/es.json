@@ -512,7 +512,9 @@
       "next": "Foto siguiente",
       "carousel_label": "Carrusel del portafolio de bodas",
       "open_lightbox": "toca para ver en grande",
-      "go_to": "Ir a la foto"
+      "go_to": "Ir a la foto",
+      "play": "Reproducir autoplay",
+      "pause": "Pausar autoplay"
     },
     "faq": {
       "eyebrow": "Preguntas frecuentes",

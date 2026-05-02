@@ -20,7 +20,8 @@ describe("GalleryCarousel", () => {
     render(<GalleryCarousel photos={weddingPortfolio} locale="en" onOpen={onOpen} autoplayMs={0} />);
     // Initially the first photo's alt should be present in the active slide button
     expect(screen.getByRole("button", { name: new RegExp(weddingPortfolio[0].alt.en) })).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "next" }));
+    // There are two "next" buttons: the arrow and the right side-peek. Either advances; click the first.
+    await user.click(screen.getAllByRole("button", { name: "next" })[0]);
     // After clicking next, the second photo is active
     expect(await screen.findByRole("button", { name: new RegExp(weddingPortfolio[1].alt.en) })).toBeInTheDocument();
   });

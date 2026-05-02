@@ -512,7 +512,9 @@
       "next": "Next photo",
       "carousel_label": "Wedding portfolio carousel",
       "open_lightbox": "tap to view full size",
-      "go_to": "Go to photo"
+      "go_to": "Go to photo",
+      "play": "Play autoplay",
+      "pause": "Pause autoplay"
     },
     "faq": {
       "eyebrow": "FAQ",
