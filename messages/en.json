@@ -170,6 +170,7 @@
     },
     "reviews": {
       "eyebrow": "★ Google Reviews",
+      "title": "What Our Clients Say",
       "verified": "Verified",
       "read_all": "Read all {count} reviews on Google",
       "translated": "Translated · view original",

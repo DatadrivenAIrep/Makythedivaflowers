@@ -17,17 +17,23 @@ export async function GoogleReviews({ locale }: { locale: Locale }) {
       />
 
       <div className="max-w-[1400px] mx-auto px-6">
-        <div className="rounded-[var(--radius-bento)] border border-mute-100 px-7 py-9 md:px-12 md:py-12">
+        <div className="rounded-[var(--radius-bento)] border border-mute-100 px-6 py-8 md:px-10 md:py-10">
 
           {/* HEADER ROW */}
-          <div className="flex flex-wrap items-end justify-between gap-4 mb-10">
+          <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
             <div>
               <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-mute-500">
                 {t("eyebrow")}
               </p>
-              <div className="flex items-baseline gap-3 mt-2">
+              <h2
+                className="font-display text-3xl md:text-5xl tracking-tighter leading-[1.02] mt-1 mb-3"
+                style={{ fontVariationSettings: "'WONK' 1, 'SOFT' 70" }}
+              >
+                {t("title")}
+              </h2>
+              <div className="flex items-baseline gap-3">
                 <span
-                  className="font-display italic text-[54px] md:text-[72px] leading-none tracking-tighter"
+                  className="font-display italic text-[40px] md:text-[54px] leading-none tracking-tighter"
                   style={{ fontVariationSettings: "'WONK' 1, 'SOFT' 70" }}
                 >
                   {REVIEWS_AGGREGATE.rating}

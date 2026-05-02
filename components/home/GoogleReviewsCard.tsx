@@ -51,7 +51,7 @@ export function GoogleReviewsCard({
 
   return (
     <>
-      <p className="font-sans text-[32px] md:text-[44px] font-normal leading-[1.02] tracking-[-0.035em] max-w-[22ch] min-h-[6rem] md:min-h-[5rem]">
+      <p className="font-sans text-[22px] md:text-[28px] font-normal leading-[1.15] tracking-[-0.025em] max-w-[40ch] min-h-[4rem] md:min-h-[3.5rem]">
         {displayText}
       </p>
 
