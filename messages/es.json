@@ -589,6 +589,23 @@
       "default": "tengo una pregunta rápida."
     }
   },
+  "product": {
+    "badge_today": "Mismo día",
+    "badge_new": "Nuevo",
+    "badge_staff_pick": "Favorito del equipo",
+    "from_price": "Desde",
+    "add_to_bag": "Agregar al carrito",
+    "added": "Agregado",
+    "pairs_well_with": "Combina bien con",
+    "accordion": {
+      "stems_label": "Qué incluye",
+      "stems_body": "Diseñado y armado por Maky en nuestro estudio en Willis Ave. Las flores y recipientes varían según la temporada — el arreglo que recibirás coincidirá con el espíritu de la foto.",
+      "sub_label": "Suscríbete y ahorra",
+      "sub_body": "Recibe tus arreglos semanales o quincenales y ahorra un 15%. Pausa, salta o cancela cuando quieras.",
+      "delivery_label": "Entrega",
+      "delivery_body": "Entregamos en {zones}. El corte para entrega el mismo día es a las {cutoff}."
+    }
+  },
   "conversion": {
     "cutoff": {
       "before_label": "Entrega hoy",

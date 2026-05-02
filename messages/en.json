@@ -589,6 +589,23 @@
       "default": "I have a quick question."
     }
   },
+  "product": {
+    "badge_today": "Same-day",
+    "badge_new": "New",
+    "badge_staff_pick": "Staff pick",
+    "from_price": "From",
+    "add_to_bag": "Add to bag",
+    "added": "Added",
+    "pairs_well_with": "Pairs well with",
+    "accordion": {
+      "stems_label": "What's inside",
+      "stems_body": "Designed and built by Maky at our Willis Ave studio. Stems and vessels vary by season — the arrangement you receive will match the spirit of the photo.",
+      "sub_label": "Subscribe & save",
+      "sub_body": "Order on a weekly or biweekly cadence and save 15%. Skip, pause, or cancel anytime.",
+      "delivery_label": "Delivery",
+      "delivery_body": "We deliver to {zones}. Same-day cutoff is {cutoff}."
+    }
+  },
   "conversion": {
     "cutoff": {
       "before_label": "Same-day delivery",
