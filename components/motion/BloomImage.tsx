@@ -8,11 +8,12 @@ type Props = {
   src: string;
   alt: string;
   className?: string;
+  imgClassName?: string;
   sizes?: string;
   priority?: boolean;
 };
 
-function BloomImageImpl({ src, alt, className, sizes, priority }: Props) {
+function BloomImageImpl({ src, alt, className, imgClassName, sizes, priority }: Props) {
   const reduce = useReducedMotion();
   return (
     <motion.div

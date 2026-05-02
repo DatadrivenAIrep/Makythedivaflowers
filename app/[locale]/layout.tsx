@@ -30,11 +30,6 @@ export default async function LocaleLayout({
   return (
     <NextIntlClientProvider locale={locale}>
       <LocalBusinessLD />
-      <TopNav locale={locale as Locale} navLinksSlot={<NavLinks locale={locale as Locale} />} />
-      <div className="pt-16">{children}</div>
-      <Footer locale={locale as Locale} />
-      <CartDrawerHost locale={locale as Locale} />
-      <ToastAddedToBag />
       <ContactContextProvider>
         <TopNav
           locale={locale as Locale}
