@@ -1,7 +1,7 @@
-"use client";
 import * as React from "react";
 import Image from "next/image";
 import { formatMoneyCents } from "@/lib/format";
+import type { Locale } from "@/types/locale";
 
 export type OrderLine = {
   id: string;
@@ -16,10 +16,11 @@ type Props = {
   subtotal: number; // cents
   delivery: number; // cents
   total: number;    // cents
+  locale: Locale;
   eyebrow?: string;
 };
 
-export function OrderSummaryPanel({ items, subtotal, delivery, total, eyebrow = "Your order" }: Props) {
+export function OrderSummaryPanel({ items, subtotal, delivery, total, locale, eyebrow = "Your order" }: Props) {
   return (
     <div className="relative h-full min-h-[280px] md:min-h-[640px] overflow-hidden bg-gradient-to-br from-ink to-[#2a1a16] text-bone">
       <div
@@ -48,42 +49,30 @@ export function OrderSummaryPanel({ items, subtotal, delivery, total, eyebrow = 
                     {it.name}
                   </p>
                   <p className="font-mono text-[11px] text-bone/60 mt-0.5">
-                    {it.qty} × {formatMoneyCents(it.price, "en")}
+                    {it.qty} × {formatMoneyCents(it.price, locale)}
                   </p>
                 </div>
                 <span className="font-mono text-sm text-bone/85 flex-shrink-0">
-                  {formatMoneyCents(it.price * it.qty, "en")}
+                  {formatMoneyCents(it.price * it.qty, locale)}
                 </span>
               </li>
             ))}
           </ul>
         </div>
-        <div className="mt-8 border-t border-bone/15 pt-4 space-y-2">
+        <dl className="mt-8 border-t border-bone/15 pt-4 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-bone/60">
-              Subtotal
-            </span>
-            <span className="font-mono text-sm text-bone/85">
-              {formatMoneyCents(subtotal, "en")}
-            </span>
+            <dt className="font-mono text-[11px] uppercase tracking-[0.22em] text-bone/60">Subtotal</dt>
+            <dd className="font-mono text-sm text-bone/85">{formatMoneyCents(subtotal, locale)}</dd>
           </div>
           <div className="flex items-center justify-between">
-            <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-bone/60">
-              Delivery
-            </span>
-            <span className="font-mono text-sm text-bone/85">
-              {formatMoneyCents(delivery, "en")}
-            </span>
+            <dt className="font-mono text-[11px] uppercase tracking-[0.22em] text-bone/60">Delivery</dt>
+            <dd className="font-mono text-sm text-bone/85">{formatMoneyCents(delivery, locale)}</dd>
           </div>
-          <div className="flex items-center justify-between pt-3 border-t border-bone/10">
-            <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-bone/70">
-              Total
-            </span>
-            <span className="font-display text-2xl tracking-tighter">
-              {formatMoneyCents(total, "en")}
-            </span>
+          <div className="flex items-baseline justify-between pt-3 border-t border-bone/10">
+            <dt className="font-mono text-[11px] uppercase tracking-[0.22em] text-bone/70">Total</dt>
+            <dd className="font-display text-2xl tracking-tighter">{formatMoneyCents(total, locale)}</dd>
           </div>
-        </div>
+        </dl>
       </div>
     </div>
   );
