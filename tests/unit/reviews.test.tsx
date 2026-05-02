@@ -44,3 +44,80 @@ describe("buildReviewsJsonLd", () => {
     expect(parsed.review[0].reviewRating.bestRating).toBe(5);
   });
 });
+
+import { GoogleReviewsCard } from "@/components/home/GoogleReviewsCard";
+
+const baseCardProps = {
+  author: "Jessica Morales",
+  initials: "JM",
+  displayText: "Amazing flowers for our wedding.",
+  date: "2026-04",
+  locale: "en" as const,
+  occasion: "Boda",
+  showTranslateChip: false,
+  showingOriginal: false,
+  translateLabel: "Translated · view original",
+  originalLabel: "Showing original",
+  onToggleTranslate: vi.fn(),
+  onPrev: vi.fn(),
+  onNext: vi.fn(),
+  prevLabel: "Previous review",
+  nextLabel: "Next review",
+};
+
+describe("GoogleReviewsCard", () => {
+  it("renders the display text", () => {
+    render(<GoogleReviewsCard {...baseCardProps} />);
+    expect(screen.getByText("Amazing flowers for our wedding.")).toBeInTheDocument();
+  });
+
+  it("renders the author name", () => {
+    render(<GoogleReviewsCard {...baseCardProps} />);
+    expect(screen.getByText("Jessica Morales")).toBeInTheDocument();
+  });
+
+  it("renders formatted date and occasion", () => {
+    render(<GoogleReviewsCard {...baseCardProps} />);
+    expect(screen.getByText(/April 2026.*Boda/)).toBeInTheDocument();
+  });
+
+  it("does not render translate chip when showTranslateChip is false", () => {
+    render(<GoogleReviewsCard {...baseCardProps} showTranslateChip={false} />);
+    expect(screen.queryByText("Translated · view original")).not.toBeInTheDocument();
+  });
+
+  it("renders translate chip when showTranslateChip is true", () => {
+    render(<GoogleReviewsCard {...baseCardProps} showTranslateChip={true} />);
+    expect(screen.getByText("Translated · view original")).toBeInTheDocument();
+  });
+
+  it("shows originalLabel when showingOriginal is true", () => {
+    render(<GoogleReviewsCard {...baseCardProps} showTranslateChip={true} showingOriginal={true} />);
+    expect(screen.getByText("Showing original")).toBeInTheDocument();
+    expect(screen.queryByText("Translated · view original")).not.toBeInTheDocument();
+  });
+
+  it("calls onToggleTranslate when translate chip is clicked", async () => {
+    const user = userEvent.setup();
+    const onToggleTranslate = vi.fn();
+    render(<GoogleReviewsCard {...baseCardProps} showTranslateChip={true} onToggleTranslate={onToggleTranslate} />);
+    await user.click(screen.getByText("Translated · view original"));
+    expect(onToggleTranslate).toHaveBeenCalledTimes(1);
+  });
+
+  it("calls onNext when next arrow is clicked", async () => {
+    const user = userEvent.setup();
+    const onNext = vi.fn();
+    render(<GoogleReviewsCard {...baseCardProps} onNext={onNext} />);
+    await user.click(screen.getByRole("button", { name: "Next review" }));
+    expect(onNext).toHaveBeenCalledTimes(1);
+  });
+
+  it("calls onPrev when prev arrow is clicked", async () => {
+    const user = userEvent.setup();
+    const onPrev = vi.fn();
+    render(<GoogleReviewsCard {...baseCardProps} onPrev={onPrev} />);
+    await user.click(screen.getByRole("button", { name: "Previous review" }));
+    expect(onPrev).toHaveBeenCalledTimes(1);
+  });
+});
