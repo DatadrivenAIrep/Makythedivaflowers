@@ -314,6 +314,12 @@
       "orders": "Orders"
     },
     "sign-in": {
+      "shell": {
+        "eyebrow": "Welcome back",
+        "title": "Sign in to your account.",
+        "body": "Manage subscriptions, view orders, and update your delivery preferences.",
+        "signature": "— Diva, NYC"
+      },
       "email": "Email",
       "password": "Password",
       "submit": "Sign in",
@@ -322,6 +328,12 @@
       "stub_notice": "Stub — full auth not yet implemented"
     },
     "sign-up": {
+      "shell": {
+        "eyebrow": "Create account",
+        "title": "Begin a relationship with Diva.",
+        "body": "We'll save your preferences for future arrangements and send order updates.",
+        "signature": "— Diva, NYC"
+      },
       "name": "Full name",
       "email": "Email",
       "password": "Password",

@@ -1,8 +1,12 @@
-// components/account/AuthForm.tsx
 "use client";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/Button";
+import { FormShell } from "@/components/ui/form/shell/FormShell";
+import { EditorialPanel } from "@/components/ui/form/shell/EditorialPanel";
+import { FormSuccess } from "@/components/ui/form/shell/FormSuccess";
+import { FormField } from "@/components/ui/form/FormField";
+import { TextInput } from "@/components/ui/form/TextInput";
+import { FormSubmit } from "@/components/ui/form/FormSubmit";
 
 type Mode = "sign-in" | "sign-up";
 
@@ -15,45 +19,42 @@ export function AuthForm({ mode }: { mode: Mode }) {
     setSubmitted(true);
   }
 
-  if (submitted) {
-    return (
-      <div className="rounded-2xl border border-ink/10 bg-petal/20 p-8 space-y-3">
-        <p className="font-display text-3xl text-ink">{t("stub_title")}</p>
-        <p className="text-ink/75">{t("stub_body")}</p>
-        <p className="font-mono text-[11px] text-ink/50 uppercase tracking-[0.18em]">{t("stub_notice")}</p>
-      </div>
-    );
-  }
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      {/* TODO: wire RHF + zodResolver + honeypot when replacing stub with real auth */}
-      {mode === "sign-up" && (
-        <Field label={t("name")} type="text" name="name" autoComplete="name" required />
+    <FormShell
+      left={
+        <EditorialPanel
+          eyebrow={t("shell.eyebrow")}
+          title={t("shell.title")}
+          body={t("shell.body")}
+          signature={t("shell.signature")}
+        />
+      }
+    >
+      {submitted ? (
+        <FormSuccess title={t("stub_title")} body={t("stub_body")} />
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-5 max-w-md">
+          {/* TODO: wire RHF + zodResolver + honeypot when replacing stub with real auth */}
+          {mode === "sign-up" && (
+            <FormField label={t("name")} htmlFor="auth-name" required>
+              <TextInput id="auth-name" type="text" name="name" autoComplete="name" required />
+            </FormField>
+          )}
+          <FormField label={t("email")} htmlFor="auth-email" required>
+            <TextInput id="auth-email" type="email" name="email" autoComplete="email" required />
+          </FormField>
+          <FormField label={t("password")} htmlFor="auth-password" required>
+            <TextInput
+              id="auth-password"
+              type="password"
+              name="password"
+              autoComplete={mode === "sign-in" ? "current-password" : "new-password"}
+              required
+            />
+          </FormField>
+          <FormSubmit>{t("submit")}</FormSubmit>
+        </form>
       )}
-      <Field label={t("email")} type="email" name="email" autoComplete="email" required />
-      <Field label={t("password")} type="password" name="password" autoComplete={mode === "sign-in" ? "current-password" : "new-password"} required />
-      <Button type="submit" variant="primary" size="lg" className="w-full">
-        {t("submit")}
-      </Button>
-    </form>
-  );
-}
-
-function Field({ label, error, ...rest }: React.InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string }) {
-  const id = `f-${rest.name}`;
-  const errorId = error ? `${id}-error` : undefined;
-  return (
-    <label htmlFor={id} className="block">
-      <span className="block font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 mb-1.5">{label}</span>
-      <input
-        id={id}
-        {...rest}
-        aria-describedby={errorId}
-        aria-invalid={!!error || undefined}
-        className="block w-full rounded-xl border border-ink/15 bg-bone px-4 py-3 text-base text-ink focus:outline-none focus:ring-2 focus:ring-rouge/40 focus:border-rouge"
-      />
-      {error && <span id={errorId} className="mt-1 block font-mono text-[11px] text-error">{error}</span>}
-    </label>
+    </FormShell>
   );
 }

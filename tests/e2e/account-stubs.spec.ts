@@ -17,5 +17,5 @@ test("auth form submit shows stub notice", async ({ page }) => {
   await page.getByRole("textbox", { name: "Email", exact: true }).fill("lola@example.com");
   await page.getByLabel(/password/i).fill("supersecret");
   await page.getByRole("button", { name: /sign in/i }).click();
-  await expect(page.getByText(/stub/i)).toBeVisible();
+  await expect(page.getByText(/you're signed in/i)).toBeVisible();
 });

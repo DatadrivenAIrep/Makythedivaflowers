@@ -314,6 +314,12 @@
       "orders": "Pedidos"
     },
     "sign-in": {
+      "shell": {
+        "eyebrow": "Bienvenido de vuelta",
+        "title": "Inicia sesión en tu cuenta.",
+        "body": "Gestiona suscripciones, consulta órdenes y actualiza tus preferencias de entrega.",
+        "signature": "— Diva, NYC"
+      },
       "email": "Correo electrónico",
       "password": "Contraseña",
       "submit": "Iniciar sesión",
@@ -322,6 +328,12 @@
       "stub_notice": "Provisional — autenticación completa no implementada aún"
     },
     "sign-up": {
+      "shell": {
+        "eyebrow": "Crear cuenta",
+        "title": "Comienza una relación con Diva.",
+        "body": "Guardaremos tus preferencias para futuros arreglos y te enviaremos actualizaciones de tus pedidos.",
+        "signature": "— Diva, NYC"
+      },
       "name": "Nombre completo",
       "email": "Correo electrónico",
       "password": "Contraseña",
