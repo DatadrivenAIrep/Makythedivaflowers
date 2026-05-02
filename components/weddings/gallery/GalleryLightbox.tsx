@@ -19,18 +19,32 @@ export function GalleryLightbox({ photos, activeIndex, locale, onClose, onChange
   const t = useTranslations("weddings.gallery");
   const reduce = useReducedMotion();
   const closeRef = useRef<HTMLButtonElement | null>(null);
+  const onCloseRef = useRef(onClose);
+  const onChangeRef = useRef(onChange);
+  // Keep refs current without re-running the keyboard effect
+  useEffect(() => {
+    onCloseRef.current = onClose;
+    onChangeRef.current = onChange;
+  });
+
+  useEffect(() => {
+    if (activeIndex === null) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, [activeIndex]);
 
   useEffect(() => {
     if (activeIndex === null) return;
     closeRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-      if (e.key === "ArrowRight") onChange((activeIndex + 1) % photos.length);
-      if (e.key === "ArrowLeft") onChange((activeIndex - 1 + photos.length) % photos.length);
+      if (e.key === "Escape") onCloseRef.current();
+      if (e.key === "ArrowRight") onChangeRef.current((activeIndex + 1) % photos.length);
+      if (e.key === "ArrowLeft") onChangeRef.current((activeIndex - 1 + photos.length) % photos.length);
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [activeIndex, onChange, onClose, photos.length]);
+  }, [activeIndex, photos.length]);
 
   const active = activeIndex === null ? null : photos[activeIndex];
 
