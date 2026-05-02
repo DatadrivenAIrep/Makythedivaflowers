@@ -368,7 +368,8 @@
       "hours_label": "Horario",
       "hours_value": "Lun–Sáb 9am–6pm · Dom 10am–4pm",
       "phone_label": "Teléfono",
-      "email_label": "Correo"
+      "email_label": "Correo",
+      "directions_cta": "Cómo llegar"
     },
     "map": {
       "alt": "Mapa que muestra Diva Flowers en 1077 Hempstead Turnpike, Franklin Square, NY"
