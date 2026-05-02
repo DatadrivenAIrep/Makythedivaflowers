@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useId } from "react";
 import { useTranslations } from "next-intl";
 import { useReducedMotion, AnimatePresence, motion } from "framer-motion";
 import { GoogleReviewsCard } from "./GoogleReviewsCard";
@@ -16,6 +16,7 @@ export function GoogleReviewsClient({ reviews, locale, autoplayMs = 7_000 }: Pro
   const t = useTranslations("home.reviews");
   const reduceMotion = useReducedMotion();
 
+  const panelId = useId();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [showingOriginal, setShowingOriginal] = useState(false);
@@ -85,10 +86,13 @@ export function GoogleReviewsClient({ reviews, locale, autoplayMs = 7_000 }: Pro
       <div aria-live="polite" aria-atomic="true" className="sr-only">
         {review.author}{review.occasion ? ` · ${review.occasion}` : ""}
       </div>
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        {isPaused ? t("aria.play") : t("aria.pause")}
+      </div>
 
       <AnimatePresence mode="wait">
         <motion.article
-          id="reviews-panel"
+          id={panelId}
           key={review.id}
           role="group"
           aria-roledescription="review"
@@ -124,7 +128,7 @@ export function GoogleReviewsClient({ reviews, locale, autoplayMs = 7_000 }: Pro
             type="button"
             role="tab"
             aria-selected={i === activeIndex}
-            aria-controls="reviews-panel"
+            aria-controls={panelId}
             aria-label={t("aria.goto", { n: i + 1 })}
             onClick={() => goTo(i)}
             className="relative h-[2px] flex-1 bg-mute-100 rounded-full overflow-hidden"
