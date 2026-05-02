@@ -6,7 +6,7 @@ const FILE = path.join(process.cwd(), "pending-inquiries.json");
 
 export type InquiryRecord = {
   id: string;
-  type: "wedding" | "event" | "contact" | "newsletter";
+  type: "wedding" | "event" | "subscription" | "contact" | "newsletter";
   payload: unknown;
   createdAt: string;
   ip: string;
