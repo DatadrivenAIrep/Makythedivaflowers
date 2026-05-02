@@ -564,5 +564,28 @@
         "unknown_error": "Something went wrong. Please try again or call us directly."
       }
     }
+  },
+  "text_modal": {
+    "trigger": "Text Maky",
+    "title": "Text Maky",
+    "subtitle": "I'll respond as soon as I can.",
+    "preview_label": "Your message",
+    "send_sms": "Send via SMS",
+    "send_whatsapp": "WhatsApp",
+    "call": "Call instead",
+    "footer_note": "Mon–Sun · A real person",
+    "inline_link": "Text Maky directly →",
+    "close": "Close",
+    "greeting": "Hi Maky, ",
+    "subjects": {
+      "pdp_generic": "I have a question about a product I'm looking at.",
+      "pdp_named": "I have a question about {product}.",
+      "shop_all": "I'm browsing your shop and have a question.",
+      "shop_category": "I'm browsing your {category} collection and have a question.",
+      "weddings": "I'd like to inquire about wedding florals.",
+      "events": "I'd like to ask about florals for an event.",
+      "checkout": "I need help completing my order.",
+      "default": "I have a quick question."
+    }
   }
 }
