@@ -18,6 +18,7 @@ export function FormField({ label, htmlFor, required, help, error, className, ch
   return (
     <div className={cn("block", className)}>
       <label
+        id={`${htmlFor}-label`}
         htmlFor={htmlFor}
         className="mb-2 block font-mono text-[12px] uppercase tracking-[0.16em] text-ink/70"
       >

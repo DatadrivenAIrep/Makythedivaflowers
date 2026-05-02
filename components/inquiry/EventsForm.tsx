@@ -107,6 +107,7 @@ export function EventsForm({ locale }: { locale: Locale }) {
 
           <FormField label={t("frequency")} htmlFor="e-frequency" error={errors.frequency?.message}>
             <RadioChips
+              aria-labelledby="e-frequency-label"
               name="frequency"
               items={freqItems}
               cols={3}
@@ -117,6 +118,7 @@ export function EventsForm({ locale }: { locale: Locale }) {
 
           <FormField label={t("budget")} htmlFor="e-budget" error={errors.budgetBand?.message}>
             <RadioChips
+              aria-labelledby="e-budget-label"
               name="budgetBand"
               items={budgetItems}
               value={watchedBudget}

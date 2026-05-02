@@ -57,7 +57,6 @@
     "place_order": "Place order",
     "placing": "Placing order…",
     "summary": "Summary",
-    "order_details_summary": "Order summary · {count} items · {total}",
     "subtotal": "Subtotal",
     "delivery": "Delivery",
     "tax": "Tax",

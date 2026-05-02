@@ -64,10 +64,11 @@ export function DeliveryStep({ form }: { form: UseFormReturn<CheckoutInput> }) {
       <input type="hidden" value="US" {...register("delivery.address.country")} />
       <FormField label={t("delivery_date")} htmlFor="ck-date"
         error={errors?.window?.date ? t("errors.date_invalid") : undefined}>
-        <DateInput id="ck-date" min={min} {...register("delivery.window.date")} />
+        <DateInput id="ck-date" min={min} aria-invalid={!!errors?.window?.date || undefined} {...register("delivery.window.date")} />
       </FormField>
       <FormField label={t("delivery_window")} htmlFor="ck-window">
         <RadioChips
+          aria-labelledby="ck-window-label"
           name="delivery.window.slot"
           items={slotItems}
           value={selectedSlot ?? ""}

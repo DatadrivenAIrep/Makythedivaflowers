@@ -11,6 +11,7 @@ type Props = {
   cols?: 2 | 3 | 4;
   className?: string;
   "aria-describedby"?: string;
+  "aria-labelledby"?: string;
 };
 
 export function RadioChips({ name, items, value, onChange, cols = 4, className, ...rest }: Props) {
@@ -18,6 +19,7 @@ export function RadioChips({ name, items, value, onChange, cols = 4, className, 
   return (
     <div
       role="radiogroup"
+      aria-labelledby={rest["aria-labelledby"]}
       aria-describedby={rest["aria-describedby"]}
       className={cn("grid grid-cols-2 gap-2", colsCls, className)}
     >
