@@ -23,47 +23,93 @@ function SubscriptionTierCardImpl({ locale, plan, selected, onSelect }: Props) {
       onClick={() => onSelect(plan.id)}
       aria-pressed={selected}
       className={cn(
-        "relative flex h-full flex-col gap-5 rounded-[var(--radius-bento)] border bg-bone p-6 md:p-7 text-left",
-        "shadow-[var(--shadow-tile-rest)] transition-colors",
-        selected ? "border-rouge ring-1 ring-rouge/40" : "border-ink/10 hover:border-ink/30",
+        "relative flex h-full flex-col rounded-[var(--radius-bento)] border text-left transition-all duration-200",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rouge/50",
+        selected
+          ? "border-rouge bg-ink text-bone shadow-[0_8px_32px_rgba(184,52,94,0.25)]"
+          : "border-ink/10 bg-bone shadow-[var(--shadow-tile-rest)] hover:border-ink/25 hover:shadow-md",
       )}
     >
       {plan.popular && (
-        <span className="absolute -top-3 left-6 rounded-full bg-rouge px-3 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-bone">
+        <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-rouge px-3.5 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-bone whitespace-nowrap">
           {t("popular_badge")}
         </span>
       )}
-      <div className="flex flex-col gap-1">
-        <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute-500">
+
+      {/* Plan id + name */}
+      <div className={cn("px-6 pt-8 pb-5 border-b", selected ? "border-bone/10" : "border-ink/8")}>
+        <span
+          className={cn(
+            "font-mono text-[10px] uppercase tracking-[0.22em]",
+            selected ? "text-bone/50" : "text-mute-500",
+          )}
+        >
           {plan.id}
         </span>
-        <p className="font-display text-3xl tracking-tighter leading-tight">{name}</p>
+        <p
+          className={cn(
+            "mt-1.5 font-display text-3xl tracking-tighter leading-none",
+            selected ? "text-bone" : "text-ink",
+          )}
+        >
+          {name}
+        </p>
       </div>
-      <div className="flex items-baseline gap-2">
-        <span className="font-display text-4xl tracking-tighter">
+
+      {/* Price */}
+      <div className={cn("px-6 py-5 border-b", selected ? "border-bone/10" : "border-ink/8")}>
+        <span
+          className={cn(
+            "font-display text-5xl tracking-tighter",
+            selected ? "text-bone" : "text-ink",
+          )}
+        >
           {formatMoneyCents(plan.priceCents, locale)}
         </span>
-        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-mute-500">
+        <span
+          className={cn(
+            "mt-0.5 block font-mono text-[10px] uppercase tracking-[0.18em]",
+            selected ? "text-bone/45" : "text-mute-500",
+          )}
+        >
           {t("per_delivery")}
         </span>
       </div>
-      <p className="text-sm text-ink/75 leading-relaxed">{plan.blurb[locale]}</p>
-      <ul className="flex flex-col gap-1.5 text-sm text-ink/85">
-        {plan.highlights.map((h, i) => (
-          <li key={i} className="flex gap-2">
-            <span aria-hidden className="mt-2 size-1 shrink-0 rounded-full bg-ink/40" />
-            <span>{h[locale]}</span>
-          </li>
-        ))}
-      </ul>
-      <span
-        className={cn(
-          "mt-auto inline-flex w-fit items-center rounded-full px-4 py-2.5 font-sans text-sm font-medium tracking-tight transition-colors",
-          selected ? "bg-rouge text-bone" : "bg-ink text-bone",
-        )}
-      >
-        {selected ? t("selected") : t("cta", { name })}
-      </span>
+
+      {/* Blurb + highlights */}
+      <div className="flex flex-col gap-5 px-6 py-5 flex-1">
+        <p className={cn("text-sm leading-relaxed", selected ? "text-bone/70" : "text-ink/70")}>
+          {plan.blurb[locale]}
+        </p>
+        <ul className="flex flex-col gap-2">
+          {plan.highlights.map((h, i) => (
+            <li key={i} className="flex gap-2.5 items-start">
+              <span
+                aria-hidden
+                className={cn(
+                  "mt-[7px] size-1 shrink-0 rounded-full",
+                  selected ? "bg-rouge" : "bg-ink/35",
+                )}
+              />
+              <span className={cn("text-sm leading-snug", selected ? "text-bone/80" : "text-ink/80")}>
+                {h[locale]}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* CTA */}
+      <div className="px-6 pb-6">
+        <span
+          className={cn(
+            "inline-flex w-full items-center justify-center rounded-full px-4 py-3 font-sans text-sm font-medium tracking-tight transition-colors",
+            selected ? "bg-rouge text-bone" : "bg-ink/8 text-ink hover:bg-ink/14",
+          )}
+        >
+          {selected ? t("selected") : t("cta", { name })}
+        </span>
+      </div>
     </button>
   );
 }

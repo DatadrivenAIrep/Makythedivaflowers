@@ -60,10 +60,12 @@ export function SubscriptionInquiryForm({ locale, plan }: Props) {
 
   if (state === "success") {
     return (
-      <section id="inquire" className="mx-auto max-w-2xl px-4 sm:px-6 py-16 md:py-24">
-        <div className="rounded-2xl border border-ink/10 bg-petal/30 p-10 text-center">
-          <p className="font-display text-4xl text-ink leading-tight">{t("success_title")}</p>
-          <p className="mt-4 text-ink/75">{t("success_body")}</p>
+      <section id="inquire" className="bg-petal/40 border-t border-ink/8">
+        <div className="mx-auto max-w-2xl px-6 py-20 md:py-28">
+          <div className="rounded-2xl border border-ink/10 bg-bone p-10 text-center shadow-sm">
+            <p className="font-display text-4xl text-ink leading-tight">{t("success_title")}</p>
+            <p className="mt-4 text-ink/70">{t("success_body")}</p>
+          </div>
         </div>
       </section>
     );
@@ -74,7 +76,8 @@ export function SubscriptionInquiryForm({ locale, plan }: Props) {
   const watchedSlot = form.watch("window.slot");
 
   return (
-    <section id="inquire" className="mx-auto max-w-2xl px-4 sm:px-6 py-16 md:py-24">
+    <section id="inquire" className="bg-petal/40 border-t border-ink/8">
+      <div className="mx-auto max-w-2xl px-6 py-20 md:py-28">
       <header className="mb-8">
         <h2 className="font-display text-4xl text-ink leading-[0.95] tracking-tighter">
           {t("heading")}
@@ -257,6 +260,7 @@ export function SubscriptionInquiryForm({ locale, plan }: Props) {
           {state === "submitting" ? t("submitting") : t("submit")}
         </button>
       </form>
+      </div>
     </section>
   );
 }
