@@ -21,8 +21,10 @@ test.describe("subscriptions", () => {
     // Cadence: select "Weekly" radio (already default, but click to be explicit)
     await page.locator('input[type="radio"][value="weekly"]').check();
 
-    // Start date (at least 2 days from today)
-    await page.locator("#f-startdate").fill("2026-12-01");
+    // Start date (at least 2 days from today — computed dynamically so tests don't expire)
+    const startDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+    const startDateStr = startDate.toISOString().slice(0, 10);
+    await page.locator("#f-startdate").fill(startDateStr);
 
     // Recipient
     await page.locator("#f-recipient\\.name").fill("Test Recipient");
