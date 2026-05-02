@@ -24,7 +24,7 @@ describe("wedding-portfolio", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it.each(["4/5", "1/1", "16/9", "3/4"] as const)("only uses allowed aspect %s when present", (aspect) => {
+  it("only uses allowed aspect values", () => {
     const allowed = new Set(["4/5", "1/1", "16/9", "3/4"]);
     weddingPortfolio.forEach((p: PortfolioPhoto) => {
       expect(allowed.has(p.aspect)).toBe(true);
