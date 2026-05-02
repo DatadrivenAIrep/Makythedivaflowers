@@ -3,7 +3,8 @@ import { memo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Check } from "@phosphor-icons/react/dist/ssr";
-import { MagneticButton } from "@/components/motion/MagneticButton";
+import { TextInput } from "@/components/ui/form/TextInput";
+import { FormSubmit } from "@/components/ui/form/FormSubmit";
 
 function NewsletterFieldImpl() {
   const t = useTranslations("home.newsletter");
@@ -44,24 +45,23 @@ function NewsletterFieldImpl() {
                 transition={{ duration: reduceMotion ? 0 : 0.25 }}
                 className="flex items-end gap-4 border-b border-ink/20 pb-3"
               >
-                <input
+                <TextInput
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={t("placeholder")}
-                  className="flex-1 bg-transparent font-mono text-base placeholder:text-mute-400 outline-none py-2"
                   aria-label={t("placeholder")}
                   disabled={state === "submitting"}
+                  className="flex-1 border-b-0 py-2 font-mono"
                 />
-                <MagneticButton
-                  type="submit"
-                  variant="ghost"
-                  disabled={state === "submitting"}
-                  className="bg-ink text-bone hover:bg-rouge rounded-full border-0"
+                <FormSubmit
+                  loading={state === "submitting"}
+                  fullWidth={false}
+                  className="shrink-0"
                 >
-                  {state === "submitting" ? "…" : t("cta")}
-                </MagneticButton>
+                  {t("cta")}
+                </FormSubmit>
               </motion.div>
             )}
             {state === "success" && (
