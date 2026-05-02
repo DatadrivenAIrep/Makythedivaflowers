@@ -722,6 +722,12 @@
       }
     },
     "form": {
+      "shell": {
+        "eyebrow": "A weekly ritual",
+        "title": "Flowers, every week. Quietly delivered.",
+        "body": "Pick a cadence and a window — we handle the rest, with notes that change with the season.",
+        "alt": "Subscription bouquet"
+      },
       "heading": "Start your subscription",
       "subheading": "We'll reach out within 24 hours to confirm the first delivery and arrange payment.",
       "plan_label": "Plan",

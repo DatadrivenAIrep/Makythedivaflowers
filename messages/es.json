@@ -722,6 +722,12 @@
       }
     },
     "form": {
+      "shell": {
+        "eyebrow": "Un ritual semanal",
+        "title": "Flores, cada semana. Entregadas con calma.",
+        "body": "Elige una cadencia y una ventana — nosotros nos encargamos del resto, con notas que cambian con la estación.",
+        "alt": "Ramo de suscripción"
+      },
       "heading": "Comienza tu suscripción",
       "subheading": "Te escribimos en 24 horas para confirmar la primera entrega y coordinar el pago.",
       "plan_label": "Plan",

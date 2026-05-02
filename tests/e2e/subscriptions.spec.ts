@@ -13,35 +13,36 @@ test.describe("subscriptions", () => {
     await page.getByRole("button", { name: /choose atelier/i }).click();
 
     // Verify form section is visible (the click scrolls to it)
-    const inquireSection = page.locator("#inquire");
-    await expect(inquireSection).toBeVisible();
-    await inquireSection.scrollIntoViewIfNeeded();
+    // FormShell renders the form panel with id="form-content"
+    const formPanel = page.locator("#form-content");
+    await expect(formPanel).toBeVisible();
+    await formPanel.scrollIntoViewIfNeeded();
     await page.waitForTimeout(400);
 
-    // Cadence: select "Weekly" radio (already default, but click to be explicit)
-    await page.locator('input[type="radio"][value="weekly"]').check();
+    // Cadence: select "Weekly" radio chip (click the visible label)
+    await page.locator('label[for="cadence-weekly"]').click();
 
     // Start date (at least 2 days from today — computed dynamically so tests don't expire)
     const startDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
     const startDateStr = startDate.toISOString().slice(0, 10);
-    await page.locator("#f-startdate").fill(startDateStr);
+    await page.locator("#s-start").fill(startDateStr);
 
     // Recipient
-    await page.locator("#f-recipient\\.name").fill("Test Recipient");
-    await page.locator("#f-recipient\\.phone").fill("555-000-0000");
+    await page.locator("#s-rname").fill("Test Recipient");
+    await page.locator("#s-rphone").fill("555-000-0000");
 
     // Delivery address
-    await page.locator("#f-address\\.street1").fill("123 Test St");
-    await page.locator("#f-address\\.city").fill("Miami");
-    await page.locator("#f-address\\.state").fill("FL");
-    await page.locator("#f-address\\.zip").fill("33101");
+    await page.locator("#s-street1").fill("123 Test St");
+    await page.locator("#s-city").fill("Miami");
+    await page.locator("#s-state").fill("FL");
+    await page.locator("#s-zip").fill("33101");
 
-    // Preferred delivery window: select "Morning"
-    await page.locator('input[type="radio"][value="morning"]').check();
+    // Preferred delivery window: select "Morning" (click the visible chip label)
+    await page.locator('label[for="window.slot-morning"]').click();
 
     // Contact info
-    await page.locator("#f-contact\\.email").fill("test@example.com");
-    await page.locator("#f-contact\\.phone").fill("555-111-2222");
+    await page.locator("#s-cemail").fill("test@example.com");
+    await page.locator("#s-cphone").fill("555-111-2222");
 
     // Submit
     const submitBtn = page.getByRole("button", { name: /send subscription request/i });

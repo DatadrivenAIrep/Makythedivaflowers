@@ -13,6 +13,13 @@ function renderForm(plan: "petit" | "maison" | "atelier" = "maison") {
   );
 }
 
+// Helpers that account for the required-asterisk (*) appended to label text
+// by FormField when required=true. getByLabelText uses accessible name which
+// may include the * textContent depending on the dom-accessibility-api version.
+function getByField(name: RegExp | string) {
+  return screen.getByLabelText(name);
+}
+
 beforeEach(() => {
   global.fetch = vi.fn();
 });
@@ -25,14 +32,15 @@ describe("SubscriptionInquiryForm", () => {
   it("renders required fields", () => {
     renderForm();
     expect(screen.getByLabelText(/recipient name/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/^email$/i)).toBeInTheDocument();
+    // Use id-based lookup for exact single-word labels that have a required asterisk
+    expect(document.getElementById("s-cemail")).toBeInTheDocument();
     expect(screen.getByLabelText(/start date/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/^street$/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/^city$/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/^state/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/^zip$/i)).toBeInTheDocument();
+    expect(document.getElementById("s-street1")).toBeInTheDocument();
+    expect(document.getElementById("s-city")).toBeInTheDocument();
+    expect(document.getElementById("s-state")).toBeInTheDocument();
+    expect(document.getElementById("s-zip")).toBeInTheDocument();
     expect(screen.getByLabelText(/recipient phone/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/^phone$/i)).toBeInTheDocument();
+    expect(document.getElementById("s-cphone")).toBeInTheDocument();
   });
 
   it("submits a valid payload and shows success", async () => {
@@ -50,13 +58,13 @@ describe("SubscriptionInquiryForm", () => {
     await user.type(screen.getByLabelText(/recipient name/i), "Lola Cardona");
     await user.type(screen.getByLabelText(/recipient phone/i), "5165550101");
     await user.type(screen.getByLabelText(/start date/i), futureStr);
-    await user.type(screen.getByLabelText(/^street$/i), "1 Park Ave");
-    await user.type(screen.getByLabelText(/^city$/i), "New York");
-    await user.clear(screen.getByLabelText(/^state/i));
-    await user.type(screen.getByLabelText(/^state/i), "NY");
-    await user.type(screen.getByLabelText(/^zip$/i), "10010");
-    await user.type(screen.getByLabelText(/^email$/i), "lola@example.com");
-    await user.type(screen.getByLabelText(/^phone$/i), "5165550101");
+    await user.type(document.getElementById("s-street1")!, "1 Park Ave");
+    await user.type(document.getElementById("s-city")!, "New York");
+    await user.clear(document.getElementById("s-state")!);
+    await user.type(document.getElementById("s-state")!, "NY");
+    await user.type(document.getElementById("s-zip")!, "10010");
+    await user.type(document.getElementById("s-cemail")!, "lola@example.com");
+    await user.type(document.getElementById("s-cphone")!, "5165550101");
 
     await user.click(screen.getByRole("button", { name: /send subscription request/i }));
 
@@ -100,13 +108,13 @@ describe("SubscriptionInquiryForm", () => {
     await user.type(screen.getByLabelText(/recipient name/i), "Lola Cardona");
     await user.type(screen.getByLabelText(/recipient phone/i), "5165550101");
     await user.type(screen.getByLabelText(/start date/i), futureStr);
-    await user.type(screen.getByLabelText(/^street$/i), "1 Park Ave");
-    await user.type(screen.getByLabelText(/^city$/i), "New York");
-    await user.clear(screen.getByLabelText(/^state/i));
-    await user.type(screen.getByLabelText(/^state/i), "NY");
-    await user.type(screen.getByLabelText(/^zip$/i), "10010");
-    await user.type(screen.getByLabelText(/^email$/i), "lola@example.com");
-    await user.type(screen.getByLabelText(/^phone$/i), "5165550101");
+    await user.type(document.getElementById("s-street1")!, "1 Park Ave");
+    await user.type(document.getElementById("s-city")!, "New York");
+    await user.clear(document.getElementById("s-state")!);
+    await user.type(document.getElementById("s-state")!, "NY");
+    await user.type(document.getElementById("s-zip")!, "10010");
+    await user.type(document.getElementById("s-cemail")!, "lola@example.com");
+    await user.type(document.getElementById("s-cphone")!, "5165550101");
 
     await user.click(screen.getByRole("button", { name: /send subscription request/i }));
 

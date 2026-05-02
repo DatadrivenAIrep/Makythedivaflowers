@@ -16,6 +16,17 @@ import { findSubscriptionPlan, type SubscriptionPlanId } from "@/data/subscripti
 import { CardMessageAssist } from "@/components/product/CardMessageAssist";
 import { getRelations } from "@/lib/card-message-relations";
 import type { Occasion, Relation } from "@/schemas/card-message";
+import { FormShell } from "@/components/ui/form/shell/FormShell";
+import { PhotoPanel } from "@/components/ui/form/shell/PhotoPanel";
+import { FormSuccess } from "@/components/ui/form/shell/FormSuccess";
+import { FormField } from "@/components/ui/form/FormField";
+import { TextInput } from "@/components/ui/form/TextInput";
+import { TextArea } from "@/components/ui/form/TextArea";
+import { DateInput } from "@/components/ui/form/DateInput";
+import { SelectInput } from "@/components/ui/form/SelectInput";
+import { RadioChips } from "@/components/ui/form/RadioChips";
+import { FormSection } from "@/components/ui/form/FormSection";
+import { FormSubmit } from "@/components/ui/form/FormSubmit";
 
 type Props = {
   locale: Locale;
@@ -32,6 +43,12 @@ const CARD_OCCASIONS: Occasion[] = [
   "congrats",
   "sympathy",
 ];
+
+const PLAN_IMAGES: Record<SubscriptionPlanId, string> = {
+  petit: "/products/blush-enchantment.jpg",
+  maison: "/products/timeless-romance.jpg",
+  atelier: "/products/hundred-roses-vase.png",
+};
 
 export function SubscriptionInquiryForm({ locale, plan }: Props) {
   const t = useTranslations("subscriptions.form");
@@ -91,9 +108,9 @@ export function SubscriptionInquiryForm({ locale, plan }: Props) {
   const watchedOccasion = form.watch("cardOccasion");
   const watchedRelation = form.watch("cardRelation");
   const planTitle = findSubscriptionPlan(plan).name[locale];
+  const planImage = PLAN_IMAGES[plan];
   const relations = getRelations("default", locale);
 
-  // Auto-fetch rotation preview when occasion + relation are both set
   const lastFetchKey = useRef<string | null>(null);
   useEffect(() => {
     if (watchedMode !== "rotation" || !watchedOccasion || !watchedRelation) {
@@ -140,210 +157,130 @@ export function SubscriptionInquiryForm({ locale, plan }: Props) {
     return () => controller.abort();
   }, [watchedMode, watchedOccasion, watchedRelation, regenerateNonce, planTitle, locale]);
 
+  const leftPanel = (
+    <PhotoPanel
+      src={planImage}
+      alt={t("shell.alt")}
+      eyebrow={t("shell.eyebrow")}
+      title={t("shell.title")}
+      body={t("shell.body")}
+      priority
+    />
+  );
+
   if (state === "success") {
     return (
-      <section id="inquire" className="bg-petal/40 border-t border-ink/8">
-        <div className="mx-auto max-w-2xl px-6 py-20 md:py-28">
-          <div className="rounded-2xl border border-ink/10 bg-bone p-10 text-center shadow-sm">
-            <p className="font-display text-4xl text-ink leading-tight">{t("success_title")}</p>
-            <p className="mt-4 text-ink/70">{t("success_body")}</p>
-          </div>
-        </div>
-      </section>
+      <FormShell left={leftPanel}>
+        <FormSuccess title={t("success_title")} body={t("success_body")} />
+      </FormShell>
     );
   }
 
+  const cadenceItems = CADENCES.map((c) => ({ value: c, label: t(`cadence.${c}`) }));
+  const slotItems = SLOTS.map((s) => ({ value: s, label: t(`window.${s}`) }));
+
   return (
-    <section id="inquire" className="bg-petal/40 border-t border-ink/8">
-      <div className="mx-auto max-w-2xl px-6 py-20 md:py-28">
-      <header className="mb-8">
-        <h2 className="font-display text-4xl text-ink leading-[0.95] tracking-tighter">
-          {t("heading")}
-        </h2>
-        <p className="mt-3 text-ink/70 text-sm">{t("subheading")}</p>
-      </header>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="relative space-y-6" noValidate>
+    <FormShell left={leftPanel}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-md" noValidate>
         <HoneypotField register={form.register("honeypot")} />
         <input type="hidden" {...form.register("type")} />
         <input type="hidden" {...form.register("locale")} />
         <input type="hidden" {...form.register("plan")} />
 
-        <fieldset>
-          <legend className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 mb-2">
-            {t("cadence_label")}
-          </legend>
-          <div className="grid grid-cols-2 gap-2">
-            {CADENCES.map((c) => (
-              <label
-                key={c}
-                className={`cursor-pointer rounded-xl border px-3 py-3 text-center text-sm transition-colors ${
-                  watchedCadence === c
-                    ? "border-rouge bg-rouge/5 text-ink"
-                    : "border-ink/15 text-ink/70 hover:border-ink/30"
-                }`}
-              >
-                <input type="radio" value={c} className="sr-only" {...form.register("cadence")} />
-                {t(`cadence.${c}`)}
-              </label>
-            ))}
-          </div>
-          {errors.cadence?.message && (
-            <p className="mt-1 font-mono text-[11px] text-error" role="alert">
-              {t(`errors.${errors.cadence.message}`)}
-            </p>
-          )}
-        </fieldset>
+        <FormField label={t("cadence_label")} htmlFor="s-cadence" error={errors.cadence?.message && t(`errors.${errors.cadence.message}`)}>
+          <RadioChips
+            name="cadence"
+            items={cadenceItems}
+            cols={2}
+            value={watchedCadence}
+            onChange={(v) => form.setValue("cadence", v as typeof CADENCES[number])}
+          />
+        </FormField>
 
-        <Field
+        <FormField
           label={t("start_date_label")}
-          type="date"
+          htmlFor="s-start"
           required
           help={t("start_date_help")}
           error={errors.startDate?.message && t(`errors.${errors.startDate.message}`)}
-          {...form.register("startDate")}
-        />
+        >
+          <DateInput id="s-start" aria-invalid={!!errors.startDate || undefined} {...form.register("startDate")} />
+        </FormField>
 
-        <Heading>{t("recipient_heading")}</Heading>
-        <div className="grid sm:grid-cols-2 gap-4">
-          <Field
-            label={t("recipient_name")}
-            required
-            error={errors.recipient?.name?.message && t(`errors.${errors.recipient.name.message}`)}
-            {...form.register("recipient.name")}
-          />
-          <Field
-            label={t("recipient_phone")}
-            type="tel"
-            inputMode="tel"
-            required
-            error={
-              errors.recipient?.phone?.message &&
-              t(`errors.${errors.recipient.phone.message}`)
-            }
-            {...form.register("recipient.phone")}
-          />
+        <FormSection title={t("recipient_heading")} num={1} />
+        <div className="grid sm:grid-cols-2 gap-5">
+          <FormField label={t("recipient_name")} htmlFor="s-rname" required error={errors.recipient?.name?.message && t(`errors.${errors.recipient.name.message}`)}>
+            <TextInput id="s-rname" aria-invalid={!!errors.recipient?.name || undefined} {...form.register("recipient.name")} />
+          </FormField>
+          <FormField label={t("recipient_phone")} htmlFor="s-rphone" required error={errors.recipient?.phone?.message && t(`errors.${errors.recipient.phone.message}`)}>
+            <TextInput id="s-rphone" type="tel" inputMode="tel" aria-invalid={!!errors.recipient?.phone || undefined} {...form.register("recipient.phone")} />
+          </FormField>
         </div>
 
-        <Heading>{t("address_heading")}</Heading>
-        <Field
-          label={t("street1")}
-          required
-          error={errors.address?.street1?.message && t(`errors.${errors.address.street1.message}`)}
-          {...form.register("address.street1")}
-        />
-        <Field label={t("street2")} {...form.register("address.street2")} />
-        <div className="grid sm:grid-cols-3 gap-4">
-          <Field
-            label={t("city")}
-            required
-            error={errors.address?.city?.message && t(`errors.${errors.address.city.message}`)}
-            {...form.register("address.city")}
-          />
-          <Field
-            label={t("state")}
-            required
-            maxLength={2}
-            error={errors.address?.state?.message && t(`errors.${errors.address.state.message}`)}
-            {...form.register("address.state")}
-          />
-          <Field
-            label={t("zip")}
-            required
-            error={errors.address?.zip?.message && t(`errors.${errors.address.zip.message}`)}
-            {...form.register("address.zip")}
-          />
+        <FormSection title={t("address_heading")} num={2} />
+        <FormField label={t("street1")} htmlFor="s-street1" required error={errors.address?.street1?.message && t(`errors.${errors.address.street1.message}`)}>
+          <TextInput id="s-street1" aria-invalid={!!errors.address?.street1 || undefined} {...form.register("address.street1")} />
+        </FormField>
+        <FormField label={t("street2")} htmlFor="s-street2">
+          <TextInput id="s-street2" {...form.register("address.street2")} />
+        </FormField>
+        <div className="grid sm:grid-cols-3 gap-5">
+          <FormField label={t("city")} htmlFor="s-city" required error={errors.address?.city?.message && t(`errors.${errors.address.city.message}`)}>
+            <TextInput id="s-city" aria-invalid={!!errors.address?.city || undefined} {...form.register("address.city")} />
+          </FormField>
+          <FormField label={t("state")} htmlFor="s-state" required error={errors.address?.state?.message && t(`errors.${errors.address.state.message}`)}>
+            <TextInput id="s-state" maxLength={2} aria-invalid={!!errors.address?.state || undefined} {...form.register("address.state")} />
+          </FormField>
+          <FormField label={t("zip")} htmlFor="s-zip" required error={errors.address?.zip?.message && t(`errors.${errors.address.zip.message}`)}>
+            <TextInput id="s-zip" aria-invalid={!!errors.address?.zip || undefined} {...form.register("address.zip")} />
+          </FormField>
         </div>
 
-        <fieldset>
-          <legend className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 mb-2">
-            {t("window_label")}
-          </legend>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            {SLOTS.map((s) => (
-              <label
-                key={s}
-                className={`cursor-pointer rounded-xl border px-3 py-3 text-center text-sm transition-colors ${
-                  watchedSlot === s
-                    ? "border-rouge bg-rouge/5 text-ink"
-                    : "border-ink/15 text-ink/70 hover:border-ink/30"
-                }`}
-              >
-                <input
-                  type="radio"
-                  value={s}
-                  className="sr-only"
-                  {...form.register("window.slot")}
-                />
-                {t(`window.${s}`)}
-              </label>
-            ))}
-          </div>
-          {errors.window?.slot?.message && (
-            <p className="mt-1 font-mono text-[11px] text-error" role="alert">
-              {t(`errors.${errors.window.slot.message}`)}
-            </p>
-          )}
-        </fieldset>
+        <FormField label={t("window_label")} htmlFor="s-window" error={errors.window?.slot?.message && t(`errors.${errors.window.slot.message}`)}>
+          <RadioChips
+            name="window.slot"
+            items={slotItems}
+            value={watchedSlot}
+            onChange={(v) => form.setValue("window.slot", v as typeof SLOTS[number])}
+          />
+        </FormField>
 
-        <Heading>{t("contact_heading")}</Heading>
-        <div className="grid sm:grid-cols-2 gap-4">
-          <Field
-            label={t("contact_email")}
-            type="email"
-            required
-            error={errors.contact?.email?.message && t(`errors.${errors.contact.email.message}`)}
-            {...form.register("contact.email")}
-          />
-          <Field
-            label={t("contact_phone")}
-            type="tel"
-            inputMode="tel"
-            required
-            error={
-              errors.contact?.phone?.message && t(`errors.${errors.contact.phone.message}`)
-            }
-            {...form.register("contact.phone")}
-          />
+        <FormSection title={t("contact_heading")} num={3} />
+        <div className="grid sm:grid-cols-2 gap-5">
+          <FormField label={t("contact_email")} htmlFor="s-cemail" required error={errors.contact?.email?.message && t(`errors.${errors.contact.email.message}`)}>
+            <TextInput id="s-cemail" type="email" aria-invalid={!!errors.contact?.email || undefined} {...form.register("contact.email")} />
+          </FormField>
+          <FormField label={t("contact_phone")} htmlFor="s-cphone" required error={errors.contact?.phone?.message && t(`errors.${errors.contact.phone.message}`)}>
+            <TextInput id="s-cphone" type="tel" inputMode="tel" aria-invalid={!!errors.contact?.phone || undefined} {...form.register("contact.phone")} />
+          </FormField>
         </div>
 
-        <fieldset>
-          <legend className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 mb-2">
-            {t("card_mode_heading")}
-          </legend>
-          <div className="grid grid-cols-2 gap-2">
-            {(["fixed", "rotation"] as const).map((m) => (
-              <label
-                key={m}
-                className={`cursor-pointer rounded-xl border px-3 py-3 text-center text-sm transition-colors ${
-                  watchedMode === m
-                    ? "border-rouge bg-rouge/5 text-ink"
-                    : "border-ink/15 text-ink/70 hover:border-ink/30"
-                }`}
-              >
-                <input
-                  type="radio"
-                  value={m}
-                  className="sr-only"
-                  {...form.register("cardMessageMode")}
-                />
-                {t(m === "fixed" ? "card_mode_fixed" : "card_mode_rotation")}
-              </label>
-            ))}
-          </div>
-          <p className="mt-2 font-mono text-[11px] text-ink/55">
-            {t(watchedMode === "rotation" ? "card_mode_rotation_help" : "card_mode_fixed_help")}
-          </p>
-        </fieldset>
+        <FormField
+          label={t("card_mode_heading")}
+          htmlFor="s-cardmode"
+          help={t(watchedMode === "rotation" ? "card_mode_rotation_help" : "card_mode_fixed_help")}
+        >
+          <RadioChips
+            name="cardMessageMode"
+            items={[
+              { value: "fixed", label: t("card_mode_fixed") },
+              { value: "rotation", label: t("card_mode_rotation") },
+            ]}
+            cols={2}
+            value={watchedMode}
+            onChange={(v) => form.setValue("cardMessageMode", v as "fixed" | "rotation")}
+          />
+        </FormField>
 
         {watchedMode === "fixed" ? (
           <div className="flex flex-col gap-3">
-            <Textarea
+            <FormField
               label={t("card_message_label")}
-              rows={3}
-              maxLength={500}
+              htmlFor="s-cardmsg"
               error={errors.cardMessage?.message && t(`errors.${errors.cardMessage.message}`)}
-              {...form.register("cardMessage")}
-            />
+            >
+              <TextArea id="s-cardmsg" rows={3} maxLength={500} aria-invalid={!!errors.cardMessage || undefined} {...form.register("cardMessage")} />
+            </FormField>
             {assistOpen ? (
               <CardMessageAssist
                 productTitle={planTitle}
@@ -376,46 +313,23 @@ export function SubscriptionInquiryForm({ locale, plan }: Props) {
             )}
           </div>
         ) : (
-          <div className="grid sm:grid-cols-2 gap-4">
-            <label htmlFor="f-cardOccasion" className="block">
-              <span className="block font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 mb-1.5">
-                {t("card_occasion_label")} *
-              </span>
-              <select
-                id="f-cardOccasion"
-                className="block w-full rounded-xl border border-ink/15 bg-bone px-4 py-3 text-base text-ink focus:outline-none focus:ring-2 focus:ring-rouge/40 focus:border-rouge"
-                {...form.register("cardOccasion")}
-              >
+          <div className="grid sm:grid-cols-2 gap-5">
+            <FormField label={t("card_occasion_label")} htmlFor="s-occasion" required error={errors.cardOccasion?.message ? t("card_rotation_required") : undefined}>
+              <SelectInput id="s-occasion" aria-invalid={!!errors.cardOccasion || undefined} {...form.register("cardOccasion")}>
                 <option value="">—</option>
                 {CARD_OCCASIONS.map((o) => (
-                  <option key={o} value={o}>
-                    {cardOccasionsT(o)}
-                  </option>
+                  <option key={o} value={o}>{cardOccasionsT(o)}</option>
                 ))}
-              </select>
-              {errors.cardOccasion?.message && (
-                <span role="alert" className="mt-1 block font-mono text-[11px] text-error">
-                  {t("card_rotation_required")}
-                </span>
-              )}
-            </label>
-            <label htmlFor="f-cardRelation" className="block">
-              <span className="block font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 mb-1.5">
-                {t("card_relation_label")} *
-              </span>
-              <select
-                id="f-cardRelation"
-                className="block w-full rounded-xl border border-ink/15 bg-bone px-4 py-3 text-base text-ink focus:outline-none focus:ring-2 focus:ring-rouge/40 focus:border-rouge"
-                {...form.register("cardRelation")}
-              >
+              </SelectInput>
+            </FormField>
+            <FormField label={t("card_relation_label")} htmlFor="s-relation" required>
+              <SelectInput id="s-relation" {...form.register("cardRelation")}>
                 <option value="">—</option>
                 {relations.map((r) => (
-                  <option key={r.key} value={r.key}>
-                    {cardRelationsT(r.key as Relation)}
-                  </option>
+                  <option key={r.key} value={r.key}>{cardRelationsT(r.key as Relation)}</option>
                 ))}
-              </select>
-            </label>
+              </SelectInput>
+            </FormField>
             {watchedOccasion && watchedRelation && (
               <div className="sm:col-span-2 rounded-xl border border-rouge/20 bg-bone p-4">
                 <div className="flex items-center justify-between gap-3 mb-3">
@@ -432,16 +346,11 @@ export function SubscriptionInquiryForm({ locale, plan }: Props) {
                     </button>
                   )}
                 </div>
-
                 {previewState.kind === "loading" && <CardMessageSkeleton />}
-
                 {previewState.kind === "success" && (
                   <ul className="flex flex-col gap-2">
                     {previewState.suggestions.map((s, i) => (
-                      <li
-                        key={i}
-                        className="rounded-lg border border-ink/10 bg-petal/20 px-4 py-3 font-sans text-sm leading-relaxed text-ink/85"
-                      >
+                      <li key={i} className="rounded-lg border border-ink/10 bg-petal/20 px-4 py-3 font-sans text-sm leading-relaxed text-ink/85">
                         <span className="block font-mono text-[9px] uppercase tracking-[0.22em] text-mute-500 mb-1.5">
                           {t("preview_sample", { n: i + 1 })}
                         </span>
@@ -450,44 +359,27 @@ export function SubscriptionInquiryForm({ locale, plan }: Props) {
                     ))}
                   </ul>
                 )}
-
                 {previewState.kind === "error" && (
                   <div role="alert" className="flex items-center justify-between gap-3">
                     <p className="font-sans text-sm text-ink/70">
-                      {t(
-                        previewState.reason === "rate_limit"
-                          ? "preview_error_rate_limit"
-                          : "preview_error_generic",
-                      )}
+                      {t(previewState.reason === "rate_limit" ? "preview_error_rate_limit" : "preview_error_generic")}
                     </p>
-                    <button
-                      type="button"
-                      onClick={() => setRegenerateNonce((n) => n + 1)}
-                      className="font-mono text-[10px] uppercase tracking-[0.18em] text-rouge hover:text-rouge/80"
-                    >
+                    <button type="button" onClick={() => setRegenerateNonce((n) => n + 1)} className="font-mono text-[10px] uppercase tracking-[0.18em] text-rouge hover:text-rouge/80">
                       {t("preview_retry")}
                     </button>
                   </div>
                 )}
-
                 {previewState.kind === "success" && (
-                  <p className="mt-3 font-mono text-[10px] text-ink/55 leading-relaxed">
-                    {t("preview_disclaimer")}
-                  </p>
+                  <p className="mt-3 font-mono text-[10px] text-ink/55 leading-relaxed">{t("preview_disclaimer")}</p>
                 )}
               </div>
             )}
           </div>
         )}
 
-        <Textarea
-          label={t("notes_label")}
-          help={t("notes_help")}
-          rows={3}
-          maxLength={1000}
-          error={errors.notes?.message && t(`errors.${errors.notes.message}`)}
-          {...form.register("notes")}
-        />
+        <FormField label={t("notes_label")} htmlFor="s-notes" help={t("notes_help")} error={errors.notes?.message && t(`errors.${errors.notes.message}`)}>
+          <TextArea id="s-notes" rows={3} maxLength={1000} {...form.register("notes")} />
+        </FormField>
 
         {errorMsg && (
           <p className="font-mono text-[11px] text-error" role="alert">
@@ -495,93 +387,10 @@ export function SubscriptionInquiryForm({ locale, plan }: Props) {
           </p>
         )}
 
-        <button
-          type="submit"
-          disabled={state === "submitting"}
-          className="inline-flex w-full items-center justify-center rounded-full bg-ink px-6 py-4 font-sans text-sm font-medium tracking-tight text-bone transition-opacity disabled:opacity-50"
-        >
+        <FormSubmit loading={state === "submitting"}>
           {state === "submitting" ? t("submitting") : t("submit")}
-        </button>
+        </FormSubmit>
       </form>
-      </div>
-    </section>
-  );
-}
-
-function Heading({ children }: { children: React.ReactNode }) {
-  return (
-    <h3 className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60 pt-2 border-t border-ink/10">
-      {children}
-    </h3>
-  );
-}
-
-type FieldProps = React.InputHTMLAttributes<HTMLInputElement> & {
-  label: string;
-  error?: string | false | null;
-  help?: string;
-};
-function Field({ label, error, help, id, ...rest }: FieldProps) {
-  const fid = id ?? `f-${(rest.name as string ?? label).replace(/\s+/g, "-").toLowerCase()}`;
-  const errorId = error ? `${fid}-error` : undefined;
-  const helpId = help ? `${fid}-help` : undefined;
-  return (
-    <label htmlFor={fid} className="block">
-      <span className="block font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 mb-1.5">
-        {label}
-      </span>
-      <input
-        id={fid}
-        aria-describedby={[helpId, errorId].filter(Boolean).join(" ") || undefined}
-        aria-invalid={!!error}
-        {...rest}
-        className="block w-full rounded-xl border border-ink/15 bg-bone px-4 py-3 text-base text-ink focus:outline-none focus:ring-2 focus:ring-rouge/40 focus:border-rouge"
-      />
-      {help && (
-        <span id={helpId} className="mt-1 block font-mono text-[11px] text-ink/55">
-          {help}
-        </span>
-      )}
-      {error && (
-        <span id={errorId} role="alert" className="mt-1 block font-mono text-[11px] text-error">
-          {error}
-        </span>
-      )}
-    </label>
-  );
-}
-
-type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
-  label: string;
-  error?: string | false | null;
-  help?: string;
-};
-function Textarea({ label, error, help, id, ...rest }: TextareaProps) {
-  const fid = id ?? `f-${(rest.name as string ?? label).replace(/\s+/g, "-").toLowerCase()}`;
-  const errorId = error ? `${fid}-error` : undefined;
-  const helpId = help ? `${fid}-help` : undefined;
-  return (
-    <label htmlFor={fid} className="block">
-      <span className="block font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 mb-1.5">
-        {label}
-      </span>
-      <textarea
-        id={fid}
-        aria-describedby={[helpId, errorId].filter(Boolean).join(" ") || undefined}
-        aria-invalid={!!error}
-        {...rest}
-        className="block w-full rounded-xl border border-ink/15 bg-bone px-4 py-3 text-base text-ink focus:outline-none focus:ring-2 focus:ring-rouge/40 focus:border-rouge resize-none"
-      />
-      {help && (
-        <span id={helpId} className="mt-1 block font-mono text-[11px] text-ink/55">
-          {help}
-        </span>
-      )}
-      {error && (
-        <span id={errorId} role="alert" className="mt-1 block font-mono text-[11px] text-error">
-          {error}
-        </span>
-      )}
-    </label>
+    </FormShell>
   );
 }
