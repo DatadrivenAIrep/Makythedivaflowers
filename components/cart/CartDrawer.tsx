@@ -16,6 +16,7 @@ import type { Locale } from "@/types/locale";
 import { springs } from "@/lib/motion-config";
 import { CutoffPill } from "@/components/conversion/CutoffPill";
 import { GiftAssuranceBar } from "@/components/conversion/GiftAssuranceBar";
+import { CartUpsellStrip } from "@/components/conversion/CartUpsellStrip";
 import { SITE } from "@/data/site";
 
 export function CartDrawer({ locale }: { locale: Locale }) {
@@ -110,6 +111,7 @@ export function CartDrawer({ locale }: { locale: Locale }) {
                     />
                   ))}
                 </ul>
+                <CartUpsellStrip locale={locale} />
                 <div className="px-5 pt-3">
                   <GiftAssuranceBar size="sm" surface="cart" locale={locale} />
                 </div>
