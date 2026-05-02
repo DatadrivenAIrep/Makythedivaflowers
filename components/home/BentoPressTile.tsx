@@ -6,8 +6,8 @@ import { SITE } from "@/data/site";
 
 const QUOTES: Record<string, string> = {
   "The Cut":
-    "The hot-pink storefront on Hempstead Turnpike has become a Long Island pilgrimage.",
-  Vogue: "Diva's signature arch is the most photographed corner in Franklin Square.",
+    "The hot-pink storefront on Willis Ave has become a Long Island pilgrimage.",
+  Vogue: "Diva's signature arch is the most photographed corner in Albertson.",
   Brides:
     "If you want flowers that look like they belong in a magazine, this is the studio.",
   "New York Magazine": "A florist with a real point of view — rare in 2025.",

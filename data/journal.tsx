@@ -48,7 +48,7 @@ export const journalArticles: JournalArticle[] = [
   {
     slug: "under-the-arch",
     title: { en: "Under the arch.", es: "Bajo el arco." },
-    excerpt: { en: "How we built the storefront arch on Hempstead Turnpike, and why we rebuild it every spring.", es: "Cómo construimos el arco de la entrada en Hempstead Turnpike, y por qué lo reconstruimos cada primavera." },
+    excerpt: { en: "How we built the storefront arch on Willis Ave, and why we rebuild it every spring.", es: "Cómo construimos el arco de la entrada en Willis Ave, y por qué lo reconstruimos cada primavera." },
     date: "2026-03-18",
     readingMinutes: 5,
     cover: {
@@ -68,7 +68,7 @@ export const journalArticles: JournalArticle[] = [
     },
     seo: {
       title: { en: "Under the arch — Diva Flowers Journal", es: "Bajo el arco — Diario de Diva Flowers" },
-      description: { en: "Inside the storefront arch on Hempstead Turnpike: the steel frame, the seasonal blooms, and why we rebuild it every spring.", es: "Por dentro del arco en Hempstead Turnpike: el marco de acero, las flores de temporada, y por qué lo reconstruimos cada primavera." },
+      description: { en: "Inside the storefront arch on Willis Ave: the steel frame, the seasonal blooms, and why we rebuild it every spring.", es: "Por dentro del arco en Willis Ave: el marco de acero, las flores de temporada, y por qué lo reconstruimos cada primavera." },
     },
   },
   {
