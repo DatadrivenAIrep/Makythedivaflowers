@@ -75,4 +75,11 @@ describe("MobileDrawer", () => {
     expect(screen.getByRole("link", { name: /arreglos/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /ramos/i })).toBeInTheDocument();
   });
+
+  it("calls onClose when Escape key is pressed", async () => {
+    const handler = vi.fn();
+    render(<MobileDrawer isOpen={true} onClose={handler} locale="en" />);
+    await userEvent.keyboard("{Escape}");
+    expect(handler).toHaveBeenCalledOnce();
+  });
 });

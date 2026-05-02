@@ -22,7 +22,8 @@
     "cart": "Bolsa",
     "search": "Buscar",
     "open_menu": "Abrir menú",
-    "close_menu": "Cerrar menú"
+    "close_menu": "Cerrar menú",
+    "mobile_menu": "Menú de navegación"
   },
   "cart": {
     "title": "Tu Bolsa",

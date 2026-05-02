@@ -56,7 +56,7 @@ export function MobileDrawer({
           <motion.div
             role="dialog"
             aria-modal="true"
-            aria-label={t("open_menu")}
+            aria-label={t("mobile_menu")}
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}

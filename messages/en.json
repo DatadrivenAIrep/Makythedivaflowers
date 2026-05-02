@@ -22,7 +22,8 @@
     "cart": "Bag",
     "search": "Search",
     "open_menu": "Open menu",
-    "close_menu": "Close menu"
+    "close_menu": "Close menu",
+    "mobile_menu": "Navigation menu"
   },
   "cart": {
     "title": "Your Bag",
