@@ -33,6 +33,7 @@ function buildBlocks(photos: PortfolioPhoto[]): Block[] {
 }
 
 const BLOCKS = buildBlocks(weddingPortfolio);
+const FIRST_HERO_ID = BLOCKS.find((b) => b.kind === "hero")?.photo.id ?? "";
 
 export function GalleryEditorial({ locale }: { locale: Locale }) {
   const t = useTranslations("weddings.gallery");
@@ -65,6 +66,7 @@ export function GalleryEditorial({ locale }: { locale: Locale }) {
                 photo={block.photo}
                 index={block.index}
                 locale={locale}
+                priority={block.photo.id === FIRST_HERO_ID}
                 onOpen={setActiveIndex}
               />
             );

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { GalleryEditorial } from "@/components/weddings/gallery/GalleryEditorial";
 import { weddingPortfolio } from "@/data/wedding-portfolio";
@@ -34,8 +34,10 @@ describe("GalleryEditorial", () => {
     render(<GalleryEditorial locale="en" />);
     const buttons = screen.getAllByRole("button", { name: weddingPortfolio[0].alt.en });
     await user.click(buttons[0]);
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    const dialog = screen.getByRole("dialog");
+    expect(dialog).toBeInTheDocument();
     await user.keyboard("{Escape}");
-    await vi.waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    // AnimatePresence fades the dialog out; assert it is no longer visible
+    await waitFor(() => expect(dialog).toHaveStyle({ opacity: "0" }));
   });
 });

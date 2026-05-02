@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useReducedMotion } from "framer-motion";
@@ -15,7 +16,11 @@ const TILE_HEIGHTS = [220, 280, 200, 260, 240];
 
 export function GalleryMarquee({ photos, locale, onOpen }: Props) {
   const t = useTranslations("weddings.gallery");
-  const reduce = useReducedMotion();
+  const reducedMotionPref = useReducedMotion();
+  // Avoid SSR/client hydration mismatch: treat as animated until mounted
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  const reduce = mounted ? reducedMotionPref : false;
 
   const renderRow = (keyPrefix: string) =>
     photos.map((photo, i) => {
@@ -45,7 +50,7 @@ export function GalleryMarquee({ photos, locale, onOpen }: Props) {
     <section
       role="region"
       aria-label={t("marquee_label")}
-      className="relative w-full overflow-hidden py-12 group"
+      className="marquee-container relative w-full overflow-hidden py-12"
     >
       <div
         className={reduce ? "flex gap-4 overflow-x-auto pb-4" : "flex gap-4 marquee-track"}
@@ -54,21 +59,6 @@ export function GalleryMarquee({ photos, locale, onOpen }: Props) {
         {renderRow("a")}
         {!reduce && renderRow("b")}
       </div>
-      {!reduce && (
-        <style>{`
-          .marquee-track {
-            animation: marquee 45s linear infinite;
-          }
-          .group:hover .marquee-track,
-          .group:focus-within .marquee-track {
-            animation-play-state: paused;
-          }
-          @keyframes marquee {
-            from { transform: translateX(0); }
-            to   { transform: translateX(-50%); }
-          }
-        `}</style>
-      )}
     </section>
   );
 }

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { X, CaretLeft, CaretRight } from "@phosphor-icons/react/dist/ssr";
@@ -15,36 +15,66 @@ type Props = {
   onChange: (next: number) => void;
 };
 
+const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 export function GalleryLightbox({ photos, activeIndex, locale, onClose, onChange }: Props) {
   const t = useTranslations("weddings.gallery");
   const reduce = useReducedMotion();
+  const dialogRef = useRef<HTMLDivElement | null>(null);
   const closeRef = useRef<HTMLButtonElement | null>(null);
+  const triggerRef = useRef<Element | null>(null);
   const onCloseRef = useRef(onClose);
   const onChangeRef = useRef(onChange);
+
   // Keep refs current without re-running the keyboard effect
   useEffect(() => {
     onCloseRef.current = onClose;
     onChangeRef.current = onChange;
   });
 
+  // Capture trigger element and body-scroll lock
   useEffect(() => {
     if (activeIndex === null) return;
+    triggerRef.current = document.activeElement;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = prev; };
+    closeRef.current?.focus();
+    return () => {
+      document.body.style.overflow = prev;
+      // Restore focus to the tile that opened the lightbox
+      if (triggerRef.current instanceof HTMLElement) {
+        triggerRef.current.focus();
+      }
+    };
   }, [activeIndex]);
+
+  // Keyboard: Esc / arrows / Tab trap
+  const trapFocus = useCallback((e: KeyboardEvent) => {
+    if (!dialogRef.current) return;
+    const focusable = Array.from(dialogRef.current.querySelectorAll<HTMLElement>(FOCUSABLE));
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.key === "Tab") {
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (activeIndex === null) return;
-    closeRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onCloseRef.current();
       if (e.key === "ArrowRight") onChangeRef.current((activeIndex + 1) % photos.length);
       if (e.key === "ArrowLeft") onChangeRef.current((activeIndex - 1 + photos.length) % photos.length);
+      trapFocus(e);
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [activeIndex, photos.length]);
+  }, [activeIndex, photos.length, trapFocus]);
 
   const active = activeIndex === null ? null : photos[activeIndex];
 
@@ -52,6 +82,7 @@ export function GalleryLightbox({ photos, activeIndex, locale, onClose, onChange
     <AnimatePresence>
       {active && activeIndex !== null && (
         <motion.div
+          ref={dialogRef}
           role="dialog"
           aria-modal="true"
           aria-label={active.alt[locale]}

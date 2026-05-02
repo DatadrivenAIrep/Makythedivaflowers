@@ -45,6 +45,7 @@ export function GalleryTile({ photo, locale, index, showIndex = false, priority 
       type="button"
       onClick={() => onOpen(index)}
       aria-label={photo.alt[locale]}
+      layoutId={reduce ? undefined : `gallery-${photo.id}`}
       className={`group relative block w-full overflow-hidden rounded-2xl bg-bone ${aspectCls}`}
       initial={reduce ? false : { opacity: 0, y: 24, filter: "blur(8px)" }}
       whileInView={reduce ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }}
