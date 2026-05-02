@@ -735,6 +735,13 @@
         "other": "Otro"
       },
       "card_rotation_required": "Elige una ocasión y una relación.",
+      "preview_heading": "Vista previa — lo que podrían decir tus notas",
+      "preview_sample": "Muestra {n}",
+      "preview_regenerate": "Ver más ejemplos",
+      "preview_retry": "Reintentar",
+      "preview_error_generic": "No pudimos generar las muestras ahora mismo.",
+      "preview_error_rate_limit": "Demasiadas muestras — intenta en un momento.",
+      "preview_disclaimer": "Cada entrega lleva una nota nueva escrita esa misma semana. Estos son ejemplos del estilo.",
       "notes_label": "Notas (opcional)",
       "notes_help": "Preferencias de color, alergias, acceso al edificio, cualquier cosa que debamos saber.",
       "submit": "Enviar solicitud de suscripción",

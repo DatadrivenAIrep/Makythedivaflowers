@@ -735,6 +735,13 @@
         "other": "Other"
       },
       "card_rotation_required": "Pick an occasion and a relation.",
+      "preview_heading": "Preview — what your weekly notes might say",
+      "preview_sample": "Sample {n}",
+      "preview_regenerate": "See more examples",
+      "preview_retry": "Retry",
+      "preview_error_generic": "Couldn't generate previews right now.",
+      "preview_error_rate_limit": "Too many previews — try again in a moment.",
+      "preview_disclaimer": "Each delivery gets a freshly written note. These are examples of the style.",
       "notes_label": "Notes (optional)",
       "notes_help": "Color preferences, allergies, building access, anything we should know.",
       "submit": "Send subscription request",

@@ -1,9 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { HoneypotField } from "@/components/inquiry/HoneypotField";
+import { CardMessageSkeleton } from "@/components/product/CardMessageSkeleton";
 import { submitSubscriptionInquiry } from "@/lib/submit-subscription-inquiry";
 import {
   subscriptionInquirySchema,
@@ -40,6 +41,13 @@ export function SubscriptionInquiryForm({ locale, plan }: Props) {
   const [state, setState] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [assistOpen, setAssistOpen] = useState(false);
+  const [previewState, setPreviewState] = useState<
+    | { kind: "idle" }
+    | { kind: "loading" }
+    | { kind: "success"; suggestions: string[] }
+    | { kind: "error"; reason: "rate_limit" | "generic" }
+  >({ kind: "idle" });
+  const [regenerateNonce, setRegenerateNonce] = useState(0);
 
   const form = useForm<SubscriptionInquiryInput, unknown, SubscriptionInquiry>({
     resolver: zodResolver(subscriptionInquirySchema),
@@ -76,6 +84,62 @@ export function SubscriptionInquiryForm({ locale, plan }: Props) {
     form.reset();
   }
 
+  const errors = form.formState.errors;
+  const watchedCadence = form.watch("cadence");
+  const watchedSlot = form.watch("window.slot");
+  const watchedMode = form.watch("cardMessageMode") ?? "fixed";
+  const watchedOccasion = form.watch("cardOccasion");
+  const watchedRelation = form.watch("cardRelation");
+  const planTitle = findSubscriptionPlan(plan).name[locale];
+  const relations = getRelations("default", locale);
+
+  // Auto-fetch rotation preview when occasion + relation are both set
+  const lastFetchKey = useRef<string | null>(null);
+  useEffect(() => {
+    if (watchedMode !== "rotation" || !watchedOccasion || !watchedRelation) {
+      return;
+    }
+    const key = `${watchedOccasion}|${watchedRelation}|${regenerateNonce}`;
+    if (lastFetchKey.current === key) return;
+    lastFetchKey.current = key;
+
+    const controller = new AbortController();
+    setPreviewState({ kind: "loading" });
+    fetch("/api/card-message", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        productTitle: planTitle,
+        occasion: watchedOccasion,
+        relation: watchedRelation,
+        locale,
+      }),
+      signal: controller.signal,
+    })
+      .then(async (res) => {
+        if (res.status === 429) {
+          setPreviewState({ kind: "error", reason: "rate_limit" });
+          return;
+        }
+        if (!res.ok) {
+          setPreviewState({ kind: "error", reason: "generic" });
+          return;
+        }
+        const json = (await res.json()) as { suggestions: string[] };
+        if (!Array.isArray(json.suggestions) || json.suggestions.length !== 3) {
+          setPreviewState({ kind: "error", reason: "generic" });
+          return;
+        }
+        setPreviewState({ kind: "success", suggestions: json.suggestions });
+      })
+      .catch((err) => {
+        if (err?.name === "AbortError") return;
+        setPreviewState({ kind: "error", reason: "generic" });
+      });
+
+    return () => controller.abort();
+  }, [watchedMode, watchedOccasion, watchedRelation, regenerateNonce, planTitle, locale]);
+
   if (state === "success") {
     return (
       <section id="inquire" className="bg-petal/40 border-t border-ink/8">
@@ -88,15 +152,6 @@ export function SubscriptionInquiryForm({ locale, plan }: Props) {
       </section>
     );
   }
-
-  const errors = form.formState.errors;
-  const watchedCadence = form.watch("cadence");
-  const watchedSlot = form.watch("window.slot");
-  const watchedMode = form.watch("cardMessageMode") ?? "fixed";
-  const watchedOccasion = form.watch("cardOccasion");
-  const watchedRelation = form.watch("cardRelation");
-  const planTitle = findSubscriptionPlan(plan).name[locale];
-  const relations = getRelations("default", locale);
 
   return (
     <section id="inquire" className="bg-petal/40 border-t border-ink/8">
@@ -362,8 +417,64 @@ export function SubscriptionInquiryForm({ locale, plan }: Props) {
               </select>
             </label>
             {watchedOccasion && watchedRelation && (
-              <div className="sm:col-span-2 rounded-xl border border-rouge/30 bg-rouge/5 px-4 py-3 font-mono text-[11px] text-ink/70">
-                ✨ {cardOccasionsT(watchedOccasion)} · {cardRelationsT(watchedRelation as Relation)}
+              <div className="sm:col-span-2 rounded-xl border border-rouge/20 bg-bone p-4">
+                <div className="flex items-center justify-between gap-3 mb-3">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute-500">
+                    ✨ {t("preview_heading")}
+                  </p>
+                  {previewState.kind === "success" && (
+                    <button
+                      type="button"
+                      onClick={() => setRegenerateNonce((n) => n + 1)}
+                      className="font-mono text-[10px] uppercase tracking-[0.18em] text-rouge hover:text-rouge/80"
+                    >
+                      {t("preview_regenerate")}
+                    </button>
+                  )}
+                </div>
+
+                {previewState.kind === "loading" && <CardMessageSkeleton />}
+
+                {previewState.kind === "success" && (
+                  <ul className="flex flex-col gap-2">
+                    {previewState.suggestions.map((s, i) => (
+                      <li
+                        key={i}
+                        className="rounded-lg border border-ink/10 bg-petal/20 px-4 py-3 font-sans text-sm leading-relaxed text-ink/85"
+                      >
+                        <span className="block font-mono text-[9px] uppercase tracking-[0.22em] text-mute-500 mb-1.5">
+                          {t("preview_sample", { n: i + 1 })}
+                        </span>
+                        {s}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {previewState.kind === "error" && (
+                  <div role="alert" className="flex items-center justify-between gap-3">
+                    <p className="font-sans text-sm text-ink/70">
+                      {t(
+                        previewState.reason === "rate_limit"
+                          ? "preview_error_rate_limit"
+                          : "preview_error_generic",
+                      )}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setRegenerateNonce((n) => n + 1)}
+                      className="font-mono text-[10px] uppercase tracking-[0.18em] text-rouge hover:text-rouge/80"
+                    >
+                      {t("preview_retry")}
+                    </button>
+                  </div>
+                )}
+
+                {previewState.kind === "success" && (
+                  <p className="mt-3 font-mono text-[10px] text-ink/55 leading-relaxed">
+                    {t("preview_disclaimer")}
+                  </p>
+                )}
               </div>
             )}
           </div>
