@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SITE } from "@/data/site";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { NewsletterField } from "@/components/inquiry/NewsletterField";
+import { TextMakyInlineLink } from "@/components/contact/TextMakyInlineLink";
 import type { Locale } from "@/types/locale";
 
 export async function Footer({ locale }: { locale: Locale }) {
@@ -41,6 +42,8 @@ export async function Footer({ locale }: { locale: Locale }) {
             <a href={SITE.phoneHref} className="font-mono text-[13px] hover:text-petal transition-colors">
               {SITE.phoneDisplay}
             </a>
+            <TextMakyInlineLink className="block pt-1.5 text-bone/60 hover:text-petal" />
+
             <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-bone/50 pt-3">
               {t("email_label")}
             </p>
