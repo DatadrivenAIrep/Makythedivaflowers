@@ -57,16 +57,11 @@ describe("CardMessageAssist", () => {
   });
 
   it("shows skeleton while fetching", async () => {
+    let resolveResponse!: (r: Response) => void;
     mockFetch(
       () =>
-        new Promise((resolve) => {
-          setTimeout(
-            () =>
-              resolve(
-                new Response(JSON.stringify({ suggestions: ["a", "b", "c"] }), { status: 200 }),
-              ),
-            10,
-          );
+        new Promise<Response>((resolve) => {
+          resolveResponse = resolve;
         }),
     );
     const user = userEvent.setup();
@@ -74,6 +69,8 @@ describe("CardMessageAssist", () => {
     await user.click(screen.getByRole("button", { name: /partner/i }));
     await user.click(screen.getByRole("button", { name: COPY.generate }));
     expect(await screen.findByTestId("card-message-skeleton")).toBeInTheDocument();
+    // Resolve fetch so component cleans up properly
+    resolveResponse(new Response(JSON.stringify({ suggestions: ["a", "b", "c"] }), { status: 200 }));
   });
 
   it("renders three suggestion cards on success and onPick is called with the right text", async () => {
