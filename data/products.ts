@@ -3229,6 +3229,122 @@ export const PRODUCTS: Product[] = [
       },
     },
   },
+  {
+    id: "x-card-premium",
+    slug: "premium-card",
+    title: { en: "Premium handwritten card", es: "Tarjeta escrita a mano premium" },
+    category: "gifts",
+    giftExtra: true,
+    blurb: {
+      en: "A note in Maky's hand, on heavy stock.",
+      es: "Una nota escrita por Maky, en papel de gramaje alto.",
+    },
+    description: {
+      en: "Hand-lettered by Maky on heavyweight cotton stock. Slipped into the arrangement at delivery.",
+      es: "Escrita a mano por Maky en papel de algodón de alto gramaje. Se coloca en el arreglo al entregar.",
+    },
+    images: [{
+      src: "/products/x-card-premium.jpg",
+      alt: { en: "Handwritten card", es: "Tarjeta escrita a mano" },
+      aspect: "1/1",
+    }],
+    variants: [{ id: "default", label: { en: "Premium card", es: "Tarjeta premium" }, priceCents: 500 }],
+    tags: ["same-day"],
+    occasions: ["just-because"],
+    colorFamily: ["white"],
+    active: true,
+    seo: {
+      title: { en: "Premium handwritten card | Diva Flowers", es: "Tarjeta escrita a mano premium | Diva Flowers" },
+      description: { en: "Hand-lettered note added to your arrangement.", es: "Nota escrita a mano agregada a tu arreglo." },
+    },
+  },
+  {
+    id: "x-vase-upgrade",
+    slug: "glass-vase-upgrade",
+    title: { en: "Glass vase upgrade", es: "Mejora a jarrón de vidrio" },
+    category: "gifts",
+    giftExtra: true,
+    blurb: {
+      en: "Swap the standard vessel for hand-cut clear glass.",
+      es: "Cambia el recipiente estándar por vidrio cortado a mano.",
+    },
+    description: {
+      en: "Heavy clear-glass vase, hand-cut, sized to the arrangement.",
+      es: "Jarrón pesado de vidrio transparente, cortado a mano, dimensionado al arreglo.",
+    },
+    images: [{
+      src: "/products/x-vase-upgrade.jpg",
+      alt: { en: "Glass vase", es: "Jarrón de vidrio" },
+      aspect: "1/1",
+    }],
+    variants: [{ id: "default", label: { en: "Glass vase", es: "Jarrón de vidrio" }, priceCents: 1500 }],
+    tags: ["same-day"],
+    occasions: ["just-because"],
+    colorFamily: ["white"],
+    active: true,
+    seo: {
+      title: { en: "Glass vase upgrade | Diva Flowers", es: "Mejora a jarrón de vidrio | Diva Flowers" },
+      description: { en: "Hand-cut clear glass vase upgrade.", es: "Mejora a jarrón de vidrio cortado a mano." },
+    },
+  },
+  {
+    id: "x-ribbon-silk",
+    slug: "silk-ribbon",
+    title: { en: "Silk ribbon", es: "Listón de seda" },
+    category: "gifts",
+    giftExtra: true,
+    blurb: {
+      en: "Hand-tied silk ribbon, color matched to the bouquet.",
+      es: "Listón de seda atado a mano, combinado con el ramo.",
+    },
+    description: {
+      en: "Sand-washed silk ribbon, tied at the stem by Maky.",
+      es: "Listón de seda lavada a mano, atado al tallo por Maky.",
+    },
+    images: [{
+      src: "/products/x-ribbon-silk.jpg",
+      alt: { en: "Silk ribbon", es: "Listón de seda" },
+      aspect: "1/1",
+    }],
+    variants: [{ id: "default", label: { en: "Silk ribbon", es: "Listón de seda" }, priceCents: 600 }],
+    tags: ["same-day"],
+    occasions: ["just-because"],
+    colorFamily: ["white"],
+    active: true,
+    seo: {
+      title: { en: "Silk ribbon | Diva Flowers", es: "Listón de seda | Diva Flowers" },
+      description: { en: "Hand-tied silk ribbon for your arrangement.", es: "Listón de seda atado a mano para tu arreglo." },
+    },
+  },
+  {
+    id: "x-chocolates-mini",
+    slug: "mini-chocolates",
+    title: { en: "Mini chocolates (4 pieces)", es: "Mini chocolates (4 piezas)" },
+    category: "gifts",
+    giftExtra: true,
+    blurb: {
+      en: "Four single-origin chocolates from a Long Island chocolatier.",
+      es: "Cuatro chocolates de origen único de un chocolatero de Long Island.",
+    },
+    description: {
+      en: "Four hand-selected chocolates from our local chocolatier, packed alongside the arrangement.",
+      es: "Cuatro chocolates seleccionados a mano de nuestro chocolatero local, empacados con el arreglo.",
+    },
+    images: [{
+      src: "/products/x-chocolates-mini.jpg",
+      alt: { en: "Mini chocolates", es: "Mini chocolates" },
+      aspect: "1/1",
+    }],
+    variants: [{ id: "default", label: { en: "Mini chocolates", es: "Mini chocolates" }, priceCents: 800 }],
+    tags: ["same-day"],
+    occasions: ["just-because"],
+    colorFamily: ["white"],
+    active: true,
+    seo: {
+      title: { en: "Mini chocolates | Diva Flowers", es: "Mini chocolates | Diva Flowers" },
+      description: { en: "Four-piece chocolate add-on from a Long Island chocolatier.", es: "Caja de cuatro chocolates de un chocolatero de Long Island." },
+    },
+  },
 ];
 
 export function getProductBySlug(slug: string): Product | undefined {
