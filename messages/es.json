@@ -660,5 +660,78 @@
       "subscription_body": "Arreglos semanales en su puerta, hechos cada jueves. Pausa cuando quieras. Salta una semana. Cancela en dos clics.",
       "subscription_cta": "Ver suscripciones"
     }
+  },
+  "subscriptions": {
+    "page_title": "Suscripciones — Diva Flowers",
+    "meta_description": "Suscripciones semanales y quincenales de ramos, curadas y entregadas en casa.",
+    "eyebrow": "Programa · Suscripción",
+    "hero": {
+      "title": "Flores frescas, todas las semanas.",
+      "body": "Una suscripción curada por el estudio. Cada lunes elegimos lo más bello de la semana y lo dejamos en tu puerta."
+    },
+    "tiers": {
+      "heading": "Tres planes, una rutina",
+      "popular_badge": "Más Querido",
+      "per_delivery": "por entrega",
+      "cta": "Elegir {name}",
+      "selected": "Seleccionado"
+    },
+    "how": {
+      "heading": "Cómo funciona",
+      "step_1": { "title": "Eliges plan y cadencia", "body": "Escoge el tamaño que cabe en tu espacio y la frecuencia con la que quieres flores frescas." },
+      "step_2": { "title": "Curamos según temporada", "body": "Nuestras floristas arman cada entrega con tallos de temporada — ninguna semana es igual." },
+      "step_3": { "title": "Entregamos el día acordado", "body": "Entrega a mano el día que elegiste, con tarjeta si lo prefieres." }
+    },
+    "form": {
+      "heading": "Comienza tu suscripción",
+      "subheading": "Te escribimos en 24 horas para confirmar la primera entrega y coordinar el pago.",
+      "plan_label": "Plan",
+      "cadence_label": "Cadencia",
+      "cadence": { "weekly": "Semanal", "biweekly": "Quincenal" },
+      "start_date_label": "Fecha de inicio",
+      "start_date_help": "Primera entrega — mínimo 2 días desde hoy",
+      "recipient_heading": "Destinatario",
+      "recipient_name": "Nombre del destinatario",
+      "recipient_phone": "Teléfono del destinatario",
+      "address_heading": "Dirección de entrega",
+      "street1": "Calle",
+      "street2": "Apto, suite (opcional)",
+      "city": "Ciudad",
+      "state": "Estado (2 letras)",
+      "zip": "Código Postal",
+      "window_label": "Ventana preferida",
+      "window": {
+        "morning": "Mañana",
+        "midday": "Mediodía",
+        "afternoon": "Tarde",
+        "evening": "Noche"
+      },
+      "contact_heading": "Tu contacto",
+      "contact_email": "Email",
+      "contact_phone": "Teléfono",
+      "card_message_label": "Mensaje recurrente para la tarjeta (opcional)",
+      "card_message_help": "Hasta 500 caracteres. Escribimos la misma nota en cada entrega.",
+      "notes_label": "Notas (opcional)",
+      "notes_help": "Preferencias de color, alergias, acceso al edificio, cualquier cosa que debamos saber.",
+      "submit": "Enviar solicitud de suscripción",
+      "submitting": "Enviando…",
+      "errors": {
+        "unknown_error": "Algo salió mal. Inténtalo de nuevo.",
+        "rate_limited": "Demasiadas solicitudes. Inténtalo en un momento.",
+        "name_too_short": "El nombre es muy corto.",
+        "phone_too_short": "El número de teléfono es muy corto.",
+        "email_invalid": "Ingresa un correo válido.",
+        "street_required": "La calle es requerida.",
+        "city_required": "La ciudad es requerida.",
+        "state_invalid": "El estado debe ser de 2 letras.",
+        "zip_invalid": "El código postal debe tener 5 dígitos.",
+        "date_invalid": "Elige una fecha válida.",
+        "date_too_soon": "La fecha de inicio debe ser al menos 2 días después de hoy.",
+        "card_too_long": "El mensaje de la tarjeta es muy largo.",
+        "notes_too_long": "Las notas son muy largas."
+      },
+      "success_title": "Estaremos en contacto.",
+      "success_body": "Recibimos tu solicitud de suscripción. En 24 horas te escribimos para confirmar la primera entrega y coordinar el pago."
+    }
   }
 }
