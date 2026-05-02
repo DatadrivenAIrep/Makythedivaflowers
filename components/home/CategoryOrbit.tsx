@@ -271,8 +271,7 @@ function CategoryOrbitImpl({
         </div>
 
         <div
-          className="relative mt-10 grid grid-cols-1 gap-2.5 md:mt-16 md:grid-cols-12 md:gap-3"
-          style={{ gridAutoRows: "clamp(80px, 12vh, 140px)" }} // desktop-only: sets row-track size for bento; mobile tiles use h-32
+          className="relative mt-10 grid grid-cols-1 gap-2.5 md:mt-16 md:grid-cols-12 md:gap-3 md:[grid-auto-rows:clamp(80px,12vh,140px)]"
         >
           {items.map((item, i) => (
             <Tile
