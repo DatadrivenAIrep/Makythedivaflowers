@@ -24,6 +24,7 @@ const baseSubscription = {
   },
   window: { slot: "midday" as const },
   contact: { email: "lola@example.com", phone: "5165550101" },
+  cardMessageMode: "fixed" as const,
   cardMessage: "",
   notes: "",
   honeypot: "",
@@ -80,5 +81,37 @@ describe("subscriptionInquirySchema", () => {
     expect(
       subscriptionInquirySchema.safeParse({ ...baseSubscription, recipient: { name: "", phone: "5165550101" } }).success,
     ).toBe(false);
+  });
+
+  it("accepts rotation mode with occasion and relation", () => {
+    expect(
+      subscriptionInquirySchema.safeParse({
+        ...baseSubscription,
+        cardMessageMode: "rotation",
+        cardMessage: "",
+        cardOccasion: "romance",
+        cardRelation: "partner",
+      }).success,
+    ).toBe(true);
+  });
+
+  it("rejects rotation mode without occasion or relation", () => {
+    expect(
+      subscriptionInquirySchema.safeParse({
+        ...baseSubscription,
+        cardMessageMode: "rotation",
+        cardMessage: "",
+      }).success,
+    ).toBe(false);
+  });
+
+  it("accepts fixed mode without occasion/relation", () => {
+    expect(
+      subscriptionInquirySchema.safeParse({
+        ...baseSubscription,
+        cardMessageMode: "fixed",
+        cardMessage: "Thinking of you, every week.",
+      }).success,
+    ).toBe(true);
   });
 });

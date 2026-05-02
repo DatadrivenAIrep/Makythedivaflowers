@@ -11,7 +11,10 @@ import {
   type SubscriptionInquiryInput,
 } from "@/schemas/subscription-inquiry";
 import type { Locale } from "@/types/locale";
-import type { SubscriptionPlanId } from "@/data/subscription-plans";
+import { findSubscriptionPlan, type SubscriptionPlanId } from "@/data/subscription-plans";
+import { CardMessageAssist } from "@/components/product/CardMessageAssist";
+import { getRelations } from "@/lib/card-message-relations";
+import type { Occasion, Relation } from "@/schemas/card-message";
 
 type Props = {
   locale: Locale;
@@ -20,11 +23,23 @@ type Props = {
 
 const CADENCES = ["weekly", "biweekly"] as const;
 const SLOTS = ["morning", "midday", "afternoon", "evening"] as const;
+const CARD_OCCASIONS: Occasion[] = [
+  "birthday",
+  "anniversary",
+  "romance",
+  "just-because",
+  "congrats",
+  "sympathy",
+];
 
 export function SubscriptionInquiryForm({ locale, plan }: Props) {
   const t = useTranslations("subscriptions.form");
+  const cardOccasionsT = useTranslations("subscriptions.form.card_occasions");
+  const cardRelationsT = useTranslations("subscriptions.form.card_relations");
+  const cardAssistT = useTranslations("card_message_assist");
   const [state, setState] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [assistOpen, setAssistOpen] = useState(false);
 
   const form = useForm<SubscriptionInquiryInput, unknown, SubscriptionInquiry>({
     resolver: zodResolver(subscriptionInquirySchema),
@@ -39,7 +54,10 @@ export function SubscriptionInquiryForm({ locale, plan }: Props) {
       address: { street1: "", street2: "", city: "", state: "NY", zip: "", country: "US" },
       window: { slot: "midday" },
       contact: { email: "", phone: "" },
+      cardMessageMode: "fixed",
       cardMessage: "",
+      cardOccasion: undefined,
+      cardRelation: undefined,
       notes: "",
       honeypot: "",
     },
@@ -74,6 +92,11 @@ export function SubscriptionInquiryForm({ locale, plan }: Props) {
   const errors = form.formState.errors;
   const watchedCadence = form.watch("cadence");
   const watchedSlot = form.watch("window.slot");
+  const watchedMode = form.watch("cardMessageMode") ?? "fixed";
+  const watchedOccasion = form.watch("cardOccasion");
+  const watchedRelation = form.watch("cardRelation");
+  const planTitle = findSubscriptionPlan(plan).name[locale];
+  const relations = getRelations("default", locale);
 
   return (
     <section id="inquire" className="bg-petal/40 border-t border-ink/8">
@@ -228,14 +251,123 @@ export function SubscriptionInquiryForm({ locale, plan }: Props) {
           />
         </div>
 
-        <Textarea
-          label={t("card_message_label")}
-          help={t("card_message_help")}
-          rows={3}
-          maxLength={500}
-          error={errors.cardMessage?.message && t(`errors.${errors.cardMessage.message}`)}
-          {...form.register("cardMessage")}
-        />
+        <fieldset>
+          <legend className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 mb-2">
+            {t("card_mode_heading")}
+          </legend>
+          <div className="grid grid-cols-2 gap-2">
+            {(["fixed", "rotation"] as const).map((m) => (
+              <label
+                key={m}
+                className={`cursor-pointer rounded-xl border px-3 py-3 text-center text-sm transition-colors ${
+                  watchedMode === m
+                    ? "border-rouge bg-rouge/5 text-ink"
+                    : "border-ink/15 text-ink/70 hover:border-ink/30"
+                }`}
+              >
+                <input
+                  type="radio"
+                  value={m}
+                  className="sr-only"
+                  {...form.register("cardMessageMode")}
+                />
+                {t(m === "fixed" ? "card_mode_fixed" : "card_mode_rotation")}
+              </label>
+            ))}
+          </div>
+          <p className="mt-2 font-mono text-[11px] text-ink/55">
+            {t(watchedMode === "rotation" ? "card_mode_rotation_help" : "card_mode_fixed_help")}
+          </p>
+        </fieldset>
+
+        {watchedMode === "fixed" ? (
+          <div className="flex flex-col gap-3">
+            <Textarea
+              label={t("card_message_label")}
+              rows={3}
+              maxLength={500}
+              error={errors.cardMessage?.message && t(`errors.${errors.cardMessage.message}`)}
+              {...form.register("cardMessage")}
+            />
+            {assistOpen ? (
+              <CardMessageAssist
+                productTitle={planTitle}
+                occasion={(watchedOccasion ?? "just-because") as Occasion}
+                locale={locale}
+                relations={relations}
+                copy={{
+                  title: cardAssistT("title"),
+                  generate: cardAssistT("generate"),
+                  regenerate: cardAssistT("regenerate"),
+                  retry: cardAssistT("retry"),
+                  close: cardAssistT("close"),
+                  errorGeneric: cardAssistT("error_generic"),
+                  errorRateLimit: cardAssistT("error_rate_limit"),
+                }}
+                onPick={(text) => {
+                  form.setValue("cardMessage", text, { shouldDirty: true });
+                  setAssistOpen(false);
+                }}
+                onClose={() => setAssistOpen(false)}
+              />
+            ) : (
+              <button
+                type="button"
+                onClick={() => setAssistOpen(true)}
+                className="self-start font-mono text-[11px] uppercase tracking-[0.18em] text-rouge hover:text-rouge/80"
+              >
+                ✨ {cardAssistT("trigger")}
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="grid sm:grid-cols-2 gap-4">
+            <label htmlFor="f-cardOccasion" className="block">
+              <span className="block font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 mb-1.5">
+                {t("card_occasion_label")} *
+              </span>
+              <select
+                id="f-cardOccasion"
+                className="block w-full rounded-xl border border-ink/15 bg-bone px-4 py-3 text-base text-ink focus:outline-none focus:ring-2 focus:ring-rouge/40 focus:border-rouge"
+                {...form.register("cardOccasion")}
+              >
+                <option value="">—</option>
+                {CARD_OCCASIONS.map((o) => (
+                  <option key={o} value={o}>
+                    {cardOccasionsT(o)}
+                  </option>
+                ))}
+              </select>
+              {errors.cardOccasion?.message && (
+                <span role="alert" className="mt-1 block font-mono text-[11px] text-error">
+                  {t("card_rotation_required")}
+                </span>
+              )}
+            </label>
+            <label htmlFor="f-cardRelation" className="block">
+              <span className="block font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 mb-1.5">
+                {t("card_relation_label")} *
+              </span>
+              <select
+                id="f-cardRelation"
+                className="block w-full rounded-xl border border-ink/15 bg-bone px-4 py-3 text-base text-ink focus:outline-none focus:ring-2 focus:ring-rouge/40 focus:border-rouge"
+                {...form.register("cardRelation")}
+              >
+                <option value="">—</option>
+                {relations.map((r) => (
+                  <option key={r.key} value={r.key}>
+                    {cardRelationsT(r.key as Relation)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            {watchedOccasion && watchedRelation && (
+              <div className="sm:col-span-2 rounded-xl border border-rouge/30 bg-rouge/5 px-4 py-3 font-mono text-[11px] text-ink/70">
+                ✨ {cardOccasionsT(watchedOccasion)} · {cardRelationsT(watchedRelation as Relation)}
+              </div>
+            )}
+          </div>
+        )}
 
         <Textarea
           label={t("notes_label")}

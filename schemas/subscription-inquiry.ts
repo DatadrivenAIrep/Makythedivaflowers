@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { occasionSchema, relationSchema } from "@/schemas/card-message";
 
 const phone = z
   .string()
@@ -43,10 +44,22 @@ export const subscriptionInquirySchema = z.object({
     email: z.string().email("email_invalid"),
     phone,
   }),
+  cardMessageMode: z.enum(["fixed", "rotation"]).default("fixed"),
   cardMessage: z.string().max(500, "card_too_long").optional().or(z.literal("")),
+  cardOccasion: z
+    .union([occasionSchema, z.literal("")])
+    .optional()
+    .transform((v) => (v === "" ? undefined : v)),
+  cardRelation: z
+    .union([relationSchema, z.literal("")])
+    .optional()
+    .transform((v) => (v === "" ? undefined : v)),
   notes: z.string().max(1000, "notes_too_long").optional().or(z.literal("")),
   honeypot: z.string().max(0),
-});
+}).refine(
+  (data) => data.cardMessageMode !== "rotation" || (data.cardOccasion && data.cardRelation),
+  { message: "rotation_requires_occasion_relation", path: ["cardOccasion"] },
+);
 
 export type SubscriptionInquiry = z.infer<typeof subscriptionInquirySchema>;
 export type SubscriptionInquiryInput = z.input<typeof subscriptionInquirySchema>;
