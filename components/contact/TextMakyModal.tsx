@@ -20,7 +20,10 @@ export function TextMakyModal() {
   const { key, vars } = getSubjectKey({ pathname, override });
   const greeting = t("greeting");
   const subject = t(`subjects.${key}`, vars ?? {});
-  const message = `${greeting}${subject}`;
+  const productUrl = key === "pdp_named" ? `${SITE.url}${pathname}` : null;
+  const message = productUrl
+    ? `${greeting}${subject} ${productUrl}`
+    : `${greeting}${subject}`;
 
   const smsHref = buildSmsHref(SITE.mobile.e164, message);
   const whatsappHref = buildWhatsappHref(SITE.mobile.e164, message);
