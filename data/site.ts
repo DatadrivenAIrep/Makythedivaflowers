@@ -4,6 +4,11 @@ export const SITE = {
   phone: "+1 (516) 484-3456",
   phoneDisplay: "516 484 3456",
   phoneHref: "tel:+15164843456",
+  mobile: {
+    display: "+1 (516) 851-2815",
+    tel: "tel:+15168512815",
+    e164: "+15168512815",
+  },
   email: "makythedivagalaevents@gmail.com",
   emailHref: "mailto:makythedivagalaevents@gmail.com",
   address: {
