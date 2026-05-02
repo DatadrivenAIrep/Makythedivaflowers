@@ -1,4 +1,3 @@
-// components/inquiry/WeddingsForm.tsx
 "use client";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -6,14 +5,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
 import { HoneypotField } from "@/components/inquiry/HoneypotField";
-import { MagneticButton } from "@/components/motion/MagneticButton";
+import { FormShell } from "@/components/ui/form/shell/FormShell";
+import { PhotoPanel } from "@/components/ui/form/shell/PhotoPanel";
+import { FormSuccess } from "@/components/ui/form/shell/FormSuccess";
+import { FormField } from "@/components/ui/form/FormField";
+import { TextInput } from "@/components/ui/form/TextInput";
+import { TextArea } from "@/components/ui/form/TextArea";
+import { DateInput } from "@/components/ui/form/DateInput";
+import { RadioChips } from "@/components/ui/form/RadioChips";
+import { FormSubmit } from "@/components/ui/form/FormSubmit";
 import { weddingInquirySchema, type WeddingInquiry } from "@/schemas/inquiry";
 import type { Locale } from "@/types/locale";
 
-// The input type (before Zod transforms/coercion) is used for useForm field values.
-// guests is a raw string from the input before z.coerce.number() transforms it.
 type WeddingInquiryInput = z.input<typeof weddingInquirySchema>;
-
 const BUDGETS = ["5-10k", "10-25k", "25k+", "open"] as const;
 
 export function WeddingsForm({ locale }: { locale: Locale }) {
@@ -55,94 +59,93 @@ export function WeddingsForm({ locale }: { locale: Locale }) {
     form.reset();
   }
 
-  if (state === "success") {
-    return (
-      <div className="rounded-2xl border border-ink/10 bg-petal/30 p-10 text-center max-w-2xl mx-auto">
-        <p className="font-display text-4xl text-ink leading-tight">{t("success_title")}</p>
-        <p className="mt-4 text-ink/75">{t("success_body")}</p>
-      </div>
-    );
-  }
-
   const errors = form.formState.errors;
   const watchedBudget = form.watch("budgetBand");
 
-  return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="relative space-y-6 max-w-2xl mx-auto">
-      <HoneypotField register={form.register("honeypot")} />
-      <input type="hidden" {...form.register("type")} />
-      <input type="hidden" {...form.register("locale")} />
-      <div className="grid sm:grid-cols-2 gap-4">
-        <Field label={t("name")} required error={errors.contact?.name?.message} {...form.register("contact.name")} />
-        <Field label={t("email")} type="email" required error={errors.contact?.email?.message} {...form.register("contact.email")} />
-      </div>
-      <Field label={t("phone")} type="tel" inputMode="tel" error={errors.contact?.phone?.message} {...form.register("contact.phone")} />
-      <div className="grid sm:grid-cols-2 gap-4">
-        <Field label={t("date")} type="date" {...form.register("date")} />
-        <Field label={t("venue")} placeholder="Glen Cove Mansion" {...form.register("venue")} />
-      </div>
-      <Field label={t("guests")} type="number" inputMode="numeric" min={1} max={2000} error={errors.guests?.message} {...form.register("guests")} />
-      <fieldset>
-        <legend className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 mb-2">{t("budget")}</legend>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-          {BUDGETS.map((b) => (
-            <label key={b} className={`cursor-pointer rounded-xl border px-3 py-3 text-center text-sm transition-colors ${
-              watchedBudget === b ? "border-rouge bg-rouge/5 text-ink" : "border-ink/15 text-ink/70 hover:border-ink/30"
-            }`}>
-              <input type="radio" value={b} className="sr-only" {...form.register("budgetBand")} />
-              {b}
-            </label>
-          ))}
-        </div>
-      </fieldset>
-      <Textarea label={t("vibe")} required rows={5} error={errors.vibe?.message} {...form.register("vibe")} />
-      <Field label={t("source")} error={errors.source?.message} {...form.register("source")} />
-      {errorMsg && <p className="font-mono text-[11px] text-error">{t(`errors.${errorMsg}`)}</p>}
-      <MagneticButton
-        type="submit"
-        disabled={state === "submitting"}
-        wrapperClassName="w-full"
-      >
-        {state === "submitting" ? t("submitting") : t("submit")}
-      </MagneticButton>
-    </form>
-  );
-}
+  const budgetItems = BUDGETS.map((b) => ({ value: b, label: b }));
 
-type FieldProps = React.InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string };
-function Field({ label, error, id, ...rest }: FieldProps) {
-  const fid = id ?? `f-${label.replace(/\s+/g, "-").toLowerCase()}`;
-  const errorId = error ? `${fid}-error` : undefined;
   return (
-    <label htmlFor={fid} className="block">
-      <span className="block font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 mb-1.5">{label}</span>
-      <input
-        id={fid}
-        aria-describedby={errorId}
-        aria-invalid={!!error}
-        {...rest}
-        className="block w-full rounded-xl border border-ink/15 bg-bone px-4 py-3 text-base text-ink focus:outline-none focus:ring-2 focus:ring-rouge/40 focus:border-rouge"
-      />
-      {error && <span id={errorId} className="mt-1 block font-mono text-[11px] text-error">{error}</span>}
-    </label>
-  );
-}
+    <FormShell
+      left={
+        <PhotoPanel
+          src="/weddings/05.webp"
+          alt={t("shell.alt")}
+          eyebrow={t("shell.eyebrow")}
+          title={t("shell.title")}
+          body={t("shell.body")}
+          signature={t("shell.signature")}
+          priority
+        />
+      }
+    >
+      {state === "success" ? (
+        <FormSuccess title={t("success_title")} body={t("success_body")} />
+      ) : (
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-md">
+          <HoneypotField register={form.register("honeypot")} />
+          <input type="hidden" {...form.register("type")} />
+          <input type="hidden" {...form.register("locale")} />
 
-type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & { label: string; error?: string };
-function Textarea({ label, error, id, ...rest }: TextareaProps) {
-  const fid = id ?? `f-${label.replace(/\s+/g, "-").toLowerCase()}`;
-  const errorId = error ? `${fid}-error` : undefined;
-  return (
-    <label htmlFor={fid} className="block">
-      <span className="block font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 mb-1.5">{label}</span>
-      <textarea
-        id={fid}
-        aria-describedby={errorId}
-        aria-invalid={!!error}
-        {...rest}
-        className="block w-full rounded-xl border border-ink/15 bg-bone px-4 py-3 text-base text-ink focus:outline-none focus:ring-2 focus:ring-rouge/40 focus:border-rouge resize-none"
-      />
-      {error && <span id={errorId} className="mt-1 block font-mono text-[11px] text-error">{error}</span>}
-    </label>
+          <div className="grid sm:grid-cols-2 gap-5">
+            <FormField label={t("name")} htmlFor="w-name" required error={errors.contact?.name?.message}>
+              <TextInput id="w-name" aria-invalid={!!errors.contact?.name || undefined} {...form.register("contact.name")} />
+            </FormField>
+            <FormField label={t("email")} htmlFor="w-email" required error={errors.contact?.email?.message}>
+              <TextInput id="w-email" type="email" aria-invalid={!!errors.contact?.email || undefined} {...form.register("contact.email")} />
+            </FormField>
+          </div>
+
+          <FormField label={t("phone")} htmlFor="w-phone" error={errors.contact?.phone?.message}>
+            <TextInput id="w-phone" type="tel" inputMode="tel" aria-invalid={!!errors.contact?.phone || undefined} {...form.register("contact.phone")} />
+          </FormField>
+
+          <div className="grid sm:grid-cols-2 gap-5">
+            <FormField label={t("date")} htmlFor="w-date">
+              <DateInput id="w-date" {...form.register("date")} />
+            </FormField>
+            <FormField label={t("venue")} htmlFor="w-venue">
+              <TextInput id="w-venue" placeholder="Glen Cove Mansion" {...form.register("venue")} />
+            </FormField>
+          </div>
+
+          <FormField label={t("guests")} htmlFor="w-guests" error={errors.guests?.message}>
+            <TextInput
+              id="w-guests"
+              type="number"
+              inputMode="numeric"
+              min={1}
+              max={2000}
+              aria-invalid={!!errors.guests || undefined}
+              {...form.register("guests")}
+            />
+          </FormField>
+
+          <FormField label={t("budget")} htmlFor="w-budget">
+            <RadioChips
+              name="budgetBand"
+              items={budgetItems}
+              value={watchedBudget}
+              onChange={(v) => form.setValue("budgetBand", v as typeof BUDGETS[number])}
+            />
+          </FormField>
+
+          <FormField label={t("vibe")} htmlFor="w-vibe" required error={errors.vibe?.message}>
+            <TextArea id="w-vibe" rows={5} aria-invalid={!!errors.vibe || undefined} {...form.register("vibe")} />
+          </FormField>
+
+          <FormField label={t("source")} htmlFor="w-source" error={errors.source?.message}>
+            <TextInput id="w-source" {...form.register("source")} />
+          </FormField>
+
+          {errorMsg && (
+            <p role="alert" className="font-mono text-[11px] text-error">{t(`errors.${errorMsg}`)}</p>
+          )}
+
+          <FormSubmit loading={state === "submitting"}>
+            {state === "submitting" ? t("submitting") : t("submit")}
+          </FormSubmit>
+        </form>
+      )}
+    </FormShell>
   );
 }

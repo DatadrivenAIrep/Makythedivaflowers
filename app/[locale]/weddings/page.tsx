@@ -33,14 +33,8 @@ export default async function WeddingsPage({
       <PricingIntent locale={locale} />
       <GalleryEditorial locale={locale} />
       <WeddingsFAQ locale={locale} />
-      <section id="inquire" className="py-24 bg-petal/20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <header className="mb-12 max-w-2xl">
-            <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60">{t("form_eyebrow")}</p>
-            <h2 className="mt-3 font-display text-5xl text-ink leading-[0.95] tracking-tighter">{t("form_title")}</h2>
-          </header>
-          <WeddingsForm locale={locale} />
-        </div>
+      <section id="inquire" className="py-24">
+        <WeddingsForm locale={locale} />
       </section>
     </>
   );
