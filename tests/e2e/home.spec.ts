@@ -10,7 +10,7 @@ test("home renders in English with hero, marquee, bento, studio visit", async ({
   await expect(page.getByRole("link", { name: /Get directions/ })).toBeVisible();
   await expect(page.getByRole("heading", { name: /Installations, by Diva/ })).toBeVisible();
   await expect(page.getByPlaceholder("you@email.com").first()).toBeVisible();
-  await expect(page.getByText("516 484 3456")).toBeVisible();
+  await expect(page.getByText("516 484 3456").first()).toBeVisible();
 });
 
 test("home renders in Spanish", async ({ page }) => {
@@ -52,7 +52,7 @@ test("CategoryOrbit renders correctly on mobile (iPhone viewport)", async ({ pag
     "subscriptions",
   ];
   for (const slug of slugs) {
-    const link = page.locator(`a[href="/en/shop/${slug}"]`);
+    const link = page.locator(`a[href="/en/shop/${slug}"]`).last();
     await link.scrollIntoViewIfNeeded();
     await expect(link).toBeVisible();
     // Image inside the tile must be visible (it was hover-gated before)

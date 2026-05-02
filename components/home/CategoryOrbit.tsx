@@ -102,15 +102,27 @@ function TileImpl({
       onMouseLeave={handleLeave}
       className={cn(
         "group relative block overflow-hidden rounded-[var(--radius-product)] border bg-charcoal transition-colors duration-500",
-        "aspect-[16/10] md:aspect-auto",
+        "h-32 md:h-auto md:aspect-auto",
         layout.col,
         layout.row,
-        isActive ? "border-petal/40" : "border-petal/15"
+        "max-md:border-petal/40",
+        isActive ? "md:border-petal/40" : "md:border-petal/15"
       )}
       style={{ borderRadius: "var(--radius-product)" }}
     >
+      {/* Mobile: static always-visible image with side gradient */}
+      <div className="absolute inset-0 md:hidden">
+        <img
+          src={`https://picsum.photos/seed/${item.seed}/1200/800`}
+          alt={item.name}
+          className="size-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-ink/65 via-ink/20 to-transparent" />
+      </div>
+
+      {/* Desktop: hover-driven clip-path reveal */}
       <motion.div
-        className="absolute inset-0"
+        className="absolute inset-0 hidden md:block"
         initial={false}
         animate={
           reduce
@@ -126,18 +138,20 @@ function TileImpl({
       >
         <img
           src={`https://picsum.photos/seed/${item.seed}/1200/800`}
-          alt={item.name}
+          alt=""
           className="size-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent" />
       </motion.div>
 
-      <div className="relative z-10 flex h-full flex-col justify-between p-5 md:p-7">
+      <div className="relative z-10 flex h-full flex-col justify-between p-4 md:p-7">
         <div className="flex items-start justify-end">
           <span
             className={cn(
-              "font-mono text-[10px] tracking-[0.25em] transition-colors duration-500",
-              isActive ? "text-rouge" : "text-petal/40"
+              "font-mono text-[10px] tracking-[0.25em]",
+              "max-md:text-rouge",
+              "md:transition-colors md:duration-500",
+              isActive ? "md:text-rouge" : "md:text-petal/40"
             )}
           >
             {item.index}
@@ -153,8 +167,11 @@ function TileImpl({
           >
             <span
               className={cn(
-                "font-display text-2xl md:text-3xl italic tracking-tight transition-colors duration-500",
-                isActive ? "text-bone" : "text-bone/70"
+                "font-display italic tracking-tight",
+                "text-2xl md:text-3xl",
+                "max-md:text-bone",
+                "md:transition-colors md:duration-500",
+                isActive ? "md:text-bone" : "md:text-bone/70"
               )}
             >
               {item.name}
@@ -166,7 +183,7 @@ function TileImpl({
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 6 }}
                   transition={{ duration: 0.3, ease: ELEGANT }}
-                  className="font-mono text-[10px] uppercase tracking-[0.18em] text-petal"
+                  className="hidden md:inline font-mono text-[10px] uppercase tracking-[0.18em] text-petal"
                 >
                   {shopLabel} {item.name} →
                 </motion.span>
@@ -174,16 +191,27 @@ function TileImpl({
             </AnimatePresence>
           </motion.div>
 
-          {isActive && !reduce ? (
-            <motion.span
-              aria-hidden
-              className="block size-1 rounded-full bg-rouge"
-              animate={{ scale: [1, 1.4, 1] }}
-              transition={{ duration: 2.4, ease: "easeInOut", repeat: Infinity }}
-            />
-          ) : (
-            <span aria-hidden className="block size-1 rounded-full bg-rouge/60" />
-          )}
+          {/* Mobile chevron */}
+          <span
+            aria-hidden
+            className="md:hidden font-mono text-sm text-bone/70"
+          >
+            →
+          </span>
+
+          {/* Desktop pulse dot */}
+          <div className="hidden md:block">
+            {isActive && !reduce ? (
+              <motion.span
+                aria-hidden
+                className="block size-1 rounded-full bg-rouge"
+                animate={{ scale: [1, 1.4, 1] }}
+                transition={{ duration: 2.4, ease: "easeInOut", repeat: Infinity }}
+              />
+            ) : (
+              <span aria-hidden className="block size-1 rounded-full bg-rouge/60" />
+            )}
+          </div>
         </div>
       </div>
     </Link>
@@ -210,7 +238,7 @@ function CategoryOrbitImpl({
 
   return (
     <section
-      className="relative min-h-[100dvh] overflow-hidden py-24 text-bone md:py-32"
+      className="relative min-h-[100dvh] overflow-hidden py-16 text-bone md:py-32"
       style={{
         backgroundImage:
           "linear-gradient(to bottom, var(--color-charcoal) 0%, #F2C5D1 100%)",
@@ -233,7 +261,7 @@ function CategoryOrbitImpl({
             </motion.h2>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-4">
             <span aria-hidden className="block h-px w-16 bg-petal/20" />
             <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-petal/30">
               {hoverHint}
@@ -242,7 +270,7 @@ function CategoryOrbitImpl({
         </div>
 
         <div
-          className="relative mt-12 grid grid-cols-1 gap-3 md:mt-16 md:grid-cols-12 md:gap-3"
+          className="relative mt-10 grid grid-cols-1 gap-2.5 md:mt-16 md:grid-cols-12 md:gap-3"
           style={{ gridAutoRows: "clamp(80px, 12vh, 140px)" }}
         >
           {items.map((item, i) => (
@@ -271,7 +299,7 @@ function CategoryOrbitImpl({
 
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-col items-center overflow-hidden"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-10 hidden md:flex flex-col items-center overflow-hidden"
       >
         <AnimatePresence mode="wait">
           {activeItem && (
