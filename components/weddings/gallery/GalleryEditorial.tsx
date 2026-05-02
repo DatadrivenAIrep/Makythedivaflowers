@@ -32,10 +32,11 @@ function buildBlocks(photos: PortfolioPhoto[]): Block[] {
   return blocks;
 }
 
+const BLOCKS = buildBlocks(weddingPortfolio);
+
 export function GalleryEditorial({ locale }: { locale: Locale }) {
   const t = useTranslations("weddings.gallery");
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const blocks = buildBlocks(weddingPortfolio);
 
   return (
     <LayoutGroup>
@@ -45,11 +46,11 @@ export function GalleryEditorial({ locale }: { locale: Locale }) {
           <h2 className="mt-3 font-display text-5xl text-ink leading-[0.95] tracking-tighter">{t("title")}</h2>
         </header>
         <div className="space-y-16 md:space-y-24">
-          {blocks.map((block, bi) => {
+          {BLOCKS.map((block, bi) => {
             if (block.kind === "mosaic") {
               return (
                 <GalleryMosaic
-                  key={`m-${bi}`}
+                  key={block.photos[0].id}
                   photos={block.photos}
                   indices={block.indices}
                   locale={locale}
@@ -60,7 +61,7 @@ export function GalleryEditorial({ locale }: { locale: Locale }) {
             }
             return (
               <GalleryHero
-                key={`h-${bi}`}
+                key={block.photo.id}
                 photo={block.photo}
                 index={block.index}
                 locale={locale}
