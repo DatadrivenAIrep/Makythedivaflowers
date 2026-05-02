@@ -51,8 +51,11 @@ test("CategoryOrbit renders correctly on mobile (iPhone viewport)", async ({ pag
     "sympathy",
     "subscriptions",
   ];
+  const section = page.locator("section").filter({
+    has: page.getByRole("heading", { name: /Find your bloom/ }),
+  });
   for (const slug of slugs) {
-    const link = page.locator(`a[href="/en/shop/${slug}"]`).last();
+    const link = section.locator(`a[href="/en/shop/${slug}"]`);
     await link.scrollIntoViewIfNeeded();
     await expect(link).toBeVisible();
     // Image inside the tile must be visible (it was hover-gated before)

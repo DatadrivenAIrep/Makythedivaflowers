@@ -90,6 +90,7 @@ function TileImpl({
     onLeave();
   }, [x, y, onLeave]);
 
+  // Snapshot spring position for initial clipPath; framer-motion overrides on animation tick
   const cx = reduce ? 50 : sx.get();
   const cy = reduce ? 50 : sy.get();
 
@@ -102,7 +103,7 @@ function TileImpl({
       onMouseLeave={handleLeave}
       className={cn(
         "group relative block overflow-hidden rounded-[var(--radius-product)] border bg-charcoal transition-colors duration-500",
-        "h-32 md:h-auto md:aspect-auto",
+        "h-32 md:h-auto",
         layout.col,
         layout.row,
         "max-md:border-petal/40",
@@ -271,7 +272,7 @@ function CategoryOrbitImpl({
 
         <div
           className="relative mt-10 grid grid-cols-1 gap-2.5 md:mt-16 md:grid-cols-12 md:gap-3"
-          style={{ gridAutoRows: "clamp(80px, 12vh, 140px)" }}
+          style={{ gridAutoRows: "clamp(80px, 12vh, 140px)" }} // desktop-only: sets row-track size for bento; mobile tiles use h-32
         >
           {items.map((item, i) => (
             <Tile
