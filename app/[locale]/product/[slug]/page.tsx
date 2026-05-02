@@ -14,6 +14,7 @@ import { PdpStructuredData } from "@/components/product/PdpStructuredData";
 import { PdpContactSubject } from "@/components/contact/PdpContactSubject";
 import { GiftAssuranceBar } from "@/components/conversion/GiftAssuranceBar";
 import { CutoffCountdown } from "@/components/conversion/CutoffCountdown";
+import { PdpReviewsBlock } from "@/components/conversion/PdpReviewsBlock";
 
 export async function generateStaticParams() {
   return PRODUCTS.filter((p) => p.active).map((p) => ({ slug: p.slug }));
@@ -91,6 +92,10 @@ export default async function ProductPage({
             <p className="mt-5 max-w-md font-sans text-[15px] leading-relaxed text-ink/70">
               {product.description[locale]}
             </p>
+
+            <div className="mt-6">
+              <PdpReviewsBlock product={product} locale={locale} />
+            </div>
 
             <div className="mt-6">
               <CutoffCountdown
