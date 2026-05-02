@@ -1,13 +1,14 @@
-// app/api/inquiry/route.ts
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { weddingInquirySchema, eventInquirySchema } from "@/schemas/inquiry";
+import { subscriptionInquirySchema } from "@/schemas/subscription-inquiry";
 import { saveInquiry } from "@/lib/inquiry-storage";
 import { rateLimit, ipFromRequest } from "@/lib/rate-limit";
 
 const requestSchema = z.discriminatedUnion("type", [
   weddingInquirySchema,
   eventInquirySchema,
+  subscriptionInquirySchema,
 ]);
 
 export async function POST(req: Request) {
@@ -30,6 +31,8 @@ export async function POST(req: Request) {
     ip,
     locale: parsed.data.locale,
   });
-  console.log(`[inquiry] ${parsed.data.type} from ${parsed.data.contact.email}`);
+  const contactEmail =
+    parsed.data.type === "subscription" ? parsed.data.contact.email : parsed.data.contact.email;
+  console.log(`[inquiry] ${parsed.data.type} from ${contactEmail}`);
   return NextResponse.json({ ok: true, id }, { status: 200 });
 }
