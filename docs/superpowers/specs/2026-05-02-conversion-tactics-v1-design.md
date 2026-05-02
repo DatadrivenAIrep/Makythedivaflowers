@@ -883,7 +883,21 @@ The six tactics ship as a coordinated branch with the following internal order �
 
 The following needs Maky's input *before* step 5 starts. Step 1-4 can proceed in parallel.
 
-- **Which 12 products get anchor pricing?** Default proposal: the 8 catalog imports + 4 staff-pick / new arrivals. Maky confirms or swaps.
+- ~~**Which 12 products get anchor pricing?**~~ **Decided 2026-05-02:** the 8 Maky catalog imports + 4 staff-picks from the b1 batch. Final list (slug — id):
+  1. `a-thousand-heartbeats` — `p-arr-m01`
+  2. `dozen-roses-bouquet` — `p-bou-m01`
+  3. `hundred-roses-vase` — `p-arr-m02`
+  4. `sunburst-garden` — `p-bou-m02`
+  5. `rainforest-rhapsody` — `p-arr-m03`
+  6. `designers-choice` — `p-gif-m01`
+  7. `velvet-sun` — `p-bou-m03`
+  8. `katsobad` — `p-bou-m04`
+  9. `abundant-table` — `p-arr-b1-01`
+  10. `all-my-love` — `p-bou-b1-01`
+  11. `blush-enchantment` — `p-bou-b1-02`
+  12. `cottage-garden-charm` — `p-arr-b1-07`
+
+  Maky may swap any of these by editing `data/products.ts` directly; no code change needed.
 - **For each of the 12, what are the Standard / Lush / Opulent prices?** Default: ~75% / 100% / ~135%. Maky tunes per product (some might be flat 80/100/130, others 70/100/150).
 - **Subtitle copy per variant** (the "+30% more stems" line). Maky writes for all 12 in EN; Santiago translates to ES.
 - ~~**Photo on delivery — promise vs reality.**~~ **Decided 2026-05-02:** Maky does not send photos on delivery. Third assurance icon swapped to "Long Island florist since 2014" (authority signal). Spec §3.5 updated.
