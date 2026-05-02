@@ -13,31 +13,28 @@ describe("GalleryEditorial", () => {
     expect(screen.getByText("title")).toBeInTheDocument();
   });
 
-  it("renders all 17 photos at least once across mosaics + heroes", () => {
+  it("renders a carousel region", () => {
     render(<GalleryEditorial locale="en" />);
-    weddingPortfolio.forEach((p) => {
-      expect(screen.getAllByAltText(p.alt.en).length).toBeGreaterThanOrEqual(1);
-    });
+    expect(screen.getByRole("region", { name: "carousel_label" })).toBeInTheDocument();
   });
 
-  it("opens the lightbox when a mosaic tile is clicked", async () => {
+  it("opens the lightbox when the active carousel slide is clicked", async () => {
     const user = userEvent.setup();
     render(<GalleryEditorial locale="en" />);
-    const firstPhoto = weddingPortfolio[0];
-    const buttons = screen.getAllByRole("button", { name: firstPhoto.alt.en });
-    await user.click(buttons[0]);
+    const firstAlt = weddingPortfolio[0].alt.en;
+    const slide = screen.getByRole("button", { name: new RegExp(firstAlt) });
+    await user.click(slide);
     expect(screen.getByRole("dialog")).toBeInTheDocument();
   });
 
   it("closes the lightbox when Escape is pressed", async () => {
     const user = userEvent.setup();
     render(<GalleryEditorial locale="en" />);
-    const buttons = screen.getAllByRole("button", { name: weddingPortfolio[0].alt.en });
-    await user.click(buttons[0]);
+    const slide = screen.getByRole("button", { name: new RegExp(weddingPortfolio[0].alt.en) });
+    await user.click(slide);
     const dialog = screen.getByRole("dialog");
     expect(dialog).toBeInTheDocument();
     await user.keyboard("{Escape}");
-    // AnimatePresence fades the dialog out; assert it is no longer visible
     await waitFor(() => expect(dialog).toHaveStyle({ opacity: "0" }));
   });
 });

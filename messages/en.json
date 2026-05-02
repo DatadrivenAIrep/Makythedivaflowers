@@ -510,7 +510,9 @@
       "close": "Close lightbox",
       "prev": "Previous photo",
       "next": "Next photo",
-      "marquee_label": "Wedding portfolio in motion"
+      "carousel_label": "Wedding portfolio carousel",
+      "open_lightbox": "tap to view full size",
+      "go_to": "Go to photo"
     },
     "faq": {
       "eyebrow": "FAQ",

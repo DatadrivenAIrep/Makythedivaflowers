@@ -510,7 +510,9 @@
       "close": "Cerrar visor",
       "prev": "Foto anterior",
       "next": "Foto siguiente",
-      "marquee_label": "Portafolio de bodas en movimiento"
+      "carousel_label": "Carrusel del portafolio de bodas",
+      "open_lightbox": "toca para ver en grande",
+      "go_to": "Ir a la foto"
     },
     "faq": {
       "eyebrow": "Preguntas frecuentes",
