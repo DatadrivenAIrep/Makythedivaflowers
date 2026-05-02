@@ -242,7 +242,7 @@
       },
       "contact": {
         "heading": "Contáctanos",
-        "p1": "BORRADOR: Si tienes preguntas sobre esta Política de Privacidad o sobre cómo manejamos tu información personal, contáctanos en hello@divaflowers.com o por correo en Diva Flowers, 1077 Hempstead Tpke, Franklin Square, NY 11010.",
+        "p1": "BORRADOR: Si tienes preguntas sobre esta Política de Privacidad o sobre cómo manejamos tu información personal, contáctanos en hello@divaflowers.com o por correo en Diva Flowers, 1077 Willis Ave, Albertson, NY 11507.",
         "p2": "BORRADOR: Nos reservamos el derecho de actualizar esta Política de Privacidad en cualquier momento. Los cambios se publicarán en esta página con una fecha de vigencia actualizada. Tu uso continuado de nuestro sitio web después de cualquier cambio constituye tu aceptación de la política actualizada. Este documento es un borrador y no debe publicarse sin revisión legal."
       }
     },
@@ -283,7 +283,7 @@
       },
       "contact": {
         "heading": "Contacto",
-        "p1": "BORRADOR: Si tienes preguntas sobre estos Términos de Servicio, contáctanos en hello@divaflowers.com o por correo en Diva Flowers, 1077 Hempstead Tpke, Franklin Square, NY 11010.",
+        "p1": "BORRADOR: Si tienes preguntas sobre estos Términos de Servicio, contáctanos en hello@divaflowers.com o por correo en Diva Flowers, 1077 Willis Ave, Albertson, NY 11507.",
         "p2": "BORRADOR: Estos Términos de Servicio se rigen por las leyes del Estado de Nueva York. Cualquier disputa que surja de estos términos se resolverá en los tribunales del Condado de Nassau, Nueva York. Este documento es un borrador y debe ser revisado y aprobado por un abogado con licencia antes de su uso."
       }
     }
@@ -359,12 +359,12 @@
   },
   "contact": {
     "page_title": "Contacto — Diva Flowers",
-    "page_description": "Visítanos en Hempstead Turnpike, llámanos o envíanos un mensaje. Entrega el mismo día en Long Island y Queens.",
+    "page_description": "Visítanos en Willis Ave en Albertson, llámanos o envíanos un mensaje. Entrega el mismo día en Long Island y Queens.",
     "eyebrow": "Contacto",
     "title": "Ven a encontrarnos.",
     "studio": {
       "address_label": "Estudio",
-      "address_value": "1077 Hempstead Tpke, Franklin Square, NY 11010",
+      "address_value": "1077 Willis Ave, Albertson, NY 11507",
       "hours_label": "Horario",
       "hours_value": "Lun–Sáb 9am–6pm · Dom 10am–4pm",
       "phone_label": "Teléfono",
@@ -372,7 +372,7 @@
       "directions_cta": "Cómo llegar"
     },
     "map": {
-      "alt": "Mapa que muestra Diva Flowers en 1077 Hempstead Turnpike, Franklin Square, NY"
+      "alt": "Mapa que muestra Diva Flowers en 1077 Willis Ave, Albertson, NY"
     },
     "zones": {
       "eyebrow": "Cobertura de entrega",
