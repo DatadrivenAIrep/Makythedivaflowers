@@ -10,7 +10,7 @@ export async function WeddingsTeaser({ locale }: { locale: Locale }) {
         <div className="relative overflow-hidden rounded-[var(--radius-bento)] aspect-[16/9] md:aspect-[21/9]">
           <img
             alt=""
-            src="https://picsum.photos/seed/diva-wedding-arch/1800/900"
+            src="/weddings/oh1-scaled.webp"
             className="absolute inset-0 size-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-ink/20 to-transparent" />

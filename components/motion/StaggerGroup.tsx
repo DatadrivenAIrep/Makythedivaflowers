@@ -30,7 +30,7 @@ function StaggerGroupImpl({
       style={style}
       initial="hidden"
       whileInView="show"
-      viewport={{ once: true, amount: 0.2 }}
+      viewport={{ once: true, amount: 0 }}
       variants={variants}
     >
       {children}

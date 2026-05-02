@@ -20,6 +20,7 @@ export type ProductVariant = {
   id: string;
   label: Localized;
   priceCents: number;
+  subtitle?: Localized;
 };
 
 export type ProductAddOn = {
@@ -51,6 +52,7 @@ export type Product = {
   slug: string;
   title: Localized;
   category: ProductCategory;
+  giftExtra?: boolean;
   blurb: Localized;
   description: Localized;
   images: ProductImage[];

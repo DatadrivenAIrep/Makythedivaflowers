@@ -8,6 +8,9 @@ import { computeOrderTotals } from "@/lib/totals";
 import { formatMoneyCents } from "@/lib/format";
 import { ProductImage } from "@/components/product/ProductImage";
 import { PRODUCTS } from "@/data/products";
+import { CutoffReminderRow } from "@/components/conversion/CutoffReminderRow";
+import { GiftAssuranceBar } from "@/components/conversion/GiftAssuranceBar";
+import { SITE } from "@/data/site";
 import type { Locale } from "@/types/locale";
 
 export function OrderSummarySticky({ locale }: { locale: Locale }) {
@@ -20,6 +23,7 @@ export function OrderSummarySticky({ locale }: { locale: Locale }) {
   return (
     <aside className="lg:sticky lg:top-24 self-start space-y-6 rounded-2xl border border-ink/10 p-6 bg-bone/60">
       <p className="font-display text-xl text-ink">{t("summary")}</p>
+      <CutoffReminderRow cutoff={SITE.cutoff24} locale={locale} />
       <ul className="space-y-4 max-h-[280px] overflow-y-auto pr-1">
         {resolved.map((r) => (
           <li key={`${r.line.productId}-${r.line.variantId}`} className="grid grid-cols-[48px_1fr_auto] gap-3 items-center">
@@ -43,6 +47,9 @@ export function OrderSummarySticky({ locale }: { locale: Locale }) {
         <div className="h-px bg-ink/10" />
         <Row label={t("total")} value={formatMoneyCents(totals.totalCents, locale)} bold />
       </dl>
+      <div className="border-t border-ink/10 pt-4">
+        <GiftAssuranceBar size="sm" surface="checkout" locale={locale} />
+      </div>
     </aside>
   );
 }

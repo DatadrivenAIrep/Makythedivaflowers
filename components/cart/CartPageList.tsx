@@ -6,6 +6,7 @@ import { useCartStore } from "@/lib/cart-store";
 import { resolveCartLines, cartSubtotalCents } from "@/lib/cart-helpers";
 import { CartLineItem } from "@/components/cart/CartLineItem";
 import { CartEmpty } from "@/components/cart/CartEmpty";
+import { CartUpsellStrip } from "@/components/conversion/CartUpsellStrip";
 import { Button } from "@/components/ui/Button";
 import { formatMoneyCents } from "@/lib/format";
 import { PRODUCTS } from "@/data/products";
@@ -25,18 +26,21 @@ export function CartPageList({ locale }: { locale: Locale }) {
 
   return (
     <div className="grid gap-12 lg:grid-cols-[1fr_360px] lg:gap-16">
-      <ul className="divide-y divide-ink/10">
-        {resolved.map((r) => (
-          <CartLineItem
-            key={`${r.line.productId}-${r.line.variantId}`}
-            resolved={r}
-            locale={locale}
-            variant="page"
-            onQtyChange={(n) => setQty(r.line.productId, r.line.variantId, n)}
-            onRemove={() => remove(r.line.productId, r.line.variantId)}
-          />
-        ))}
-      </ul>
+      <div>
+        <ul className="divide-y divide-ink/10">
+          {resolved.map((r) => (
+            <CartLineItem
+              key={`${r.line.productId}-${r.line.variantId}`}
+              resolved={r}
+              locale={locale}
+              variant="page"
+              onQtyChange={(n) => setQty(r.line.productId, r.line.variantId, n)}
+              onRemove={() => remove(r.line.productId, r.line.variantId)}
+            />
+          ))}
+        </ul>
+        <CartUpsellStrip locale={locale} />
+      </div>
       <aside className="lg:sticky lg:top-24 self-start space-y-5 rounded-2xl border border-ink/10 p-6">
         <p className="font-display text-xl text-ink">{t("summary_title")}</p>
         <div className="flex items-baseline justify-between border-t border-ink/10 pt-4">

@@ -14,6 +14,10 @@ import { CartSummary } from "@/components/cart/CartSummary";
 import { PRODUCTS } from "@/data/products";
 import type { Locale } from "@/types/locale";
 import { springs } from "@/lib/motion-config";
+import { CutoffPill } from "@/components/conversion/CutoffPill";
+import { GiftAssuranceBar } from "@/components/conversion/GiftAssuranceBar";
+import { CartUpsellStrip } from "@/components/conversion/CartUpsellStrip";
+import { SITE } from "@/data/site";
 
 export function CartDrawer({ locale }: { locale: Locale }) {
   const t = useTranslations("cart");
@@ -70,7 +74,10 @@ export function CartDrawer({ locale }: { locale: Locale }) {
             transition={reduce ? { duration: 0 } : springs.snappy}
           >
             <header className="flex items-center justify-between px-5 py-4 border-b border-ink/10">
-              <p className="font-display text-xl text-ink">{t("title")}</p>
+              <div className="flex items-center gap-3">
+                <p className="font-display text-xl text-ink">{t("title")}</p>
+                <CutoffPill cutoff={SITE.cutoff24} locale={locale} />
+              </div>
               <div className="flex items-center gap-3">
                 <Link
                   href={`/${locale}/cart`}
@@ -104,6 +111,10 @@ export function CartDrawer({ locale }: { locale: Locale }) {
                     />
                   ))}
                 </ul>
+                <CartUpsellStrip locale={locale} />
+                <div className="px-5 pt-3">
+                  <GiftAssuranceBar size="sm" surface="cart" locale={locale} />
+                </div>
                 <CartSummary subtotalCents={subtotal} locale={locale} onCheckout={close} />
               </>
             )}

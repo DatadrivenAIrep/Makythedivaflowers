@@ -7,8 +7,10 @@ import { Hero } from "@/components/home/Hero";
 import { KineticMarquee } from "@/components/brand/KineticMarquee";
 import { BentoGrid } from "@/components/home/BentoGrid";
 import { CategoryStrip } from "@/components/home/CategoryStrip";
+import { GoogleReviews } from "@/components/home/GoogleReviews";
 import { EditorialSplit } from "@/components/home/EditorialSplit";
 import { WeddingsTeaser } from "@/components/home/WeddingsTeaser";
+import { StudioVisit } from "@/components/home/StudioVisit";
 import { NewsletterField } from "@/components/home/NewsletterField";
 
 export async function generateMetadata({
@@ -43,8 +45,10 @@ export default async function Home({ params }: { params: Promise<{ locale: Local
       <KineticMarquee text={`${marquee}  ·  `} />
       <BentoGrid locale={locale} />
       <CategoryStrip locale={locale} />
+      <GoogleReviews locale={locale} />
       <EditorialSplit locale={locale} />
       <WeddingsTeaser locale={locale} />
+      <StudioVisit locale={locale} />
       <NewsletterField />
     </main>
   );

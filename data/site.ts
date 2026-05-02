@@ -5,6 +5,11 @@ export const SITE = {
   phone: "+1 (516) 484-3456",
   phoneDisplay: "516 484 3456",
   phoneHref: "tel:+15164843456",
+  mobile: {
+    display: "+1 (516) 851-2815",
+    tel: "tel:+15168512815",
+    e164: "+15168512815",
+  },
   email: "studio@divaflowers.com",
   emailHref: "mailto:studio@divaflowers.com",
   address: {
@@ -13,6 +18,10 @@ export const SITE = {
     region: "NY",
     postal: "11010",
     country: "USA",
+  },
+  map: {
+    embedSrc: "https://maps.google.com/maps?q=1077+Hempstead+Turnpike%2C+Franklin+Square%2C+NY+11010&t=m&z=16&output=embed",
+    directionsHref: "https://www.google.com/maps/dir/?api=1&destination=1077+Hempstead+Turnpike%2C+Franklin+Square%2C+NY+11010",
   },
   hours: [
     { day: "Mon–Fri", value: "9:00 AM – 7:00 PM", schema: "Mo-Fr 09:00-19:00" },

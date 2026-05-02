@@ -24,6 +24,7 @@ export function startingPriceCents(p: Product): number {
 export function filterProducts(products: Product[], f: Filter): Product[] {
   return products.filter((p) => {
     if (!p.active) return false;
+    if (p.giftExtra) return false;
     if (f.occasion && !p.occasions.includes(f.occasion)) return false;
     if (f.color && !p.colorFamily.includes(f.color)) return false;
     if (f.size) {
@@ -62,12 +63,12 @@ export function productsByCategory(
   products: Product[],
   category: ProductCategory,
 ): Product[] {
-  return products.filter((p) => p.active && p.category === category);
+  return products.filter((p) => p.active && !p.giftExtra && p.category === category);
 }
 
 export function newestArrivals(products: Product[], limit = 12): Product[] {
   return [...products]
-    .filter((p) => p.active)
+    .filter((p) => p.active && !p.giftExtra)
     .sort((a, b) => Number(b.tags.includes("new")) - Number(a.tags.includes("new")))
     .slice(0, limit);
 }

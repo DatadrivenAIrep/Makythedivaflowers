@@ -29,13 +29,6 @@ const baseOrder = (overrides: Partial<Order> = {}): Order => ({
   ...overrides,
 });
 
-beforeEach(() => {
-  Object.defineProperty(navigator, "clipboard", {
-    value: { writeText: vi.fn().mockResolvedValue(undefined) },
-    writable: true,
-    configurable: true,
-  });
-});
 
 describe("ReciprocityCard", () => {
   it("renders the referral code derived from order id", () => {
@@ -57,9 +50,13 @@ describe("ReciprocityCard", () => {
   });
 
   it("copies the referral code to clipboard on click", async () => {
+    // userEvent.setup() installs its own clipboard stub on window.navigator.clipboard.
+    // Spy on that stub so the component's navigator.clipboard.writeText() call is tracked.
     const user = userEvent.setup();
+    const writeTextSpy = vi.spyOn(navigator.clipboard, "writeText").mockResolvedValue(undefined);
     render(<ReciprocityCard order={baseOrder()} locale="en" />);
     await user.click(screen.getByRole("button", { name: /referral_copy_cta/ }));
-    expect(navigator.clipboard.writeText).toHaveBeenCalledWith("DIVA-A4F2C9");
+    expect(writeTextSpy).toHaveBeenCalledWith("DIVA-A4F2C9");
+    writeTextSpy.mockRestore();
   });
 });

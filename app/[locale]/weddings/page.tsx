@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { WeddingsHero } from "@/components/weddings/WeddingsHero";
 import { ProcessStrip } from "@/components/weddings/ProcessStrip";
-import { MasonryGallery } from "@/components/weddings/MasonryGallery";
+import { GalleryEditorial } from "@/components/weddings/gallery/GalleryEditorial";
 import { WeddingsFAQ } from "@/components/weddings/WeddingsFAQ";
 import { PricingIntent } from "@/components/weddings/PricingIntent";
 import { WeddingsForm } from "@/components/inquiry/WeddingsForm";
@@ -31,7 +31,7 @@ export default async function WeddingsPage({
       <WeddingsHero locale={locale} />
       <ProcessStrip />
       <PricingIntent locale={locale} />
-      <MasonryGallery locale={locale} />
+      <GalleryEditorial locale={locale} />
       <WeddingsFAQ locale={locale} />
       <section id="inquire" className="py-24 bg-petal/20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

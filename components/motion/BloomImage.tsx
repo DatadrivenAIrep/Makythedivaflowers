@@ -27,7 +27,7 @@ function BloomImageImpl({ src, alt, className, sizes, priority }: Props) {
         fill
         sizes={sizes}
         priority={priority}
-        className="object-cover"
+        className={cn("object-cover", imgClassName)}
       />
     </motion.div>
   );

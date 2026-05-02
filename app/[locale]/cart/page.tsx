@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { CartPageList } from "@/components/cart/CartPageList";
+import { CutoffReminderRow } from "@/components/conversion/CutoffReminderRow";
+import { SITE } from "@/data/site";
 import type { Locale } from "@/types/locale";
 
 export async function generateMetadata({
@@ -30,6 +32,7 @@ export default async function CartPage({
           {t("page_title")}
         </h1>
       </header>
+      <CutoffReminderRow cutoff={SITE.cutoff24} locale={locale} />
       <CartPageList locale={locale} />
     </main>
   );
