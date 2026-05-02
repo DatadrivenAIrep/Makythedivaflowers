@@ -15,6 +15,7 @@ import { ProductGrid } from "@/components/product/ProductGrid";
 import { FilterBar } from "@/components/product/FilterBar";
 import { EmptyFilterState } from "@/components/product/EmptyFilterState";
 import { SITE } from "@/data/site";
+import { ShopCategoryContactSubject } from "@/components/contact/ShopCategoryContactSubject";
 
 const ALLOWED: ProductCategory[] = [
   "arrangements",
@@ -112,6 +113,7 @@ export default async function CategoryPage({
 
   return (
     <main className="bg-bone text-ink">
+      <ShopCategoryContactSubject category={CATEGORY_TITLES[cat][locale]} />
       <header className="mx-auto max-w-[var(--container-max)] px-6 pt-12 pb-6 md:pt-20">
         <p className="font-mono text-[10px] uppercase tracking-wider text-mute-500">
           {locale === "es" ? "Categoría" : "Category"}

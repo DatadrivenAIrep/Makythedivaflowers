@@ -565,5 +565,28 @@
         "unknown_error": "Algo salió mal. Intenta de nuevo o llámanos directamente."
       }
     }
+  },
+  "text_modal": {
+    "trigger": "Escríbele a Maky",
+    "title": "Escríbele a Maky",
+    "subtitle": "Te responderé lo antes posible.",
+    "preview_label": "Tu mensaje",
+    "send_sms": "Enviar por SMS",
+    "send_whatsapp": "WhatsApp",
+    "call": "Llamar mejor",
+    "footer_note": "Lun–Dom · Una persona real",
+    "inline_link": "Escríbele a Maky directamente →",
+    "close": "Cerrar",
+    "greeting": "Hola Maky, ",
+    "subjects": {
+      "pdp_generic": "tengo una pregunta sobre un producto que estoy viendo.",
+      "pdp_named": "tengo una pregunta sobre {product}.",
+      "shop_all": "estoy viendo tu tienda y tengo una pregunta.",
+      "shop_category": "estoy viendo tu colección de {category} y tengo una pregunta.",
+      "weddings": "me gustaría consultar sobre flores para una boda.",
+      "events": "me gustaría consultar sobre flores para un evento.",
+      "checkout": "necesito ayuda para completar mi pedido.",
+      "default": "tengo una pregunta rápida."
+    }
   }
 }

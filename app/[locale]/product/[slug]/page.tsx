@@ -11,6 +11,7 @@ import { PdpAccordion } from "@/components/product/PdpAccordion";
 import { PairsWellWith } from "@/components/product/PairsWellWith";
 import { JournalTile } from "@/components/product/JournalTile";
 import { PdpStructuredData } from "@/components/product/PdpStructuredData";
+import { PdpContactSubject } from "@/components/contact/PdpContactSubject";
 
 export async function generateStaticParams() {
   return PRODUCTS.filter((p) => p.active).map((p) => ({ slug: p.slug }));
@@ -67,6 +68,7 @@ export default async function ProductPage({
 
   return (
     <main className="bg-bone text-ink">
+      <PdpContactSubject productName={product.title[locale]} />
       <PdpStructuredData product={product} locale={locale} origin={origin} />
 
       <section className="mx-auto grid max-w-[var(--container-max)] grid-cols-1 gap-10 px-6 pt-10 pb-16 lg:grid-cols-12 lg:gap-12 lg:pt-16">

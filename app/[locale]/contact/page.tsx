@@ -5,6 +5,7 @@ import { StudioInfo } from "@/components/contact/StudioInfo";
 import { StudioMap } from "@/components/contact/StudioMap";
 import { DeliveryZonePills } from "@/components/contact/DeliveryZonePills";
 import { ContactForm } from "@/components/inquiry/ContactForm";
+import { TextMakyInlineLink } from "@/components/contact/TextMakyInlineLink";
 import type { Locale } from "@/types/locale";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
@@ -30,6 +31,9 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
               {t("title")}
             </h1>
             <StudioInfo locale={locale} />
+            <div className="mt-6">
+              <TextMakyInlineLink />
+            </div>
             <StudioMap locale={locale} />
           </div>
           <div>
