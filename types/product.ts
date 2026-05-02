@@ -52,6 +52,7 @@ export type Product = {
   slug: string;
   title: Localized;
   category: ProductCategory;
+  giftExtra?: boolean;
   blurb: Localized;
   description: Localized;
   images: ProductImage[];
