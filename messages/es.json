@@ -168,6 +168,21 @@
       "title": "Construido alrededor de nuestro arco floral en Hempstead Turnpike.",
       "body": "Arreglamos flores bajo el mismo toldo rosa desde 2014. Entra, llama o pide en línea — entrega el mismo día en Long Island y Queens."
     },
+    "reviews": {
+      "eyebrow": "★ Reseñas en Google",
+      "verified": "Verificadas",
+      "read_all": "Leer todas las {count} reseñas en Google",
+      "translated": "Traducida · ver original",
+      "original": "Mostrando original",
+      "aria": {
+        "section": "Reseñas de clientes",
+        "next": "Siguiente reseña",
+        "prev": "Anterior reseña",
+        "play": "Reanudar reproducción",
+        "pause": "Pausar reproducción",
+        "goto": "Ir a la reseña {n}"
+      }
+    },
     "weddings_teaser": {
       "eyebrow": "Bodas",
       "title": "Instalaciones, por Diva.",

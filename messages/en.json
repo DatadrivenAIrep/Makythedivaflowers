@@ -168,6 +168,21 @@
       "title": "Built around our floral arch on Hempstead Turnpike.",
       "body": "We've been arranging flowers under the same pink awning since 2014. Walk in, call ahead, or order online — same-day delivery across Long Island and Queens."
     },
+    "reviews": {
+      "eyebrow": "★ Google Reviews",
+      "verified": "Verified",
+      "read_all": "Read all {count} reviews on Google",
+      "translated": "Translated · view original",
+      "original": "Showing original",
+      "aria": {
+        "section": "Customer reviews",
+        "next": "Next review",
+        "prev": "Previous review",
+        "play": "Resume autoplay",
+        "pause": "Pause autoplay",
+        "goto": "Go to review {n}"
+      }
+    },
     "weddings_teaser": {
       "eyebrow": "Weddings",
       "title": "Installations, by Diva.",
