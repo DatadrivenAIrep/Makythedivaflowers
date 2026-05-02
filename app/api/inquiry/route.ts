@@ -31,8 +31,6 @@ export async function POST(req: Request) {
     ip,
     locale: parsed.data.locale,
   });
-  const contactEmail =
-    parsed.data.type === "subscription" ? parsed.data.contact.email : parsed.data.contact.email;
-  console.log(`[inquiry] ${parsed.data.type} from ${contactEmail}`);
+  console.log(`[inquiry] ${parsed.data.type} from ${parsed.data.contact.email}`);
   return NextResponse.json({ ok: true, id }, { status: 200 });
 }
