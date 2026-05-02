@@ -1,22 +1,9 @@
-import { describe, it, expect, vi, beforeAll } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { GalleryTile } from "@/components/weddings/gallery/GalleryTile";
 
 vi.mock("next-intl", () => ({ useTranslations: () => (k: string) => k }));
-
-beforeAll(() => {
-  class MockIntersectionObserver {
-    observe() {}
-    unobserve() {}
-    disconnect() {}
-    takeRecords() { return []; }
-    root = null;
-    rootMargin = "";
-    thresholds = [];
-  }
-  globalThis.IntersectionObserver = MockIntersectionObserver as unknown as typeof IntersectionObserver;
-});
 
 const photo = {
   id: "w01",
