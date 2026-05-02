@@ -18,7 +18,11 @@ type Props = {
 
 function PdpConfiguratorImpl({ product, locale, cutoff, motionMode }: Props) {
   void motionMode;
-  const [variantId, setVariantId] = useState(product.variants[0]?.id ?? "");
+  const defaultVariantId = useMemo(() => {
+    const middle = product.variants.find((v) => v.id === "lush");
+    return middle?.id ?? product.variants[0]?.id ?? "";
+  }, [product]);
+  const [variantId, setVariantId] = useState(defaultVariantId);
   const [addOnIds, setAddOnIds] = useState<string[]>([]);
   const [date, setDate] = useState("");
   const [message, setMessage] = useState("");
