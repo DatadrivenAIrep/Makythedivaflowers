@@ -509,7 +509,8 @@
       "title": "From the studio floor.",
       "close": "Close lightbox",
       "prev": "Previous photo",
-      "next": "Next photo"
+      "next": "Next photo",
+      "marquee_label": "Wedding portfolio in motion"
     },
     "faq": {
       "eyebrow": "FAQ",

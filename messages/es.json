@@ -509,7 +509,8 @@
       "title": "Desde el piso del estudio.",
       "close": "Cerrar visor",
       "prev": "Foto anterior",
-      "next": "Foto siguiente"
+      "next": "Foto siguiente",
+      "marquee_label": "Portafolio de bodas en movimiento"
     },
     "faq": {
       "eyebrow": "Preguntas frecuentes",
