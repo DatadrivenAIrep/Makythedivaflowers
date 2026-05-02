@@ -6,6 +6,7 @@ import { resolveCartLines } from "@/lib/cart-helpers";
 import { ProductImage } from "@/components/product/ProductImage";
 import { formatMoneyCents, formatPhoneUS, formatDeliveryWindow } from "@/lib/format";
 import { Button } from "@/components/ui/Button";
+import { ReciprocityCard } from "@/components/conversion/ReciprocityCard";
 import type { Order } from "@/types/order";
 import type { Locale } from "@/types/locale";
 
@@ -83,6 +84,9 @@ export async function ConfirmationView({ order, locale }: { order: Order; locale
           </Link>
         </Button>
       </footer>
+      <section className="mt-8">
+        <ReciprocityCard order={order} locale={locale} />
+      </section>
     </div>
   );
 }
