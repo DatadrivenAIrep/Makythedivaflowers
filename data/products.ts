@@ -3352,7 +3352,7 @@ export function getProductBySlug(slug: string): Product | undefined {
 }
 
 export function getProductsByCategory(cat: string): Product[] {
-  return PRODUCTS.filter((p) => p.active && p.category === cat);
+  return PRODUCTS.filter((p) => p.active && !p.giftExtra && p.category === cat);
 }
 
 export function getPairsWith(product: Product): Product[] {
