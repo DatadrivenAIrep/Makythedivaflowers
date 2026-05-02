@@ -660,5 +660,78 @@
       "subscription_body": "Weekly arrangements at her door, hand-built fresh every Thursday. Pause anytime. Skip a week. Cancel in two clicks.",
       "subscription_cta": "See subscriptions"
     }
+  },
+  "subscriptions": {
+    "page_title": "Subscriptions — Diva Flowers",
+    "meta_description": "Weekly and biweekly bouquet subscriptions, curated and delivered.",
+    "eyebrow": "Programa · Suscripción",
+    "hero": {
+      "title": "Flores frescas, todas las semanas.",
+      "body": "Una suscripción curada por el estudio. Cada lunes elegimos lo más bello de la semana y lo dejamos en tu puerta."
+    },
+    "tiers": {
+      "heading": "Tres planes, una rutina",
+      "popular_badge": "Most Loved",
+      "per_delivery": "per delivery",
+      "cta": "Choose {name}",
+      "selected": "Selected"
+    },
+    "how": {
+      "heading": "How it works",
+      "step_1": { "title": "Choose a plan and cadence", "body": "Pick the size that fits your space and how often you want fresh flowers." },
+      "step_2": { "title": "We curate by season", "body": "Our florists build each delivery from in-season stems — no two weeks alike." },
+      "step_3": { "title": "We deliver on schedule", "body": "Hand-delivered on the day you chose, with a card if you'd like." }
+    },
+    "form": {
+      "heading": "Start your subscription",
+      "subheading": "We'll reach out within 24 hours to confirm the first delivery and arrange payment.",
+      "plan_label": "Plan",
+      "cadence_label": "Cadence",
+      "cadence": { "weekly": "Weekly", "biweekly": "Biweekly" },
+      "start_date_label": "Start date",
+      "start_date_help": "First delivery — at least 2 days from today",
+      "recipient_heading": "Recipient",
+      "recipient_name": "Recipient name",
+      "recipient_phone": "Recipient phone",
+      "address_heading": "Delivery address",
+      "street1": "Street",
+      "street2": "Apt, suite (optional)",
+      "city": "City",
+      "state": "State (2 letters)",
+      "zip": "ZIP",
+      "window_label": "Preferred window",
+      "window": {
+        "morning": "Morning",
+        "midday": "Midday",
+        "afternoon": "Afternoon",
+        "evening": "Evening"
+      },
+      "contact_heading": "Your contact",
+      "contact_email": "Email",
+      "contact_phone": "Phone",
+      "card_message_label": "Recurring card message (optional)",
+      "card_message_help": "Up to 500 characters. We'll write the same note on every delivery.",
+      "notes_label": "Notes (optional)",
+      "notes_help": "Color preferences, allergies, building access, anything we should know.",
+      "submit": "Send subscription request",
+      "submitting": "Sending…",
+      "errors": {
+        "unknown_error": "Something went wrong. Please try again.",
+        "rate_limited": "Too many requests. Please try again in a moment.",
+        "name_too_short": "Name is too short.",
+        "phone_too_short": "Phone number is too short.",
+        "email_invalid": "Please enter a valid email.",
+        "street_required": "Street is required.",
+        "city_required": "City is required.",
+        "state_invalid": "State must be 2 letters.",
+        "zip_invalid": "ZIP must be 5 digits.",
+        "date_invalid": "Please pick a valid date.",
+        "date_too_soon": "Start date must be at least 2 days out.",
+        "card_too_long": "Card message is too long.",
+        "notes_too_long": "Notes are too long."
+      },
+      "success_title": "We'll be in touch.",
+      "success_body": "We received your subscription request. Expect an email within 24 hours to confirm the first delivery and arrange payment."
+    }
   }
 }
