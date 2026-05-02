@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
@@ -17,12 +17,22 @@ beforeEach(() => {
   global.fetch = vi.fn();
 });
 
+afterEach(() => {
+  vi.clearAllMocks();
+});
+
 describe("SubscriptionInquiryForm", () => {
   it("renders required fields", () => {
     renderForm();
     expect(screen.getByLabelText(/recipient name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/^email$/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/start date/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^street$/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^city$/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^state/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^zip$/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/recipient phone/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^phone$/i)).toBeInTheDocument();
   });
 
   it("submits a valid payload and shows success", async () => {
@@ -70,6 +80,40 @@ describe("SubscriptionInquiryForm", () => {
     await user.click(screen.getByRole("button", { name: /send subscription request/i }));
     await waitFor(() => {
       expect(global.fetch).not.toHaveBeenCalled();
+    });
+    const errors = await screen.findAllByRole("alert");
+    expect(errors.length).toBeGreaterThan(0);
+  });
+
+  it("shows error banner when server returns { ok: false }", async () => {
+    (global.fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+      ok: true,
+      json: async () => ({ ok: false, errors: { formErrors: ["unknown_error"] } }),
+    });
+    const user = userEvent.setup();
+    renderForm("maison");
+
+    const future = new Date();
+    future.setDate(future.getDate() + 5);
+    const futureStr = future.toISOString().slice(0, 10);
+
+    await user.type(screen.getByLabelText(/recipient name/i), "Lola Cardona");
+    await user.type(screen.getByLabelText(/recipient phone/i), "5165550101");
+    await user.type(screen.getByLabelText(/start date/i), futureStr);
+    await user.type(screen.getByLabelText(/^street$/i), "1 Park Ave");
+    await user.type(screen.getByLabelText(/^city$/i), "New York");
+    await user.clear(screen.getByLabelText(/^state/i));
+    await user.type(screen.getByLabelText(/^state/i), "NY");
+    await user.type(screen.getByLabelText(/^zip$/i), "10010");
+    await user.type(screen.getByLabelText(/^email$/i), "lola@example.com");
+    await user.type(screen.getByLabelText(/^phone$/i), "5165550101");
+
+    await user.click(screen.getByRole("button", { name: /send subscription request/i }));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/something went wrong/i),
+      ).toBeInTheDocument();
     });
   });
 });

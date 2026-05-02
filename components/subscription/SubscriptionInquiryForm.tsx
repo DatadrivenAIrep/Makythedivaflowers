@@ -110,6 +110,11 @@ export function SubscriptionInquiryForm({ locale, plan }: Props) {
               </label>
             ))}
           </div>
+          {errors.cadence?.message && (
+            <p className="mt-1 font-mono text-[11px] text-error" role="alert">
+              {t(`errors.${errors.cadence.message}`)}
+            </p>
+          )}
         </fieldset>
 
         <Field
@@ -196,6 +201,11 @@ export function SubscriptionInquiryForm({ locale, plan }: Props) {
               </label>
             ))}
           </div>
+          {errors.window?.slot?.message && (
+            <p className="mt-1 font-mono text-[11px] text-error" role="alert">
+              {t(`errors.${errors.window.slot.message}`)}
+            </p>
+          )}
         </fieldset>
 
         <Heading>{t("contact_heading")}</Heading>
@@ -290,7 +300,7 @@ function Field({ label, error, help, id, ...rest }: FieldProps) {
         </span>
       )}
       {error && (
-        <span id={errorId} className="mt-1 block font-mono text-[11px] text-error">
+        <span id={errorId} role="alert" className="mt-1 block font-mono text-[11px] text-error">
           {error}
         </span>
       )}
@@ -325,7 +335,7 @@ function Textarea({ label, error, help, id, ...rest }: TextareaProps) {
         </span>
       )}
       {error && (
-        <span id={errorId} className="mt-1 block font-mono text-[11px] text-error">
+        <span id={errorId} role="alert" className="mt-1 block font-mono text-[11px] text-error">
           {error}
         </span>
       )}
