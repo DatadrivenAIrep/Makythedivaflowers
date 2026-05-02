@@ -30,6 +30,10 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Diva Flowers — Romance, by the stem.",
   description: "Long Island floral studio. Signature arrangements, weddings, events.",
+  icons: {
+    icon: "/favicon-logo.webp",
+    apple: "/apple-icon.webp",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

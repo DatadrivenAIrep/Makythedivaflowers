@@ -64,7 +64,9 @@ export async function POST(req: Request): Promise<Response> {
 
   let suggestions: string[];
   try {
-    const obj = JSON.parse(raw);
+    // Strip markdown code fences if the model wraps its JSON output
+    const cleaned = raw.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/, "").trim();
+    const obj = JSON.parse(cleaned);
     if (!Array.isArray(obj.suggestions) || obj.suggestions.length !== 3) {
       throw new Error("wrong shape");
     }

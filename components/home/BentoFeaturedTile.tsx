@@ -5,7 +5,23 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/cn";
 
-function BentoFeaturedTileImpl({ locale }: { locale: "en" | "es" }) {
+type BentoFeaturedTileProps = {
+  locale: "en" | "es";
+  slug: string;
+  title: string;
+  imageSrc: string;
+  imageAlt: string;
+  priceUSD: number;
+};
+
+function BentoFeaturedTileImpl({
+  locale,
+  slug,
+  title,
+  imageSrc,
+  imageAlt,
+  priceUSD,
+}: BentoFeaturedTileProps) {
   const reduce = useReducedMotion();
   const t = useTranslations("home.bento");
   const ref = useRef<HTMLDivElement>(null);
@@ -46,8 +62,8 @@ function BentoFeaturedTileImpl({ locale }: { locale: "en" | "es" }) {
     >
       <div className="absolute inset-0">
         <img
-          src="https://picsum.photos/seed/featured-arrangement/900/1200"
-          alt=""
+          src={imageSrc}
+          alt={imageAlt}
           className="size-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-petal via-petal/40 to-transparent" />
@@ -62,7 +78,7 @@ function BentoFeaturedTileImpl({ locale }: { locale: "en" | "es" }) {
 
       <div className="absolute top-8 right-8 size-20 rounded-full border border-ink/30 flex flex-col items-center justify-center font-mono text-ink/80 bg-petal/40 backdrop-blur-sm">
         <span className="text-[9px] uppercase tracking-[0.2em] opacity-60">USD</span>
-        <span className="text-2xl font-medium leading-none mt-1">$187</span>
+        <span className="text-2xl font-medium leading-none mt-1">${priceUSD}</span>
       </div>
 
       <div className="absolute top-32 right-8 flex items-center gap-2">
@@ -85,10 +101,10 @@ function BentoFeaturedTileImpl({ locale }: { locale: "en" | "es" }) {
           className="font-display text-[clamp(3rem,6vw,5.5rem)] italic tracking-tighter leading-[0.88] text-ink"
           style={{ fontVariationSettings: "'WONK' 1, 'SOFT' 30, 'opsz' 144" }}
         >
-          The Ingrid Bouquet
+          {title}
         </h3>
         <Link
-          href={`/${locale}/product/the-ingrid-bouquet`}
+          href={`/${locale}/product/${slug}`}
           className="inline-block mt-5 font-sans text-sm tracking-tight text-ink underline-offset-4 hover:underline"
         >
           {t("featured_cta")} →

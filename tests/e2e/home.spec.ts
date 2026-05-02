@@ -4,7 +4,7 @@ test("home renders in English with hero, marquee, bento, studio visit", async ({
   await page.goto("/en");
   await expect(page.getByRole("heading", { level: 1, name: /Romance, by the stem/ })).toBeVisible();
   await expect(page.getByRole("link", { name: /Shop arrangements/ })).toBeVisible();
-  await expect(page.getByText("The Ingrid Bouquet")).toBeVisible();
+  await expect(page.getByText("A Thousand Heartbeats")).toBeVisible();
   await expect(page.getByRole("heading", { name: /Find your bloom/ })).toBeVisible();
   await expect(page.getByRole("heading", { name: /Walk in, ring the bell/ })).toBeVisible();
   await expect(page.getByRole("link", { name: /Get directions/ })).toBeVisible();

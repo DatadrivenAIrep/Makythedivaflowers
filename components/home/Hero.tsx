@@ -12,9 +12,8 @@ export async function Hero({ locale }: { locale: Locale }) {
   return (
     <section className="relative min-h-[100dvh] overflow-hidden">
 
-      {/* 1. Background slot ─ Higgsfield video goes here tomorrow */}
+      {/* 1. Background — looping video with gradient fallback */}
       <div
-        id="hero-bg-slot"
         aria-hidden
         className="absolute inset-0 z-0"
         style={{
@@ -22,7 +21,25 @@ export async function Hero({ locale }: { locale: Locale }) {
             "linear-gradient(160deg, #1A1816 0%, #0E0D0C 55%, #2a0d1a 100%)",
         }}
       >
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          poster="/hero/divavideo-poster.jpg"
+          className="absolute inset-0 h-full w-full object-cover"
+        >
+          <source src="/hero/divavideo.mp4" type="video/mp4" />
+        </video>
+        {/* Legibility overlay — darker at bottom where CTAs live */}
         <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-b from-charcoal/40 via-charcoal/30 to-charcoal/75"
+        />
+        {/* Brand accent — radial rouge wash from top-right */}
+        <div
+          aria-hidden
           className="absolute inset-0"
           style={{
             background:
@@ -33,7 +50,7 @@ export async function Hero({ locale }: { locale: Locale }) {
 
       {/* 2. Eyebrow pill — top-left */}
       <div className="absolute top-20 left-4 lg:top-28 lg:left-8 z-20">
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-petal/60 border border-petal/20 px-3 py-1.5 rounded-full inline-block">
+        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-bone/90 border border-bone/30 bg-charcoal/40 backdrop-blur-sm px-3 py-1.5 rounded-full inline-block">
           Long Island, New York · Since 2014
         </span>
       </div>
@@ -65,7 +82,10 @@ export async function Hero({ locale }: { locale: Locale }) {
             </h1>
           </div>
           <div>
-            <p className="font-sans text-petal/70 text-base max-w-[46ch] leading-relaxed mt-6">
+            <p
+              className="font-sans text-bone/90 text-base max-w-[46ch] leading-relaxed mt-6"
+              style={{ textShadow: "0 1px 12px rgba(14,13,12,0.6)" }}
+            >
               {t("sub")}
             </p>
           </div>

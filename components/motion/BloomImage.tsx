@@ -8,9 +8,10 @@ type Props = {
   alt: string;
   className?: string;
   sizes?: string;
+  imgClassName?: string;
 };
 
-function BloomImageImpl({ src, alt, className, sizes }: Props) {
+function BloomImageImpl({ src, alt, className, sizes, imgClassName }: Props) {
   const reduce = useReducedMotion();
   return (
     <motion.div
@@ -18,7 +19,7 @@ function BloomImageImpl({ src, alt, className, sizes }: Props) {
       whileHover={reduce ? undefined : { scale: 1.02, rotate: -0.5 }}
       transition={{ type: "spring", stiffness: 120, damping: 16 }}
     >
-      <img src={src} alt={alt} sizes={sizes} className="size-full object-cover" />
+      <img src={src} alt={alt} sizes={sizes} className={cn("size-full object-cover", imgClassName)} />
     </motion.div>
   );
 }

@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: ["@phosphor-icons/react", "framer-motion"],
+    staleTimes: { dynamic: 0 },
   },
 };
 
