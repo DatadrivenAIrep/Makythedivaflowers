@@ -37,10 +37,6 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
             <StudioMap locale={locale} />
           </div>
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60">{t("form.eyebrow")}</p>
-            <h2 className="mt-3 font-display text-4xl text-ink leading-[0.95] tracking-tighter mb-10">
-              {t("form.title")}
-            </h2>
             <ContactForm locale={locale} />
           </div>
         </div>

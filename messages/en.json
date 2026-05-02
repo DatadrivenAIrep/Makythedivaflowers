@@ -408,6 +408,12 @@
       "note": "Don't see your area? Call us — we'll do our best."
     },
     "form": {
+      "shell": {
+        "eyebrow": "Talk to us",
+        "title": "Tell us what you're imagining.",
+        "body": "We design for moments — birthdays, brand launches, ceremonies. Share the occasion and we'll respond within one business day.",
+        "signature": "— Diva, NYC"
+      },
       "eyebrow": "Send a message",
       "title": "We'd love to hear from you.",
       "name": "Full name",
@@ -480,6 +486,11 @@
       }
     },
     "form": {
+      "shell": {
+        "eyebrow": "Events & Brand",
+        "title": "Florals as part of how a brand or moment is felt.",
+        "body": "From a single launch to a quarterly residency — we plan, design, and install for the cadence you need."
+      },
       "eyebrow": "Inquire",
       "title": "Let's build your floral program.",
       "body": "Tell us about your space and cadence. We'll follow up within one business day with a proposal.",
@@ -560,6 +571,13 @@
       "title": "Questions we hear most."
     },
     "form": {
+      "shell": {
+        "eyebrow": "Weddings · est. 2018",
+        "title": "A wedding is a single afternoon. We treat it that way.",
+        "body": "Two months of design, one florist team, one ceremony. Tell us when, where, and what you're imagining — we respond within one business day.",
+        "signature": "— Diva, NYC",
+        "alt": "Wedding floral arrangement detail"
+      },
       "name": "Full name",
       "email": "Email",
       "phone": "Phone",
@@ -690,16 +708,28 @@
     },
     "how": {
       "heading": "How it works",
-      "step_1": { "title": "Choose a plan and cadence", "body": "Pick the size that fits your space and how often you want fresh flowers." },
-      "step_2": { "title": "We curate by season", "body": "Our florists build each delivery from in-season stems — no two weeks alike." },
-      "step_3": { "title": "We deliver on schedule", "body": "Hand-delivered on the day you chose, with a card if you'd like." }
+      "step_1": {
+        "title": "Choose a plan and cadence",
+        "body": "Pick the size that fits your space and how often you want fresh flowers."
+      },
+      "step_2": {
+        "title": "We curate by season",
+        "body": "Our florists build each delivery from in-season stems — no two weeks alike."
+      },
+      "step_3": {
+        "title": "We deliver on schedule",
+        "body": "Hand-delivered on the day you chose, with a card if you'd like."
+      }
     },
     "form": {
       "heading": "Start your subscription",
       "subheading": "We'll reach out within 24 hours to confirm the first delivery and arrange payment.",
       "plan_label": "Plan",
       "cadence_label": "Cadence",
-      "cadence": { "weekly": "Weekly", "biweekly": "Biweekly" },
+      "cadence": {
+        "weekly": "Weekly",
+        "biweekly": "Biweekly"
+      },
       "start_date_label": "Start date",
       "start_date_help": "First delivery — at least 2 days from today",
       "recipient_heading": "Recipient",

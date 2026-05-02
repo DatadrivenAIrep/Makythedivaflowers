@@ -408,6 +408,12 @@
       "note": "¿No ves tu área? Llámanos — haremos lo posible."
     },
     "form": {
+      "shell": {
+        "eyebrow": "Hablemos",
+        "title": "Cuéntanos qué estás imaginando.",
+        "body": "Diseñamos momentos — cumpleaños, lanzamientos, ceremonias. Comparte la ocasión y respondemos en un día hábil.",
+        "signature": "— Diva, NYC"
+      },
       "eyebrow": "Enviar mensaje",
       "title": "Nos encantaría saber de ti.",
       "name": "Nombre completo",
@@ -480,6 +486,11 @@
       }
     },
     "form": {
+      "shell": {
+        "eyebrow": "Eventos y Marca",
+        "title": "Las flores como parte de cómo se siente una marca o un momento.",
+        "body": "Desde un lanzamiento puntual hasta una residencia trimestral — planeamos, diseñamos e instalamos a la cadencia que necesites."
+      },
       "eyebrow": "Cotizar",
       "title": "Construyamos tu programa floral.",
       "body": "Cuéntanos sobre tu espacio y cadencia. Te contactaremos en un día hábil con una propuesta.",
@@ -560,6 +571,13 @@
       "title": "Las preguntas que más nos hacen."
     },
     "form": {
+      "shell": {
+        "eyebrow": "Bodas · desde 2018",
+        "title": "Una boda es una sola tarde. La tratamos así.",
+        "body": "Dos meses de diseño, un equipo, una ceremonia. Cuéntanos cuándo, dónde y qué imaginas — respondemos en un día hábil.",
+        "signature": "— Diva, NYC",
+        "alt": "Detalle de arreglo floral nupcial"
+      },
       "name": "Nombre completo",
       "email": "Correo electrónico",
       "phone": "Teléfono",
@@ -690,16 +708,28 @@
     },
     "how": {
       "heading": "Cómo funciona",
-      "step_1": { "title": "Eliges plan y cadencia", "body": "Escoge el tamaño que cabe en tu espacio y la frecuencia con la que quieres flores frescas." },
-      "step_2": { "title": "Curamos según temporada", "body": "Nuestras floristas arman cada entrega con tallos de temporada — ninguna semana es igual." },
-      "step_3": { "title": "Entregamos el día acordado", "body": "Entrega a mano el día que elegiste, con tarjeta si lo prefieres." }
+      "step_1": {
+        "title": "Eliges plan y cadencia",
+        "body": "Escoge el tamaño que cabe en tu espacio y la frecuencia con la que quieres flores frescas."
+      },
+      "step_2": {
+        "title": "Curamos según temporada",
+        "body": "Nuestras floristas arman cada entrega con tallos de temporada — ninguna semana es igual."
+      },
+      "step_3": {
+        "title": "Entregamos el día acordado",
+        "body": "Entrega a mano el día que elegiste, con tarjeta si lo prefieres."
+      }
     },
     "form": {
       "heading": "Comienza tu suscripción",
       "subheading": "Te escribimos en 24 horas para confirmar la primera entrega y coordinar el pago.",
       "plan_label": "Plan",
       "cadence_label": "Cadencia",
-      "cadence": { "weekly": "Semanal", "biweekly": "Quincenal" },
+      "cadence": {
+        "weekly": "Semanal",
+        "biweekly": "Quincenal"
+      },
       "start_date_label": "Fecha de inicio",
       "start_date_help": "Primera entrega — mínimo 2 días desde hoy",
       "recipient_heading": "Destinatario",
