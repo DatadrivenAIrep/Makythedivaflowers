@@ -51,7 +51,7 @@ function BentoSubscriptionsTileImpl({ locale }: { locale: "en" | "es" }) {
           {t("subscriptions_title")}
         </p>
         <Link
-          href={`/${locale}/shop/subscriptions`}
+          href={`/${locale}/subscriptions`}
           className="relative inline-flex w-fit font-sans font-medium text-sm tracking-tight px-4 py-2.5 rounded-full bg-ink text-bone overflow-hidden"
         >
           <span className="relative z-10">{t("subscriptions_cta")}</span>
