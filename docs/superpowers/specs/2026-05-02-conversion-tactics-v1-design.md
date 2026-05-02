@@ -524,10 +524,14 @@ This is the single source of truth — never inline the priority list.
 **Behavior.** A horizontal three-icon strip:
 
 ```
-🌿  Hand-built today        ↺  Free re-do if she doesn't love it       📸  Photo when delivered
+🌿  Hand-built today        ↺  Free re-do if it's our miss        📍  Long Island florist since 2014
 ```
 
-(Icons via `@phosphor-icons/react`: `Leaf`, `ArrowsCounterClockwise`, `Camera`. Already in stack.)
+(Icons via `@phosphor-icons/react`: `Leaf`, `ArrowsCounterClockwise`, `MapPin`. Already in stack.)
+
+**Note on the third icon.** The original audit proposed "Photo on delivery" as the third assurance. After confirming with Maky, photo-on-delivery is not part of the current operation, so we substitute the authority signal "Long Island florist since 2014" — already a strong trust marker present in the home hero, now repeated at decision points. If photo-on-delivery becomes operationally feasible later, swap the third icon back to `Camera` with the photo copy.
+
+**Note on re-do framing.** Re-do is conditional ("if it's our miss" — i.e., the problem is on our end, not buyer's remorse). Copy is honest about the condition without listing the legalese; the underlying promise is "we'll make it right when we got it wrong."
 
 **Three placements via `size` prop:**
 
@@ -553,10 +557,10 @@ type Props = {
 {
   "hand_built_title": "Hand-built today",
   "hand_built_body": "Cut this morning, arranged by Maky.",
-  "redo_title": "Free re-do",
-  "redo_body": "If she doesn't love it, we make it again.",
-  "photo_title": "Photo on delivery",
-  "photo_body": "We send a photo before we hand it off."
+  "redo_title": "Free re-do if it's our miss",
+  "redo_body": "Anything not right on our end, we make it again.",
+  "local_title": "Long Island florist since 2014",
+  "local_body": "Real shop on Willis Ave. We deliver what we make."
 }
 ```
 
@@ -566,10 +570,10 @@ type Props = {
 {
   "hand_built_title": "Hecho hoy a mano",
   "hand_built_body": "Cortado esta mañana, armado por Maky.",
-  "redo_title": "Lo rehacemos gratis",
-  "redo_body": "Si no le encanta, lo hacemos de nuevo.",
-  "photo_title": "Foto en la entrega",
-  "photo_body": "Te enviamos una foto antes de entregarlo."
+  "redo_title": "Lo rehacemos gratis si fue error nuestro",
+  "redo_body": "Si algo salió mal de nuestro lado, lo hacemos de nuevo.",
+  "local_title": "Florista de Long Island desde 2014",
+  "local_body": "Tienda real en Willis Ave. Entregamos lo que hacemos."
 }
 ```
 
@@ -882,8 +886,8 @@ The following needs Maky's input *before* step 5 starts. Step 1-4 can proceed in
 - **Which 12 products get anchor pricing?** Default proposal: the 8 catalog imports + 4 staff-pick / new arrivals. Maky confirms or swaps.
 - **For each of the 12, what are the Standard / Lush / Opulent prices?** Default: ~75% / 100% / ~135%. Maky tunes per product (some might be flat 80/100/130, others 70/100/150).
 - **Subtitle copy per variant** (the "+30% more stems" line). Maky writes for all 12 in EN; Santiago translates to ES.
-- **Photo on delivery — promise vs reality.** The assurance bar promises a photo on delivery. Confirm Maky's team actually does this *or* commits to doing it before launch. If neither, drop the third icon and replace with "Local florist · Long Island since 2014" (already an authority-stack signal).
-- **Free re-do — promise vs reality.** Same question. If the policy doesn't formally exist, define it: free re-do within X days under what conditions. If it can't be promised, replace with "Cut this morning, fresh from the cooler."
+- ~~**Photo on delivery — promise vs reality.**~~ **Decided 2026-05-02:** Maky does not send photos on delivery. Third assurance icon swapped to "Long Island florist since 2014" (authority signal). Spec §3.5 updated.
+- ~~**Free re-do — promise vs reality.**~~ **Decided 2026-05-02:** Re-do is free *when the issue is on Diva's side* (not buyer's remorse). Copy reframed as "Free re-do if it's our miss" / "Lo rehacemos gratis si fue error nuestro" to be honest about the condition. Spec §3.5 updated.
 
 ### 7.3 Feature flags
 
@@ -912,7 +916,7 @@ Marked `// V2-HOOK:` in code where the swap is mechanical. Catalog:
 | `lib/conversion/referral-code.ts` | Deterministic from order id | Real ledger insert; return DB-issued code |
 | `lib/conversion/events.ts` | Constants only | Wired to `plausible()` or `posthog.capture()` |
 | `ReciprocityCard` subscription CTA | Links to `/shop?category=subscriptions` | Deep link to specific subscription with pre-selection |
-| `GiftAssuranceBar` photo promise | Text only | Real photo capture + MMS/email send |
+| `GiftAssuranceBar` third icon | "Long Island since 2014" authority signal | If photo-on-delivery becomes operational, swap back to `Camera` icon + photo copy |
 | `CutoffCountdown` per-zone cutoffs | Single `SITE.cutoff` | Per-delivery-zone cutoffs (Brooklyn earlier than Albertson) |
 | `PdpReviewsBlock` aggregate | Static `REVIEWS_AGGREGATE` | Live Google Places API pull, cached daily |
 
@@ -949,7 +953,7 @@ These do not belong to this spec at any version:
 This spec is "done" when:
 
 1. All six tactics are merged to main with passing unit + e2e tests.
-2. Maky has confirmed both promises in §7.2 (photo on delivery, free re-do) or the assurance bar copy is adjusted accordingly.
+2. Assurance bar copy reflects the §7.2 decisions (no photo, conditional re-do) and Maky has signed off on the final EN/ES strings.
 3. The 12 anchor-pricing products carry Maky-tuned Standard / Lush / Opulent prices and subtitles.
 4. The `messages/{en,es}.json` `conversion.*` namespace is fully populated and reviewed for tone.
 5. Manual a11y pass on cutoff transitions, upsell adds, and clipboard feedback.
