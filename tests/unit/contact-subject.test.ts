@@ -78,8 +78,10 @@ describe("getSubjectKey", () => {
 });
 
 describe("isAllowlistedRoute", () => {
-  it("is true for product, shop, weddings, events, cart, checkout", () => {
+  it("is true for home, product, shop, weddings, events, cart, checkout", () => {
     for (const p of [
+      "/en",
+      "/es",
       "/en/product/x",
       "/en/shop",
       "/en/shop/bouquets",
@@ -94,7 +96,6 @@ describe("isAllowlistedRoute", () => {
 
   it("is false for editorial routes", () => {
     for (const p of [
-      "/en",
       "/en/story",
       "/en/journal",
       "/en/journal/some-post",

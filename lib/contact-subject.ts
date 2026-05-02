@@ -47,5 +47,6 @@ export function getSubjectKey(input: {
 }
 
 export function isAllowlistedRoute(pathname: string): boolean {
+  if (stripLocale(pathname) === "/") return true;
   return getSubjectKey({ pathname, override: null }).key !== "default";
 }
