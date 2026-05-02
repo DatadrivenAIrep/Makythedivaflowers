@@ -13,6 +13,7 @@ import { JournalTile } from "@/components/product/JournalTile";
 import { PdpStructuredData } from "@/components/product/PdpStructuredData";
 import { PdpContactSubject } from "@/components/contact/PdpContactSubject";
 import { GiftAssuranceBar } from "@/components/conversion/GiftAssuranceBar";
+import { CutoffCountdown } from "@/components/conversion/CutoffCountdown";
 
 export async function generateStaticParams() {
   return PRODUCTS.filter((p) => p.active).map((p) => ({ slug: p.slug }));
@@ -90,6 +91,14 @@ export default async function ProductPage({
             <p className="mt-5 max-w-md font-sans text-[15px] leading-relaxed text-ink/70">
               {product.description[locale]}
             </p>
+
+            <div className="mt-6">
+              <CutoffCountdown
+                cutoff={SITE.cutoff24}
+                tone={isSympathy ? "sympathy" : "default"}
+                locale={locale}
+              />
+            </div>
 
             <PdpConfigurator
               product={product}
