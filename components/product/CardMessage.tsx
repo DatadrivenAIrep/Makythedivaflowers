@@ -5,6 +5,8 @@ import type { Locale } from "@/types/locale";
 import type { Occasion } from "@/schemas/card-message";
 import { CardMessageAssist } from "./CardMessageAssist";
 import { getRelations } from "@/lib/card-message-relations";
+import { FormField } from "@/components/ui/form/FormField";
+import { TextArea } from "@/components/ui/form/TextArea";
 
 type Props = {
   locale: Locale;
@@ -44,12 +46,11 @@ function CardMessageImpl({
   const triggerLabel = isSympathy ? t("trigger_sympathy") : t("trigger");
   const triggerPrefix = isSympathy ? "" : "✨ ";
 
+  const label = locale === "es" ? "Mensaje de tarjeta (opcional)" : "Card message (optional)";
+  const placeholder = locale === "es" ? "Para alguien especial…" : "For someone special…";
+
   return (
     <div className="flex flex-col gap-2">
-      <p className="font-mono text-[10px] uppercase tracking-wider text-mute-500">
-        {locale === "es" ? "Mensaje de tarjeta (opcional)" : "Card message (optional)"}
-      </p>
-
       {open && (
         <CardMessageAssist
           productTitle={productTitle}
@@ -65,14 +66,16 @@ function CardMessageImpl({
         />
       )}
 
-      <textarea
-        value={value}
-        maxLength={maxLength}
-        onChange={(e) => onChange(e.target.value)}
-        rows={3}
-        placeholder={locale === "es" ? "Para alguien especial…" : "For someone special…"}
-        className="w-full resize-none rounded-[var(--radius-product)] border border-ink/15 bg-transparent px-4 py-3 font-sans text-base leading-relaxed text-ink placeholder:text-mute-400 focus-visible:border-ink/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rouge"
-      />
+      <FormField label={label} htmlFor="card-message">
+        <TextArea
+          id="card-message"
+          value={value}
+          maxLength={maxLength}
+          onChange={(e) => onChange(e.target.value)}
+          rows={3}
+          placeholder={placeholder}
+        />
+      </FormField>
 
       <div className="flex items-center justify-between">
         <button
