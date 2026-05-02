@@ -11,6 +11,12 @@ export type Review = {
   originalLang: "en" | "es";
 };
 
+export type ReviewsAggregate = {
+  rating: number;
+  total: number;
+  placeUrl: string;
+};
+
 export const REVIEWS_AGGREGATE = {
   rating: 4.9,
   total: 127,
@@ -19,7 +25,7 @@ export const REVIEWS_AGGREGATE = {
 
 export function buildReviewsJsonLd(
   reviews: Review[],
-  aggregate: typeof REVIEWS_AGGREGATE,
+  aggregate: ReviewsAggregate,
   brandName: string,
 ): string {
   return JSON.stringify({
