@@ -30,7 +30,7 @@ export function GalleryHero({ photo, index, locale, onOpen }: Props) {
       viewport={{ once: true, margin: "-10% 0px" }}
       transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
     >
-      <div className="relative aspect-[16/9] max-h-[90vh]">
+      <div className="relative w-full" style={{ height: "clamp(0px, 56.25vw, 90vh)" }}>
         <motion.div className="absolute inset-[-10%]" style={reduce ? undefined : { y, willChange: "transform" }}>
           <Image
             src={photo.src}

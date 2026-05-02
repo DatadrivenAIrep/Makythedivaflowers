@@ -10,7 +10,7 @@ describe("GalleryMarquee", () => {
   it("renders every photo at least once", () => {
     render(<GalleryMarquee photos={weddingPortfolio} locale="en" onOpen={() => {}} />);
     weddingPortfolio.forEach((p) => {
-      expect(screen.getAllByAltText(p.alt.en).length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByRole("button", { name: p.alt.en }).length).toBeGreaterThanOrEqual(1);
     });
   });
 

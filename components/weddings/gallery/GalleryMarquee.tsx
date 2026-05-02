@@ -32,7 +32,7 @@ export function GalleryMarquee({ photos, locale, onOpen }: Props) {
         >
           <Image
             src={photo.src}
-            alt={photo.alt[locale]}
+            alt=""
             fill
             sizes="30vw"
             className="object-cover transition-transform duration-500 hover:scale-[1.04] motion-reduce:transition-none motion-reduce:hover:scale-100"

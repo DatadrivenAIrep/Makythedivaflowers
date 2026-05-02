@@ -12,6 +12,11 @@ type Props = {
 };
 
 export function GalleryMosaic({ photos, indices, locale, priorityFirst = false, onOpen }: Props) {
+  if (process.env.NODE_ENV !== "production" && photos.length !== indices.length) {
+    throw new Error(
+      `GalleryMosaic: photos.length (${photos.length}) !== indices.length (${indices.length})`
+    );
+  }
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
