@@ -33,6 +33,7 @@ test("home has no console errors", async ({ page }) => {
 test("CategoryOrbit renders correctly on mobile (iPhone viewport)", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto("/en");
+  await page.waitForLoadState("networkidle");
 
   // Header is present
   await expect(page.getByRole("heading", { name: /Find your bloom/ })).toBeVisible();
@@ -52,13 +53,10 @@ test("CategoryOrbit renders correctly on mobile (iPhone viewport)", async ({ pag
   ];
   for (const slug of slugs) {
     const link = page.locator(`a[href="/en/shop/${slug}"]`);
+    await link.scrollIntoViewIfNeeded();
     await expect(link).toBeVisible();
     // Image inside the tile must be visible (it was hover-gated before)
-    const img = link.locator("img");
+    const img = link.locator("img").first();
     await expect(img).toBeVisible();
-    const box = await img.boundingBox();
-    expect(box).not.toBeNull();
-    expect(box!.width).toBeGreaterThan(0);
-    expect(box!.height).toBeGreaterThan(0);
   }
 });
