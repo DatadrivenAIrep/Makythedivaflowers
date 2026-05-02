@@ -75,6 +75,7 @@ export function GoogleReviewsClient({ reviews, locale, autoplayMs = 7_000 }: Pro
     <div
       ref={containerRef}
       data-reviews-client
+      tabIndex={0}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onFocus={() => setIsPaused(true)}
@@ -87,10 +88,10 @@ export function GoogleReviewsClient({ reviews, locale, autoplayMs = 7_000 }: Pro
 
       <AnimatePresence mode="wait">
         <motion.article
+          id="reviews-panel"
           key={review.id}
           role="group"
           aria-roledescription="review"
-          aria-current="true"
           initial={reduceMotion ? false : { opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
@@ -123,6 +124,7 @@ export function GoogleReviewsClient({ reviews, locale, autoplayMs = 7_000 }: Pro
             type="button"
             role="tab"
             aria-selected={i === activeIndex}
+            aria-controls="reviews-panel"
             aria-label={t("aria.goto", { n: i + 1 })}
             onClick={() => goTo(i)}
             className="relative h-[2px] flex-1 bg-mute-100 rounded-full overflow-hidden"
