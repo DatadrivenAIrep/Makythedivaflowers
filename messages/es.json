@@ -173,6 +173,16 @@
       "title": "Instalaciones, por Diva.",
       "cta": "Cotizar"
     },
+    "studio": {
+      "eyebrow": "Visítanos",
+      "title": "Entra, toca el timbre y llévate un ramo.",
+      "address_label": "Estudio",
+      "hours_label": "Horario",
+      "phone_label": "Teléfono",
+      "directions_cta": "Cómo llegar",
+      "call_cta": "Llamar al estudio",
+      "map_title": "Mapa mostrando Diva Flowers en 1077 Willis Ave, Albertson, NY"
+    },
     "newsletter": {
       "eyebrow": "Mantente en flor",
       "title": "Cartas del estudio.",
