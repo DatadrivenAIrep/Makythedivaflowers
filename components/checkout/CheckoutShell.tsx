@@ -1,6 +1,6 @@
 // components/checkout/CheckoutShell.tsx
 "use client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,11 +11,16 @@ import { Button } from "@/components/ui/Button";
 import { ContactStep } from "@/components/checkout/ContactStep";
 import { DeliveryStep } from "@/components/checkout/DeliveryStep";
 import { PaymentStub } from "@/components/checkout/PaymentStub";
-import { OrderSummarySticky } from "@/components/checkout/OrderSummarySticky";
+import { FormShell } from "@/components/ui/form/shell/FormShell";
+import { OrderSummaryPanel } from "@/components/checkout/OrderSummaryPanel";
+import { FormSubmit } from "@/components/ui/form/FormSubmit";
 import { useCartStore } from "@/lib/cart-store";
 import { useUIStore } from "@/lib/ui-store";
 import { submitOrder } from "@/lib/submit-order";
 import { checkoutSchema, type CheckoutInput } from "@/schemas/checkout";
+import { resolveCartLines, cartSubtotalCents } from "@/lib/cart-helpers";
+import { computeOrderTotals } from "@/lib/totals";
+import { PRODUCTS } from "@/data/products";
 import type { Locale } from "@/types/locale";
 import { springs } from "@/lib/motion-config";
 
@@ -28,6 +33,10 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
   const lines = useCartStore((s) => s.lines);
   const clear = useCartStore((s) => s.clear);
   const closeDrawer = useUIStore((s) => s.closeDrawer);
+
+  const resolved = useMemo(() => resolveCartLines(lines, PRODUCTS), [lines]);
+  const subtotal = useMemo(() => cartSubtotalCents(lines, PRODUCTS), [lines]);
+  const totals = useMemo(() => computeOrderTotals(subtotal), [subtotal]);
 
   const form = useForm<CheckoutInput>({
     resolver: zodResolver(checkoutSchema),
@@ -86,8 +95,25 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
     router.push(`/${locale}/order/${r.id}/confirmation`);
   }
 
+  const leftPanel = (
+    <OrderSummaryPanel
+      items={resolved.map((r) => ({
+        id: `${r.line.productId}-${r.line.variantId}`,
+        name: r.product.title[locale],
+        image: r.product.images[0].src,
+        price: r.variant.priceCents,
+        qty: r.line.qty,
+      }))}
+      subtotal={totals.subtotalCents}
+      delivery={totals.deliveryCents}
+      total={totals.totalCents}
+      locale={locale}
+      eyebrow={t("summary")}
+    />
+  );
+
   return (
-    <div className="grid gap-12 lg:grid-cols-[1fr_360px]">
+    <FormShell left={leftPanel}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
         <Section
           title={`1. ${t("step_contact")}`}
@@ -132,15 +158,13 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
             <Button type="button" variant="ghost" size="md" onClick={() => setOpen("delivery")}>
               {t("back")}
             </Button>
-            <Button type="submit" variant="primary" size="md" disabled={submitting}>
-              {submitting ? t("placing") : t("place_order")}
-            </Button>
+            <FormSubmit loading={submitting} fullWidth={false}>
+              {t("place_order")}
+            </FormSubmit>
           </div>
         </Section>
       </form>
-
-      <OrderSummarySticky locale={locale} />
-    </div>
+    </FormShell>
   );
 }
 

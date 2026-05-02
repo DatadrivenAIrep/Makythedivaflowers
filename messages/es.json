@@ -57,6 +57,7 @@
     "place_order": "Realizar pedido",
     "placing": "Procesando pedido…",
     "summary": "Resumen",
+    "order_details_summary": "Resumen · {count} artículos · {total}",
     "subtotal": "Subtotal",
     "delivery": "Envío",
     "tax": "Impuestos",
