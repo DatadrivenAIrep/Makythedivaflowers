@@ -32,6 +32,8 @@ export function matchReviews(
       })
     : [];
 
+  // === 0 (not < 2): a single matched review with the correct occasion label is
+  // preferable to two generic fallback reviews — keeps the copy truthful.
   const useFallback = matchingReviews.length === 0;
   const pool = useFallback ? reviews : matchingReviews;
   const picks = pool.slice(0, 2);

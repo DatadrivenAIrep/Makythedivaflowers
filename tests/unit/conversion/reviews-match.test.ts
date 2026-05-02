@@ -36,4 +36,17 @@ describe("matchReviews", () => {
     const result = matchReviews(REVIEWS, REVIEWS_AGGREGATE, ["anniversary", "romance"] as Occasion[]);
     expect(result.occasionLabelKey).toBe("anniversary");
   });
+
+  it("birthday returns 1 matched review (not 2 generic fallbacks)", () => {
+    const result = matchReviews(REVIEWS, REVIEWS_AGGREGATE, ["birthday" as Occasion]);
+    expect(result.matched.length).toBe(1);
+    expect(result.usedFallback).toBe(false);
+  });
+
+  it("falls back to first 2 reviews when occasions is empty", () => {
+    const result = matchReviews(REVIEWS, REVIEWS_AGGREGATE, []);
+    expect(result.usedFallback).toBe(true);
+    expect(result.occasionLabelKey).toBeNull();
+    expect(result.matched.length).toBe(2);
+  });
 });

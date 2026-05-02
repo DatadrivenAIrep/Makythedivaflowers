@@ -60,6 +60,10 @@ describe("suggestExtrasForCart", () => {
     expect(result.length).toBeLessThanOrEqual(3);
   });
 
+  it("returns empty array for an empty cart", () => {
+    expect(suggestExtrasForCart([], fakeProducts)).toEqual([]);
+  });
+
   it("uses non-sympathy priority when cart is mixed", () => {
     const result = suggestExtrasForCart(
       [
