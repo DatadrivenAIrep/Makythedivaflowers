@@ -1,10 +1,10 @@
 export const CATS = [
-  { slug: "arrangements", seed: "cat-arrangements" },
-  { slug: "bouquets", seed: "cat-bouquets" },
-  { slug: "plants", seed: "cat-plants" },
-  { slug: "gifts", seed: "cat-gifts" },
-  { slug: "sympathy", seed: "cat-sympathy" },
-  { slug: "subscriptions", seed: "cat-subscriptions" },
+  { slug: "arrangements", img: "/products/flamingo-garden.jpg" },
+  { slug: "bouquets", img: "/products/dozen-roses-bouquet.jpg" },
+  { slug: "plants", img: "/products/monstera-mood.jpg" },
+  { slug: "gifts", img: "/products/daydream-parcel.jpg" },
+  { slug: "sympathy", img: "/products/celestial-peace.jpg" },
+  { slug: "subscriptions", img: "/products/timeless-romance.jpg" },
 ] as const;
 
 export type CatSlug = (typeof CATS)[number]["slug"];

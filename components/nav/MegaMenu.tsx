@@ -49,7 +49,7 @@ function MegaMenuImpl({ locale, label }: Props) {
                   className="group relative aspect-[3/4] overflow-hidden rounded-[var(--radius-product)] bg-mute-100"
                 >
                   <BloomImage
-                    src={`https://picsum.photos/seed/${c.seed}/600/800`}
+                    src={c.img}
                     alt={LABELS[c.slug][locale]}
                     className="h-full w-full"
                     sizes="200px"
