@@ -3,12 +3,12 @@ import { CategoryOrbit } from "@/components/home/CategoryOrbit";
 import type { Locale } from "@/types/locale";
 
 const CATEGORIES = [
-  { slug: "arrangements", seed: "cat-arrangements", index: "01" },
-  { slug: "bouquets", seed: "cat-bouquets", index: "02" },
-  { slug: "plants", seed: "cat-plants", index: "03" },
-  { slug: "gifts", seed: "cat-gifts", index: "04" },
-  { slug: "sympathy", seed: "cat-sympathy", index: "05" },
-  { slug: "subscriptions", seed: "cat-subscriptions", index: "06" },
+  { slug: "arrangements", img: "/products/flamingo-garden.jpg", index: "01" },
+  { slug: "bouquets", img: "/products/dozen-roses-bouquet.jpg", index: "02" },
+  { slug: "plants", img: "/products/monstera-mood.jpg", index: "03" },
+  { slug: "gifts", img: "/products/daydream-parcel.jpg", index: "04" },
+  { slug: "sympathy", img: "/products/celestial-peace.jpg", index: "05" },
+  { slug: "subscriptions", img: "/products/timeless-romance.jpg", index: "06" },
 ] as const;
 
 export async function CategoryStrip({ locale }: { locale: Locale }) {
@@ -16,7 +16,7 @@ export async function CategoryStrip({ locale }: { locale: Locale }) {
 
   const items = CATEGORIES.map((c) => ({
     slug: c.slug,
-    seed: c.seed,
+    img: c.img,
     index: c.index,
     name: t(`categories.${c.slug}`),
     href: `/${locale}/shop/${c.slug}`,

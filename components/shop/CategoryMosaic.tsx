@@ -4,13 +4,13 @@ import { BloomImage } from "@/components/motion/BloomImage";
 import { StaggerGroup, StaggerItem } from "@/components/motion/StaggerGroup";
 import type { Locale } from "@/types/locale";
 
-const TILES: { slug: string; seed: string; col: string; row: string; aspect: string }[] = [
-  { slug: "arrangements", seed: "cat-arrangements", col: "md:col-span-7", row: "md:row-span-2", aspect: "aspect-[7/8]" },
-  { slug: "bouquets", seed: "cat-bouquets", col: "md:col-span-5", row: "md:row-span-1", aspect: "aspect-[5/4]" },
-  { slug: "plants", seed: "cat-plants", col: "md:col-span-5", row: "md:row-span-1", aspect: "aspect-[5/4]" },
-  { slug: "gifts", seed: "cat-gifts", col: "md:col-span-4", row: "md:row-span-1", aspect: "aspect-square" },
-  { slug: "sympathy", seed: "cat-sympathy", col: "md:col-span-4", row: "md:row-span-1", aspect: "aspect-square" },
-  { slug: "subscriptions", seed: "cat-subscriptions", col: "md:col-span-4", row: "md:row-span-1", aspect: "aspect-square" },
+const TILES: { slug: string; img: string; col: string; row: string; aspect: string }[] = [
+  { slug: "arrangements", img: "/products/flamingo-garden.jpg", col: "md:col-span-7", row: "md:row-span-2", aspect: "aspect-[7/8]" },
+  { slug: "bouquets", img: "/products/dozen-roses-bouquet.jpg", col: "md:col-span-5", row: "md:row-span-1", aspect: "aspect-[5/4]" },
+  { slug: "plants", img: "/products/monstera-mood.jpg", col: "md:col-span-5", row: "md:row-span-1", aspect: "aspect-[5/4]" },
+  { slug: "gifts", img: "/products/daydream-parcel.jpg", col: "md:col-span-4", row: "md:row-span-1", aspect: "aspect-square" },
+  { slug: "sympathy", img: "/products/celestial-peace.jpg", col: "md:col-span-4", row: "md:row-span-1", aspect: "aspect-square" },
+  { slug: "subscriptions", img: "/products/timeless-romance.jpg", col: "md:col-span-4", row: "md:row-span-1", aspect: "aspect-square" },
 ];
 
 export async function CategoryMosaic({ locale }: { locale: Locale }) {
@@ -27,7 +27,7 @@ export async function CategoryMosaic({ locale }: { locale: Locale }) {
                 className={`group relative overflow-hidden rounded-[var(--radius-bento)] bg-mute-100 block ${tile.aspect}`}
               >
                 <BloomImage
-                  src={`https://picsum.photos/seed/${tile.seed}/1400/1400`}
+                  src={tile.img}
                   alt={name}
                   className="h-full w-full"
                   sizes="(min-width: 768px) 50vw, 100vw"

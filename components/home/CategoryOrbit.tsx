@@ -3,8 +3,6 @@ import { memo, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import {
   motion,
-  useMotionValue,
-  useSpring,
   useReducedMotion,
   AnimatePresence,
 } from "framer-motion";
@@ -13,7 +11,7 @@ import { PetalRain } from "@/components/home/PetalRain";
 
 type Item = {
   slug: string;
-  seed: string;
+  img: string;
   index: string;
   name: string;
   href: string;
@@ -58,51 +56,20 @@ function TileImpl({
   reduce,
 }: TileProps) {
   const ref = useRef<HTMLAnchorElement | null>(null);
-  const x = useMotionValue(50);
-  const y = useMotionValue(50);
-  const sx = useSpring(x, { stiffness: 200, damping: 22 });
-  const sy = useSpring(y, { stiffness: 200, damping: 22 });
-  const [leavePos, setLeavePos] = useState({ x: 50, y: 50 });
-
-  const handleMove = useCallback(
-    (e: React.MouseEvent<HTMLAnchorElement>) => {
-      const el = ref.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const px = ((e.clientX - rect.left) / rect.width) * 100;
-      const py = ((e.clientY - rect.top) / rect.height) * 100;
-      x.set(px);
-      y.set(py);
-    },
-    [x, y]
-  );
 
   const handleEnter = useCallback(
-    (e: React.MouseEvent<HTMLAnchorElement>) => {
-      handleMove(e);
-      onEnter(item.slug);
-    },
-    [handleMove, onEnter, item.slug]
+    (_e: React.MouseEvent<HTMLAnchorElement>) => { onEnter(item.slug); },
+    [onEnter, item.slug]
   );
-
-  const handleLeave = useCallback(() => {
-    setLeavePos({ x: x.get(), y: y.get() });
-    onLeave();
-  }, [x, y, onLeave]);
-
-  // Snapshot spring position for initial clipPath; framer-motion overrides on animation tick
-  const cx = reduce ? 50 : sx.get();
-  const cy = reduce ? 50 : sy.get();
 
   return (
     <Link
       ref={ref}
       href={item.href}
       onMouseEnter={handleEnter}
-      onMouseMove={handleMove}
-      onMouseLeave={handleLeave}
+      onMouseLeave={onLeave}
       className={cn(
-        "group relative block overflow-hidden rounded-[var(--radius-product)] border bg-charcoal transition-colors duration-500",
+        "group relative block overflow-hidden rounded-[var(--radius-product)] border transition-colors duration-500",
         "h-32 md:h-auto",
         layout.col,
         layout.row,
@@ -111,41 +78,54 @@ function TileImpl({
       )}
       style={{ borderRadius: "var(--radius-product)" }}
     >
-      {/* Mobile: static always-visible image with side gradient */}
-      <div className="absolute inset-0 md:hidden">
+      {/* Image — always visible, parallax on hover */}
+      <motion.div
+        className="absolute inset-0"
+        animate={reduce ? undefined : { y: isActive ? "-4%" : "0%" }}
+        transition={{ duration: 0.6, ease: ELEGANT }}
+        style={{ scale: 1.08 }}
+      >
         <img
-          src={`https://picsum.photos/seed/${item.seed}/1200/800`}
+          src={item.img}
           alt={item.name}
           className="size-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/65 via-ink/20 to-transparent" />
-      </div>
-
-      {/* Desktop: hover-driven clip-path reveal */}
-      <motion.div
-        className="absolute inset-0 hidden md:block"
-        initial={false}
-        animate={
-          reduce
-            ? { opacity: isActive ? 1 : 0 }
-            : {
-                clipPath: isActive
-                  ? `circle(140% at ${cx}% ${cy}%)`
-                  : `circle(0% at ${leavePos.x}% ${leavePos.y}%)`,
-              }
-        }
-        transition={{ duration: 0.6, ease: ELEGANT }}
-        style={{ willChange: "clip-path, opacity" }}
-      >
-        <img
-          src={`https://picsum.photos/seed/${item.seed}/1200/800`}
-          alt=""
-          className="size-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent" />
       </motion.div>
 
-      <div className="relative z-10 flex h-full flex-col justify-between p-4 md:p-7">
+      {/* Gradient overlay — deepens on hover */}
+      <motion.div
+        className="absolute inset-0"
+        animate={{ opacity: isActive ? 1 : 0.72 }}
+        transition={{ duration: 0.5, ease: ELEGANT }}
+        style={{
+          background:
+            "linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.18) 55%, rgba(0,0,0,0.04) 100%)",
+        }}
+      />
+
+      {/* Shop chip — appears top-right on hover */}
+      <div className="absolute inset-x-0 top-0 hidden md:flex justify-end p-4 z-10">
+        <AnimatePresence>
+          {isActive && (
+            <motion.span
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.3, ease: ELEGANT }}
+              className="rounded-full border border-white/20 bg-black/30 px-3 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-bone backdrop-blur-sm"
+            >
+              {shopLabel} →
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Text — slides up on hover */}
+      <motion.div
+        className="relative z-10 flex h-full flex-col justify-between p-4 md:p-7"
+        animate={reduce ? undefined : { y: isActive ? -6 : 0 }}
+        transition={{ duration: 0.5, ease: ELEGANT }}
+      >
         <div className="flex items-start justify-end">
           <span
             className={cn(
@@ -160,19 +140,12 @@ function TileImpl({
         </div>
 
         <div className="flex items-end justify-between gap-3">
-          <motion.div
-            animate={{ scale: isActive && !reduce ? 1.04 : 1 }}
-            transition={{ duration: 0.4, ease: ELEGANT }}
-            className="flex flex-col gap-2"
-            style={{ transformOrigin: "left bottom" }}
-          >
+          <div className="flex flex-col gap-2">
             <span
               className={cn(
                 "font-display italic tracking-tight",
                 "text-2xl md:text-3xl",
-                "max-md:text-bone",
-                "md:transition-colors md:duration-500",
-                isActive ? "md:text-bone" : "md:text-bone/70"
+                "text-bone",
               )}
             >
               {item.name}
@@ -190,15 +163,10 @@ function TileImpl({
                 </motion.span>
               )}
             </AnimatePresence>
-          </motion.div>
+          </div>
 
           {/* Mobile chevron */}
-          <span
-            aria-hidden
-            className="md:hidden font-mono text-sm text-bone/70"
-          >
-            →
-          </span>
+          <span aria-hidden className="md:hidden font-mono text-sm text-bone/70">→</span>
 
           {/* Desktop pulse dot */}
           <div className="hidden md:block">
@@ -214,7 +182,7 @@ function TileImpl({
             )}
           </div>
         </div>
-      </div>
+      </motion.div>
     </Link>
   );
 }
