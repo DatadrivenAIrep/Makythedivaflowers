@@ -47,4 +47,11 @@ describe("consent", () => {
       globalThis.document = originalDoc;
     }
   });
+
+  it("includes Secure flag when on HTTPS", () => {
+    vi.stubGlobal("location", { ...location, protocol: "https:" });
+    const spy = vi.spyOn(document, "cookie", "set");
+    setConsent(true);
+    expect(spy.mock.calls[0][0]).toContain("; secure");
+  });
 });

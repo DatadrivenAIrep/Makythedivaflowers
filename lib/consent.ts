@@ -17,6 +17,7 @@ function gpcSignal(): boolean {
     .globalPrivacyControl === true;
 }
 
+/** Returns true by default (opt-out model — US/NY audience, no GDPR gate). False if GPC, denied cookie, or SSR. */
 export function hasConsent(): boolean {
   if (typeof document === "undefined") return false;
   if (gpcSignal()) return false;
