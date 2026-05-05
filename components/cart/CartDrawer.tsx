@@ -109,7 +109,12 @@ export function CartDrawer({ locale }: { locale: Locale }) {
                       key={`${r.line.productId}-${r.line.variantId}`}
                       resolved={r}
                       locale={locale}
-                      onQtyChange={(n) => setQty(r.line.productId, r.line.variantId, n)}
+                      onQtyChange={(n) => {
+                        if (n === 0) {
+                          trackRemoveFromCart(resolvedLineToAnalyticsItem(r));
+                        }
+                        setQty(r.line.productId, r.line.variantId, n);
+                      }}
                       onRemove={() => {
                         trackRemoveFromCart(resolvedLineToAnalyticsItem(r));
                         remove(r.line.productId, r.line.variantId);

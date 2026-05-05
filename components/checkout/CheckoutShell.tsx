@@ -92,12 +92,12 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
       trackAddShippingInfo("standard", items);
       const cardMessage = form.getValues("delivery.cardMessage") ?? "";
       trackRecipientInfoCompleted(cardMessage.trim().length > 0);
+      trackAddPaymentInfo("card", items);
     }
     setOpen(step === "contact" ? "delivery" : "payment");
   }
 
   async function onSubmit(values: CheckoutInput) {
-    trackAddPaymentInfo("card", resolved.map(resolvedLineToAnalyticsItem));
     setTopError(null);
     if (lines.length === 0) {
       setTopError(t("errors.cart_empty"));
