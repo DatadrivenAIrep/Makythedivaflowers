@@ -1,6 +1,6 @@
 // components/checkout/CheckoutShell.tsx
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,6 +23,13 @@ import { computeOrderTotals } from "@/lib/totals";
 import { PRODUCTS } from "@/data/products";
 import type { Locale } from "@/types/locale";
 import { springs } from "@/lib/motion-config";
+import {
+  trackBeginCheckout,
+  trackAddShippingInfo,
+  trackAddPaymentInfo,
+  trackRecipientInfoCompleted,
+} from "@/lib/analytics";
+import { resolvedLineToAnalyticsItem } from "@/lib/analytics-types";
 
 type StepKey = "contact" | "delivery" | "payment";
 
@@ -37,6 +44,12 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
   const resolved = useMemo(() => resolveCartLines(lines, PRODUCTS), [lines]);
   const subtotal = useMemo(() => cartSubtotalCents(lines, PRODUCTS), [lines]);
   const totals = useMemo(() => computeOrderTotals(subtotal), [subtotal]);
+
+  useEffect(() => {
+    if (resolved.length === 0) return;
+    trackBeginCheckout(resolved.map(resolvedLineToAnalyticsItem));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const form = useForm<CheckoutInput>({
     resolver: zodResolver(checkoutSchema),
@@ -74,10 +87,17 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
     };
     const valid = await form.trigger(fields[step] as never);
     if (!valid) return;
+    if (step === "delivery") {
+      const items = resolved.map(resolvedLineToAnalyticsItem);
+      trackAddShippingInfo("standard", items);
+      const cardMessage = form.getValues("delivery.cardMessage") ?? "";
+      trackRecipientInfoCompleted(cardMessage.trim().length > 0);
+    }
     setOpen(step === "contact" ? "delivery" : "payment");
   }
 
   async function onSubmit(values: CheckoutInput) {
+    trackAddPaymentInfo("card", resolved.map(resolvedLineToAnalyticsItem));
     setTopError(null);
     if (lines.length === 0) {
       setTopError(t("errors.cart_empty"));
