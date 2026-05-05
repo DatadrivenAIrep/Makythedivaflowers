@@ -12,6 +12,7 @@ import { TextInput } from "@/components/ui/form/TextInput";
 import { TextArea } from "@/components/ui/form/TextArea";
 import { FormSubmit } from "@/components/ui/form/FormSubmit";
 import { contactSchema, type ContactInput } from "@/schemas/contact";
+import { trackContactSubmit } from "@/lib/analytics";
 import type { Locale } from "@/types/locale";
 
 export function ContactForm({ locale }: { locale: Locale }) {
@@ -45,6 +46,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
       setState("error");
       return;
     }
+    trackContactSubmit(values.subject, values.subject || "general");
     setState("success");
     form.reset();
   }
