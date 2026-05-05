@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Check } from "@phosphor-icons/react/dist/ssr";
 import { TextInput } from "@/components/ui/form/TextInput";
 import { FormSubmit } from "@/components/ui/form/FormSubmit";
+import { trackNewsletterSignup } from "@/lib/analytics";
 
 function NewsletterFieldImpl() {
   const t = useTranslations("home.newsletter");
@@ -21,6 +22,7 @@ function NewsletterFieldImpl() {
       setState("error");
       return;
     }
+    trackNewsletterSignup("home");
     setState("success");
   };
 

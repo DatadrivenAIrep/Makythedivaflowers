@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { HoneypotField } from "@/components/inquiry/HoneypotField";
 import { newsletterSchema, type NewsletterInput } from "@/schemas/newsletter";
+import { trackNewsletterSignup } from "@/lib/analytics";
 import type { Locale } from "@/types/locale";
 
 export function NewsletterField({ locale }: { locale: Locale }) {
@@ -24,8 +25,13 @@ export function NewsletterField({ locale }: { locale: Locale }) {
       headers: { "content-type": "application/json" },
       body: JSON.stringify(values),
     });
-    setState(res.ok ? "success" : "error");
-    if (res.ok) form.reset();
+    if (res.ok) {
+      trackNewsletterSignup("footer");
+      setState("success");
+      form.reset();
+    } else {
+      setState("error");
+    }
   }
 
   return (
