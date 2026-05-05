@@ -1,17 +1,8 @@
-"use client";
 import Script from "next/script";
-import { useEffect, useState } from "react";
-import { hasConsent } from "@/lib/consent";
 
 export function GTMScript() {
   const id = process.env.NEXT_PUBLIC_GTM_ID;
-  const [allow, setAllow] = useState(false);
-
-  useEffect(() => {
-    setAllow(hasConsent());
-  }, []);
-
-  if (!id || !allow) return null;
+  if (!id) return null;
 
   return (
     <Script
