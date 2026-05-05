@@ -7,6 +7,10 @@ import { useCartStore } from "@/lib/cart-store";
 import { useUIStore } from "@/lib/ui-store";
 import { formatMoneyCents } from "@/lib/format";
 import type { Locale } from "@/types/locale";
+import { trackAddToCart } from "@/lib/analytics";
+import { resolvedLineToAnalyticsItem } from "@/lib/analytics-types";
+import { resolveCartLine } from "@/lib/cart-helpers";
+import { PRODUCTS } from "@/data/products";
 
 type Props = {
   productId: string;
@@ -28,6 +32,10 @@ function AddToBagImpl({ productId, variantId, addOnIds, totalCents, disabled, lo
   const onClick = () => {
     if (disabled) return;
     add({ productId, variantId, addOnIds, qty: 1 });
+    const resolved = resolveCartLine({ productId, variantId, addOnIds, qty: 1 }, PRODUCTS);
+    if (resolved) {
+      trackAddToCart(resolvedLineToAnalyticsItem(resolved));
+    }
     showToast({ kind: "added-to-bag", productId });
     openDrawer();
     setState("added");
