@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { SITE } from "@/data/site";
+import { TelLink } from "@/components/analytics/TelLink";
 import type { Locale } from "@/types/locale";
 
 export async function StudioVisit({ locale: _locale }: { locale: Locale }) {
@@ -60,12 +61,13 @@ export async function StudioVisit({ locale: _locale }: { locale: Locale }) {
             <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-mute-500 mb-1">
               {t("phone_label")}
             </p>
-            <a
+            <TelLink
               href={SITE.phoneHref}
+              location="home"
               className="font-mono text-[13px] hover:text-petal transition-colors"
             >
               {SITE.phoneDisplay}
-            </a>
+            </TelLink>
           </div>
 
           <div className="flex flex-wrap gap-3 pt-2">
@@ -77,12 +79,13 @@ export async function StudioVisit({ locale: _locale }: { locale: Locale }) {
             >
               {t("directions_cta")} →
             </a>
-            <a
+            <TelLink
               href={SITE.phoneHref}
+              location="home"
               className="inline-flex w-fit font-sans text-sm tracking-tight px-5 py-3 rounded-full border border-ink/30 hover:border-ink transition-colors"
             >
               {t("call_cta")}
-            </a>
+            </TelLink>
           </div>
         </div>
       </div>
