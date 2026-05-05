@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import type { Locale } from "@/types/locale";
 import { getProductBySlug, getPairsWith, PRODUCTS } from "@/data/products";
+import { TrackEvent } from "@/components/analytics/TrackEvent";
+import type { AnalyticsItem } from "@/lib/analytics-types";
 import { SITE } from "@/data/site";
 import { ImageStack } from "@/components/product/ImageStack";
 import { PdpConfigurator } from "@/components/product/PdpConfigurator";
@@ -72,6 +74,19 @@ export default async function ProductPage({
 
   return (
     <main className="bg-bone text-ink">
+      {(() => {
+        const defaultVariant = product.variants.find((v) => v.id === "lush") ?? product.variants[0];
+        const item: AnalyticsItem = {
+          item_id: product.id,
+          item_name: product.title.en,
+          item_category: product.category,
+          item_variant: defaultVariant?.label.en,
+          price: (defaultVariant?.priceCents ?? 0) / 100,
+          quantity: 1,
+          currency: "USD",
+        };
+        return <TrackEvent kind="view_item" item={item} />;
+      })()}
       <PdpContactSubject productName={product.title[locale]} />
       <PdpStructuredData product={product} locale={locale} origin={origin} />
       <BreadcrumbListLD
