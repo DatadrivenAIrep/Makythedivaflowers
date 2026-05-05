@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Fraunces, JetBrains_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { SITE } from "@/data/site";
+import { GTMScript } from "@/components/analytics/GTMScript";
+import { ClarityScript } from "@/components/analytics/ClarityScript";
+import { ConsentNotice } from "@/components/analytics/ConsentNotice";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -40,7 +43,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${fraunces.variable} ${cabinet.variable} ${jetbrains.variable}`}>
-      <body>{children}</body>
+      <body>
+        <GTMScript />
+        <ClarityScript />
+        {children}
+        <ConsentNotice />
+      </body>
     </html>
   );
 }
