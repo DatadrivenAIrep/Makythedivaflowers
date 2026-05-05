@@ -18,6 +18,8 @@ import { Grain } from "@/components/brand/Grain";
 import { SITE } from "@/data/site";
 import { BreadcrumbListLD } from "@/components/seo/BreadcrumbListLD";
 import { ShopCategoryContactSubject } from "@/components/contact/ShopCategoryContactSubject";
+import { TrackEvent } from "@/components/analytics/TrackEvent";
+import type { AnalyticsItem } from "@/lib/analytics-types";
 
 const ALLOWED: ProductCategory[] = [
   "arrangements",
@@ -137,6 +139,19 @@ export default async function CategoryPage({
       </header>
 
       <FilterBar locale={locale} filter={filter} sort={sort} show={filtersToShow} />
+
+      <TrackEvent
+        kind="view_item_list"
+        itemListName={category}
+        items={filtered.map<AnalyticsItem>((p) => ({
+          item_id: p.id,
+          item_name: p.title.en,
+          item_category: p.category,
+          price: (p.variants[0]?.priceCents ?? 0) / 100,
+          quantity: 1,
+          currency: "USD",
+        }))}
+      />
 
       <section className="mx-auto max-w-[var(--container-max)] px-6 py-10">
         {filtered.length === 0 ? (
