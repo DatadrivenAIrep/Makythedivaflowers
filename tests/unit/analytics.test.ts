@@ -130,17 +130,23 @@ describe("ecommerce events", () => {
 
   it("trackAddShippingInfo pushes add_shipping_info with shipping_tier", () => {
     trackAddShippingInfo("standard", [ITEM]);
-    expect(window.dataLayer[0]).toMatchObject({
+    expect(window.dataLayer[0]).toEqual({
       event: "add_shipping_info",
+      currency: "USD",
+      value: 80,
       shipping_tier: "standard",
+      items: [ITEM],
     });
   });
 
   it("trackAddPaymentInfo pushes add_payment_info with payment_type", () => {
     trackAddPaymentInfo("card", [ITEM]);
-    expect(window.dataLayer[0]).toMatchObject({
+    expect(window.dataLayer[0]).toEqual({
       event: "add_payment_info",
+      currency: "USD",
+      value: 80,
       payment_type: "card",
+      items: [ITEM],
     });
   });
 
@@ -222,6 +228,11 @@ describe("engagement + diva events", () => {
       days_ahead: 0,
       is_same_day: true,
     });
+  });
+
+  it("trackDeliveryDateSelected does not push on invalid date string", () => {
+    trackDeliveryDateSelected("not-a-date");
+    expect(window.dataLayer).toHaveLength(0);
   });
 
   it("trackRecipientInfoCompleted includes has_card_message bool", () => {

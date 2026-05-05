@@ -71,6 +71,8 @@ export function trackBeginCheckout(items: AnalyticsItem[], coupon?: string): voi
 export function trackAddShippingInfo(shippingTier: string, items: AnalyticsItem[]): void {
   pushDataLayer({
     event: "add_shipping_info",
+    currency: "USD",
+    value: sumValue(items),
     shipping_tier: shippingTier,
     items,
   });
@@ -79,6 +81,8 @@ export function trackAddShippingInfo(shippingTier: string, items: AnalyticsItem[
 export function trackAddPaymentInfo(paymentType: string, items: AnalyticsItem[]): void {
   pushDataLayer({
     event: "add_payment_info",
+    currency: "USD",
+    value: sumValue(items),
     payment_type: paymentType,
     items,
   });
@@ -130,6 +134,7 @@ export function trackDeliveryDateSelected(dateIso: string): void {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const target = new Date(`${dateIso}T00:00:00`);
+  if (isNaN(target.getTime())) return;
   const daysAhead = Math.round((target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
   pushDataLayer({
     event: "delivery_date_selected",
