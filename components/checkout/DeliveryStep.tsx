@@ -8,6 +8,7 @@ import { TextInput } from "@/components/ui/form/TextInput";
 import { DateInput } from "@/components/ui/form/DateInput";
 import { RadioChips } from "@/components/ui/form/RadioChips";
 import type { CheckoutInput } from "@/schemas/checkout";
+import { trackDeliveryDateSelected } from "@/lib/analytics";
 
 const SLOTS = ["morning", "midday", "afternoon", "evening"] as const;
 
@@ -64,7 +65,24 @@ export function DeliveryStep({ form }: { form: UseFormReturn<CheckoutInput> }) {
       <input type="hidden" value="US" {...register("delivery.address.country")} />
       <FormField label={t("delivery_date")} htmlFor="ck-date"
         error={errors?.window?.date ? t("errors.date_invalid") : undefined}>
-        <DateInput id="ck-date" min={min} aria-invalid={!!errors?.window?.date || undefined} {...register("delivery.window.date")} />
+        {(() => {
+          const dateReg = register("delivery.window.date");
+          return (
+            <DateInput
+              id="ck-date"
+              min={min}
+              aria-invalid={!!errors?.window?.date || undefined}
+              {...dateReg}
+              onBlur={(e) => {
+                dateReg.onBlur(e);
+                const value = e.target.value;
+                if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+                  trackDeliveryDateSelected(value);
+                }
+              }}
+            />
+          );
+        })()}
       </FormField>
       <FormField label={t("delivery_window")} htmlFor="ck-window">
         <RadioChips
