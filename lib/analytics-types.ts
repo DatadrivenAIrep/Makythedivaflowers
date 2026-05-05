@@ -1,4 +1,5 @@
 import type { ResolvedCartLine } from "@/lib/cart-helpers";
+export type { Occasion } from "@/types/product";
 
 export type AnalyticsItem = {
   item_id: string;
@@ -9,15 +10,6 @@ export type AnalyticsItem = {
   quantity: number;
   currency: "USD";
 };
-
-export type Occasion =
-  | "romance"
-  | "anniversary"
-  | "birthday"
-  | "congrats"
-  | "just-because"
-  | "sympathy"
-  | "wedding";
 
 export type EngagementLocation =
   | "footer"
@@ -33,8 +25,8 @@ export function resolvedLineToAnalyticsItem(line: ResolvedCartLine): AnalyticsIt
     item_id: line.product.id,
     item_name: line.product.title.en,
     item_category: line.product.category,
-    item_variant: line.variant.id,
-    price: line.unitPriceCents / 100,
+    item_variant: line.variant.label.en,
+    price: centsToDollars(line.unitPriceCents),
     quantity: line.line.qty,
     currency: "USD",
   };
