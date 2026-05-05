@@ -18,6 +18,8 @@ import { CutoffPill } from "@/components/conversion/CutoffPill";
 import { GiftAssuranceBar } from "@/components/conversion/GiftAssuranceBar";
 import { CartUpsellStrip } from "@/components/conversion/CartUpsellStrip";
 import { SITE } from "@/data/site";
+import { trackViewCart, trackRemoveFromCart } from "@/lib/analytics";
+import { resolvedLineToAnalyticsItem } from "@/lib/analytics-types";
 
 export function CartDrawer({ locale }: { locale: Locale }) {
   const t = useTranslations("cart");
@@ -34,6 +36,7 @@ export function CartDrawer({ locale }: { locale: Locale }) {
 
   useEffect(() => {
     if (!open) return;
+    trackViewCart(resolved.map(resolvedLineToAnalyticsItem));
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") close();
     };
@@ -107,7 +110,10 @@ export function CartDrawer({ locale }: { locale: Locale }) {
                       resolved={r}
                       locale={locale}
                       onQtyChange={(n) => setQty(r.line.productId, r.line.variantId, n)}
-                      onRemove={() => remove(r.line.productId, r.line.variantId)}
+                      onRemove={() => {
+                        trackRemoveFromCart(resolvedLineToAnalyticsItem(r));
+                        remove(r.line.productId, r.line.variantId);
+                      }}
                     />
                   ))}
                 </ul>

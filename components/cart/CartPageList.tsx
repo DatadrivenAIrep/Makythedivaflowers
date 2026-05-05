@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/Button";
 import { formatMoneyCents } from "@/lib/format";
 import { PRODUCTS } from "@/data/products";
 import type { Locale } from "@/types/locale";
+import { trackRemoveFromCart } from "@/lib/analytics";
+import { resolvedLineToAnalyticsItem } from "@/lib/analytics-types";
 
 export function CartPageList({ locale }: { locale: Locale }) {
   const t = useTranslations("cart");
@@ -35,7 +37,10 @@ export function CartPageList({ locale }: { locale: Locale }) {
               locale={locale}
               variant="page"
               onQtyChange={(n) => setQty(r.line.productId, r.line.variantId, n)}
-              onRemove={() => remove(r.line.productId, r.line.variantId)}
+              onRemove={() => {
+                trackRemoveFromCart(resolvedLineToAnalyticsItem(r));
+                remove(r.line.productId, r.line.variantId);
+              }}
             />
           ))}
         </ul>
