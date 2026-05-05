@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { sendPurchaseToGA4 } from "@/lib/analytics-server";
 import type { AnalyticsItem } from "@/lib/analytics-types";
 
@@ -18,6 +18,12 @@ describe("sendPurchaseToGA4", () => {
   beforeEach(() => {
     fetchMock = vi.fn().mockResolvedValue(new Response(null, { status: 204 }));
     vi.stubGlobal("fetch", fetchMock);
+    process.env.GA4_MEASUREMENT_ID = "G-TEST123";
+    process.env.GA4_API_SECRET = "secret-abc";
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
     process.env.GA4_MEASUREMENT_ID = "G-TEST123";
     process.env.GA4_API_SECRET = "secret-abc";
   });
@@ -56,8 +62,21 @@ describe("sendPurchaseToGA4", () => {
     });
   });
 
-  it("returns silently when GA4 env vars are missing", async () => {
+  it("returns silently when GA4_MEASUREMENT_ID is missing", async () => {
     delete process.env.GA4_MEASUREMENT_ID;
+    await sendPurchaseToGA4({
+      clientId: "1234.5678",
+      transaction_id: "ord_abc",
+      value: 100,
+      tax: 8.88,
+      shipping: 12,
+      items: [ITEM],
+    });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("returns silently when GA4_API_SECRET is missing", async () => {
+    delete process.env.GA4_API_SECRET;
     await sendPurchaseToGA4({
       clientId: "1234.5678",
       transaction_id: "ord_abc",
