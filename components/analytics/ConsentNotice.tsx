@@ -1,9 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import { setConsent, COOKIE_NAME } from "@/lib/consent";
 
 export function ConsentNotice() {
+  const { locale } = useParams<{ locale: string }>();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -20,13 +22,13 @@ export function ConsentNotice() {
 
   return (
     <div
-      role="dialog"
+      role="region"
       aria-label="Cookie notice"
       className="fixed bottom-4 left-4 right-4 sm:left-6 sm:right-auto sm:max-w-md z-[60] bg-bone text-ink rounded-lg shadow-lg border border-ink/10 p-4 flex items-start gap-3"
     >
       <p className="text-[13px] leading-snug flex-1">
         We use cookies for analytics.{" "}
-        <Link href="/en/legal/privacy" className="underline">
+        <Link href={`/${locale ?? "en"}/legal/privacy`} className="underline">
           Privacy Policy
         </Link>
         .
