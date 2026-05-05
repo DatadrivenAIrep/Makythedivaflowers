@@ -11,6 +11,7 @@ import { SITE } from "@/data/site";
 import { getSubjectKey } from "@/lib/contact-subject";
 import { buildSmsHref, buildTelHref, buildWhatsappHref } from "@/lib/text-maky-links";
 import { useContactContext } from "@/components/contact/ContactContextProvider";
+import { trackWhatsappClick } from "@/lib/analytics";
 
 export function TextMakyModal() {
   const t = useTranslations("text_modal");
@@ -104,6 +105,7 @@ export function TextMakyModal() {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={`${t("send_whatsapp")} (${SITE.mobile.display})`}
+                        onClick={() => trackWhatsappClick("contact", "text-maky-modal")}
                       >
                         <WhatsappLogo size={18} weight="regular" className="mr-2" aria-hidden />
                         {t("send_whatsapp")}
