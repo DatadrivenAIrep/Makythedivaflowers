@@ -6,6 +6,7 @@ import { SortDropdown } from "./SortDropdown";
 import type { Filter, Sort } from "@/data/product-helpers";
 import type { Locale } from "@/types/locale";
 import { serializeFilterParams } from "@/lib/search-params";
+import { trackOccasionSelected } from "@/lib/analytics";
 
 type Props = {
   locale: Locale;
@@ -121,7 +122,10 @@ function FilterBarImpl({
               key={o}
               label={l(o, locale)}
               selected={filter.occasion === o}
-              onToggle={() => toggle("occasion", o)}
+              onToggle={() => {
+                toggle("occasion", o);
+                trackOccasionSelected(o);
+              }}
             />
           ))}
 
