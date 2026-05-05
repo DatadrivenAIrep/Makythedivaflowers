@@ -20,6 +20,7 @@ describe("consent", () => {
   });
 
   it("returns false when GPC signal is true (regardless of cookie)", () => {
+    setConsent(true); // pre-set a granted cookie
     vi.stubGlobal("navigator", { ...navigator, globalPrivacyControl: true });
     expect(hasConsent()).toBe(false);
   });

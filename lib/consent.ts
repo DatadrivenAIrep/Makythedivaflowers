@@ -6,7 +6,9 @@ function readCookie(name: string): string | null {
   const match = document.cookie
     .split("; ")
     .find((row) => row.startsWith(`${name}=`));
-  return match ? decodeURIComponent(match.split("=")[1]) : null;
+  if (!match) return null;
+  const eqIdx = match.indexOf("=");
+  return decodeURIComponent(match.slice(eqIdx + 1));
 }
 
 function gpcSignal(): boolean {
@@ -26,5 +28,6 @@ export function hasConsent(): boolean {
 export function setConsent(granted: boolean): void {
   if (typeof document === "undefined") return;
   const value = granted ? "granted" : "denied";
-  document.cookie = `${COOKIE_NAME}=${value}; max-age=${ONE_YEAR_SECONDS}; path=/; samesite=lax`;
+  const secure = typeof location !== "undefined" && location.protocol === "https:" ? "; secure" : "";
+  document.cookie = `${COOKIE_NAME}=${value}; max-age=${ONE_YEAR_SECONDS}; path=/; samesite=lax${secure}`;
 }
