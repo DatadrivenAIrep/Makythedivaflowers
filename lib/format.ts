@@ -9,7 +9,7 @@ type AddressLike = {
 
 /**
  * One-line address composed from `SITE.address` (or any address-like value).
- * Example: "1077 Hempstead Turnpike, Franklin Square, NY 11010".
+ * Example: "1077 Willis Ave, Albertson, NY 11507".
  */
 export function formatAddressLine(addr: AddressLike): string {
   const tail = [addr.region, addr.postal].filter(Boolean).join(" ");

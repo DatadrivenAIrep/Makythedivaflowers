@@ -13,15 +13,15 @@ export const SITE = {
   email: "studio@divaflowers.com",
   emailHref: "mailto:studio@divaflowers.com",
   address: {
-    line1: "1077 Hempstead Turnpike",
-    locality: "Franklin Square",
+    line1: "1077 Willis Ave",
+    locality: "Albertson",
     region: "NY",
-    postal: "11010",
+    postal: "11507",
     country: "USA",
   },
   map: {
-    embedSrc: "https://maps.google.com/maps?q=1077+Hempstead+Turnpike%2C+Franklin+Square%2C+NY+11010&t=m&z=16&output=embed",
-    directionsHref: "https://www.google.com/maps/dir/?api=1&destination=1077+Hempstead+Turnpike%2C+Franklin+Square%2C+NY+11010",
+    embedSrc: "https://maps.google.com/maps?q=1077+Willis+Ave%2C+Albertson%2C+NY+11507&t=m&z=16&output=embed",
+    directionsHref: "https://www.google.com/maps/dir/?api=1&destination=1077+Willis+Ave%2C+Albertson%2C+NY+11507",
   },
   hours: [
     { day: "Mon–Fri", value: "9:00 AM – 7:00 PM", schema: "Mo-Fr 09:00-19:00" },
