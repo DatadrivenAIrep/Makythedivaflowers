@@ -1,0 +1,113 @@
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { promises as fs } from "node:fs";
+import path from "node:path";
+import {
+  saveOrder,
+  getOrder,
+  getOrderByPaymentIntent,
+  updateOrderPaymentIntent,
+  updateOrderStatusByPaymentIntent,
+} from "@/lib/order-storage";
+import type { Order } from "@/types/order";
+
+const FILE = path.join(process.cwd(), "pending-orders.json");
+let backup: string | null = null;
+
+async function readFileOrEmpty(): Promise<string | null> {
+  try {
+    return await fs.readFile(FILE, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return null;
+    throw e;
+  }
+}
+
+beforeEach(async () => {
+  backup = await readFileOrEmpty();
+  await fs.writeFile(FILE, "[]", "utf8");
+});
+afterEach(async () => {
+  if (backup === null) {
+    try { await fs.unlink(FILE); } catch {}
+  } else {
+    await fs.writeFile(FILE, backup, "utf8");
+  }
+});
+
+function makeOrder(id: string, paymentIntentId?: string): Order {
+  return {
+    id,
+    locale: "en",
+    lines: [],
+    delivery: {
+      recipient: { name: "Test", phone: "5555555555" },
+      address: {
+        street1: "1 Main",
+        city: "Albertson",
+        state: "NY",
+        zip: "11507",
+        country: "US",
+      },
+      window: { date: "2099-01-01", slot: "midday" },
+    },
+    contact: { email: "test@example.com", phone: "5555555555" },
+    totals: { subtotalCents: 1000, deliveryCents: 1000, taxCents: 173, totalCents: 2173 },
+    stripePaymentIntentId: paymentIntentId,
+    status: "pending",
+    createdAt: "2026-05-06T00:00:00.000Z",
+  };
+}
+
+describe("order-storage", () => {
+  it("getOrderByPaymentIntent returns the matching order", async () => {
+    await saveOrder(makeOrder("o1", "pi_111"));
+    await saveOrder(makeOrder("o2", "pi_222"));
+    const found = await getOrderByPaymentIntent("pi_222");
+    expect(found?.id).toBe("o2");
+  });
+
+  it("getOrderByPaymentIntent returns null when no match", async () => {
+    await saveOrder(makeOrder("o1", "pi_111"));
+    const found = await getOrderByPaymentIntent("pi_does_not_exist");
+    expect(found).toBeNull();
+  });
+
+  it("updateOrderPaymentIntent attaches the PI id", async () => {
+    await saveOrder(makeOrder("o1"));
+    await updateOrderPaymentIntent("o1", "pi_999");
+    const o = await getOrder("o1");
+    expect(o?.stripePaymentIntentId).toBe("pi_999");
+  });
+
+  it("updateOrderStatusByPaymentIntent flips pending → paid", async () => {
+    await saveOrder(makeOrder("o1", "pi_111"));
+    await updateOrderStatusByPaymentIntent("pi_111", "paid");
+    const o = await getOrder("o1");
+    expect(o?.status).toBe("paid");
+  });
+
+  it("updateOrderStatusByPaymentIntent is a no-op when order already in target status", async () => {
+    const order = makeOrder("o1", "pi_111");
+    order.status = "paid";
+    await saveOrder(order);
+    await updateOrderStatusByPaymentIntent("pi_111", "paid");
+    const o = await getOrder("o1");
+    expect(o?.status).toBe("paid");
+  });
+
+  it("updateOrderStatusByPaymentIntent does NOT downgrade paid → failed", async () => {
+    const order = makeOrder("o1", "pi_111");
+    order.status = "paid";
+    await saveOrder(order);
+    await updateOrderStatusByPaymentIntent("pi_111", "failed");
+    const o = await getOrder("o1");
+    // Webhook events can arrive out of order; once paid, stay paid.
+    expect(o?.status).toBe("paid");
+  });
+
+  it("updateOrderStatusByPaymentIntent silently ignores unknown PI", async () => {
+    await expect(
+      updateOrderStatusByPaymentIntent("pi_does_not_exist", "paid"),
+    ).resolves.not.toThrow();
+  });
+});
