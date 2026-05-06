@@ -109,7 +109,7 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 84900, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["same-day", "staff-pick"],
-    occasions: ["romance", "anniversary", "mothers-day"],
+    occasions: ["romance", "anniversary"],
     colorFamily: ["red"],
     active: true,
     seo: {
