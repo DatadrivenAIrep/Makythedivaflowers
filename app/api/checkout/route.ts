@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { checkoutSchema } from "@/schemas/checkout";
-import { computeOrderTotals } from "@/lib/totals";
+import { computeOrderTotals, computeDeliveryCentsForZip } from "@/lib/totals";
 import { cartSubtotalCents } from "@/lib/cart-helpers";
 import { PRODUCTS } from "@/data/products";
 import { saveOrder } from "@/lib/order-storage";
@@ -32,7 +32,14 @@ export async function POST(req: Request) {
   if (subtotal <= 0) {
     return NextResponse.json({ ok: false, errors: { formErrors: ["cart_empty"] } }, { status: 400 });
   }
-  const totals = computeOrderTotals(subtotal);
+  const deliveryCents = computeDeliveryCentsForZip(form.delivery.address.zip);
+  if (deliveryCents === null) {
+    return NextResponse.json(
+      { ok: false, errors: { formErrors: ["zip_not_in_zone"] } },
+      { status: 400 },
+    );
+  }
+  const totals = computeOrderTotals(subtotal, deliveryCents);
 
   await new Promise((r) => setTimeout(r, 800));
 

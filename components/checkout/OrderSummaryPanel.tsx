@@ -16,11 +16,13 @@ type Props = {
   subtotal: number; // cents
   delivery: number; // cents
   total: number;    // cents
+  /** When true, delivery and total render as "—" because the customer hasn't entered a valid ZIP yet. */
+  deliveryPending?: boolean;
   locale: Locale;
   eyebrow?: string;
 };
 
-export function OrderSummaryPanel({ items, subtotal, delivery, total, locale, eyebrow = "Your order" }: Props) {
+export function OrderSummaryPanel({ items, subtotal, delivery, total, deliveryPending = false, locale, eyebrow = "Your order" }: Props) {
   return (
     <div className="relative h-full min-h-[280px] md:min-h-[640px] overflow-hidden bg-gradient-to-br from-ink to-[#2a1a16] text-bone">
       <div
@@ -66,11 +68,15 @@ export function OrderSummaryPanel({ items, subtotal, delivery, total, locale, ey
           </div>
           <div className="flex items-center justify-between">
             <dt className="font-mono text-[11px] uppercase tracking-[0.22em] text-bone/60">Delivery</dt>
-            <dd className="font-mono text-sm text-bone/85">{formatMoneyCents(delivery, locale)}</dd>
+            <dd className="font-mono text-sm text-bone/85">
+              {deliveryPending ? "—" : formatMoneyCents(delivery, locale)}
+            </dd>
           </div>
           <div className="flex items-baseline justify-between pt-3 border-t border-bone/10">
             <dt className="font-mono text-[11px] uppercase tracking-[0.22em] text-bone/70">Total</dt>
-            <dd className="font-display text-2xl tracking-tighter">{formatMoneyCents(total, locale)}</dd>
+            <dd className="font-display text-2xl tracking-tighter">
+              {deliveryPending ? "—" : formatMoneyCents(total, locale)}
+            </dd>
           </div>
         </dl>
       </div>

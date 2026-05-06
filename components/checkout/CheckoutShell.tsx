@@ -19,7 +19,7 @@ import { useUIStore } from "@/lib/ui-store";
 import { submitOrder } from "@/lib/submit-order";
 import { checkoutSchema, type CheckoutInput } from "@/schemas/checkout";
 import { resolveCartLines, cartSubtotalCents } from "@/lib/cart-helpers";
-import { computeOrderTotals } from "@/lib/totals";
+import { computeOrderTotals, computeDeliveryCentsForZip } from "@/lib/totals";
 import { PRODUCTS } from "@/data/products";
 import type { Locale } from "@/types/locale";
 import { springs } from "@/lib/motion-config";
@@ -43,7 +43,6 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
 
   const resolved = useMemo(() => resolveCartLines(lines, PRODUCTS), [lines]);
   const subtotal = useMemo(() => cartSubtotalCents(lines, PRODUCTS), [lines]);
-  const totals = useMemo(() => computeOrderTotals(subtotal), [subtotal]);
 
   useEffect(() => {
     if (resolved.length === 0) return;
@@ -68,6 +67,14 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
   const [open, setOpen] = useState<StepKey>("contact");
   const [submitting, setSubmitting] = useState(false);
   const [topError, setTopError] = useState<string | null>(null);
+
+  const zipValue = form.watch("delivery.address.zip");
+  const deliveryCents = computeDeliveryCentsForZip(zipValue ?? "");
+  const deliveryPending = deliveryCents === null;
+  const totals = useMemo(
+    () => computeOrderTotals(subtotal, deliveryCents ?? 0),
+    [subtotal, deliveryCents],
+  );
 
   async function nextFrom(step: StepKey) {
     const fields: Record<StepKey, string[]> = {
@@ -127,6 +134,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
       subtotal={totals.subtotalCents}
       delivery={totals.deliveryCents}
       total={totals.totalCents}
+      deliveryPending={deliveryPending}
       locale={locale}
       eyebrow={t("summary")}
     />

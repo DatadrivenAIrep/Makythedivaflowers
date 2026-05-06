@@ -28,7 +28,7 @@ export const SITE = {
     { day: "Sat", value: "9:00 AM – 6:00 PM", schema: "Sa 09:00-18:00" },
     { day: "Sun", value: "10:00 AM – 4:00 PM", schema: "Su 10:00-16:00" },
   ],
-  deliveryZones: ["Nassau County", "Queens", "Brooklyn (select zip codes)", "Western Suffolk"],
+  deliveryZones: ["Albertson", "Roslyn", "Manhasset", "Great Neck", "Port Washington", "and surrounding Long Island, Queens & western Suffolk areas"],
   cutoffTime: "2:00 PM",
   cutoff24: "14:00",  // HH:mm format for parseCutoff/isSameDayEligible
   social: [
