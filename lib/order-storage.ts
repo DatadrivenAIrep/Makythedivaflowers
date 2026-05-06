@@ -46,7 +46,9 @@ export async function updateOrderPaymentIntent(
   await writeAll(all);
 }
 
-// `paid` and `delivered` are terminal; never downgrade. Other transitions overwrite.
+// `paid` and `delivered` are both terminal for webhook purposes.
+// `delivered` is set by internal fulfilment tooling, never by Stripe events.
+// Once in either state, status must not regress regardless of late-arriving webhooks.
 const TERMINAL: OrderStatus[] = ["paid", "delivered"];
 
 export async function updateOrderStatusByPaymentIntent(
