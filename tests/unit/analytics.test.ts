@@ -22,6 +22,12 @@ import {
   trackDeliveryDateSelected,
   trackRecipientInfoCompleted,
 } from "@/lib/analytics";
+import {
+  trackMothersDayView,
+  trackZipCheckPass,
+  trackZipCheckFail,
+  trackCutoffBannerClick,
+} from "@/lib/analytics";
 
 declare global {
   interface Window {
@@ -241,5 +247,39 @@ describe("engagement + diva events", () => {
       event: "recipient_info_completed",
       has_card_message: true,
     });
+  });
+});
+
+describe("mothers-day events", () => {
+  beforeEach(() => {
+    window.dataLayer = [];
+    vi.spyOn(consent, "hasConsent").mockReturnValue(true);
+  });
+
+  it("pushes mothers_day_view", () => {
+    trackMothersDayView();
+    expect(window.dataLayer).toContainEqual({ event: "mothers_day_view" });
+  });
+
+  it("pushes zip_check_pass with zone id", () => {
+    trackZipCheckPass({ zip: "11010", zoneId: "nassau-south" });
+    expect(window.dataLayer).toContainEqual({
+      event: "zip_check_pass",
+      zip: "11010",
+      zone_id: "nassau-south",
+    });
+  });
+
+  it("pushes zip_check_fail with zip", () => {
+    trackZipCheckFail({ zip: "90210" });
+    expect(window.dataLayer).toContainEqual({
+      event: "zip_check_fail",
+      zip: "90210",
+    });
+  });
+
+  it("pushes cutoff_banner_click", () => {
+    trackCutoffBannerClick();
+    expect(window.dataLayer).toContainEqual({ event: "cutoff_banner_click" });
   });
 });

@@ -146,3 +146,21 @@ export function trackDeliveryDateSelected(dateIso: string): void {
 export function trackRecipientInfoCompleted(hasCardMessage: boolean): void {
   pushDataLayer({ event: "recipient_info_completed", has_card_message: hasCardMessage });
 }
+
+// ─── Mother's Day campaign events ────────────────────────────────────────────
+
+export function trackMothersDayView(): void {
+  pushDataLayer({ event: "mothers_day_view" });
+}
+
+export function trackZipCheckPass(args: { zip: string; zoneId: string }): void {
+  pushDataLayer({ event: "zip_check_pass", zip: args.zip, zone_id: args.zoneId });
+}
+
+export function trackZipCheckFail(args: { zip: string }): void {
+  pushDataLayer({ event: "zip_check_fail", zip: args.zip });
+}
+
+export function trackCutoffBannerClick(): void {
+  pushDataLayer({ event: "cutoff_banner_click" });
+}

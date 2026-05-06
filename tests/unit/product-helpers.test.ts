@@ -167,3 +167,12 @@ describe("newestArrivals", () => {
     expect(newestArrivals(many, 5)).toHaveLength(5);
   });
 });
+
+describe("Occasion 'mothers-day' value", () => {
+  it("filters products by the mothers-day occasion", () => {
+    const target = fx({ id: "md-1", occasions: ["mothers-day"] });
+    const other = fx({ id: "other", occasions: ["birthday"] });
+    const filtered = filterProducts([target, other], { occasion: "mothers-day" });
+    expect(filtered.map((p) => p.id)).toEqual(["md-1"]);
+  });
+});
