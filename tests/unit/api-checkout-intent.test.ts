@@ -114,10 +114,11 @@ describe("POST /api/checkout/intent", () => {
   it("passes idempotencyKey = orderId to PaymentIntents.create", async () => {
     createPI.mockResolvedValue({ id: "pi_test_123", client_secret: "secret" });
     const { POST } = await import("@/app/api/checkout/intent/route");
-    await POST(makeReq(validBody));
+    const res = await POST(makeReq(validBody));
+    const json = await res.json();
     expect(createPI).toHaveBeenCalledTimes(1);
     const [_params, options] = createPI.mock.calls[0];
-    expect(options).toMatchObject({ idempotencyKey: expect.stringMatching(/^do_/) });
+    expect(options.idempotencyKey).toBe(json.orderId);
   });
 
   it("returns 502 with payment_init_failed if Stripe throws", async () => {

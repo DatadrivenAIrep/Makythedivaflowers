@@ -88,6 +88,13 @@ export async function POST(req: Request) {
       },
       { idempotencyKey: orderId },
     );
+    if (!paymentIntent.client_secret) {
+      console.error("[stripe] paymentIntent.client_secret is null", paymentIntent.id);
+      return NextResponse.json(
+        { errors: { formErrors: ["payment_init_failed"] } },
+        { status: 502 },
+      );
+    }
     await updateOrderPaymentIntent(orderId, paymentIntent.id);
     return NextResponse.json(
       { clientSecret: paymentIntent.client_secret, orderId },
