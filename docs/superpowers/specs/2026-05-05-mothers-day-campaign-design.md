@@ -35,11 +35,11 @@
 
 **Primary:** capture local high-intent Mother's Day floral orders via paid search.
 
-**Hard targets (4-day campaign, $300 budget):**
-- 75–100 paid clicks
+**Hard targets (4-day campaign, $500 budget):**
+- 125–180 paid clicks
 - ≥ 4% landing conversion rate
-- 3–7 paid orders
-- $360–$840 paid revenue
+- 5–12 paid orders
+- $600–$1,440 paid revenue
 - ROAS ≥ 1.2× (break-even+)
 
 **Soft targets:**
@@ -170,8 +170,9 @@ On `/en/mothers-day`:
 ### 4.1 Structure
 - 1 campaign · 1 ad group · 1 RSA.
 - Type: Search Network only (no Search Partners, no Display).
-- Bidding: **Manual CPC**, max bid $4.00.
-- Budget: $75/day × 4 days = $300 cap.
+- Bidding: **Manual CPC**, max bid $5.00.
+- Budget: **$500 total over 4 days, Sat-weighted** (Wed $50 / Thu $100 / Fri $125 / Sat $225). Set as daily budgets per day, not a campaign-level cap.
+- Rationale: a fresh account benefits from light initial spend (learn, validate conversion fires) and heavy spend on the day of peak intent (Sat cutoff). $50 of the Sat budget is reserved as a flex pool — bump bids on top-performing keyword if data warrants by Sat morning.
 - Daily budget overdelivery: leave default (Google may spend up to 2× on high-intent days).
 
 ### 4.2 Geo-targeting
@@ -354,7 +355,7 @@ Defer if adds > 30 min. Only `mothers_day_view` is required (used for remarketin
 
 ## 9. Open Questions for User Review
 
-1. **Daily budget confirmation:** $75/day × 4 days = $300 total. OK or adjust?
+1. ~~Daily budget confirmation~~ — **CONFIRMED: $500 total, Sat-weighted ($50/$100/$125/$225).**
 2. **Hero photo:** existing studio shot, a curated product hero, or new shoot?
 3. **Curated SKU list:** any SKU to drop/swap before stock check (e.g., low margin)?
 4. **Google Business Profile status:** verified, pending, or not yet set up?
