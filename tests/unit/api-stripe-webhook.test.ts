@@ -1,0 +1,148 @@
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { promises as fs } from "node:fs";
+import path from "node:path";
+import { saveOrder, getOrder } from "@/lib/order-storage";
+import type { Order } from "@/types/order";
+
+const constructEvent = vi.fn();
+vi.mock("@/lib/stripe-server", () => ({
+  stripe: {
+    webhooks: { constructEvent },
+  },
+}));
+
+const FILE = path.join(process.cwd(), "pending-orders.json");
+let backup: string | null = null;
+
+beforeEach(async () => {
+  try {
+    backup = await fs.readFile(FILE, "utf8");
+  } catch {
+    backup = null;
+  }
+  await fs.writeFile(FILE, "[]", "utf8");
+  constructEvent.mockReset();
+  vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_dummy");
+  vi.stubEnv("STRIPE_WEBHOOK_SECRET", "whsec_dummy");
+});
+afterEach(async () => {
+  if (backup === null) {
+    try { await fs.unlink(FILE); } catch {}
+  } else {
+    await fs.writeFile(FILE, backup, "utf8");
+  }
+  vi.unstubAllEnvs();
+});
+
+function makeReq(body: string, sig: string | null = "test_sig") {
+  const headers: Record<string, string> = { "content-type": "application/json" };
+  if (sig !== null) headers["stripe-signature"] = sig;
+  return new Request("http://localhost/api/stripe/webhook", {
+    method: "POST",
+    headers,
+    body,
+  });
+}
+
+function makeOrder(id: string, piId: string, status: Order["status"] = "pending"): Order {
+  return {
+    id,
+    locale: "en",
+    lines: [],
+    delivery: {
+      recipient: { name: "T", phone: "5555555555" },
+      address: { street1: "1", city: "Albertson", state: "NY", zip: "11507", country: "US" },
+      window: { date: "2099-01-01", slot: "midday" },
+    },
+    contact: { email: "t@example.com", phone: "5555555555" },
+    totals: { subtotalCents: 1000, deliveryCents: 1000, taxCents: 173, totalCents: 2173 },
+    stripePaymentIntentId: piId,
+    status,
+    createdAt: "2026-05-06T00:00:00.000Z",
+  };
+}
+
+describe("POST /api/stripe/webhook", () => {
+  it("returns 400 when stripe-signature header is missing", async () => {
+    const { POST } = await import("@/app/api/stripe/webhook/route");
+    const res = await POST(makeReq("{}", null));
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 400 when signature verification throws", async () => {
+    constructEvent.mockImplementation(() => { throw new Error("bad sig"); });
+    const { POST } = await import("@/app/api/stripe/webhook/route");
+    const res = await POST(makeReq("{}"));
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 200 and updates order to paid on payment_intent.succeeded", async () => {
+    await saveOrder(makeOrder("o1", "pi_111"));
+    constructEvent.mockReturnValue({
+      type: "payment_intent.succeeded",
+      data: { object: { id: "pi_111" } },
+    });
+    const { POST } = await import("@/app/api/stripe/webhook/route");
+    const res = await POST(makeReq("{}"));
+    expect(res.status).toBe(200);
+    const o = await getOrder("o1");
+    expect(o?.status).toBe("paid");
+  });
+
+  it("returns 200 and updates order to failed on payment_intent.payment_failed", async () => {
+    await saveOrder(makeOrder("o1", "pi_111"));
+    constructEvent.mockReturnValue({
+      type: "payment_intent.payment_failed",
+      data: { object: { id: "pi_111" } },
+    });
+    const { POST } = await import("@/app/api/stripe/webhook/route");
+    await POST(makeReq("{}"));
+    const o = await getOrder("o1");
+    expect(o?.status).toBe("failed");
+  });
+
+  it("returns 200 and updates order to canceled on payment_intent.canceled", async () => {
+    await saveOrder(makeOrder("o1", "pi_111"));
+    constructEvent.mockReturnValue({
+      type: "payment_intent.canceled",
+      data: { object: { id: "pi_111" } },
+    });
+    const { POST } = await import("@/app/api/stripe/webhook/route");
+    await POST(makeReq("{}"));
+    const o = await getOrder("o1");
+    expect(o?.status).toBe("canceled");
+  });
+
+  it("returns 200 silently on unknown event types", async () => {
+    constructEvent.mockReturnValue({
+      type: "customer.created",
+      data: { object: {} },
+    });
+    const { POST } = await import("@/app/api/stripe/webhook/route");
+    const res = await POST(makeReq("{}"));
+    expect(res.status).toBe(200);
+  });
+
+  it("is idempotent: same event applied twice is a no-op", async () => {
+    await saveOrder(makeOrder("o1", "pi_111", "paid"));
+    constructEvent.mockReturnValue({
+      type: "payment_intent.succeeded",
+      data: { object: { id: "pi_111" } },
+    });
+    const { POST } = await import("@/app/api/stripe/webhook/route");
+    await POST(makeReq("{}"));
+    await POST(makeReq("{}"));
+    const o = await getOrder("o1");
+    expect(o?.status).toBe("paid");
+  });
+
+  it("returns 200 silently when PI id has no matching order", async () => {
+    constructEvent.mockReturnValue({
+      type: "payment_intent.succeeded",
+      data: { object: { id: "pi_does_not_exist" } },
+    });
+    const { POST } = await import("@/app/api/stripe/webhook/route");
+    const res = await POST(makeReq("{}"));
+    expect(res.status).toBe(200);
+  });
+});
