@@ -9,7 +9,8 @@ export function getStripeClient(): Promise<StripeJs | null> {
     if (!key) {
       // eslint-disable-next-line no-console
       console.error("[stripe] NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not set");
-      return Promise.resolve(null);
+      stripePromise = Promise.resolve(null);
+      return stripePromise;
     }
     stripePromise = loadStripe(key);
   }
