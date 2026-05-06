@@ -43,7 +43,10 @@ export function ZipChecker({ locale }: { locale: Locale }) {
           placeholder="Enter your ZIP"
           aria-label="Enter your ZIP"
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={(e) => {
+            setValue(e.target.value);
+            setResult({ kind: "idle" });
+          }}
           className="flex-1 rounded-md border border-ink/20 bg-bone px-3 py-2 text-sm text-ink"
         />
         <button

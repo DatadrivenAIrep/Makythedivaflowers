@@ -24,7 +24,8 @@ export function MothersDayCutoffBanner({
   const snap = useCutoff(cutoff);
   return (
     <div
-      role="banner"
+      role="region"
+      aria-label="Order cutoff"
       className="sticky top-0 z-50 w-full bg-rouge text-bone shadow-md"
       data-testid="md-cutoff-banner"
     >
