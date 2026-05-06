@@ -12,6 +12,7 @@ import { EditorialSplit } from "@/components/home/EditorialSplit";
 import { WeddingsTeaser } from "@/components/home/WeddingsTeaser";
 import { StudioVisit } from "@/components/home/StudioVisit";
 import { NewsletterField } from "@/components/home/NewsletterField";
+import { MothersDayHomeStrip } from "@/components/mothers-day/MothersDayHomeStrip";
 
 export async function generateMetadata({
   params,
@@ -42,6 +43,7 @@ export default async function Home({ params }: { params: Promise<{ locale: Local
     <main className="bg-bone text-ink">
       <Grain />
       <Hero locale={locale} />
+      <MothersDayHomeStrip locale={locale} />
       <KineticMarquee text={`${marquee}  ·  `} />
       <BentoGrid locale={locale} />
       <CategoryStrip locale={locale} />
