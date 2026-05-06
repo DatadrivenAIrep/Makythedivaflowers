@@ -9,6 +9,7 @@ import { WhyDivaBlock } from "@/components/mothers-day/WhyDivaBlock";
 import { MothersDayFaq } from "@/components/mothers-day/MothersDayFaq";
 import { StickyMobileCTA } from "@/components/mothers-day/StickyMobileCTA";
 import { MothersDayProductSchema } from "@/components/mothers-day/MothersDayProductSchema";
+import { MothersDayViewTracker } from "@/components/mothers-day/MothersDayViewTracker";
 import { GoogleReviews } from "@/components/home/GoogleReviews";
 
 const CURATED_SLUGS = [
@@ -100,6 +101,7 @@ export default async function MothersDayPage({
       <MothersDayFaq locale={locale} />
 
       <StickyMobileCTA />
+      <MothersDayViewTracker />
       <MothersDayProductSchema locale={locale} slugs={CURATED_SLUGS} />
     </main>
   );
