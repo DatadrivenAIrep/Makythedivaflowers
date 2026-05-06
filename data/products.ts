@@ -109,7 +109,7 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 84900, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["same-day", "staff-pick"],
-    occasions: ["romance", "anniversary"],
+    occasions: ["romance", "anniversary", "mothers-day"],
     colorFamily: ["red"],
     active: true,
     seo: {
@@ -602,7 +602,7 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 16900, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["romance", "anniversary", "just-because"],
+    occasions: ["romance", "anniversary", "just-because", "mothers-day"],
     colorFamily: ["pink", "pastel"],
     active: true,
     seo: {
@@ -869,7 +869,7 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 16900, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["just-because", "birthday", "congrats"],
+    occasions: ["just-because", "birthday", "congrats", "mothers-day"],
     colorFamily: ["pink", "mixed"],
     active: true,
     seo: {
@@ -968,7 +968,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 19500 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["romance", "anniversary", "birthday", "congrats", "just-because"],
+    occasions: ["romance", "anniversary", "birthday", "congrats", "just-because", "mothers-day"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -1034,7 +1034,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["romance", "anniversary", "birthday", "just-because"],
+    occasions: ["romance", "anniversary", "birthday", "just-because", "mothers-day"],
     colorFamily: ["pink", "mixed"],
     active: true,
     seo: {
@@ -2042,7 +2042,7 @@ export const PRODUCTS: Product[] = [
       { id: "champagne", label: { en: "Champagne pairing", es: "Maridaje de champaña" }, priceCents: 8500 },
     ],
     tags: ["staff-pick", "same-day"],
-    occasions: ["anniversary", "romance", "congrats"],
+    occasions: ["anniversary", "romance", "congrats", "mothers-day"],
     colorFamily: ["white", "pink", "mixed"],
     active: true,
     seo: {
@@ -2409,7 +2409,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 19500 },
     ],
     tags: ["new", "staff-pick"],
-    occasions: ["romance", "anniversary", "just-because"],
+    occasions: ["romance", "anniversary", "just-because", "mothers-day"],
     colorFamily: ["pink"],
     active: true,
     seo: {
