@@ -17,13 +17,23 @@ describe("ZipChecker", () => {
     trackFail.mockClear();
   });
 
-  it("shows the zone name when ZIP is valid and in-zone", async () => {
+  it("shows the city name and fixed price for a named city ZIP", async () => {
     const u = userEvent.setup();
     render(<ZipChecker locale="en" />);
-    await u.type(screen.getByPlaceholderText(/enter your zip/i), "11010");
+    await u.type(screen.getByPlaceholderText(/enter your zip/i), "11507");
     await u.click(screen.getByRole("button", { name: /check/i }));
-    expect(screen.getByText(/we deliver to/i)).toBeInTheDocument();
-    expect(trackPass).toHaveBeenCalledWith({ zip: "11010", zoneId: "nassau-south" });
+    expect(screen.getByText(/delivery to albertson/i)).toBeInTheDocument();
+    expect(screen.getByText("$10")).toBeInTheDocument();
+    expect(trackPass).toHaveBeenCalledWith({ zip: "11507", zoneId: "albertson" });
+  });
+
+  it("shows a price range for ZIPs in the further zone", async () => {
+    const u = userEvent.setup();
+    render(<ZipChecker locale="en" />);
+    await u.type(screen.getByPlaceholderText(/enter your zip/i), "11530");
+    await u.click(screen.getByRole("button", { name: /check/i }));
+    expect(screen.getByText(/\$25–\$30/)).toBeInTheDocument();
+    expect(trackPass).toHaveBeenCalledWith({ zip: "11530", zoneId: "further" });
   });
 
   it("shows the rejection message for an out-of-zone ZIP", async () => {

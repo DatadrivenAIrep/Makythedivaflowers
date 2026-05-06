@@ -5,10 +5,18 @@ import { trackZipCheckPass, trackZipCheckFail } from "@/lib/analytics";
 import type { Locale } from "@/types/locale";
 
 type Result =
-  | { kind: "pass"; zip: string; zoneLabel: string }
+  | { kind: "pass"; zip: string; zoneLabel: string; price: string }
   | { kind: "fail"; zip: string }
   | { kind: "invalid" }
   | { kind: "idle" };
+
+function formatPrice(priceCents: number, priceCentsMax?: number): string {
+  const lo = `$${Math.round(priceCents / 100)}`;
+  if (priceCentsMax && priceCentsMax !== priceCents) {
+    return `${lo}–$${Math.round(priceCentsMax / 100)}`;
+  }
+  return lo;
+}
 
 export function ZipChecker({ locale }: { locale: Locale }) {
   const [value, setValue] = useState("");
@@ -24,8 +32,9 @@ export function ZipChecker({ locale }: { locale: Locale }) {
     const zone = findDeliveryZoneByZip(zip);
     if (zone) {
       const label = zone.label[locale];
+      const price = formatPrice(zone.priceCents, zone.priceCentsMax);
       trackZipCheckPass({ zip, zoneId: zone.id });
-      setResult({ kind: "pass", zip, zoneLabel: label });
+      setResult({ kind: "pass", zip, zoneLabel: label, price });
     } else {
       trackZipCheckFail({ zip });
       setResult({ kind: "fail", zip });
@@ -57,7 +66,10 @@ export function ZipChecker({ locale }: { locale: Locale }) {
         </button>
       </div>
       {result.kind === "pass" && (
-        <p className="text-sm text-ink">&#10003; We deliver to {result.zoneLabel}</p>
+        <p className="text-sm text-ink">
+          &#10003; Delivery to {result.zoneLabel} &mdash;{" "}
+          <span className="font-semibold">{result.price}</span>
+        </p>
       )}
       {result.kind === "fail" && (
         <p className="text-sm text-ink">

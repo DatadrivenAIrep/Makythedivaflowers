@@ -16,14 +16,53 @@ describe("isValidZip", () => {
 });
 
 describe("findDeliveryZoneByZip", () => {
-  it("returns the matching zone for a known ZIP", () => {
-    const zone = findDeliveryZoneByZip("11010");
-    expect(zone?.id).toBe("nassau-south");
+  it("returns Albertson at $10 for 11507", () => {
+    const zone = findDeliveryZoneByZip("11507");
+    expect(zone?.id).toBe("albertson");
+    expect(zone?.priceCents).toBe(1000);
+    expect(zone?.priceCentsMax).toBeUndefined();
   });
 
-  it("returns the matching zone for a Queens ZIP", () => {
-    const zone = findDeliveryZoneByZip("11354");
-    expect(zone?.id).toBe("queens");
+  it("returns Roslyn at $15 for 11576 and 11577", () => {
+    expect(findDeliveryZoneByZip("11576")?.id).toBe("roslyn");
+    expect(findDeliveryZoneByZip("11577")?.priceCents).toBe(1500);
+  });
+
+  it("returns Manhasset at $18 for 11030", () => {
+    const zone = findDeliveryZoneByZip("11030");
+    expect(zone?.id).toBe("manhasset");
+    expect(zone?.priceCents).toBe(1800);
+  });
+
+  it("returns Great Neck at $25 for 11020 / 11021 / 11023 / 11024", () => {
+    for (const zip of ["11020", "11021", "11023", "11024"]) {
+      const zone = findDeliveryZoneByZip(zip);
+      expect(zone?.id).toBe("great-neck");
+      expect(zone?.priceCents).toBe(2500);
+    }
+  });
+
+  it("returns Port Washington at $15 for 11050", () => {
+    const zone = findDeliveryZoneByZip("11050");
+    expect(zone?.id).toBe("port-washington");
+    expect(zone?.priceCents).toBe(1500);
+  });
+
+  it("returns the further zone with $25–$30 range for non-named ZIPs in service area", () => {
+    // Garden City — Nassau, not in named cities
+    const garden = findDeliveryZoneByZip("11530");
+    expect(garden?.id).toBe("further");
+    expect(garden?.priceCents).toBe(2500);
+    expect(garden?.priceCentsMax).toBe(3000);
+
+    // Mineola — Nassau
+    expect(findDeliveryZoneByZip("11501")?.id).toBe("further");
+
+    // Forest Hills — Queens
+    expect(findDeliveryZoneByZip("11375")?.id).toBe("further");
+
+    // Brentwood — Western Suffolk
+    expect(findDeliveryZoneByZip("11717")?.id).toBe("further");
   });
 
   it("returns null for an out-of-zone ZIP", () => {
