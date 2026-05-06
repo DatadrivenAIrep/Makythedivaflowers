@@ -74,7 +74,7 @@ Only `en` locale active for v1. The route still lives under `[locale]` for consi
 
 3. **Trust strip**
    - Press logos: Vogue · The Cut · Brides · NY Mag (read from `SITE.press`).
-   - "★★★★★ 4.9" + Google Reviews widget (component already exists: `<GoogleReviews>`).
+   - "**★★★★★ 4.9 · 127 reviews on Google**" + Google Reviews widget (component already exists: `<GoogleReviews>`). The specific review count is high-leverage social proof — render the number prominently, not the bare star rating.
    - "Recent deliveries" ticker reusing `SITE.recentDeliveries`.
 
 4. **The Mother's Day Edit grid**
@@ -224,8 +224,10 @@ On `/en/mothers-day`:
 11. From $94 · Same-Day
 12. Order Today, Arrives Today
 13. Romance, by the Stem
-14. Florist in Franklin Square
+14. ★ 4.9 · 127 Google Reviews
 15. Free Card With Every Bouquet
+
+> Note: original headline #14 ("Florist in Franklin Square") removed pending address reconciliation — see §10. If user confirms the studio city, restore as "Florist in {City}" or "Visit Our {City} Studio".
 
 **Descriptions (4, ≤90 chars):**
 1. Hand-tied florals delivered same-day across Long Island. Order by Saturday 2 PM.
@@ -356,7 +358,23 @@ Defer if adds > 30 min. Only `mothers_day_view` is required (used for remarketin
 ## 9. Open Questions for User Review
 
 1. ~~Daily budget confirmation~~ — **CONFIRMED: $500 total, Sat-weighted ($50/$100/$125/$225).**
-2. **Hero photo:** existing studio shot, a curated product hero, or new shoot?
-3. **Curated SKU list:** any SKU to drop/swap before stock check (e.g., low margin)?
-4. **Google Business Profile status:** verified, pending, or not yet set up?
-5. **ES home strip behavior:** route to EN landing (current plan) or just hide for ES users?
+2. **Hero photo:** default — use existing premium product photo (likely `maison-de-diva` or `hundred-roses-vase`) unless user provides a Mother's Day specific shot.
+3. **Curated SKU list:** keep as-is, user confirms stock Wed AM before deploy.
+4. ~~Google Business Profile status~~ — **CONFIRMED: Verified, active, ★4.9 / 127 reviews. Listed city = Albertson. See §10 for address reconciliation.**
+5. **ES home strip behavior:** default — route ES users to EN landing with "Pronto en español" banner up top.
+
+## 10. Address Reconciliation (BLOCKER — must resolve before deploy)
+
+`data/site.ts` lists the studio as **1077 Hempstead Turnpike, Franklin Square, NY 11010**. The verified Google Business Profile lists **Albertson** as the city. These must reconcile before launch because:
+
+- Google penalizes Quality Score on landing pages whose `LocalBusiness` JSON-LD address conflicts with the linked GBP.
+- The location extension on the ad will pull the GBP address (Albertson). If the landing displays Franklin Square, users see two addresses → trust drop, CR drop.
+- Footer, contact page, and map embed all source from `data/site.ts`.
+
+**Branches:**
+
+- **Branch A — moved to Albertson:** update `data/site.ts` (line1, locality, postal, map embedSrc, directionsHref). Audit any hard-coded Franklin Square strings. Re-render schema. Confirm phone/hours unchanged.
+- **Branch B — two studios:** decide which is the "primary" for ads. The ad's location extension can only point to one GBP. The other becomes a secondary location on the contact page.
+- **Branch C — physical = Franklin Square, GBP listing accidentally Albertson:** update GBP listing to match physical address (re-verification may be required and could take 1–2 weeks → location extension lost for this campaign).
+
+Resolution required before Wed 5/6 deploy. The implementation plan will treat this as a Day 0 blocker owned by the user.
