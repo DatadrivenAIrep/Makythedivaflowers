@@ -11,7 +11,7 @@
 ## 1. Context & Constraints
 
 ### Business
-- Diva Flowers is a Long Island florist (Franklin Square, NY 11010), founded 2014.
+- Diva Flowers is a Long Island florist (1077 Willis Ave, Albertson, NY 11507), founded 2014.
 - Same-day delivery to Nassau, Queens, Brooklyn (select), Western Suffolk. Cutoff 2 PM ET.
 - Sunday hours 10 AM – 4 PM → Sunday 5/10 delivery is feasible for orders received Sat ≤ 2 PM.
 - Press: Vogue, The Cut, Brides, NY Magazine, Town & Country, Refinery29.
@@ -91,7 +91,7 @@ Only `en` locale active for v1. The route still lives under `[locale]` for consi
    - Alternates if any out of stock: `dusky-bloom`, `talitas-bouquet`.
 
 5. **"Why Diva" module** (3 columns, reuse `<EditorialSplit>` adapted)
-   - Real florists, real studio (photo of Franklin Square)
+   - Real florists, real studio (photo of the Albertson studio)
    - Hand-delivered, never boxed (vs 1-800-Flowers)
    - Order by 2 PM, arrives same day
 
@@ -177,7 +177,7 @@ On `/en/mothers-day`:
 
 ### 4.2 Geo-targeting
 - Include: Nassau County NY + Queens NY + Western Suffolk (target by named locations, not lat/lon radius — more reliable for residential intent).
-- Optional: 15-mile radius around `1077 Hempstead Turnpike, Franklin Square NY 11010` as a backup layer.
+- Optional: 15-mile radius around `1077 Willis Ave, Albertson NY 11507` as a backup layer.
 - Mode: **Presence** ("People in your targeted locations") — NOT "Presence or interest".
 - Exclude: rest of US.
 
@@ -201,7 +201,7 @@ On `/en/mothers-day`:
 - `"mother's day flowers near me"`
 - `"flower delivery long island"`
 - `"same day flowers queens"`
-- `"florist franklin square"`
+- `"florist albertson"`
 - `"mother's day delivery sunday"`
 - `"flower shop nassau"`
 - `"florist near me mother's day"`
@@ -225,9 +225,7 @@ On `/en/mothers-day`:
 12. Order Today, Arrives Today
 13. Romance, by the Stem
 14. ★ 4.9 · 127 Google Reviews
-15. Free Card With Every Bouquet
-
-> Note: original headline #14 ("Florist in Franklin Square") removed pending address reconciliation — see §10. If user confirms the studio city, restore as "Florist in {City}" or "Visit Our {City} Studio".
+15. Florist in Albertson, NY
 
 **Descriptions (4, ≤90 chars):**
 1. Hand-tied florals delivered same-day across Long Island. Order by Saturday 2 PM.
@@ -363,18 +361,9 @@ Defer if adds > 30 min. Only `mothers_day_view` is required (used for remarketin
 4. ~~Google Business Profile status~~ — **CONFIRMED: Verified, active, ★4.9 / 127 reviews. Listed city = Albertson. See §10 for address reconciliation.**
 5. **ES home strip behavior:** default — route ES users to EN landing with "Pronto en español" banner up top.
 
-## 10. Address Reconciliation (BLOCKER — must resolve before deploy)
+## 10. Address Reconciliation — RESOLVED
 
-`data/site.ts` lists the studio as **1077 Hempstead Turnpike, Franklin Square, NY 11010**. The verified Google Business Profile lists **Albertson** as the city. These must reconcile before launch because:
+Resolved on 2026-05-05 in commit `a1459de` (separate session). `data/site.ts` now reads **1077 Willis Ave, Albertson, NY 11507**, matching the verified Google Business Profile. Map embed and directions href updated. All spec references in this document have been updated to Albertson.
 
-- Google penalizes Quality Score on landing pages whose `LocalBusiness` JSON-LD address conflicts with the linked GBP.
-- The location extension on the ad will pull the GBP address (Albertson). If the landing displays Franklin Square, users see two addresses → trust drop, CR drop.
-- Footer, contact page, and map embed all source from `data/site.ts`.
-
-**Branches:**
-
-- **Branch A — moved to Albertson:** update `data/site.ts` (line1, locality, postal, map embedSrc, directionsHref). Audit any hard-coded Franklin Square strings. Re-render schema. Confirm phone/hours unchanged.
-- **Branch B — two studios:** decide which is the "primary" for ads. The ad's location extension can only point to one GBP. The other becomes a secondary location on the contact page.
-- **Branch C — physical = Franklin Square, GBP listing accidentally Albertson:** update GBP listing to match physical address (re-verification may be required and could take 1–2 weeks → location extension lost for this campaign).
-
-Resolution required before Wed 5/6 deploy. The implementation plan will treat this as a Day 0 blocker owned by the user.
+Residual cleanup outside spec scope (does not block launch):
+- `tests/e2e/checkout.spec.ts:21` and `tests/unit/checkout-schema.test.ts:9` still reference "Franklin Square" — these are recipient/customer test fixtures, not studio address. Updating is cosmetic; tests still pass. Worth a follow-up commit at user's discretion, not a blocker.
