@@ -36,7 +36,8 @@ export type Occasion =
   | "sympathy"
   | "romance"
   | "congrats"
-  | "just-because";
+  | "just-because"
+  | "mothers-day";
 export type ColorFamily =
   | "pink"
   | "red"

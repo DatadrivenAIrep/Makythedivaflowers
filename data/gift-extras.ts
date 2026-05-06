@@ -18,6 +18,7 @@ const PRIORITY_BY_OCCASION: Record<Occasion, GiftExtraId[]> = {
   sympathy:       ["x-card-premium", "x-vase-upgrade"],
   congrats:       ["x-card-premium", "x-chocolates-mini", "x-ribbon-silk"],
   "just-because": ["x-card-premium", "x-vase-upgrade", "x-chocolates-mini"],
+  "mothers-day":  ["x-card-premium", "x-chocolates-mini", "x-vase-upgrade"],
 };
 
 export function suggestExtrasForCart(
