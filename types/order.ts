@@ -26,7 +26,8 @@ export type OrderStatus =
   | "preparing"
   | "out-for-delivery"
   | "delivered"
-  | "failed";
+  | "failed"
+  | "canceled";
 
 export type Order = {
   id: string;
