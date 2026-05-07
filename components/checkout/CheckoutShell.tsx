@@ -57,6 +57,19 @@ async function createIntent(payload: {
   return { clientSecret: data.clientSecret, orderId: data.orderId };
 }
 
+// Map of error codes the API can return → i18n key suffix under `checkout.errors`.
+// Anything not in this set falls back to `unknown_error`.
+const KNOWN_ERROR_CODES = new Set([
+  "cart_empty",
+  "zip_not_in_zone",
+  "payment_init_failed",
+  "unknown_error",
+]);
+
+function errorKey(code: string): string {
+  return KNOWN_ERROR_CODES.has(code) ? `errors.${code}` : "errors.unknown_error";
+}
+
 export function CheckoutShell({ locale }: { locale: Locale }) {
   const t = useTranslations("checkout");
   const router = useRouter();
@@ -163,13 +176,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
       const r = await createIntent({ locale, lines, form: form.getValues() });
       if ("error" in r) {
         setIntent({ status: "error", message: r.error });
-        const errorKey = `errors.${r.error}`;
-        // Fall back to unknown_error if the specific error key isn't translated
-        try {
-          setTopError(t(errorKey));
-        } catch {
-          setTopError(t("errors.unknown_error"));
-        }
+        setTopError(t(errorKey(r.error)));
         return;
       }
       setIntent({
@@ -296,10 +303,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
           )}
           {intent.status === "error" && (
             <p className="font-mono text-[11px] text-error">
-              {(() => {
-                try { return t(`errors.${intent.message}`); }
-                catch { return t("errors.unknown_error"); }
-              })()}
+              {t(errorKey(intent.message))}
             </p>
           )}
           {topError && <p className="font-mono text-[11px] text-error">{topError}</p>}
