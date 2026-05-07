@@ -77,17 +77,21 @@ function CardMessageImpl({
         />
       </FormField>
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-1.5">
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
-          className="font-mono text-xs text-mute-500 hover:text-ink"
+          className={
+            open
+              ? "self-start rounded-full border border-ink bg-ink px-3.5 py-1.5 font-sans text-sm text-bone transition-colors hover:bg-ink/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rouge"
+              : "self-start rounded-full border border-ink/30 px-3.5 py-1.5 font-sans text-sm text-ink transition-colors hover:border-ink hover:bg-ink/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rouge"
+          }
         >
           {triggerPrefix}
           {triggerLabel}
         </button>
-        <p className="font-mono text-xs text-mute-500">
+        <p className="self-end font-mono text-xs text-mute-500">
           {value.length}/{maxLength}
         </p>
       </div>

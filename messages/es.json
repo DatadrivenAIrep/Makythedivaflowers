@@ -1,6 +1,6 @@
 {
   "card_message_assist": {
-    "trigger": "Sugerir mensaje",
+    "trigger": "¿Necesitas ideas? Sugerir mensaje",
     "trigger_sympathy": "Sugerir mensaje",
     "title": "¿Para quién es?",
     "generate": "Generar 3 ideas",
