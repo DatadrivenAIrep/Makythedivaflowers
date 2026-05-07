@@ -32,7 +32,6 @@ export function DeliveryStep({ form }: { form: UseFormReturn<CheckoutInput> }) {
 
   return (
     <div className="space-y-6 max-w-md">
-      <input type="hidden" {...register("delivery.method")} />
       <FormField label={t("fulfillment_label")} htmlFor="ck-fulfillment">
         <RadioChips
           name="delivery.method"

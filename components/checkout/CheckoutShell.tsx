@@ -117,7 +117,6 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
   const zipValue = form.watch("delivery.address.zip");
   const isPickup = method === "pickup";
   const zipFee = isPickup ? 0 : computeDeliveryCentsForZip(zipValue ?? "");
-  const deliveryCents = isPickup ? 0 : zipFee;
   const deliveryPending = !isPickup && zipFee === null;
   const totals = useMemo(
     () => computeOrderTotals(subtotal, isPickup ? 0 : (zipFee ?? 0)),
