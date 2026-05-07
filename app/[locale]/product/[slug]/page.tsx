@@ -6,6 +6,7 @@ import type { Locale } from "@/types/locale";
 import { getProductBySlug, getPairsWith, PRODUCTS } from "@/data/products";
 import { TrackEvent } from "@/components/analytics/TrackEvent";
 import type { AnalyticsItem } from "@/lib/analytics-types";
+import { parseCampaign } from "@/lib/campaign-occasion";
 import { SITE } from "@/data/site";
 import { ImageStack } from "@/components/product/ImageStack";
 import { PdpConfigurator } from "@/components/product/PdpConfigurator";
@@ -51,10 +52,14 @@ export async function generateMetadata({
 
 export default async function ProductPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: Locale; slug: string }>;
+  searchParams: Promise<{ campaign?: string | string[] }>;
 }) {
   const { locale, slug } = await params;
+  const sp = await searchParams;
+  const campaign = parseCampaign(sp.campaign);
   const product = getProductBySlug(slug);
   if (!product || !product.active) notFound();
   setRequestLocale(locale);
@@ -134,6 +139,7 @@ export default async function ProductPage({
               locale={locale}
               cutoff={SITE.cutoff24}
               motionMode={isSympathy ? "sympathy" : "default"}
+              campaign={campaign}
             />
 
             <div className="mt-8 border-t border-ink/10 pt-6">
