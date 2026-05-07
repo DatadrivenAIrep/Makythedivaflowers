@@ -14,11 +14,13 @@ type Props = {
   locale: Locale;
   reduceMotion?: boolean;
   priority?: boolean;
+  campaign?: string;
 };
 
-function ProductCardImpl({ product, locale, reduceMotion, priority }: Props) {
+function ProductCardImpl({ product, locale, reduceMotion, priority, campaign }: Props) {
   const t = useTranslations("product");
-  const href = `/${locale}/product/${product.slug}`;
+  const base = `/${locale}/product/${product.slug}`;
+  const href = campaign ? `${base}?campaign=${encodeURIComponent(campaign)}` : base;
   const cover = product.images[0];
   const fromPrice = formatMoneyCents(startingPriceCents(product), locale);
   const startingFrom = t("from_price");

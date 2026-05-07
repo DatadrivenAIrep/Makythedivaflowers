@@ -13,6 +13,7 @@ type Props = {
   /** sympathy = fade-only stagger, no bloom */
   motionMode?: "default" | "sympathy";
   className?: string;
+  campaign?: string;
 };
 
 const fadeOnly = {
@@ -20,7 +21,7 @@ const fadeOnly = {
   show: { opacity: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const } },
 };
 
-function ProductGridImpl({ products, locale, motionMode = "default", className }: Props) {
+function ProductGridImpl({ products, locale, motionMode = "default", className, campaign }: Props) {
   const itemVariants = motionMode === "sympathy" ? fadeOnly : staggerItemVariants;
   return (
     <StaggerGroup
@@ -36,6 +37,7 @@ function ProductGridImpl({ products, locale, motionMode = "default", className }
             locale={locale}
             reduceMotion={motionMode === "sympathy"}
             priority={i < 3}
+            campaign={campaign}
           />
         </motion.div>
       ))}

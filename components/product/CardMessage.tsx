@@ -15,6 +15,8 @@ type Props = {
   maxLength?: number;
   productTitle: string;
   occasions: string[];
+  isSympathy: boolean;
+  campaign?: Occasion;
 };
 
 function CardMessageImpl({
@@ -24,13 +26,19 @@ function CardMessageImpl({
   maxLength = 200,
   productTitle,
   occasions,
+  isSympathy,
+  campaign,
 }: Props) {
   const t = useTranslations("card_message_assist");
   const [open, setOpen] = useState(false);
 
-  const isSympathy = occasions.includes("sympathy");
   const mode = isSympathy ? "sympathy" : "default";
-  const occasion = (isSympathy ? "sympathy" : (occasions[0] as Occasion | undefined)) ?? "just-because";
+  const occasion: Occasion = isSympathy
+    ? "sympathy"
+    : campaign && occasions.includes(campaign)
+      ? campaign
+      : ((occasions[0] as Occasion | undefined) ?? "just-because");
+
   const relations = getRelations(mode, locale);
 
   const copy = {
@@ -54,7 +62,7 @@ function CardMessageImpl({
       {open && (
         <CardMessageAssist
           productTitle={productTitle}
-          occasion={occasion as Occasion}
+          occasion={occasion}
           locale={locale}
           relations={relations}
           copy={copy}

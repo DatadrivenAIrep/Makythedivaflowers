@@ -15,7 +15,7 @@ export function MothersDayEdit({ locale, slugs }: Props) {
 
   return (
     <section id="md-edit" className="mx-auto max-w-7xl px-4 py-16">
-      <ProductGrid products={products} locale={locale} />
+      <ProductGrid products={products} locale={locale} campaign="mothers-day" />
     </section>
   );
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { cardMessageRequestSchema } from "@/schemas/card-message";
+import { cardMessageRequestSchema, occasionSchema } from "@/schemas/card-message";
 
 describe("cardMessageRequestSchema", () => {
   const valid = {
@@ -51,5 +51,11 @@ describe("cardMessageRequestSchema", () => {
 
   it("rejects missing fields", () => {
     expect(cardMessageRequestSchema.safeParse({}).success).toBe(false);
+  });
+});
+
+describe("occasionSchema", () => {
+  it("accepts mothers-day", () => {
+    expect(occasionSchema.safeParse("mothers-day").success).toBe(true);
   });
 });
