@@ -170,6 +170,10 @@ describe("POST /api/checkout/intent", () => {
   it("ignores zip_not_in_zone for pickup orders even if address-shaped data is sent", async () => {
     createPI.mockResolvedValue({ id: "pi_pickup_3", client_secret: "pi_pickup_3_secret" });
     const { POST } = await import("@/app/api/checkout/intent/route");
+    // Send an out-of-zone ZIP alongside method=pickup. Zod's discriminatedUnion
+    // selects the pickup branch (which has no address field), so the address
+    // key is stripped before the route sees it. The route never runs the ZIP
+    // zone check on pickup, so this returns 200 even though "90001" is not in zone.
     const res = await POST(makeReq({
       locale: "en",
       lines: validBody.lines,
@@ -180,6 +184,7 @@ describe("POST /api/checkout/intent", () => {
           recipient: validBody.form.delivery.recipient,
           window: validBody.form.delivery.window,
           cardMessage: "",
+          address: { street1: "1 Out Of Zone", city: "Los Angeles", state: "CA", zip: "90001", country: "US" },
         },
       },
     }));
