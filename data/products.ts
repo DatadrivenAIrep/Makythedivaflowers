@@ -401,7 +401,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because", "congrats"],
+    occasions: ["birthday", "just-because", "congrats", "mothers-day"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -449,17 +449,17 @@ export const PRODUCTS: Product[] = [
     id: "p-sym-b1-01",
     slug: "angels-touch",
     title: { en: "Angel's Touch", es: "Caricia de Ángel" },
-    category: "sympathy",
+    category: "arrangements",
     blurb: {
-      en: "All-white blooms that hold the room when words can't.",
-      es: "Flores blancas que sostienen el cuarto cuando las palabras no pueden.",
+      en: "All-white blooms — quiet, abundant, and timeless.",
+      es: "Flores blancas — discretas, abundantes y atemporales.",
     },
     description: {
-      en: "For the family making coffee for everyone the day after — white roses, lilies, and hydrangea kept calm and full. Send it to the service or the home; we'll deliver across Long Island the same day if you order before 2pm. The gift from someone who doesn't need to speak to be present.",
-      es: "Para la familia que hace café para todos al día siguiente — rosas blancas, lirios y hortensia, todo en calma y lleno. Mándalo al velorio o a la casa; entregamos en Long Island el mismo día si pides antes de las 2pm. El gesto de quien no necesita hablar para estar.",
+      en: "White roses, lilies, and hydrangea, kept calm and full. The arrangement that reads as elegance without trying — for Mother's Day, for an anniversary, for the gentle thank-you that words don't quite reach. Hand-delivered across Long Island the same day. Order before 2pm and we'll have it at her door before evening.",
+      es: "Rosas blancas, lirios y hortensia, en calma y llenas. El arreglo que se lee como elegancia sin intentarlo — para el Día de la Madre, para un aniversario, para el gracias al que las palabras no terminan de llegar. Entregamos en Long Island el mismo día. Pide antes de las 2pm y estará en su puerta antes de la noche.",
     },
     images: [
-      { src: "/products/angels-touch.jpg", alt: { en: "Angel's Touch white sympathy arrangement", es: "Arreglo de condolencia Caricia de Ángel" }, aspect: "4/5" },
+      { src: "/products/angels-touch.jpg", alt: { en: "Angel's Touch all-white floral arrangement", es: "Arreglo floral en blancos Caricia de Ángel" }, aspect: "4/5" },
     ],
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9500 },
@@ -467,14 +467,14 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["sympathy"],
+    occasions: ["mothers-day", "anniversary", "romance", "just-because", "sympathy"],
     colorFamily: ["white"],
     active: true,
     seo: {
-      title: { en: "Angel's Touch — Diva Flowers", es: "Caricia de Ángel — Diva Flowers" },
+      title: { en: "Angel's Touch — All-White Arrangement | Diva Flowers", es: "Caricia de Ángel — Arreglo en Blanco | Diva Flowers" },
       description: {
-        en: "All-white sympathy arrangement. Same-day delivery to homes and services on Long Island.",
-        es: "Arreglo de condolencia en blancos. Entrega el mismo día en Long Island.",
+        en: "All-white arrangement of roses, lilies, and hydrangea. Same-day delivery on Long Island.",
+        es: "Arreglo en blancos: rosas, lirios y hortensia. Entrega el mismo día en Long Island.",
       },
     },
   },
@@ -701,7 +701,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 14500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because"],
+    occasions: ["birthday", "just-because", "mothers-day"],
     colorFamily: ["pastel"],
     active: true,
     seo: {
@@ -869,7 +869,7 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 16900, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["just-because", "birthday", "congrats", "mothers-day"],
+    occasions: ["just-because", "birthday", "congrats"],
     colorFamily: ["pink", "mixed"],
     active: true,
     seo: {
@@ -935,7 +935,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 13500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday"],
+    occasions: ["just-because", "birthday", "mothers-day"],
     colorFamily: ["pastel"],
     active: true,
     seo: {
@@ -968,7 +968,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 19500 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["romance", "anniversary", "birthday", "congrats", "just-because", "mothers-day"],
+    occasions: ["romance", "anniversary", "birthday", "congrats", "just-because"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -1034,7 +1034,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["romance", "anniversary", "birthday", "just-because", "mothers-day"],
+    occasions: ["romance", "anniversary", "birthday", "just-because"],
     colorFamily: ["pink", "mixed"],
     active: true,
     seo: {
@@ -2042,7 +2042,7 @@ export const PRODUCTS: Product[] = [
       { id: "champagne", label: { en: "Champagne pairing", es: "Maridaje de champaña" }, priceCents: 8500 },
     ],
     tags: ["staff-pick", "same-day"],
-    occasions: ["anniversary", "romance", "congrats", "mothers-day"],
+    occasions: ["anniversary", "romance", "congrats"],
     colorFamily: ["white", "pink", "mixed"],
     active: true,
     seo: {
@@ -2075,7 +2075,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because", "congrats"],
+    occasions: ["birthday", "just-because", "congrats", "mothers-day"],
     colorFamily: ["mixed", "pink"],
     active: true,
     seo: {
@@ -2307,7 +2307,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday"],
+    occasions: ["just-because", "birthday", "mothers-day"],
     colorFamily: ["pastel", "pink"],
     active: true,
     seo: {
@@ -2409,7 +2409,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 19500 },
     ],
     tags: ["new", "staff-pick"],
-    occasions: ["romance", "anniversary", "just-because", "mothers-day"],
+    occasions: ["romance", "anniversary", "just-because"],
     colorFamily: ["pink"],
     active: true,
     seo: {
@@ -3185,7 +3185,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 13500 },
     ],
     tags: ["new", "same-day", "seasonal"],
-    occasions: ["just-because", "birthday"],
+    occasions: ["just-because", "birthday", "mothers-day"],
     colorFamily: ["mixed", "pastel"],
     active: true,
     seo: {

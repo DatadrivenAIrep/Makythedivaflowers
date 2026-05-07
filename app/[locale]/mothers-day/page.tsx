@@ -13,12 +13,14 @@ import { MothersDayViewTracker } from "@/components/mothers-day/MothersDayViewTr
 import { GoogleReviews } from "@/components/home/GoogleReviews";
 
 const CURATED_SLUGS = [
+  "angels-touch",
+  "aloha-aura",
   "blush-enchantment",
-  "dona-rosita",
-  "cottage-garden-charm",
-  "pink-opus",
-  "designers-choice-maky",
-  "maison-de-diva",
+  "butterfly-kiss",
+  "daydream-parcel",
+  "mango-tango",
+  "pastel-poetry",
+  "wildflower-meadow",
 ];
 
 export async function generateMetadata({
