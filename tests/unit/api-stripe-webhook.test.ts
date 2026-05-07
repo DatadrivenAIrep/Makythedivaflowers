@@ -49,6 +49,7 @@ function makeOrder(id: string, piId: string, status: Order["status"] = "pending"
     locale: "en",
     lines: [],
     delivery: {
+      method: "delivery",
       recipient: { name: "T", phone: "5555555555" },
       address: { street1: "1", city: "Albertson", state: "NY", zip: "11507", country: "US" },
       window: { date: "2099-01-01", slot: "midday" },

@@ -18,6 +18,7 @@ const baseOrder = (overrides: Partial<Order> = {}): Order => ({
   lines: [{ productId: "p-arr-m01", variantId: "lush", addOnIds: [], qty: 1 }],
   contact: { email: "x@y.z", phone: "5161234567" },
   delivery: {
+    method: "delivery",
     recipient: { name: "Test", phone: "5160000000" },
     address: { street1: "1 a", city: "Albertson", state: "NY", zip: "11507", country: "US" },
     window: { date: "2026-05-03", slot: "midday" },

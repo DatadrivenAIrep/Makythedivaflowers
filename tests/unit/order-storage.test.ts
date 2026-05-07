@@ -28,6 +28,7 @@ function makeOrder(id: string, paymentIntentId?: string): Order {
     locale: "en",
     lines: [],
     delivery: {
+      method: "delivery",
       recipient: { name: "Test", phone: "5555555555" },
       address: {
         street1: "1 Main",
