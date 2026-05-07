@@ -40,6 +40,7 @@ const validBody = {
   form: {
     contact: { email: "buyer@example.com", phone: "5165551234" },
     delivery: {
+      method: "delivery",
       recipient: { name: "Recipient Name", phone: "5165551234" },
       address: {
         street1: "1 Main St",
@@ -120,5 +121,68 @@ describe("POST /api/checkout/intent", () => {
     expect(res.status).toBe(502);
     const json = await res.json();
     expect(json.errors.formErrors).toContain("payment_init_failed");
+  });
+
+  it("returns 200 for pickup orders without an address", async () => {
+    createPI.mockResolvedValue({ id: "pi_pickup_1", client_secret: "pi_pickup_1_secret" });
+    const { POST } = await import("@/app/api/checkout/intent/route");
+    const res = await POST(makeReq({
+      locale: "en",
+      lines: validBody.lines,
+      form: {
+        contact: validBody.form.contact,
+        delivery: {
+          method: "pickup",
+          recipient: validBody.form.delivery.recipient,
+          window: validBody.form.delivery.window,
+          cardMessage: "",
+        },
+      },
+    }));
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json.clientSecret).toBe("pi_pickup_1_secret");
+  });
+
+  it("forces deliveryCents to 0 for pickup orders", async () => {
+    createPI.mockResolvedValue({ id: "pi_pickup_2", client_secret: "pi_pickup_2_secret" });
+    const { POST } = await import("@/app/api/checkout/intent/route");
+    await POST(makeReq({
+      locale: "en",
+      lines: validBody.lines,
+      form: {
+        contact: validBody.form.contact,
+        delivery: {
+          method: "pickup",
+          recipient: validBody.form.delivery.recipient,
+          window: validBody.form.delivery.window,
+          cardMessage: "",
+        },
+      },
+    }));
+    // The product is $191 (p-arr-m01 standard). Pickup => no delivery fee.
+    // Tax is 8.625% of (subtotal + delivery).
+    // Expected total: 19100 + 0 + round(19100 * 0.08625) = 19100 + 1647 = 20747
+    const [params] = createPI.mock.calls[0];
+    expect(params.amount).toBe(20747);
+  });
+
+  it("ignores zip_not_in_zone for pickup orders even if address-shaped data is sent", async () => {
+    createPI.mockResolvedValue({ id: "pi_pickup_3", client_secret: "pi_pickup_3_secret" });
+    const { POST } = await import("@/app/api/checkout/intent/route");
+    const res = await POST(makeReq({
+      locale: "en",
+      lines: validBody.lines,
+      form: {
+        contact: validBody.form.contact,
+        delivery: {
+          method: "pickup",
+          recipient: validBody.form.delivery.recipient,
+          window: validBody.form.delivery.window,
+          cardMessage: "",
+        },
+      },
+    }));
+    expect(res.status).toBe(200);
   });
 });
