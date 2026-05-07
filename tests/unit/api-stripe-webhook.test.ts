@@ -12,12 +12,19 @@ vi.mock("@/lib/stripe-server", () => ({
   },
 }));
 
+// Stub the email notification module so tests don't load `server-only` or hit Resend.
+const notifyOrderPaidMock = vi.fn();
+vi.mock("@/lib/order-notifications", () => ({
+  notifyOrderPaid: notifyOrderPaidMock,
+}));
+
 const TEST_FILE = path.join(os.tmpdir(), `diva-test-orders-webhook-${process.pid}.json`);
 
 beforeEach(async () => {
   vi.stubEnv("ORDER_STORAGE_FILE", TEST_FILE);
   await fs.writeFile(TEST_FILE, "[]", "utf8");
   constructEvent.mockReset();
+  notifyOrderPaidMock.mockReset();
   vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_dummy");
   vi.stubEnv("STRIPE_WEBHOOK_SECRET", "whsec_dummy");
 });
@@ -79,6 +86,8 @@ describe("POST /api/stripe/webhook", () => {
     expect(res.status).toBe(200);
     const o = await getOrder("o1");
     expect(o?.status).toBe("paid");
+    // Notification fires exactly once on the pending → paid transition.
+    expect(notifyOrderPaidMock).toHaveBeenCalledTimes(1);
   });
 
   it("returns 200 and updates order to failed on payment_intent.payment_failed", async () => {
@@ -126,6 +135,8 @@ describe("POST /api/stripe/webhook", () => {
     await POST(makeReq("{}"));
     const o = await getOrder("o1");
     expect(o?.status).toBe("paid");
+    // Order was already paid before either event; no notification should fire.
+    expect(notifyOrderPaidMock).not.toHaveBeenCalled();
   });
 
   it("returns 200 silently when PI id has no matching order", async () => {
