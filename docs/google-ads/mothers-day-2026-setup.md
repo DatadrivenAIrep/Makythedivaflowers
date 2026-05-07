@@ -132,7 +132,7 @@ mothers-day / long-island
 ```
 Mother's Day Flowers
 Long Island Same-Day
-Order by Sat May 9
+Order Through Sunday
 Hand-Delivered Florist
 As Seen in Vogue & Brides
 Nassau · Queens · Suffolk
@@ -154,6 +154,16 @@ Hand-tied florals delivered same-day across Long Island. Orders accepted until S
 As featured in Vogue, The Cut & Brides. Real florist studio, never a warehouse.
 Lush garden bouquets from $94. Hand-delivered, never boxed. Same-day Mother's Day delivery.
 Same-day to Nassau, Queens & W. Suffolk. Free card. Order until Sun May 10 6 PM.
+```
+
+### Long headlines — enter 1 to 3 (each field ≤ 90 characters)
+
+If Google asks for "Long headlines" (newer Search-ads asset; not always shown — skip if not in your UI):
+
+```
+Mother's Day Flowers Hand-Delivered Across Long Island — Open Through Sunday May 10
+Real Florist Studio in Albertson NY · Same-Day Mother's Day Delivery · 4.9★ Reviews
+Featured in Vogue & Brides · Hand-Tied Mother's Day Bouquets · Same-Day Long Island
 ```
 
 ### Pinning
@@ -196,7 +206,7 @@ As Seen in Vogue
 
 ```
 Phone number: +1 (516) 484-3456
-Schedule: 8:00 AM – 6:00 PM   Wednesday through Saturday
+Schedule: 8:00 AM – 6:00 PM   Wednesday through Sunday
 ```
 
 ### Location asset
@@ -213,7 +223,7 @@ Address must show: 1077 Willis Ave, Albertson, NY 11507
 Occasion: Mother's Day
 Promotion headline: Order Until Sun May 10 6 PM
 Start: May 6, 2026
-End:   May 9, 2026 at 2:30 PM
+End:   May 10, 2026 at 6:00 PM
 ```
 
 ---
