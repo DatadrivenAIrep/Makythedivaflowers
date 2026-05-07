@@ -93,6 +93,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
     defaultValues: {
       contact: { email: "", phone: "" },
       delivery: {
+        method: "delivery",
         recipient: { name: "", phone: "" },
         address: { street1: "", street2: "", city: "", state: "NY", zip: "", country: "US" },
         window: { date: "", slot: "midday" },
@@ -112,12 +113,15 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
     stripeRef.current = { stripe, elements };
   }, []);
 
+  const method = form.watch("delivery.method");
   const zipValue = form.watch("delivery.address.zip");
-  const deliveryCents = computeDeliveryCentsForZip(zipValue ?? "");
-  const deliveryPending = deliveryCents === null;
+  const isPickup = method === "pickup";
+  const zipFee = isPickup ? 0 : computeDeliveryCentsForZip(zipValue ?? "");
+  const deliveryCents = isPickup ? 0 : zipFee;
+  const deliveryPending = !isPickup && zipFee === null;
   const totals = useMemo(
-    () => computeOrderTotals(subtotal, deliveryCents ?? 0),
-    [subtotal, deliveryCents],
+    () => computeOrderTotals(subtotal, isPickup ? 0 : (zipFee ?? 0)),
+    [subtotal, zipFee, isPickup],
   );
 
   // Recreate the PaymentIntent if the amount changes after we already have one.
@@ -151,17 +155,27 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
   async function nextFrom(step: StepKey) {
     const fields: Record<StepKey, string[]> = {
       contact: ["contact.email", "contact.phone"],
-      delivery: [
-        "delivery.recipient.name",
-        "delivery.recipient.phone",
-        "delivery.address.street1",
-        "delivery.address.city",
-        "delivery.address.state",
-        "delivery.address.zip",
-        "delivery.window.date",
-        "delivery.window.slot",
-        "delivery.cardMessage",
-      ],
+      delivery: isPickup
+        ? [
+            "delivery.method",
+            "delivery.recipient.name",
+            "delivery.recipient.phone",
+            "delivery.window.date",
+            "delivery.window.slot",
+            "delivery.cardMessage",
+          ]
+        : [
+            "delivery.method",
+            "delivery.recipient.name",
+            "delivery.recipient.phone",
+            "delivery.address.street1",
+            "delivery.address.city",
+            "delivery.address.state",
+            "delivery.address.zip",
+            "delivery.window.date",
+            "delivery.window.slot",
+            "delivery.cardMessage",
+          ],
       payment: [],
     };
     const valid = await form.trigger(fields[step] as never);
@@ -243,6 +257,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
       delivery={totals.deliveryCents}
       total={totals.totalCents}
       deliveryPending={deliveryPending}
+      isPickup={isPickup}
       locale={locale}
       eyebrow={t("summary")}
     />
