@@ -79,9 +79,7 @@
     "card_message": "Mensaje en tarjeta",
     "card_message_hint": "Opcional — hasta 160 caracteres",
     "payment_label": "Datos de tarjeta",
-    "payment_stub_label": "Pago",
-    "payment_stub_body": "El procesamiento de pagos es seguro. Los datos de tu tarjeta nunca se almacenan.",
-    "payment_stub_processing": "Procesando pago…",
+    "payment_loading": "Cargando formulario de pago…",
     "errors": {
       "email_invalid": "Por favor ingresa un correo electrónico válido.",
       "phone_too_short": "Por favor ingresa un número de teléfono válido.",
@@ -94,7 +92,9 @@
       "date_in_past": "Por favor selecciona una fecha de entrega futura.",
       "card_too_long": "El mensaje en tarjeta debe tener 160 caracteres o menos.",
       "cart_empty": "Tu bolsa está vacía. Agrega artículos antes de continuar.",
-      "unknown_error": "Algo salió mal. Intenta de nuevo o llámanos directamente."
+      "unknown_error": "Algo salió mal. Intenta de nuevo o llámanos directamente.",
+      "zip_not_in_zone": "Aún no entregamos en ese código postal.",
+      "payment_init_failed": "No pudimos iniciar el pago. Intenta de nuevo."
     }
   },
   "confirmation": {

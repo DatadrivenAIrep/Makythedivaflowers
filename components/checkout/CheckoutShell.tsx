@@ -1,22 +1,22 @@
 // components/checkout/CheckoutShell.tsx
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { CaretDown } from "@phosphor-icons/react/dist/ssr";
+import type { Stripe as StripeJs, StripeElements } from "@stripe/stripe-js";
 import { Button } from "@/components/ui/Button";
 import { ContactStep } from "@/components/checkout/ContactStep";
 import { DeliveryStep } from "@/components/checkout/DeliveryStep";
-import { PaymentStub } from "@/components/checkout/PaymentStub";
+import { StripePaymentStep } from "@/components/checkout/StripePaymentStep";
 import { FormShell } from "@/components/ui/form/shell/FormShell";
 import { OrderSummaryPanel } from "@/components/checkout/OrderSummaryPanel";
 import { FormSubmit } from "@/components/ui/form/FormSubmit";
-import { useCartStore } from "@/lib/cart-store";
+import { useCartStore, type CartLine } from "@/lib/cart-store";
 import { useUIStore } from "@/lib/ui-store";
-import { submitOrder } from "@/lib/submit-order";
 import { checkoutSchema, type CheckoutInput } from "@/schemas/checkout";
 import { resolveCartLines, cartSubtotalCents } from "@/lib/cart-helpers";
 import { computeOrderTotals, computeDeliveryCentsForZip } from "@/lib/totals";
@@ -32,6 +32,30 @@ import {
 import { resolvedLineToAnalyticsItem } from "@/lib/analytics-types";
 
 type StepKey = "contact" | "delivery" | "payment";
+
+type IntentState =
+  | { status: "idle" }
+  | { status: "creating" }
+  | { status: "ready"; clientSecret: string; orderId: string; amountCents: number }
+  | { status: "error"; message: string };
+
+async function createIntent(payload: {
+  locale: Locale;
+  lines: CartLine[];
+  form: CheckoutInput;
+}): Promise<{ clientSecret: string; orderId: string } | { error: string }> {
+  const res = await fetch("/api/checkout/intent", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const code = data?.errors?.formErrors?.[0] ?? "unknown_error";
+    return { error: code };
+  }
+  return { clientSecret: data.clientSecret, orderId: data.orderId };
+}
 
 export function CheckoutShell({ locale }: { locale: Locale }) {
   const t = useTranslations("checkout");
@@ -67,6 +91,13 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
   const [open, setOpen] = useState<StepKey>("contact");
   const [submitting, setSubmitting] = useState(false);
   const [topError, setTopError] = useState<string | null>(null);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [intent, setIntent] = useState<IntentState>({ status: "idle" });
+  const stripeRef = useRef<{ stripe: StripeJs; elements: StripeElements } | null>(null);
+
+  const handleStripeReady = useCallback((stripe: StripeJs, elements: StripeElements) => {
+    stripeRef.current = { stripe, elements };
+  }, []);
 
   const zipValue = form.watch("delivery.address.zip");
   const deliveryCents = computeDeliveryCentsForZip(zipValue ?? "");
@@ -75,6 +106,31 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
     () => computeOrderTotals(subtotal, deliveryCents ?? 0),
     [subtotal, deliveryCents],
   );
+
+  // Recreate the PaymentIntent if the amount changes after we already have one.
+  useEffect(() => {
+    if (intent.status !== "ready") return;
+    if (totals.totalCents === intent.amountCents) return;
+    if (totals.totalCents <= 0) return;
+    let cancelled = false;
+    (async () => {
+      const r = await createIntent({ locale, lines, form: form.getValues() });
+      if (cancelled) return;
+      if ("error" in r) {
+        setIntent({ status: "error", message: r.error });
+      } else {
+        setIntent({
+          status: "ready",
+          clientSecret: r.clientSecret,
+          orderId: r.orderId,
+          amountCents: totals.totalCents,
+        });
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [totals.totalCents, intent, locale, lines, form]);
 
   async function nextFrom(step: StepKey) {
     const fields: Record<StepKey, string[]> = {
@@ -94,32 +150,74 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
     };
     const valid = await form.trigger(fields[step] as never);
     if (!valid) return;
+
     if (step === "delivery") {
       const items = resolved.map(resolvedLineToAnalyticsItem);
       trackAddShippingInfo("standard", items);
       const cardMessage = form.getValues("delivery.cardMessage") ?? "";
       trackRecipientInfoCompleted(cardMessage.trim().length > 0);
       trackAddPaymentInfo("card", items);
+
+      // Create the PaymentIntent before showing step 3.
+      setIntent({ status: "creating" });
+      const r = await createIntent({ locale, lines, form: form.getValues() });
+      if ("error" in r) {
+        setIntent({ status: "error", message: r.error });
+        const errorKey = `errors.${r.error}`;
+        // Fall back to unknown_error if the specific error key isn't translated
+        try {
+          setTopError(t(errorKey));
+        } catch {
+          setTopError(t("errors.unknown_error"));
+        }
+        return;
+      }
+      setIntent({
+        status: "ready",
+        clientSecret: r.clientSecret,
+        orderId: r.orderId,
+        amountCents: totals.totalCents,
+      });
     }
     setOpen(step === "contact" ? "delivery" : "payment");
   }
 
-  async function onSubmit(values: CheckoutInput) {
+  async function onSubmit() {
     setTopError(null);
+    setPaymentError(null);
     if (lines.length === 0) {
       setTopError(t("errors.cart_empty"));
       return;
     }
-    setSubmitting(true);
-    const r = await submitOrder({ locale, lines, form: values });
-    setSubmitting(false);
-    if (!r.ok) {
+    if (intent.status !== "ready") {
       setTopError(t("errors.unknown_error"));
       return;
     }
+    if (!stripeRef.current) {
+      setTopError(t("errors.unknown_error"));
+      return;
+    }
+
+    setSubmitting(true);
+    const { stripe, elements } = stripeRef.current;
+    const result = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        return_url: `${window.location.origin}/${locale}/order/${intent.orderId}/confirmation`,
+      },
+      redirect: "if_required",
+    });
+
+    if (result.error) {
+      setSubmitting(false);
+      setPaymentError(result.error.message ?? t("errors.unknown_error"));
+      return;
+    }
+
+    // Success without redirect: navigate manually.
     clear();
     closeDrawer();
-    router.push(`/${locale}/order/${r.id}/confirmation`);
+    router.push(`/${locale}/order/${intent.orderId}/confirmation`);
   }
 
   const leftPanel = (
@@ -142,7 +240,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
 
   return (
     <FormShell left={leftPanel}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+      <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="space-y-3">
         <Section
           title={`1. ${t("step_contact")}`}
           isOpen={open === "contact"}
@@ -168,7 +266,13 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
             <Button type="button" variant="ghost" size="md" onClick={() => setOpen("contact")}>
               {t("back")}
             </Button>
-            <Button type="button" variant="primary" size="md" onClick={() => nextFrom("delivery")}>
+            <Button
+              type="button"
+              variant="primary"
+              size="md"
+              disabled={intent.status === "creating"}
+              onClick={() => nextFrom("delivery")}
+            >
               {t("continue")}
             </Button>
           </div>
@@ -180,7 +284,24 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
           onHeaderClick={() => setOpen("payment")}
           reduce={!!reduce}
         >
-          <PaymentStub submitting={submitting} />
+          {intent.status === "ready" && (
+            <StripePaymentStep
+              clientSecret={intent.clientSecret}
+              onReady={handleStripeReady}
+              errorMessage={paymentError}
+            />
+          )}
+          {intent.status === "creating" && (
+            <p className="font-mono text-[11px] text-ink/60">{t("payment_loading")}</p>
+          )}
+          {intent.status === "error" && (
+            <p className="font-mono text-[11px] text-error">
+              {(() => {
+                try { return t(`errors.${intent.message}`); }
+                catch { return t("errors.unknown_error"); }
+              })()}
+            </p>
+          )}
           {topError && <p className="font-mono text-[11px] text-error">{topError}</p>}
           <div className="pt-4 flex gap-3">
             <Button type="button" variant="ghost" size="md" onClick={() => setOpen("delivery")}>

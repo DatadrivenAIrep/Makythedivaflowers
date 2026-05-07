@@ -79,9 +79,7 @@
     "card_message": "Card message",
     "card_message_hint": "Optional — up to 160 characters",
     "payment_label": "Card details",
-    "payment_stub_label": "Payment",
-    "payment_stub_body": "Secure payment processing is enabled. Your card details are never stored.",
-    "payment_stub_processing": "Processing payment…",
+    "payment_loading": "Loading payment form…",
     "errors": {
       "email_invalid": "Please enter a valid email address.",
       "phone_too_short": "Please enter a valid phone number.",
@@ -94,7 +92,9 @@
       "date_in_past": "Please select a future delivery date.",
       "card_too_long": "Card message must be 160 characters or fewer.",
       "cart_empty": "Your bag is empty. Add items before checking out.",
-      "unknown_error": "Something went wrong. Please try again or call us directly."
+      "unknown_error": "Something went wrong. Please try again or call us directly.",
+      "zip_not_in_zone": "We don't deliver to that ZIP yet.",
+      "payment_init_failed": "We couldn't start the payment. Please try again."
     }
   },
   "confirmation": {
