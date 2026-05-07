@@ -53,7 +53,7 @@ export function StripePaymentStep({ clientSecret, onReady, errorMessage }: Props
           theme: "stripe",
           variables: {
             fontFamily: "system-ui, sans-serif",
-            colorPrimary: "#1a1a1a",
+            colorPrimary: "#0E0D0C",
           },
         },
       }}
