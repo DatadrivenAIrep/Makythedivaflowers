@@ -40,27 +40,42 @@ export async function POST(req: Request) {
     );
   }
 
-  const deliveryCents = computeDeliveryCentsForZip(form.delivery.address.zip);
-  if (deliveryCents === null) {
-    return NextResponse.json(
-      { errors: { formErrors: ["zip_not_in_zone"] } },
-      { status: 400 },
-    );
+  let deliveryCents = 0;
+  if (form.delivery.method === "delivery") {
+    const fee = computeDeliveryCentsForZip(form.delivery.address.zip);
+    if (fee === null) {
+      return NextResponse.json(
+        { errors: { formErrors: ["zip_not_in_zone"] } },
+        { status: 400 },
+      );
+    }
+    deliveryCents = fee;
   }
 
   const totals = computeOrderTotals(subtotal, deliveryCents);
   const orderId = `do_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
 
+  const fulfillment =
+    form.delivery.method === "delivery"
+      ? {
+          method: "delivery" as const,
+          recipient: form.delivery.recipient,
+          address: form.delivery.address,
+          window: form.delivery.window,
+          cardMessage: form.delivery.cardMessage || undefined,
+        }
+      : {
+          method: "pickup" as const,
+          recipient: form.delivery.recipient,
+          window: form.delivery.window,
+          cardMessage: form.delivery.cardMessage || undefined,
+        };
+
   const order: Order = {
     id: orderId,
     locale,
     lines: lines as CartLine[],
-    delivery: {
-      recipient: form.delivery.recipient,
-      address: form.delivery.address,
-      window: form.delivery.window,
-      cardMessage: form.delivery.cardMessage || undefined,
-    },
+    delivery: fulfillment,
     contact: form.contact,
     totals,
     status: "pending",
@@ -83,7 +98,7 @@ export async function POST(req: Request) {
         amount: totals.totalCents,
         currency: "usd",
         automatic_payment_methods: { enabled: true },
-        metadata: { orderId, locale },
+        metadata: { orderId, locale, fulfillmentMethod: fulfillment.method },
         receipt_email: form.contact.email,
       },
       { idempotencyKey: orderId },

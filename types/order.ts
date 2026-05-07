@@ -29,16 +29,28 @@ export type OrderStatus =
   | "failed"
   | "canceled";
 
+export type DeliveryFulfillment = {
+  method: "delivery";
+  recipient: Recipient;
+  address: Address;
+  window: DeliveryWindow;
+  cardMessage?: string;
+};
+
+export type PickupFulfillment = {
+  method: "pickup";
+  recipient: Recipient;
+  window: DeliveryWindow;
+  cardMessage?: string;
+};
+
+export type OrderFulfillment = DeliveryFulfillment | PickupFulfillment;
+
 export type Order = {
   id: string;
   locale: "en" | "es";
   lines: CartLine[];
-  delivery: {
-    recipient: Recipient;
-    address: Address;
-    window: DeliveryWindow;
-    cardMessage?: string;
-  };
+  delivery: OrderFulfillment;
   contact: {
     email: string;
     phone: string;
