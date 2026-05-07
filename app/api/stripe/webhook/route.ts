@@ -1,9 +1,27 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { stripe } from "@/lib/stripe-server";
-import { updateOrderStatusByPaymentIntent } from "@/lib/order-storage";
+import { getOrderByPaymentIntent, updateOrderStatusByPaymentIntent } from "@/lib/order-storage";
+import { notifyOrderPaid } from "@/lib/order-notifications";
+import { sendPurchaseToGA4 } from "@/lib/analytics-server";
+import { resolveCartLines } from "@/lib/cart-helpers";
+import { resolvedLineToAnalyticsItem, centsToDollars } from "@/lib/analytics-types";
+import { PRODUCTS } from "@/data/products";
+import type { Order } from "@/types/order";
 
 export const runtime = "nodejs";
+
+function orderToPurchasePayload(order: Order) {
+  const resolved = resolveCartLines(order.lines, PRODUCTS);
+  return {
+    clientId: order.id,
+    transaction_id: order.id,
+    value: centsToDollars(order.totals.totalCents),
+    tax: centsToDollars(order.totals.taxCents),
+    shipping: centsToDollars(order.totals.deliveryCents),
+    items: resolved.map(resolvedLineToAnalyticsItem),
+  };
+}
 
 export async function POST(req: Request) {
   const signature = req.headers.get("stripe-signature");
@@ -30,7 +48,15 @@ export async function POST(req: Request) {
     switch (event.type) {
       case "payment_intent.succeeded": {
         const pi = event.data.object as Stripe.PaymentIntent;
+        // Read first so we can detect the pending → paid transition and skip
+        // duplicate notifications on Stripe webhook retries.
+        const order = await getOrderByPaymentIntent(pi.id);
+        const wasAlreadyPaid = order?.status === "paid";
         await updateOrderStatusByPaymentIntent(pi.id, "paid");
+        if (order && !wasAlreadyPaid) {
+          await notifyOrderPaid(order);
+          void sendPurchaseToGA4(orderToPurchasePayload(order));
+        }
         break;
       }
       case "payment_intent.payment_failed": {

@@ -1,16 +1,10 @@
 import type { AnalyticsItem } from "@/lib/analytics-types";
 
 /**
- * CALL ME FROM THE STRIPE WEBHOOK.
- *
- * Server-side `purchase` event via GA4 Measurement Protocol. This module is
- * intentionally not wired anywhere in Phase 1 — the current checkout API
- * route does not represent a real payment, and firing purchase events from
- * there would pollute GA4 with non-revenue data.
- *
- * When Stripe is integrated, call this from the `checkout.session.completed`
- * (or `payment_intent.succeeded`) webhook handler. Reuse the order's
- * persisted `transaction_id` so client + server events deduplicate in GA4.
+ * Server-side `purchase` event via GA4 Measurement Protocol.
+ * Wired into app/api/stripe/webhook/route.ts on `payment_intent.succeeded`.
+ * Shares `transaction_id` (order.id) with the client-side purchase event
+ * so GA4 dedupes them within 24h.
  */
 export type ServerPurchaseInput = {
   clientId: string;
