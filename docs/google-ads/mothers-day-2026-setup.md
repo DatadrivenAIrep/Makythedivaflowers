@@ -17,12 +17,13 @@ Networks:             Google search only (uncheck Search Partners, uncheck Displ
 Locations:            Nassau County NY + Queens NY + Western Suffolk County NY
                       (select each by name; targeting mode → "Presence: People in your targeted locations")
 Languages:            English
-Budget:               $50/day Wed  |  $100/day Thu  |  $125/day Fri  |  $225/day Sat
+Budget:               $40 Wed  |  $80 Thu  |  $100 Fri  |  $130 Sat  |  $150 Sun
                       (change the daily budget each morning — do NOT use a campaign-level lifetime cap)
+                      Total = $500. Sunday gets the most because it is the cutoff day with peak intent.
 Bidding:              Manual CPC — max bid $5.00
 Ad rotation:          Optimize: prefer best performing
 Start date:           Wednesday May 6, 2026 (leave campaign PAUSED until pre-launch checklist is complete)
-End date:             Saturday May 9, 2026  14:30 ET
+End date:             Sunday May 10, 2026  17:30 ET  (pause 30 min before the 6 PM order cutoff)
 ```
 
 ---
@@ -32,7 +33,8 @@ End date:             Saturday May 9, 2026  14:30 ET
 After saving campaign settings, go to **Ad schedule** tab and configure:
 
 ```
-Active hours:         7:00 AM – 9:00 PM ET   Wednesday through Saturday
+Active hours:         Wed–Sat: 7:00 AM – 9:00 PM ET
+                      Sun May 10: 8:00 AM – 5:30 PM ET   (last 30 min reserved for fulfillment)
 ```
 
 Then go to **Bid adjustments** and add:
@@ -40,10 +42,11 @@ Then go to **Bid adjustments** and add:
 ```
 Device — Mobile:      +20%
 Time — Weekdays 7 PM – 9 PM:   +15%
-Time — Saturday 12 PM – 2 PM:  +50%   (cutoff-push window)
+Time — Saturday 12 PM – 4 PM:  +30%   (weekend buying window)
+Time — Sunday 12 PM – 5 PM:    +50%   (cutoff-push window — last chance buyers)
 ```
 
-Note: campaign is paused Saturday at 2:30 PM — Sunday May 10 gets no impressions.
+Note: campaign is paused Sunday at 5:30 PM (30 min before the 6 PM order cutoff).
 
 ---
 
@@ -147,10 +150,10 @@ Florist in Albertson, NY
 ### Descriptions — enter all 4 (each field ≤ 90 characters)
 
 ```
-Hand-tied florals delivered same-day across Long Island. Order by Saturday 2 PM.
+Hand-tied florals delivered same-day across Long Island. Orders accepted until Sun May 10 6 PM.
 As featured in Vogue, The Cut & Brides. Real florist studio, never a warehouse.
-Lush garden bouquets from $94. Hand-delivered, never boxed. Sunday delivery May 10.
-Same-day to Nassau, Queens & W. Suffolk. Free card. Order before Sat 2 PM.
+Lush garden bouquets from $94. Hand-delivered, never boxed. Same-day Mother's Day delivery.
+Same-day to Nassau, Queens & W. Suffolk. Free card. Order until Sun May 10 6 PM.
 ```
 
 ### Pinning
@@ -182,7 +185,7 @@ Final URL: https://divaflowers.com/en/contact
 ### Callouts (add all 5)
 
 ```
-Order by Sat 2 PM
+Order Until Sun 6 PM
 Sunday Delivery
 Free Card
 Hand-Delivered
@@ -208,7 +211,7 @@ Address must show: 1077 Willis Ave, Albertson, NY 11507
 
 ```
 Occasion: Mother's Day
-Promotion headline: Order by Sat May 9
+Promotion headline: Order Until Sun May 10 6 PM
 Start: May 6, 2026
 End:   May 9, 2026 at 2:30 PM
 ```

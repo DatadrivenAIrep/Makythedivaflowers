@@ -2,7 +2,7 @@
 
 **Date:** 2026-05-05 (T-5 days)
 **Mother's Day:** Sunday 2026-05-10
-**Order cutoff:** Saturday 2026-05-09 · 2:00 PM ET
+**Order cutoff:** Sunday 2026-05-10 · 6:00 PM ET _(extended from the original Sat 2 PM after owner confirmed she will accept orders through Mother's Day itself; see commit log on the `feature/order-notifications` branch)_
 **Approach:** A (Lean & Fast) — single English landing + Search-only Google Ads, geo-locked to delivery zones
 **Locale scope:** `en` only. Spanish (`/es/dia-de-la-madre`) deferred to post-MD or Father's Day.
 
@@ -12,8 +12,8 @@
 
 ### Business
 - Diva Flowers is a Long Island florist (1077 Willis Ave, Albertson, NY 11507), founded 2014.
-- Same-day delivery to Nassau, Queens, Brooklyn (select), Western Suffolk. Cutoff 2 PM ET.
-- Sunday hours 10 AM – 4 PM → Sunday 5/10 delivery is feasible for orders received Sat ≤ 2 PM.
+- Same-day delivery to Albertson, Roslyn, Manhasset, Great Neck, Port Washington and the surrounding Long Island, Queens & W. Suffolk areas. Per-zone pricing (see `data/delivery-zones.ts`).
+- Mother's Day: Sunday extended hours — orders accepted through Sun 5/10 6 PM ET with same-day hand-delivery.
 - Press: Vogue, The Cut, Brides, NY Magazine, Town & Country, Refinery29.
 - Bilingual brand (EN/ES). Hispanic customers are a meaningful segment.
 
@@ -27,7 +27,7 @@
 ### Campaign constraints
 - New Google Ads account, no conversion history → **Manual CPC** only. Smart Bidding deferred.
 - Merchant Center / Shopping ads NOT in scope (3–5 day approval window won't make MD).
-- 4 effective selling days (Wed 5/6 → Sat 5/9 2 PM).
+- 5 effective selling days (Wed 5/6 → Sun 5/10 6 PM).
 
 ---
 

@@ -23,10 +23,12 @@ Setup guide: `mothers-day-2026-setup.md`. Open both files side-by-side while bui
    - Pause weakest headlines if CTR < 4%.
 
 4. **Sat May 9:**
-   - 12 PM: bid adjustments are already scheduled (+50%). No action needed unless a top keyword is running hot — then bump max CPC manually for that keyword only.
-   - 2:30 PM: PAUSE the campaign at the campaign level (not just the ad group).
+   - 12 PM – 4 PM: +30% bid adjustment is scheduled (weekend window). No action needed unless a top keyword is running hot — then bump max CPC manually for that keyword only.
 
-5. **Sun May 10:** ads stay paused. Studio fulfills.
+5. **Sun May 10 — Mother's Day:**
+   - 8 AM: campaign auto-resumes per ad schedule. This is peak intent — last-chance buyers.
+   - 12 PM – 5 PM: +50% bid adjustment is scheduled (cutoff-push window).
+   - 5:30 PM: PAUSE the campaign at the campaign level (30 min before the 6 PM order cutoff).
 
 6. **Mon May 11:** export report. Save remarketing audience "MD 2026 visitors". Plan Father's Day (June 21).
 
@@ -59,7 +61,7 @@ Setup guide: `mothers-day-2026-setup.md`. Open both files side-by-side while bui
 
 ## Post-campaign
 
-1. **Sat May 9 at 2:30 PM:** PAUSE campaign.
+1. **Sun May 10 at 5:30 PM:** PAUSE campaign (30 min before the 6 PM order cutoff).
 2. **Mon May 11:** export full report — Campaign + Ad group + Search terms + Demographics + Devices.
 3. Save audience "MD 2026 visitors" → Audiences → Save → reuse for Father's Day and MD 2027.
 4. Identify winning keywords and headlines → memo for Father's Day campaign.
