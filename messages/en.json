@@ -78,6 +78,7 @@
     "slot_evening": "Evening (6pm–8pm)",
     "card_message": "Card message",
     "card_message_hint": "Optional — up to 160 characters",
+    "payment_label": "Card details",
     "payment_stub_label": "Payment",
     "payment_stub_body": "Secure payment processing is enabled. Your card details are never stored.",
     "payment_stub_processing": "Processing payment…",
