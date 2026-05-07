@@ -3,6 +3,7 @@ import "server-only";
 import { Resend } from "resend";
 import type { Order } from "@/types/order";
 import { PRODUCTS } from "@/data/products";
+import { SITE } from "@/data/site";
 import { resolveCartLines } from "@/lib/cart-helpers";
 import { formatMoneyCents, formatPhoneUS, formatDeliveryWindow } from "@/lib/format";
 
@@ -16,7 +17,7 @@ function getResend(): Resend | null {
   return resendClient;
 }
 
-function buildBody(order: Order): string {
+export function __buildBody(order: Order): string {
   const lines: string[] = [];
   const m = (cents: number) => formatMoneyCents(cents, "en");
 
@@ -26,12 +27,19 @@ function buildBody(order: Order): string {
   );
   lines.push("");
 
-  lines.push("DELIVER TO");
-  lines.push(`${order.delivery.recipient.name} · ${formatPhoneUS(order.delivery.recipient.phone)}`);
-  const addr = order.delivery.address;
-  lines.push(addr.street1 + (addr.street2 ? `, ${addr.street2}` : ""));
-  lines.push(`${addr.city}, ${addr.state} ${addr.zip}`);
-  lines.push(formatDeliveryWindow(order.delivery.window, "en"));
+  if (order.delivery.method === "pickup") {
+    lines.push("PICK UP AT SHOP");
+    lines.push(`${SITE.brand} · ${SITE.address.line1}, ${SITE.address.locality}, ${SITE.address.region} ${SITE.address.postal}`);
+    lines.push(`${order.delivery.recipient.name} · ${formatPhoneUS(order.delivery.recipient.phone)}`);
+    lines.push(formatDeliveryWindow(order.delivery.window, "en"));
+  } else {
+    lines.push("DELIVER TO");
+    lines.push(`${order.delivery.recipient.name} · ${formatPhoneUS(order.delivery.recipient.phone)}`);
+    const addr = order.delivery.address;
+    lines.push(addr.street1 + (addr.street2 ? `, ${addr.street2}` : ""));
+    lines.push(`${addr.city}, ${addr.state} ${addr.zip}`);
+    lines.push(formatDeliveryWindow(order.delivery.window, "en"));
+  }
   lines.push("");
 
   lines.push("CARD MESSAGE");
@@ -78,7 +86,7 @@ export async function notifyOrderPaid(order: Order): Promise<void> {
   }
 
   const subject = `New order ${order.id} — ${formatMoneyCents(order.totals.totalCents, "en")}`;
-  const text = buildBody(order);
+  const text = __buildBody(order);
 
   try {
     const result = await resend.emails.send({ from, to, subject, text });
