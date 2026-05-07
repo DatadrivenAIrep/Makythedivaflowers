@@ -15,7 +15,7 @@ Setup guide: `mothers-day-2026-setup.md`. Open both files side-by-side while bui
    - Link GA4 property.
    - Import `purchase` as primary conversion goal.
    - Auto-tagging ON.
-   - Run 1 real test purchase from `https://divaflowers.com/en/mothers-day` → confirm `purchase` event in GA4 Realtime within 30 seconds.
+   - Run 1 real test purchase from `https://makythedivaflowers.com/en/mothers-day` → confirm `purchase` event in GA4 Realtime within 30 seconds.
    - 6 PM: ENABLE the campaign.
 
 3. **Thu–Fri (5 min/day):**
@@ -42,7 +42,7 @@ Setup guide: `mothers-day-2026-setup.md`. Open both files side-by-side while bui
 - [ ] `purchase` imported as primary conversion.
 - [ ] Test purchase fires `purchase` in GA4 Realtime.
 - [ ] Google Business Profile linked, address Albertson NY 11507.
-- [ ] Landing page `https://divaflowers.com/en/mothers-day` returns 200 in production.
+- [ ] Landing page `https://makythedivaflowers.com/en/mothers-day` returns 200 in production.
 - [ ] All 4 sitelink URLs return 200.
 
 ---

@@ -4,7 +4,7 @@ import { PRODUCTS } from "@/data/products";
 import { journalArticles } from "@/data/journal";
 import { locales } from "@/types/locale";
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://divaflowers.com";
+const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://makythedivaflowers.com";
 
 const STATIC_PATHS = [
   "",

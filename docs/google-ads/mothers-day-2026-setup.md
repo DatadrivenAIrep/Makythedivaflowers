@@ -118,7 +118,7 @@ Inside the ad group, click **New ad → Responsive search ad**.
 ### Final URL
 
 ```
-https://divaflowers.com/en/mothers-day?utm_source=google&utm_medium=cpc&utm_campaign=mothers-day-2026&utm_content=rsa-main
+https://makythedivaflowers.com/en/mothers-day?utm_source=google&utm_medium=cpc&utm_campaign=mothers-day-2026&utm_content=rsa-main
 ```
 
 ### Display path (two fields after the slash)
@@ -180,16 +180,16 @@ Go to **Assets** (formerly Extensions) at the campaign level and add the followi
 
 ```
 Text: The MD Edit
-Final URL: https://divaflowers.com/en/mothers-day#md-edit
+Final URL: https://makythedivaflowers.com/en/mothers-day#md-edit
 
 Text: How Delivery Works
-Final URL: https://divaflowers.com/en/mothers-day#faq
+Final URL: https://makythedivaflowers.com/en/mothers-day#faq
 
 Text: Reviews
-Final URL: https://divaflowers.com/en/mothers-day#reviews
+Final URL: https://makythedivaflowers.com/en/mothers-day#reviews
 
 Text: Visit the Studio
-Final URL: https://divaflowers.com/en/contact
+Final URL: https://makythedivaflowers.com/en/contact
 ```
 
 ### Callouts (add all 5)
