@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import os from "node:os";
 import { saveOrder, getOrder } from "@/lib/order-storage";
 import type { Order } from "@/types/order";
 
@@ -11,26 +12,17 @@ vi.mock("@/lib/stripe-server", () => ({
   },
 }));
 
-const FILE = path.join(process.cwd(), "pending-orders.json");
-let backup: string | null = null;
+const TEST_FILE = path.join(os.tmpdir(), `diva-test-orders-webhook-${process.pid}.json`);
 
 beforeEach(async () => {
-  try {
-    backup = await fs.readFile(FILE, "utf8");
-  } catch {
-    backup = null;
-  }
-  await fs.writeFile(FILE, "[]", "utf8");
+  vi.stubEnv("ORDER_STORAGE_FILE", TEST_FILE);
+  await fs.writeFile(TEST_FILE, "[]", "utf8");
   constructEvent.mockReset();
   vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_dummy");
   vi.stubEnv("STRIPE_WEBHOOK_SECRET", "whsec_dummy");
 });
 afterEach(async () => {
-  if (backup === null) {
-    try { await fs.unlink(FILE); } catch {}
-  } else {
-    await fs.writeFile(FILE, backup, "utf8");
-  }
+  try { await fs.unlink(TEST_FILE); } catch {}
   vi.unstubAllEnvs();
 });
 

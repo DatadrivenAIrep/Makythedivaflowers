@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import os from "node:os";
 import {
   saveOrder,
   getOrder,
@@ -10,28 +11,15 @@ import {
 } from "@/lib/order-storage";
 import type { Order } from "@/types/order";
 
-const FILE = path.join(process.cwd(), "pending-orders.json");
-let backup: string | null = null;
-
-async function readFileOrEmpty(): Promise<string | null> {
-  try {
-    return await fs.readFile(FILE, "utf8");
-  } catch (e) {
-    if ((e as NodeJS.ErrnoException).code === "ENOENT") return null;
-    throw e;
-  }
-}
+const TEST_FILE = path.join(os.tmpdir(), `diva-test-orders-storage-${process.pid}.json`);
 
 beforeEach(async () => {
-  backup = await readFileOrEmpty();
-  await fs.writeFile(FILE, "[]", "utf8");
+  vi.stubEnv("ORDER_STORAGE_FILE", TEST_FILE);
+  await fs.writeFile(TEST_FILE, "[]", "utf8");
 });
 afterEach(async () => {
-  if (backup === null) {
-    try { await fs.unlink(FILE); } catch {}
-  } else {
-    await fs.writeFile(FILE, backup, "utf8");
-  }
+  try { await fs.unlink(TEST_FILE); } catch {}
+  vi.unstubAllEnvs();
 });
 
 function makeOrder(id: string, paymentIntentId?: string): Order {

@@ -3,11 +3,17 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import type { Order, OrderStatus } from "@/types/order";
 
-const FILE = path.join(process.cwd(), "pending-orders.json");
+// Tests override `ORDER_STORAGE_FILE` to isolate parallel runs. In production this is unset
+// and we use the project-root pending-orders.json (same path the legacy code used).
+function storageFile(): string {
+  const override = process.env.ORDER_STORAGE_FILE;
+  if (override) return path.isAbsolute(override) ? override : path.resolve(override);
+  return path.join(process.cwd(), "pending-orders.json");
+}
 
 async function readAll(): Promise<Order[]> {
   try {
-    const raw = await fs.readFile(FILE, "utf8");
+    const raw = await fs.readFile(storageFile(), "utf8");
     return JSON.parse(raw) as Order[];
   } catch (e) {
     if ((e as NodeJS.ErrnoException).code === "ENOENT") return [];
@@ -16,7 +22,7 @@ async function readAll(): Promise<Order[]> {
 }
 
 async function writeAll(all: Order[]): Promise<void> {
-  await fs.writeFile(FILE, JSON.stringify(all, null, 2), "utf8");
+  await fs.writeFile(storageFile(), JSON.stringify(all, null, 2), "utf8");
 }
 
 export async function saveOrder(order: Order): Promise<void> {
