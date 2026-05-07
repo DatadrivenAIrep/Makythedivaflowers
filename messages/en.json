@@ -111,7 +111,15 @@
     "delivery": "Delivery",
     "tax": "Tax",
     "total": "Total",
-    "back_to_shop": "Continue shopping"
+    "back_to_shop": "Continue shopping",
+    "processing_label": "Processing your payment",
+    "processing_body": "We're confirming with your bank. This usually takes a few seconds.",
+    "verifying_timeout": "We're still verifying your payment. You'll receive a confirmation email when it's complete.",
+    "failed_label": "Payment not completed",
+    "failed_body": "There was a problem with your payment. You can try again.",
+    "failed_cta": "Back to checkout",
+    "canceled_label": "Payment canceled",
+    "canceled_body": "You canceled the payment. Your cart is still available."
   },
   "categories": {
     "arrangements": "Arrangements",

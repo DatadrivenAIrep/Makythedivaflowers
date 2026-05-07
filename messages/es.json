@@ -111,7 +111,15 @@
     "delivery": "Envío",
     "tax": "Impuestos",
     "total": "Total",
-    "back_to_shop": "Seguir comprando"
+    "back_to_shop": "Seguir comprando",
+    "processing_label": "Procesando tu pago",
+    "processing_body": "Estamos confirmando con tu banco. Esto suele tardar unos segundos.",
+    "verifying_timeout": "Aún estamos verificando tu pago. Recibirás un email de confirmación cuando se complete.",
+    "failed_label": "Pago no completado",
+    "failed_body": "Hubo un problema con tu pago. Puedes intentar de nuevo.",
+    "failed_cta": "Volver al checkout",
+    "canceled_label": "Pago cancelado",
+    "canceled_body": "Cancelaste el pago. Tu carrito sigue disponible."
   },
   "categories": {
     "arrangements": "Arreglos",
