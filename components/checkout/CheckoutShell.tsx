@@ -121,11 +121,14 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
   );
 
   // Recreate the PaymentIntent if the amount changes after we already have one.
+  // Transition to "creating" first so <StripePaymentStep> unmounts and the user
+  // can't submit against the stale clientSecret while the new one is in flight.
   useEffect(() => {
     if (intent.status !== "ready") return;
     if (totals.totalCents === intent.amountCents) return;
     if (totals.totalCents <= 0) return;
     let cancelled = false;
+    setIntent({ status: "creating" });
     (async () => {
       const r = await createIntent({ locale, lines, form: form.getValues() });
       if (cancelled) return;

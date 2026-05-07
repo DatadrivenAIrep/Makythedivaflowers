@@ -6,6 +6,7 @@ import { ConfirmationPolling } from "@/components/checkout/ConfirmationPolling";
 import { getOrder } from "@/lib/order-storage";
 import type { Locale } from "@/types/locale";
 import { TrackEvent } from "@/components/analytics/TrackEvent";
+import { ClearCartOnMount } from "@/components/checkout/ClearCartOnMount";
 import { resolveCartLines } from "@/lib/cart-helpers";
 import { resolvedLineToAnalyticsItem, centsToDollars } from "@/lib/analytics-types";
 import { PRODUCTS } from "@/data/products";
@@ -39,6 +40,7 @@ export default async function ConfirmationPage({
     const resolved = resolveCartLines(order.lines, PRODUCTS);
     return (
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-32 pb-24">
+        <ClearCartOnMount />
         <TrackEvent
           kind="purchase"
           payload={{
