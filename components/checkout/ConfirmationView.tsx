@@ -2,6 +2,7 @@ import Link from "next/link";
 import { CheckCircle } from "@phosphor-icons/react/dist/ssr";
 import { getTranslations } from "next-intl/server";
 import { PRODUCTS } from "@/data/products";
+import { SITE } from "@/data/site";
 import { resolveCartLines } from "@/lib/cart-helpers";
 import { ProductImage } from "@/components/product/ProductImage";
 import { formatMoneyCents, formatPhoneUS, formatDeliveryWindow } from "@/lib/format";
@@ -35,22 +36,40 @@ export async function ConfirmationView({ order, locale }: { order: Order; locale
       </header>
       <section className="grid gap-12 lg:grid-cols-[1fr_360px]">
         <div className="space-y-8">
-          <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/55 mb-3">{t("delivery_to")}</p>
-            <p className="font-display text-2xl text-ink">{order.delivery.recipient.name}</p>
-            <p className="text-sm text-ink/75">
-              {order.delivery.address.street1}{order.delivery.address.street2 && `, ${order.delivery.address.street2}`}
-              <br />
-              {order.delivery.address.city}, {order.delivery.address.state} {order.delivery.address.zip}
-            </p>
-            <p className="font-mono text-sm text-ink mt-2">{formatPhoneUS(order.delivery.recipient.phone)}</p>
-            <p className="font-mono text-sm text-ink mt-2">{windowLabel}</p>
-            {order.delivery.cardMessage && (
-              <blockquote className="mt-4 border-l-2 border-rouge pl-4 text-ink/80 italic">
-                "{order.delivery.cardMessage}"
-              </blockquote>
-            )}
-          </div>
+          {order.delivery.method === "pickup" ? (
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/55 mb-3">{t("pickup_at_label")}</p>
+              <p className="font-display text-2xl text-ink">{order.delivery.recipient.name}</p>
+              <p className="text-sm text-ink/75">
+                {SITE.address.line1}<br />
+                {SITE.address.locality}, {SITE.address.region} {SITE.address.postal}
+              </p>
+              <p className="font-mono text-sm text-ink mt-2">{formatPhoneUS(order.delivery.recipient.phone)}</p>
+              <p className="font-mono text-sm text-ink mt-2">{windowLabel}</p>
+              {order.delivery.cardMessage && (
+                <blockquote className="mt-4 border-l-2 border-rouge pl-4 text-ink/80 italic">
+                  &ldquo;{order.delivery.cardMessage}&rdquo;
+                </blockquote>
+              )}
+            </div>
+          ) : (
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/55 mb-3">{t("delivery_to")}</p>
+              <p className="font-display text-2xl text-ink">{order.delivery.recipient.name}</p>
+              <p className="text-sm text-ink/75">
+                {order.delivery.address.street1}{order.delivery.address.street2 && `, ${order.delivery.address.street2}`}
+                <br />
+                {order.delivery.address.city}, {order.delivery.address.state} {order.delivery.address.zip}
+              </p>
+              <p className="font-mono text-sm text-ink mt-2">{formatPhoneUS(order.delivery.recipient.phone)}</p>
+              <p className="font-mono text-sm text-ink mt-2">{windowLabel}</p>
+              {order.delivery.cardMessage && (
+                <blockquote className="mt-4 border-l-2 border-rouge pl-4 text-ink/80 italic">
+                  &ldquo;{order.delivery.cardMessage}&rdquo;
+                </blockquote>
+              )}
+            </div>
+          )}
           <ul className="divide-y divide-ink/10">
             {resolved.map((r) => (
               <li key={`${r.line.productId}-${r.line.variantId}`} className="grid grid-cols-[80px_1fr_auto] gap-4 py-4 items-center">
