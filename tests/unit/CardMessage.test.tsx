@@ -49,4 +49,15 @@ describe("CardMessage", () => {
     expect(screen.getByRole("button", { name: /coworker|compañerx/i })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /^mom$|^papá$|^mamá$/i })).not.toBeInTheDocument();
   });
+
+  it("toggles aria-expanded on the trigger when opening and closing the assist panel", async () => {
+    const user = userEvent.setup();
+    render(<CardMessage {...baseProps} />);
+    const trigger = screen.getByRole("button", { name: /trigger/i });
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    await user.click(trigger);
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    await user.click(trigger);
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+  });
 });
