@@ -2,6 +2,7 @@
 import { memo, useMemo, useState } from "react";
 import type { Locale } from "@/types/locale";
 import type { Product, SubscriptionCadence as Cadence } from "@/types/product";
+import type { Occasion } from "@/schemas/card-message";
 import { VariantChips } from "./VariantChips";
 import { AddOnToggles } from "./AddOnToggles";
 import { DeliveryDatePicker } from "./DeliveryDatePicker";
@@ -14,10 +15,12 @@ type Props = {
   locale: Locale;
   cutoff: string;
   motionMode: "default" | "sympathy";
+  campaign?: Occasion;
 };
 
-function PdpConfiguratorImpl({ product, locale, cutoff, motionMode }: Props) {
+function PdpConfiguratorImpl({ product, locale, cutoff, motionMode, campaign }: Props) {
   void motionMode;
+  const isSympathy = product.category === "sympathy";
   const defaultVariantId = useMemo(() => {
     const middle = product.variants.find((v) => v.id === "lush");
     return middle?.id ?? product.variants[0]?.id ?? "";
@@ -73,6 +76,8 @@ function PdpConfiguratorImpl({ product, locale, cutoff, motionMode }: Props) {
         onChange={setMessage}
         productTitle={product.title[locale]}
         occasions={product.occasions}
+        isSympathy={isSympathy}
+        campaign={campaign}
       />
 
       <AddToBag
