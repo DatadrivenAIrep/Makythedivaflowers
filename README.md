@@ -45,3 +45,64 @@ The site is fully shoppable end-to-end against stubbed payment and email:
 - `lib/inquiry-storage.ts` and `lib/order-storage.ts` → Resend / Postmark + a real DB.
 - `data/journal.tsx` → Sanity / Payload, same shape.
 - `components/account/AuthForm.tsx` → NextAuth / Clerk, same field set.
+
+## Stripe Payments
+
+The checkout uses the embedded Stripe Payment Element. Payment state is driven
+by webhooks; the local `pending-orders.json` is updated by
+`POST /api/stripe/webhook`, never client-side.
+
+### Required env vars (`.env.local`)
+
+```
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+```
+
+`whsec_...` comes from `stripe listen` in dev (next section), or from the
+Dashboard webhook endpoint config in production.
+
+### Dev workflow
+
+Two terminals:
+
+```bash
+# Terminal 1
+pnpm dev
+```
+
+```bash
+# Terminal 2 — forwards Stripe events to your local webhook
+stripe listen --forward-to localhost:3000/api/stripe/webhook
+```
+
+The first time you run `stripe listen`, copy the `whsec_...` it prints into
+`.env.local` as `STRIPE_WEBHOOK_SECRET=...` and restart Terminal 1. The secret
+rotates per CLI session unless you reuse one — `stripe listen --print-secret`
+prints the current secret without starting the listener.
+
+### Test cards
+
+- `4242 4242 4242 4242` — succeeds, no 3DS
+- `4000 0025 0000 3155` — requires 3DS authentication
+- `4000 0000 0000 9995` — insufficient funds (declined)
+- `4000 0000 0000 0002` — generic decline
+
+Use any future expiry (e.g. `12/34`), any CVC, any ZIP (e.g. `10001`).
+
+### Common issues
+
+- **Order stays `pending` forever in dev** → `stripe listen` is not running, or
+  the `whsec_` in `.env.local` doesn't match the one currently active.
+- **`STRIPE_SECRET_KEY is not set` at boot** → missing or misnamed in
+  `.env.local`. Restart `pnpm dev` after editing the file.
+- **Payment Element renders blank** → check the browser console for
+  `loadStripe` errors; usually the publishable key is missing or has
+  the wrong prefix (live key in test build, etc.).
+
+### Going to production
+
+Deploy is documented in
+`docs/superpowers/specs/2026-05-06-stripe-checkout-integration-design.md`
+section 10.
