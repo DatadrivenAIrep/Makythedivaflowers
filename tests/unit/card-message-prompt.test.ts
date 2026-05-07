@@ -38,6 +38,12 @@ describe("buildCardMessagePrompt", () => {
     expect(system.toLowerCase()).toContain("anniversary");
     expect(system.toLowerCase()).toContain("birthday");
     expect(system.toLowerCase()).toContain("sympathy");
+    expect(system.toLowerCase()).toContain("mothers-day");
+  });
+
+  it("system prompt includes the mothers-day tone line", () => {
+    const { system } = buildCardMessagePrompt(baseInput);
+    expect(system.toLowerCase()).toMatch(/mothers-day → mother.*gratitude.*unseen labor/i);
   });
 
   it("system prompt names locale (English/Spanish)", () => {

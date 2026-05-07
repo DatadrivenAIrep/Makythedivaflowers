@@ -23,7 +23,8 @@ Tone varies by occasion:
 - romance → pulse, surprise, presence
 - just-because → the small gesture that lands big
 - congrats → pride, milestone, "you did it"
-- sympathy → dignity, no clichés`;
+- sympathy → dignity, no clichés
+- mothers-day → mother, gratitude for the unseen labor, the small rituals she made into love`;
 
 const SYMPATHY_CLAUSE = `
 
