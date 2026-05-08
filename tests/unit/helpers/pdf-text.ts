@@ -2,6 +2,7 @@
 // Sufficient for asserting that known phrases appear in a rendered PDF.
 // Handles FlateDecode-compressed content streams and hex-encoded array TJ forms.
 import { inflateSync } from "node:zlib";
+import { PDFDocument } from "pdf-lib";
 
 function extractFromStream(stream: string): string {
   const parts: string[] = [];
@@ -71,4 +72,24 @@ export function extractText(pdf: Buffer): string {
   }
 
   return parts.join("\n");
+}
+
+/**
+ * Extracts text per page. Returns an array; index 0 = page 1, etc.
+ * Splits the input PDF into single-page PDFs via pdf-lib, then runs
+ * the existing `extractText()` against each.
+ */
+export async function extractPageTexts(pdf: Buffer): Promise<string[]> {
+  // Use new Uint8Array() to ensure pdf-lib accepts the buffer across environments
+  // (jsdom's Uint8Array prototype differs from the worker context's Buffer class).
+  const doc = await PDFDocument.load(new Uint8Array(pdf));
+  const out: string[] = [];
+  for (let i = 0; i < doc.getPageCount(); i++) {
+    const single = await PDFDocument.create();
+    const [page] = await single.copyPages(doc, [i]);
+    single.addPage(page);
+    const bytes = await single.save();
+    out.push(extractText(Buffer.from(bytes)));
+  }
+  return out;
 }

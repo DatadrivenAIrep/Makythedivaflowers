@@ -19,8 +19,10 @@ export async function renderOrderPdf(order: Order): Promise<Buffer> {
 
   // Each render returns a single-page PDF. Merge them into one 2-page PDF.
   const merged = await PDFDocument.create();
-  const docA = await PDFDocument.load(sideA);
-  const docB = await PDFDocument.load(sideB);
+  // Use new Uint8Array() to ensure pdf-lib accepts the buffer across environments
+  // (jsdom's Uint8Array prototype differs from the worker context's Buffer class).
+  const docA = await PDFDocument.load(new Uint8Array(sideA));
+  const docB = await PDFDocument.load(new Uint8Array(sideB));
   const [pageA] = await merged.copyPages(docA, [0]);
   const [pageB] = await merged.copyPages(docB, [0]);
   merged.addPage(pageA);
