@@ -136,11 +136,6 @@ function Worksheet({ order }: { order: Order }) {
   );
 }
 
-// Exported for unit tests / sanity checks during build-up. Full Side A/B
-// builders come in T9 — this temporary export is removed there.
-export function __renderWorksheetHtml(order: Order): string {
-  return renderToStaticMarkup(<Worksheet order={order} />);
-}
 
 function BackCoverPanel() {
   return (
@@ -216,4 +211,50 @@ function CardRowSideB({ message }: { message: string | undefined }) {
       <InsideBlankPanel />
     </section>
   );
+}
+
+function SheetSideA({ order }: { order: Order }) {
+  return (
+    <div className="sheet">
+      <div className="cut-marker left">✂ recortar</div>
+      <div className="cut-marker right">recortar ✂</div>
+      <div className="cut-h" />
+      <Worksheet order={order} />
+      <CardRowSideA />
+    </div>
+  );
+}
+
+function SheetSideB({ message }: { message: string | undefined }) {
+  return (
+    <div className="sheet">
+      <div className="cut-marker left">✂ recortar</div>
+      <div className="cut-marker right">recortar ✂</div>
+      <div className="cut-h" />
+      <div className="ws-back" />
+      <CardRowSideB message={message} />
+    </div>
+  );
+}
+
+function htmlDocument(body: string): string {
+  return `<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<style>${getPrintStyles()}
+:root { --card-bg: url(${getCardBgDataUri()}); }
+@page { size: 11in 8.5in; margin: 0; }
+</style>
+</head>
+<body>${body}</body>
+</html>`;
+}
+
+export function buildSideAHtml(order: Order): string {
+  return htmlDocument(renderToStaticMarkup(<SheetSideA order={order} />));
+}
+
+export function buildSideBHtml(order: Order): string {
+  return htmlDocument(renderToStaticMarkup(<SheetSideB message={order.delivery.cardMessage} />));
 }
