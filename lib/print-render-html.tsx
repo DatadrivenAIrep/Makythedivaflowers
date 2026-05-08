@@ -174,3 +174,46 @@ function CardRowSideA() {
     </section>
   );
 }
+
+function classifyMessageLength(msg: string | undefined): "short" | "med" | "long" {
+  const len = (msg ?? "").trim().length;
+  if (len === 0) return "short"; // unused; empty branch handled by parent
+  if (len <= 120) return "short";
+  if (len <= 220) return "med";
+  return "long";
+}
+
+function InsideMessagePanel({ message }: { message: string | undefined }) {
+  const trimmed = message?.trim();
+  if (!trimmed) {
+    // Empty message: show only ornaments, no text block.
+    return (
+      <div className="card-half inside-msg">
+        <div className="orn-top">❀</div>
+        <div className="orn-bot">❀</div>
+      </div>
+    );
+  }
+  const cls = classifyMessageLength(trimmed);
+  return (
+    <div className="card-half inside-msg">
+      <div className="orn-top">❀</div>
+      <div className={`text ${cls}`}>"{trimmed}"</div>
+      <div className="orn-bot">❀</div>
+    </div>
+  );
+}
+
+function InsideBlankPanel() {
+  return <div className="card-half inside-blank" />;
+}
+
+function CardRowSideB({ message }: { message: string | undefined }) {
+  return (
+    <section className="card-row">
+      <div className="fold-v" />
+      <InsideMessagePanel message={message} />
+      <InsideBlankPanel />
+    </section>
+  );
+}
