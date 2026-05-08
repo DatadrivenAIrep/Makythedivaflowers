@@ -248,36 +248,36 @@
       "page_title": "Privacy Policy — Diva Flowers",
       "page_description": "How Diva Flowers collects, uses, and protects your personal information.",
       "title": "Privacy Policy",
-      "updated": "Last updated: May 1, 2026 · Draft — consult an attorney before publishing",
+      "updated": "Last updated: May 1, 2026",
       "data_collected": {
         "heading": "Information We Collect",
-        "p1": "DRAFT: We collect information you provide directly, such as your name, email address, phone number, and delivery address when you place an order or submit an inquiry. We also collect payment information, though this is processed by our third-party payment provider and not stored on our servers.",
-        "p2": "DRAFT: We may automatically collect certain technical information when you visit our website, including your IP address, browser type, and pages visited. This information helps us improve our service and diagnose technical issues. Consult a qualified attorney to verify this reflects your actual data practices before publishing."
+        "p1": "We collect information you provide directly, such as your name, email address, phone number, and delivery address when you place an order or submit an inquiry. We also collect payment information, though this is processed by our third-party payment provider and not stored on our servers.",
+        "p2": "We may automatically collect certain technical information when you visit our website, including your IP address, browser type, and pages visited. This information helps us improve our service and diagnose technical issues."
       },
       "how_we_use": {
         "heading": "How We Use Your Information",
-        "p1": "DRAFT: We use your personal information to process and fulfill your orders, respond to your inquiries, and communicate with you about your account and purchases. We may also send you marketing communications if you have opted in to receive them.",
-        "p2": "DRAFT: We do not sell your personal information to third parties. We may share information with service providers who assist us in operating our website and conducting our business, subject to confidentiality agreements. Please consult an attorney to confirm this section complies with applicable law."
+        "p1": "We use your personal information to process and fulfill your orders, respond to your inquiries, and communicate with you about your account and purchases. We may also send you marketing communications if you have opted in to receive them.",
+        "p2": "We do not sell your personal information to third parties. We may share information with service providers who assist us in operating our website and conducting our business, subject to confidentiality agreements."
       },
       "sharing": {
         "heading": "Information Sharing",
-        "p1": "DRAFT: We share your personal information only as necessary to provide our services — for example, with delivery partners to fulfill your order, or with payment processors to handle transactions. Each of these parties is required to protect your information.",
-        "p2": "DRAFT: We may also disclose information when required by law, to enforce our terms of service, or to protect the rights and safety of Diva Flowers and our customers. This section should be reviewed by legal counsel to ensure it accurately reflects your disclosure practices."
+        "p1": "We share your personal information only as necessary to provide our services — for example, with delivery partners to fulfill your order, or with payment processors to handle transactions. Each of these parties is required to protect your information.",
+        "p2": "We may also disclose information when required by law, to enforce our terms of service, or to protect the rights and safety of Diva Flowers and our customers."
       },
       "cookies": {
         "heading": "Cookies and Tracking",
-        "p1": "DRAFT: Our website uses cookies to remember your preferences, keep you signed in, and understand how visitors use our site. You can disable cookies through your browser settings, though this may affect some features of our website.",
-        "p2": "DRAFT: We may use third-party analytics tools that place their own cookies. These tools help us understand aggregate traffic patterns. We do not use these tools to identify individual visitors. Review with your attorney to determine if a full cookie consent banner is required in your jurisdiction."
+        "p1": "Our website uses cookies to remember your preferences, keep you signed in, and understand how visitors use our site. You can disable cookies through your browser settings, though this may affect some features of our website.",
+        "p2": "We may use third-party analytics tools that place their own cookies. These tools help us understand aggregate traffic patterns. We do not use these tools to identify individual visitors."
       },
       "rights": {
         "heading": "Your Rights",
-        "p1": "DRAFT: Depending on your location, you may have the right to access, correct, or delete your personal information. You may also have the right to object to certain processing activities or to receive a copy of your data in a portable format.",
-        "p2": "DRAFT: To exercise any of these rights, please contact us at studio@divaflowers.com. We will respond within a reasonable time. Note that certain information may be retained as required by law or for legitimate business purposes. Consult an attorney to verify compliance with CCPA, GDPR, or other applicable regulations."
+        "p1": "Depending on your location, you may have the right to access, correct, or delete your personal information. You may also have the right to object to certain processing activities or to receive a copy of your data in a portable format.",
+        "p2": "To exercise any of these rights, please contact us at studio@divaflowers.com. We will respond within a reasonable time. Note that certain information may be retained as required by law or for legitimate business purposes."
       },
       "contact": {
         "heading": "Contact Us",
-        "p1": "DRAFT: If you have questions about this Privacy Policy or how we handle your personal information, please contact us at studio@divaflowers.com or by mail at Diva Flowers, 1077 Willis Ave, Albertson, NY 11507.",
-        "p2": "DRAFT: We reserve the right to update this Privacy Policy at any time. Changes will be posted on this page with an updated effective date. Your continued use of our website after any changes constitutes your acceptance of the updated policy. This document is a draft and should not be published without attorney review."
+        "p1": "If you have questions about this Privacy Policy or how we handle your personal information, please contact us at studio@divaflowers.com or by mail at Diva Flowers, 1077 Willis Ave, Albertson, NY 11507.",
+        "p2": "We reserve the right to update this Privacy Policy at any time. Changes will be posted on this page with an updated effective date. Your continued use of our website after any changes constitutes your acceptance of the updated policy."
       }
     },
     "terms": {
