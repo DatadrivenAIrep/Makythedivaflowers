@@ -34,12 +34,12 @@ function extractFromStream(stream: string): string {
   return parts.join("");
 }
 
-export async function extractText(pdf: Buffer): Promise<string> {
+export function extractText(pdf: Buffer): string {
   const raw = pdf.toString("binary");
   const parts: string[] = [];
 
   // Find every stream...endstream pair by scanning for the markers.
-  // We check the 200 bytes before "stream\n" to detect /FlateDecode.
+  // We check the 300 bytes before "stream\n" to detect /FlateDecode.
   let searchFrom = 0;
   while (true) {
     const streamStart = raw.indexOf("stream\n", searchFrom);

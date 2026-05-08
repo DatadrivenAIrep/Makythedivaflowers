@@ -40,21 +40,22 @@ const baseOrder: Order = {
 };
 
 describe("renderOrderPdf — order ticket", () => {
-  it("includes order id, total, Stripe PI, recipient, items, buyer contact", async () => {
+  it("includes order id, total, Stripe PI, recipient, items, buyer contact, and add-on label", async () => {
     const order: Order = {
       ...baseOrder,
       stripePaymentIntentId: "pi_3O123abc",
       lines: [
-        { productId: "p-arr-m01", variantId: "standard", addOnIds: ["balloon"], qty: 2 },
+        { productId: "p-arr-b1-01", variantId: "standard", addOnIds: ["candles"], qty: 2 },
       ],
     };
     const buf = await renderOrderPdf(order);
-    const text = await extractText(buf);
+    const text = extractText(buf);
     expect(text).toContain("do_test123");
     expect(text).toContain("$207.47");
     expect(text).toContain("pi_3O123abc");
     expect(text).toContain("Lola Cardona");
     expect(text).toContain("buyer@example.com");
+    expect(text).toContain("Add taper candle pair");
   });
 
   it("renders DELIVER TO block for delivery orders", async () => {
@@ -76,7 +77,7 @@ describe("renderOrderPdf — order ticket", () => {
       },
     };
     const buf = await renderOrderPdf(order);
-    const text = await extractText(buf);
+    const text = extractText(buf);
     expect(text).toContain("DELIVER TO");
     expect(text).toContain("123 Park Ave");
     expect(text).not.toContain("PICK UP AT SHOP");
@@ -84,7 +85,7 @@ describe("renderOrderPdf — order ticket", () => {
 
   it("renders PICK UP AT SHOP block for pickup orders", async () => {
     const buf = await renderOrderPdf(baseOrder);
-    const text = await extractText(buf);
+    const text = extractText(buf);
     expect(text).toContain("PICK UP AT SHOP");
     expect(text).toContain("1077 Willis Ave");
   });
@@ -92,7 +93,7 @@ describe("renderOrderPdf — order ticket", () => {
   it("localizes ticket to Spanish when order.locale === 'es'", async () => {
     const order: Order = { ...baseOrder, locale: "es" };
     const buf = await renderOrderPdf(order);
-    const text = await extractText(buf);
+    const text = extractText(buf);
     expect(text).toContain("RECOGER EN TIENDA");
     expect(text).not.toContain("PICK UP AT SHOP");
   });

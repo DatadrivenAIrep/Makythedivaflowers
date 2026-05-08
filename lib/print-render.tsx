@@ -14,7 +14,6 @@ const styles = StyleSheet.create({
   page: { paddingTop: 36, paddingHorizontal: 36, paddingBottom: 0, fontSize: 10, color: COLORS.ink },
   ticket: { paddingBottom: 12 },
   headerRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 8 },
-  headerLeft: {},
   headerRight: { textAlign: "right" },
   big: { fontSize: 16, fontWeight: "bold" },
   meta: { fontSize: 8, color: COLORS.muted },
@@ -27,6 +26,7 @@ const styles = StyleSheet.create({
 
 const T = {
   en: {
+    order: "ORDER",
     paid: "Paid",
     total: "TOTAL",
     deliverTo: "DELIVER TO",
@@ -37,6 +37,7 @@ const T = {
     window: "Window",
   },
   es: {
+    order: "ORDEN",
     paid: "Pagada",
     total: "TOTAL",
     deliverTo: "ENTREGAR A",
@@ -57,8 +58,8 @@ function OrderTicket({ order }: { order: Order }) {
   return (
     <View style={styles.ticket}>
       <View style={styles.headerRow}>
-        <View style={styles.headerLeft}>
-          <Text style={styles.big}>ORDEN #{order.id}</Text>
+        <View>
+          <Text style={styles.big}>{t.order} #{order.id}</Text>
           <Text style={styles.meta}>{t.paid}: {order.createdAt}</Text>
         </View>
         <View style={styles.headerRight}>
@@ -92,14 +93,17 @@ function OrderTicket({ order }: { order: Order }) {
           </>
         )}
         {order.delivery.cardMessage?.trim() ? (
-          <Text style={styles.cardMsg}>"{order.delivery.cardMessage.trim()}"</Text>
+          <>
+            <Text style={styles.blockTitle}>{t.cardMessage}</Text>
+            <Text style={styles.cardMsg}>"{order.delivery.cardMessage.trim()}"</Text>
+          </>
         ) : null}
       </View>
 
       <View style={styles.block}>
         <Text style={styles.blockTitle}>{t.items}</Text>
-        {resolved.map((r, i) => (
-          <View key={i}>
+        {resolved.map((r) => (
+          <View key={`${r.line.productId}-${r.line.variantId}`}>
             <View style={styles.itemRow}>
               <Text>{r.line.qty}× {r.product.title[locale]} — {r.variant.label[locale]}</Text>
               <Text>{m(r.lineTotalCents)}</Text>
