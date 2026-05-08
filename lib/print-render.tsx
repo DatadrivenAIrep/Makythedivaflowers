@@ -154,6 +154,7 @@ function DecorativeCard({ message }: { message: string | undefined }) {
       <Text style={cardStyles.cutLabel}>✂  recortar / cut here  ✂</Text>
       <View style={cardStyles.card}>
         <Image src={path.join(process.cwd(), "public/print/card-bg-default.png")} style={cardStyles.cardBg} />
+        <Image src={path.join(process.cwd(), "public/logo-header.webp")} style={cardStyles.cardLogo} />
         {trimmed ? <Text style={cardStyles.cardMessage}>{trimmed}</Text> : null}
         <Text style={cardStyles.cardSig}>— maky the diva flowers</Text>
       </View>

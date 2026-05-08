@@ -103,7 +103,7 @@ describe("renderOrderPdf — decorative card", () => {
   it("includes the customer's card message", async () => {
     const order: Order = {
       ...baseOrder,
-      delivery: { ...baseOrder.delivery, cardMessage: "Feliz cumpleaños mamá" } as any,
+      delivery: { ...baseOrder.delivery, cardMessage: "Feliz cumpleaños mamá" } as Order["delivery"],
     };
     const buf = await renderOrderPdf(order);
     const text = extractText(buf);
@@ -120,9 +120,11 @@ describe("renderOrderPdf — decorative card", () => {
   it("omits the message block when cardMessage is empty", async () => {
     const order: Order = {
       ...baseOrder,
-      delivery: { ...baseOrder.delivery, cardMessage: "" } as any,
+      delivery: { ...baseOrder.delivery, cardMessage: "" } as Order["delivery"],
     };
     const buf = await renderOrderPdf(order);
+    const text = extractText(buf);
+    expect(text).not.toContain("Happy birthday");
     expect(buf.length).toBeGreaterThan(1000);
     expect(buf.subarray(0, 5).toString()).toBe("%PDF-");
   });
