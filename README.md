@@ -106,3 +106,27 @@ Use any future expiry (e.g. `12/34`), any CVC, any ZIP (e.g. `10001`).
 Deploy is documented in
 `docs/superpowers/specs/2026-05-06-stripe-checkout-integration-design.md`
 section 10.
+
+## Impresión automática de órdenes
+
+Cuando una orden se paga (Stripe `payment_intent.succeeded`), el servidor encola un trabajo de impresión: una hoja tamaño carta con el ticket de orden arriba y la tarjeta decorativa abajo. Un agente que corre en una computadora Windows en la tienda hace polling al endpoint `/api/print/queue` cada 10s y manda los PDFs a la impresora local.
+
+### Configuración (servidor)
+
+1. Genera un token: `openssl rand -base64 32`
+2. Agrégalo como `PRINT_AGENT_TOKEN` en las variables de entorno de Vercel (production).
+3. Copia ese mismo valor a `tools/print-agent/.env` en la compu de la tienda.
+
+### Configuración (compu de la tienda)
+
+Sigue las instrucciones en [tools/print-agent/README.md](./tools/print-agent/README.md).
+
+### Estado de la cola
+
+Hace un GET autenticado a `/api/print/health` para ver `{ pendingCount, oldestPendingAgeSeconds, lastPrintedAt }`.
+
+### Si una impresión falla
+
+- El agente intenta hasta 3 veces con backoff (5s, 30s, 2min).
+- Si fallan los 3, se envía un email a `ORDER_NOTIFICATIONS_TO` con asunto `[PRINT FAILED] order <id>`.
+- Para reimprimir manualmente, edita `print-queue.json` y cambia `status: "failed"` → `"pending"` (v1; un panel admin queda para v2).

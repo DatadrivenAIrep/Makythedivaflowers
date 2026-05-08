@@ -97,3 +97,23 @@ export async function notifyOrderPaid(order: Order): Promise<void> {
     console.error("[order-notifications] resend.emails.send threw", e);
   }
 }
+
+export async function notifyPrintFailed(orderId: string, error: string): Promise<void> {
+  const resend = getResend();
+  const to = process.env.ORDER_NOTIFICATIONS_TO;
+  const from = process.env.ORDER_NOTIFICATIONS_FROM;
+  if (!resend || !to || !from) {
+    console.warn("[print-notifications] missing config; skipping print-failure email");
+    return;
+  }
+  const subject = `[PRINT FAILED] order ${orderId}`;
+  const text = `Print job for order ${orderId} failed.\n\nError: ${error}\n\nCheck the print agent logs in the shop or hit /api/print/health for queue state.`;
+  try {
+    const result = await resend.emails.send({ from, to, subject, text });
+    if (result.error) {
+      console.error("[print-notifications] resend returned error", result.error);
+    }
+  } catch (e) {
+    console.error("[print-notifications] resend.emails.send threw", e);
+  }
+}
