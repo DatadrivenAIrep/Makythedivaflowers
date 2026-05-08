@@ -141,3 +141,36 @@ function Worksheet({ order }: { order: Order }) {
 export function __renderWorksheetHtml(order: Order): string {
   return renderToStaticMarkup(<Worksheet order={order} />);
 }
+
+function BackCoverPanel() {
+  return (
+    <div className="card-half back-cover">
+      <div className="ornament">❀</div>
+      <div className="small-mark">maky · diva flowers</div>
+      <div className="small-mark" style={{ opacity: 0.7 }}>@makydivaflowers</div>
+    </div>
+  );
+}
+
+function FrontCoverPanel() {
+  return (
+    <div className="card-half front-cover">
+      <div className="card-brand">
+        <div className="name">maky</div>
+        <div className="tag">the diva flowers</div>
+      </div>
+    </div>
+  );
+}
+
+function CardRowSideA() {
+  return (
+    <section className="card-row">
+      <div className="fold-marker top">↓ doblar ↓</div>
+      <div className="fold-marker bottom">↑ doblar ↑</div>
+      <div className="fold-v" />
+      <BackCoverPanel />
+      <FrontCoverPanel />
+    </section>
+  );
+}
