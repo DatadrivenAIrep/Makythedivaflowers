@@ -44,6 +44,7 @@ export async function enqueuePrintJob(order: Order): Promise<PrintJob> {
   const all = await __readAll();
   all.push(job);
   await __writeAll(all);
+  console.log(JSON.stringify({ event: "print_job_enqueued", orderId: order.id, jobId: job.id }));
   return job;
 }
 
@@ -57,6 +58,9 @@ export async function claimPendingJobs(limit: number): Promise<PrintJob[]> {
     j.updatedAt = now;
   }
   await __writeAll(all);
+  if (pending.length > 0) {
+    console.log(JSON.stringify({ event: "print_queue_fetched", count: pending.length, jobIds: pending.map((j) => j.id) }));
+  }
   return pending;
 }
 
@@ -79,6 +83,13 @@ export async function ackJob(
     job.error = error;
   }
   await __writeAll(all);
+  console.log(JSON.stringify({
+    event: status === "printed" ? "print_job_acked" : "print_job_failed",
+    jobId: id,
+    orderId: job.orderId,
+    attempts: job.attempts,
+    ...(status === "failed" ? { error } : {}),
+  }));
 }
 
 export async function recoverStuckJobs(timeoutMs: number): Promise<number> {
@@ -93,7 +104,10 @@ export async function recoverStuckJobs(timeoutMs: number): Promise<number> {
       count += 1;
     }
   }
-  if (count > 0) await __writeAll(all);
+  if (count > 0) {
+    await __writeAll(all);
+    console.log(JSON.stringify({ event: "print_recovery_unstuck", count }));
+  }
   return count;
 }
 
