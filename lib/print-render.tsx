@@ -1,7 +1,8 @@
 // lib/print-render.tsx
 import "server-only";
 import React from "react";
-import { Document, Page, Text, View, StyleSheet, renderToBuffer } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Image, renderToBuffer } from "@react-pdf/renderer";
+import path from "node:path";
 import type { Order } from "@/types/order";
 import { PRODUCTS } from "@/data/products";
 import { SITE } from "@/data/site";
@@ -22,6 +23,28 @@ const styles = StyleSheet.create({
   itemRow: { flexDirection: "row", justifyContent: "space-between" },
   addons: { color: COLORS.muted, marginLeft: 12, fontSize: 9 },
   cardMsg: { marginTop: 8, fontStyle: "italic" },
+});
+
+const cardStyles = StyleSheet.create({
+  cutLine: {
+    marginTop: 10,
+    marginBottom: 10,
+    borderTopWidth: 1,
+    borderTopStyle: "dashed",
+    borderTopColor: COLORS.line,
+  },
+  cutLabel: { textAlign: "center", fontSize: 8, color: COLORS.muted, marginTop: -6, marginBottom: 6 },
+  card: {
+    height: 360, // ~5" of the bottom half on Letter at 72dpi
+    position: "relative",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 36,
+  },
+  cardBg: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, width: "100%", height: "100%" },
+  cardLogo: { position: "absolute", top: 16, alignSelf: "center", height: 28 },
+  cardMessage: { fontSize: 22, textAlign: "center", color: COLORS.ink },
+  cardSig: { position: "absolute", bottom: 12, alignSelf: "center", fontSize: 9, color: COLORS.muted, fontStyle: "italic" },
 });
 
 const T = {
@@ -123,11 +146,27 @@ function OrderTicket({ order }: { order: Order }) {
   );
 }
 
+function DecorativeCard({ message }: { message: string | undefined }) {
+  const trimmed = message?.trim();
+  return (
+    <>
+      <View style={cardStyles.cutLine} />
+      <Text style={cardStyles.cutLabel}>✂  recortar / cut here  ✂</Text>
+      <View style={cardStyles.card}>
+        <Image src={path.join(process.cwd(), "public/print/card-bg-default.png")} style={cardStyles.cardBg} />
+        {trimmed ? <Text style={cardStyles.cardMessage}>{trimmed}</Text> : null}
+        <Text style={cardStyles.cardSig}>— maky the diva flowers</Text>
+      </View>
+    </>
+  );
+}
+
 export async function renderOrderPdf(order: Order): Promise<Buffer> {
   const element = (
     <Document>
       <Page size="LETTER" style={styles.page}>
         <OrderTicket order={order} />
+        <DecorativeCard message={order.delivery.cardMessage} />
       </Page>
     </Document>
   );

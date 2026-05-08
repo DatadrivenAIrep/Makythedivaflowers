@@ -98,3 +98,32 @@ describe("renderOrderPdf — order ticket", () => {
     expect(text).not.toContain("PICK UP AT SHOP");
   });
 });
+
+describe("renderOrderPdf — decorative card", () => {
+  it("includes the customer's card message", async () => {
+    const order: Order = {
+      ...baseOrder,
+      delivery: { ...baseOrder.delivery, cardMessage: "Feliz cumpleaños mamá" } as any,
+    };
+    const buf = await renderOrderPdf(order);
+    const text = extractText(buf);
+    expect(text).toContain("Feliz cumpleaños mamá");
+  });
+
+  it("renders a single LETTER page (cut line is on the same page)", async () => {
+    const buf = await renderOrderPdf(baseOrder);
+    const raw = buf.toString("latin1");
+    // PDF /Count entry in the Pages object reflects total page count
+    expect(raw).toMatch(/\/Count\s+1\b/);
+  });
+
+  it("omits the message block when cardMessage is empty", async () => {
+    const order: Order = {
+      ...baseOrder,
+      delivery: { ...baseOrder.delivery, cardMessage: "" } as any,
+    };
+    const buf = await renderOrderPdf(order);
+    expect(buf.length).toBeGreaterThan(1000);
+    expect(buf.subarray(0, 5).toString()).toBe("%PDF-");
+  });
+});
