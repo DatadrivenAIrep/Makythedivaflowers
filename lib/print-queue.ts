@@ -2,6 +2,8 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import type { PrintJob, PrintJobStatus } from "@/types/print-job";
+import type { Order } from "@/types/order";
+import { renderOrderPdf } from "@/lib/print-render";
 
 function storageFile(): string {
   const override = process.env.PRINT_QUEUE_FILE;
@@ -22,9 +24,6 @@ export async function __readAll(): Promise<PrintJob[]> {
 export async function __writeAll(all: PrintJob[]): Promise<void> {
   await fs.writeFile(storageFile(), JSON.stringify(all, null, 2), "utf8");
 }
-
-import type { Order } from "@/types/order";
-import { renderOrderPdf } from "@/lib/print-render";
 
 function newId(): string {
   return Array.from({ length: 16 }, () => Math.floor(Math.random() * 16).toString(16)).join("");
