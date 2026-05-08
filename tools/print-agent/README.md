@@ -92,3 +92,31 @@ When the developer rotates `PRINT_AGENT_TOKEN`:
 1. Update `.env` on this machine.
 2. `Restart-Service MakyPrintAgent`.
 3. Verify in the log that the next poll succeeds.
+
+## Configurar impresora para duplex automático
+
+Desde v2, cada orden se imprime como una hoja de 2 páginas (frente + dorso). El frente lleva el worksheet y el lado externo de la tarjeta; el dorso lleva el interior de la tarjeta. La impresora debe configurar **impresión a dos caras (duplex) automática**.
+
+### Requisitos
+
+La impresora debe soportar duplex automático. Casi todas las impresoras láser modernas y muchas inkjet de oficina lo soportan. Si la tuya solo soporta "duplex manual" (te pide voltear la hoja a la mitad), v2 funciona pero el operador tiene que asistir cada impresión — no es un flujo viable para producción.
+
+Cómo verificar:
+1. Abrir **Configuración → Impresoras y escáneres → [tu impresora] → Preferencias de impresora**
+2. Buscar la opción "Imprimir a dos caras", "Duplex" o "Print on both sides"
+3. Si aparece como opción: tu impresora la soporta. Si no aparece: confirma con el manual del fabricante.
+
+### Configuración
+
+1. **Configurar duplex como default en Windows**:
+   - Configuración → Impresoras → [tu impresora] → Preferencias
+   - Pestaña "Acabado" o "Layout": cambiar "Print on Both Sides" a **"Long-edge binding"** (encuadernación por borde largo)
+   - Aceptar / Aplicar
+2. **Reiniciar el agente**: `Restart-Service MakyPrintAgent`
+3. **Probar**: `npm run test-print`. Debe salir UNA hoja con la página de prueba en el frente y la página 2 (texto adicional o blanco) en el dorso.
+
+### Si solo sale una cara
+
+- Verifica que el driver de la impresora esté actualizado.
+- Algunas impresoras requieren que el flag duplex se pase a nivel del driver y no del trabajo. Si el agente lo pasa pero la impresora ignora: cambiar el default en Preferencias de impresora (paso 1) suele resolverlo.
+- Si todo lo anterior falla: la impresora podría no soportar duplex automático. Considera reemplazarla o aceptar duplex manual (no recomendado).
