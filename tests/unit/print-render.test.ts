@@ -1,8 +1,13 @@
 // @vitest-environment node
-import { describe, it, expect, beforeAll } from "vitest";
+import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import type { Order } from "@/types/order";
 import { renderOrderPdf } from "@/lib/print-render";
+import { __closeBrowser } from "@/lib/print-chromium";
 import { extractPageTexts } from "./helpers/pdf-text";
+
+afterAll(async () => {
+  await __closeBrowser();
+});
 
 const baseOrder: Order = {
   id: "do_test123",

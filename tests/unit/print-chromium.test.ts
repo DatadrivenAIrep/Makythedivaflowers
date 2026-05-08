@@ -1,6 +1,10 @@
 // @vitest-environment node
-import { describe, it, expect } from "vitest";
-import { renderHtmlToPdf } from "@/lib/print-chromium";
+import { describe, it, expect, afterAll } from "vitest";
+import { renderHtmlToPdf, __closeBrowser } from "@/lib/print-chromium";
+
+afterAll(async () => {
+  await __closeBrowser();
+});
 
 describe("renderHtmlToPdf", () => {
   it("returns a non-empty PDF buffer for a trivial HTML document", async () => {
