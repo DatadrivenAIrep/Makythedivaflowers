@@ -9,7 +9,9 @@ export function isPrintAuthValid(header: string | null | undefined): boolean {
   const a = Buffer.from(provided);
   const b = Buffer.from(expected);
   if (a.length !== b.length) {
-    timingSafeEqual(b, b);
+    // Run a constant-time compare on dummy buffers so the response time
+    // does not betray the length mismatch.
+    timingSafeEqual(Buffer.alloc(b.length), b);
     return false;
   }
   return timingSafeEqual(a, b);
