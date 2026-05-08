@@ -22,6 +22,15 @@ async function buildTestPdf(): Promise<Buffer> {
       "Run `npm run install-service` next to register the service.",
       { align: "center" },
     );
+    doc.addPage();
+    doc.fontSize(20).text("Maky Print Agent — page 2", { align: "center" });
+    doc.moveDown();
+    doc.fontSize(10).text(
+      "If you see this page on the BACK of the same sheet as page 1,\n" +
+      "duplex is working correctly. If page 2 is on a separate sheet,\n" +
+      "the printer's duplex setting needs to be enabled.",
+      { align: "center" },
+    );
     doc.end();
   });
 }
@@ -32,7 +41,12 @@ async function main() {
   const pdf = await buildTestPdf();
   await fs.writeFile(tmp, pdf);
   logger.info({ printer: cfg.printerName, tmp }, "sending test page to printer");
-  await pdfPrint(tmp, { printer: cfg.printerName });
+  await pdfPrint(tmp, {
+    printer: cfg.printerName,
+    side: "duplexlong",
+    paperSize: "letter",
+    scale: "fit",
+  });
   logger.info("test page submitted to printer");
   await fs.unlink(tmp);
 }

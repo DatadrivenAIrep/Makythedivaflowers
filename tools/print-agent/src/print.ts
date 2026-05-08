@@ -11,12 +11,14 @@ export async function printPdf(jobId: string, pdfBase64: string, printerName: st
     logger.debug({ jobId, tmpPath }, "wrote temp pdf");
     await pdfPrint(tmpPath, {
       printer: printerName,
-      // Force duplex (long-edge binding). v2 renders a 2-page PDF designed
-      // to print on the front and back of one sheet of Letter paper.
-      // The flag is forwarded to the underlying PDFtoPrinter.exe / lp.
-      win32: ["-print-settings", "duplex=long-edge,paper=letter,fit=true"],
-      unix: ["-o", "sides=two-sided-long-edge", "-o", "media=Letter"],
-    } as any);
+      // v2 renders a 2-page PDF designed for duplex (front + back of one sheet).
+      // pdf-to-printer's typed `side` option translates to the printer's
+      // long-edge-binding duplex mode; `paperSize` and `scale` ensure Letter
+      // landscape with no scaling.
+      side: "duplexlong",
+      paperSize: "letter",
+      scale: "fit",
+    });
     logger.info({ jobId, printer: printerName }, "printed");
   } finally {
     try { await fs.unlink(tmpPath); } catch (e) {

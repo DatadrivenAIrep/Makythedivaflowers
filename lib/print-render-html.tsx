@@ -237,9 +237,9 @@ function SheetSideB({ message }: { message: string | undefined }) {
   );
 }
 
-function htmlDocument(body: string): string {
+function htmlDocument(body: string, locale: Locale): string {
   return `<!doctype html>
-<html lang="es">
+<html lang="${locale}">
 <head>
 <meta charset="utf-8">
 <style>${getPrintStyles()}
@@ -252,9 +252,9 @@ function htmlDocument(body: string): string {
 }
 
 export function buildSideAHtml(order: Order): string {
-  return htmlDocument(renderToStaticMarkup(<SheetSideA order={order} />));
+  return htmlDocument(renderToStaticMarkup(<SheetSideA order={order} />), order.locale);
 }
 
 export function buildSideBHtml(order: Order): string {
-  return htmlDocument(renderToStaticMarkup(<SheetSideB message={order.delivery.cardMessage} />));
+  return htmlDocument(renderToStaticMarkup(<SheetSideB message={order.delivery.cardMessage} />), order.locale);
 }
