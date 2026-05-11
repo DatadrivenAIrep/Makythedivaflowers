@@ -87,6 +87,7 @@ function PdpConfiguratorImpl({ product, locale, cutoff, motionMode, campaign }: 
         totalCents={totalCents}
         disabled={!variantId || !date}
         locale={locale}
+        cardMessage={message}
       />
     </div>
   );

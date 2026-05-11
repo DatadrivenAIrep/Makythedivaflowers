@@ -19,10 +19,12 @@ type Props = {
   totalCents: number;
   disabled?: boolean;
   locale: Locale;
+  cardMessage?: string;
 };
 
-function AddToBagImpl({ productId, variantId, addOnIds, totalCents, disabled, locale }: Props) {
+function AddToBagImpl({ productId, variantId, addOnIds, totalCents, disabled, locale, cardMessage }: Props) {
   const add = useCartStore((s) => s.add);
+  const setCardMessage = useCartStore((s) => s.setCardMessage);
   const showToast = useUIStore((s) => s.showToast);
   const openDrawer = useUIStore((s) => s.openDrawer);
   const [state, setState] = useState<"idle" | "added">("idle");
@@ -32,6 +34,9 @@ function AddToBagImpl({ productId, variantId, addOnIds, totalCents, disabled, lo
   const onClick = () => {
     if (disabled) return;
     add({ productId, variantId, addOnIds, qty: 1 });
+    if (cardMessage && cardMessage.trim().length > 0) {
+      setCardMessage(cardMessage);
+    }
     const resolved = resolveCartLine({ productId, variantId, addOnIds, qty: 1 }, PRODUCTS);
     if (resolved) {
       trackAddToCart(resolvedLineToAnalyticsItem(resolved));
