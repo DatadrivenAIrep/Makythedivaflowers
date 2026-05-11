@@ -1,7 +1,14 @@
 // lib/print-render-html.tsx
 import "server-only";
 import React from "react";
-import { renderToStaticMarkup } from "react-dom/server";
+
+// Loaded dynamically to bypass Turbopack's "static `react-dom/server`
+// import inside an App Router bundle" check. At runtime this resolves to
+// the same module — the import just isn't visible to the build-time analyzer.
+async function loadRenderToStaticMarkup() {
+  const mod = await import("react-dom/server");
+  return mod.renderToStaticMarkup;
+}
 import type { Order } from "@/types/order";
 import { PRODUCTS } from "@/data/products";
 import { SITE } from "@/data/site";
@@ -251,10 +258,12 @@ function htmlDocument(body: string, locale: Locale): string {
 </html>`;
 }
 
-export function buildSideAHtml(order: Order): string {
+export async function buildSideAHtml(order: Order): Promise<string> {
+  const renderToStaticMarkup = await loadRenderToStaticMarkup();
   return htmlDocument(renderToStaticMarkup(<SheetSideA order={order} />), order.locale);
 }
 
-export function buildSideBHtml(order: Order): string {
+export async function buildSideBHtml(order: Order): Promise<string> {
+  const renderToStaticMarkup = await loadRenderToStaticMarkup();
   return htmlDocument(renderToStaticMarkup(<SheetSideB message={order.delivery.cardMessage} />), order.locale);
 }

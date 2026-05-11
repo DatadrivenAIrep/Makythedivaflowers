@@ -14,8 +14,8 @@ import { buildSideAHtml, buildSideBHtml } from "@/lib/print-render-html";
 export async function renderOrderPdf(order: Order): Promise<Buffer> {
   // Render the two pages serially. Chromium's page pool inside the singleton
   // browser handles concurrency; serial here keeps memory predictable.
-  const sideA = await renderHtmlToPdf(buildSideAHtml(order));
-  const sideB = await renderHtmlToPdf(buildSideBHtml(order));
+  const sideA = await renderHtmlToPdf(await buildSideAHtml(order));
+  const sideB = await renderHtmlToPdf(await buildSideBHtml(order));
 
   // Each render returns a single-page PDF. Merge them into one 2-page PDF.
   const merged = await PDFDocument.create();
