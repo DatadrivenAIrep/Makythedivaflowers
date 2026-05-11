@@ -3,7 +3,7 @@ import { useCartStore } from "@/lib/cart-store";
 
 describe("cartStore", () => {
   beforeEach(() => {
-    useCartStore.setState({ lines: [] });
+    useCartStore.setState({ lines: [], cardMessage: "" });
     if (typeof localStorage !== "undefined") localStorage.clear();
   });
 
@@ -39,5 +39,28 @@ describe("cartStore", () => {
     add({ productId: "p1", variantId: "v1", addOnIds: [], qty: 2 });
     add({ productId: "p2", variantId: "v1", addOnIds: [], qty: 3 });
     expect(count()).toBe(5);
+  });
+
+  it("starts with an empty cardMessage", () => {
+    expect(useCartStore.getState().cardMessage).toBe("");
+  });
+
+  it("setCardMessage updates the field", () => {
+    useCartStore.getState().setCardMessage("Feliz cumpleaños");
+    expect(useCartStore.getState().cardMessage).toBe("Feliz cumpleaños");
+  });
+
+  it("add() does not touch cardMessage", () => {
+    useCartStore.getState().setCardMessage("preserve me");
+    useCartStore.getState().add({ productId: "p1", variantId: "v1", addOnIds: [], qty: 1 });
+    expect(useCartStore.getState().cardMessage).toBe("preserve me");
+  });
+
+  it("clear() resets cardMessage to empty", () => {
+    useCartStore.getState().setCardMessage("anything");
+    useCartStore.getState().add({ productId: "p1", variantId: "v1", addOnIds: [], qty: 1 });
+    useCartStore.getState().clear();
+    expect(useCartStore.getState().cardMessage).toBe("");
+    expect(useCartStore.getState().lines).toEqual([]);
   });
 });

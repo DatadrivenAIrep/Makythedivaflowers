@@ -76,6 +76,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
   const reduce = useReducedMotion();
   const lines = useCartStore((s) => s.lines);
   const clear = useCartStore((s) => s.clear);
+  const cartCardMessage = useCartStore((s) => s.cardMessage);
   const closeDrawer = useUIStore((s) => s.closeDrawer);
 
   const resolved = useMemo(() => resolveCartLines(lines, PRODUCTS), [lines]);
@@ -97,7 +98,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
         recipient: { name: "", phone: "" },
         address: { street1: "", street2: "", city: "", state: "NY", zip: "", country: "US" },
         window: { date: "", slot: "midday" },
-        cardMessage: "",
+        cardMessage: cartCardMessage,
       },
     },
   });
