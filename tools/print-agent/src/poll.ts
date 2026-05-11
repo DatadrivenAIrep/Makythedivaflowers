@@ -1,5 +1,5 @@
 import { PrintApi } from "./api";
-import { printPdfWithRetry } from "./print";
+import { printJobWithRetry } from "./print";
 import { logger } from "./log";
 import type { Config } from "./config";
 
@@ -15,7 +15,7 @@ export async function tick(api: PrintApi, cfg: Config): Promise<void> {
   logger.info({ count: jobs.length }, "claimed jobs");
   for (const job of jobs) {
     try {
-      await printPdfWithRetry(job.id, job.pdfBase64, cfg.printerName);
+      await printJobWithRetry(job.id, job.htmlSideA, job.htmlSideB, cfg.printerName, cfg.chromePath);
       try {
         await api.ack(job.id, "printed");
         logger.info({ jobId: job.id, orderId: job.orderId }, "job printed and acked");

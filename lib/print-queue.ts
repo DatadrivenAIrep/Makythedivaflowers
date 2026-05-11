@@ -3,7 +3,6 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import type { PrintJob, PrintJobStatus } from "@/types/print-job";
 import type { Order } from "@/types/order";
-import { renderOrderPdf } from "@/lib/print-render";
 
 function storageFile(): string {
   const override = process.env.PRINT_QUEUE_FILE;
@@ -30,13 +29,14 @@ function newId(): string {
 }
 
 export async function enqueuePrintJob(order: Order): Promise<PrintJob> {
-  const pdf = await renderOrderPdf(order);
+  // The job only tracks the order id; HTML/PDF rendering is deferred
+  // to the queue endpoint (HTML) and the agent (PDF). This avoids
+  // running Chromium on the server, which the production host can't do.
   const now = new Date().toISOString();
   const job: PrintJob = {
     id: newId(),
     orderId: order.id,
     status: "pending",
-    pdfBase64: pdf.toString("base64"),
     attempts: 0,
     createdAt: now,
     updatedAt: now,

@@ -21,10 +21,9 @@ const baseOrder: Order = {
   },
 };
 
-// Stub render to avoid pulling @react-pdf into queue tests.
-vi.mock("@/lib/print-render", () => ({
-  renderOrderPdf: vi.fn(async () => Buffer.from("FAKE-PDF-BYTES")),
-}));
+// Render is no longer called by the queue (the agent renders locally),
+// so we no longer need to mock it. The original mock is kept commented
+// for context.
 
 beforeEach(async () => {
   vi.stubEnv("PRINT_QUEUE_FILE", TEST_FILE);
@@ -49,15 +48,17 @@ describe("print-queue storage", () => {
 });
 
 describe("print-queue state machine", () => {
-  it("enqueuePrintJob adds a pending job with rendered PDF", async () => {
+  it("enqueuePrintJob adds a pending job with order metadata only", async () => {
     const { enqueuePrintJob, __readAll } = await import("@/lib/print-queue");
     const job = await enqueuePrintJob(baseOrder);
     expect(job.status).toBe("pending");
     expect(job.orderId).toBe("do_q1");
-    expect(job.pdfBase64.length).toBeGreaterThan(0);
+    expect(job.attempts).toBe(0);
     const all = await __readAll();
     expect(all).toHaveLength(1);
     expect(all[0].id).toBe(job.id);
+    // No PDF bytes stored in the job — the agent renders on demand.
+    expect((all[0] as Record<string, unknown>).pdfBase64).toBeUndefined();
   });
 
   it("claimPendingJobs flips pending → printing and returns the claimed jobs", async () => {

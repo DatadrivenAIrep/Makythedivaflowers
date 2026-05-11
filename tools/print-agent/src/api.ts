@@ -3,7 +3,10 @@ import type { Config } from "./config";
 export type ServerJob = {
   id: string;
   orderId: string;
-  pdfBase64: string;
+  // The server builds the order HTML and hands it to the agent. The agent
+  // renders the HTML to PDF locally via headless Chrome, then prints.
+  htmlSideA: string;
+  htmlSideB: string;
 };
 
 export class PrintApi {

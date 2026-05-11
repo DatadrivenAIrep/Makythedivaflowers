@@ -6,6 +6,7 @@ Local Windows agent that polls https://makythedivaflowers.com for paid-order pri
 
 - Windows 10 or 11
 - Node.js LTS (>= 20) — install from https://nodejs.org
+- **Google Chrome** — install from https://www.google.com/chrome/ (Microsoft Edge also works as a fallback). The agent renders each order's PDF locally using Chrome before printing.
 - A Wi-Fi printer paired with this computer in **Settings → Bluetooth & Devices → Printers**
 - Bearer token for the print API (ask the developer; rotated periodically)
 

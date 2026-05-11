@@ -6,9 +6,14 @@ import type { Order } from "@/types/order";
 import { __resetRateLimitForTests } from "@/lib/rate-limit";
 
 const TEST_FILE = path.join(os.tmpdir(), `diva-test-print-api-${process.pid}.json`);
+const ORDER_FILE = path.join(os.tmpdir(), `diva-test-print-orders-${process.pid}.json`);
 
-vi.mock("@/lib/print-render", () => ({
-  renderOrderPdf: vi.fn(async () => Buffer.from("FAKE")),
+// Stub the heavy HTML builder so the route returns a small deterministic
+// payload instead of pulling in fonts/images. Real HTML build is
+// integration-tested in tests/unit/print-render.test.ts.
+vi.mock("@/lib/print-render-html", () => ({
+  buildSideAHtml: (o: { id: string }) => `<!doctype html><body>A:${o.id}</body>`,
+  buildSideBHtml: (o: { id: string }) => `<!doctype html><body>B:${o.id}</body>`,
 }));
 
 const baseOrder: Order = {
@@ -28,12 +33,15 @@ const baseOrder: Order = {
 
 beforeEach(async () => {
   vi.stubEnv("PRINT_QUEUE_FILE", TEST_FILE);
+  vi.stubEnv("ORDER_STORAGE_FILE", ORDER_FILE);
   vi.stubEnv("PRINT_AGENT_TOKEN", "test-token-32bytes");
   await fs.writeFile(TEST_FILE, "[]", "utf8");
+  await fs.writeFile(ORDER_FILE, "[]", "utf8");
   __resetRateLimitForTests();
 });
 afterEach(async () => {
   try { await fs.unlink(TEST_FILE); } catch {}
+  try { await fs.unlink(ORDER_FILE); } catch {}
   vi.unstubAllEnvs();
 });
 
@@ -62,8 +70,10 @@ describe("GET /api/print/queue", () => {
     expect(body.jobs).toEqual([]);
   });
 
-  it("returns pending jobs and flips them to printing", async () => {
+  it("returns pending jobs hydrated with HTML and flips them to printing", async () => {
+    const { saveOrder } = await import("@/lib/order-storage");
     const { enqueuePrintJob } = await import("@/lib/print-queue");
+    await saveOrder(baseOrder);
     await enqueuePrintJob(baseOrder);
     const { GET } = await import("@/app/api/print/queue/route");
     const res = await GET(req({ Authorization: "Bearer test-token-32bytes" }));
@@ -71,15 +81,29 @@ describe("GET /api/print/queue", () => {
     const body = await res.json();
     expect(body.jobs).toHaveLength(1);
     expect(body.jobs[0]).toMatchObject({ orderId: "do_api1" });
-    expect(typeof body.jobs[0].pdfBase64).toBe("string");
+    expect(body.jobs[0].htmlSideA).toContain("A:do_api1");
+    expect(body.jobs[0].htmlSideB).toContain("B:do_api1");
 
     // Second poll returns nothing — already claimed.
     const res2 = await GET(req({ Authorization: "Bearer test-token-32bytes" }));
     expect((await res2.json()).jobs).toEqual([]);
   });
 
+  it("marks a job failed if the underlying order is gone", async () => {
+    const { enqueuePrintJob, __readAll } = await import("@/lib/print-queue");
+    await enqueuePrintJob(baseOrder); // queue has the job, but order-storage is empty
+    const { GET } = await import("@/app/api/print/queue/route");
+    const res = await GET(req({ Authorization: "Bearer test-token-32bytes" }));
+    expect((await res.json()).jobs).toEqual([]);
+    const all = await __readAll();
+    expect(all[0].status).toBe("failed");
+    expect(all[0].error).toContain("not found");
+  });
+
   it("recovers stuck jobs (printing > 5min old) and re-claims them", async () => {
+    const { saveOrder } = await import("@/lib/order-storage");
     const { enqueuePrintJob } = await import("@/lib/print-queue");
+    await saveOrder(baseOrder);
     await enqueuePrintJob(baseOrder);
     const { GET } = await import("@/app/api/print/queue/route");
     await GET(req({ Authorization: "Bearer test-token-32bytes" })); // claim
