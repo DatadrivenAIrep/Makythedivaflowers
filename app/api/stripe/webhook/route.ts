@@ -3,7 +3,6 @@ import type Stripe from "stripe";
 import { stripe } from "@/lib/stripe-server";
 import { getOrderByPaymentIntent, updateOrderStatusByPaymentIntent } from "@/lib/order-storage";
 import { notifyOrderPaid } from "@/lib/order-notifications";
-import { enqueuePrintJob } from "@/lib/print-queue";
 import { sendPurchaseToGA4 } from "@/lib/analytics-server";
 import { resolveCartLines } from "@/lib/cart-helpers";
 import { resolvedLineToAnalyticsItem, centsToDollars } from "@/lib/analytics-types";
@@ -49,18 +48,14 @@ export async function POST(req: Request) {
     switch (event.type) {
       case "payment_intent.succeeded": {
         const pi = event.data.object as Stripe.PaymentIntent;
+        // Read first so we can detect the pending → paid transition and skip
+        // duplicate notifications on Stripe webhook retries.
         const order = await getOrderByPaymentIntent(pi.id);
         const wasAlreadyPaid = order?.status === "paid";
         await updateOrderStatusByPaymentIntent(pi.id, "paid");
         if (order && !wasAlreadyPaid) {
           await notifyOrderPaid(order);
           void sendPurchaseToGA4(orderToPurchasePayload(order));
-          try {
-            await enqueuePrintJob(order);
-          } catch (e) {
-            console.error("[print] enqueue failed for order", order.id, e);
-            // Do not propagate: payment is recorded; print can be re-issued manually.
-          }
         }
         break;
       }

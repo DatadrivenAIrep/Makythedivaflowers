@@ -18,11 +18,6 @@ vi.mock("@/lib/order-notifications", () => ({
   notifyOrderPaid: notifyOrderPaidMock,
 }));
 
-const enqueuePrintJobMock = vi.fn();
-vi.mock("@/lib/print-queue", () => ({
-  enqueuePrintJob: enqueuePrintJobMock,
-}));
-
 const TEST_FILE = path.join(os.tmpdir(), `diva-test-orders-webhook-${process.pid}.json`);
 
 beforeEach(async () => {
@@ -30,7 +25,6 @@ beforeEach(async () => {
   await fs.writeFile(TEST_FILE, "[]", "utf8");
   constructEvent.mockReset();
   notifyOrderPaidMock.mockReset();
-  enqueuePrintJobMock.mockReset();
   vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_dummy");
   vi.stubEnv("STRIPE_WEBHOOK_SECRET", "whsec_dummy");
 });
@@ -154,41 +148,5 @@ describe("POST /api/stripe/webhook", () => {
     const { POST } = await import("@/app/api/stripe/webhook/route");
     const res = await POST(makeReq("{}"));
     expect(res.status).toBe(200);
-  });
-
-  it("enqueues a print job on pending → paid transition", async () => {
-    await saveOrder(makeOrder("o1", "pi_111"));
-    constructEvent.mockReturnValue({
-      type: "payment_intent.succeeded",
-      data: { object: { id: "pi_111" } },
-    });
-    const { POST } = await import("@/app/api/stripe/webhook/route");
-    await POST(makeReq("{}"));
-    expect(enqueuePrintJobMock).toHaveBeenCalledTimes(1);
-    expect(enqueuePrintJobMock.mock.calls[0][0].id).toBe("o1");
-  });
-
-  it("does not enqueue a print job for duplicate webhooks (already paid)", async () => {
-    await saveOrder(makeOrder("o1", "pi_111", "paid"));
-    constructEvent.mockReturnValue({
-      type: "payment_intent.succeeded",
-      data: { object: { id: "pi_111" } },
-    });
-    const { POST } = await import("@/app/api/stripe/webhook/route");
-    await POST(makeReq("{}"));
-    expect(enqueuePrintJobMock).not.toHaveBeenCalled();
-  });
-
-  it("returns 200 even when enqueuePrintJob throws (best-effort)", async () => {
-    await saveOrder(makeOrder("o1", "pi_111"));
-    constructEvent.mockReturnValue({
-      type: "payment_intent.succeeded",
-      data: { object: { id: "pi_111" } },
-    });
-    enqueuePrintJobMock.mockRejectedValue(new Error("disk full"));
-    const { POST } = await import("@/app/api/stripe/webhook/route");
-    const res = await POST(makeReq("{}"));
-    expect(res.status).toBe(200);
-    expect(notifyOrderPaidMock).toHaveBeenCalledTimes(1);
   });
 });
