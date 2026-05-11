@@ -3345,6 +3345,40 @@ export const PRODUCTS: Product[] = [
       description: { en: "Four-piece chocolate add-on from a Long Island chocolatier.", es: "Caja de cuatro chocolates de un chocolatero de Long Island." },
     },
   },
+  // ─── TEST PRODUCT — $1 for end-to-end checkout validation. DELETE AFTER TESTING. ─────
+  {
+    id: "p-test-1usd",
+    slug: "test-1-dollar",
+    title: { en: "Test product — DO NOT BUY", es: "Producto de prueba — NO COMPRAR" },
+    category: "gifts",
+    giftExtra: true,
+    blurb: {
+      en: "Internal test product for end-to-end checkout validation. Not for customer purchase.",
+      es: "Producto interno de prueba para validar el checkout. No para compra de clientes.",
+    },
+    description: {
+      en: "Internal test product. If you see this on the live site, please contact support — it should not be reachable from the public catalog.",
+      es: "Producto interno de prueba. Si lo ves en el sitio público, contacta a soporte — no debería ser accesible desde el catálogo.",
+    },
+    images: [
+      {
+        src: "https://picsum.photos/seed/test-1usd/1200/1500",
+        alt: { en: "Test product placeholder", es: "Imagen de producto de prueba" },
+        aspect: "4/5",
+      },
+    ],
+    variants: [
+      { id: "default", label: { en: "Default", es: "Predeterminado" }, priceCents: 100 },
+    ],
+    tags: [],
+    occasions: [],
+    colorFamily: [],
+    active: true,
+    seo: {
+      title: { en: "Test product (internal)", es: "Producto de prueba (interno)" },
+      description: { en: "Internal test product.", es: "Producto interno de prueba." },
+    },
+  },
 ];
 
 export function getProductBySlug(slug: string): Product | undefined {
