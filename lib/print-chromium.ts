@@ -2,13 +2,30 @@
 // Singleton-style Chromium launcher. Re-uses one browser instance across
 // renders to avoid the ~2s cold-start cost on every order.
 //
+// puppeteer-core and @sparticuz/chromium are loaded LAZILY via dynamic
+// import() so that simply importing this module does not crash the
+// process on hosts that can't load them (e.g. shared Node hosts where
+// the chromium binary is incompatible). When `renderHtmlToPdf` is
+// invoked and the dynamic load fails, the error propagates to the
+// caller, which (in the print pipeline) is caught by the webhook's
+// try/catch around `enqueuePrintJob`. That keeps the rest of the
+// payment flow — order status, notification email, analytics — alive
+// even if rendering itself is broken on this host.
+//
 // Local dev: uses system Chrome via PUPPETEER_EXECUTABLE_PATH if set,
 // otherwise falls back to @sparticuz/chromium for parity with prod.
-//
-// Production (Vercel serverless): uses @sparticuz/chromium's bundled binary.
 import "server-only";
-import puppeteer, { type Browser } from "puppeteer-core";
-import chromium from "@sparticuz/chromium";
+
+// Use loose Browser type to avoid pulling puppeteer-core types at
+// module load. The real type is checked at runtime.
+type Browser = {
+  newPage(): Promise<{
+    setContent: (html: string, opts: { waitUntil: string }) => Promise<void>;
+    pdf: (opts: Record<string, unknown>) => Promise<Buffer | Uint8Array>;
+    close(): Promise<void>;
+  }>;
+  close(): Promise<void>;
+};
 
 let browserPromise: Promise<Browser> | null = null;
 
@@ -29,6 +46,16 @@ const LOCAL_CHROME_ARGS = [
 async function getBrowser(): Promise<Browser> {
   if (browserPromise) return browserPromise;
 
+  // Lazy import — runs only when a render is actually requested.
+  // If the host can't load these (shared hosting without serverless
+  // Chrome support, etc.), the error bubbles up to the caller.
+  const [puppeteerMod, chromiumMod] = await Promise.all([
+    import("puppeteer-core"),
+    import("@sparticuz/chromium"),
+  ]);
+  const puppeteer = puppeteerMod.default ?? puppeteerMod;
+  const chromium = chromiumMod.default ?? chromiumMod;
+
   const localPath = process.env.PUPPETEER_EXECUTABLE_PATH;
   const isLocalDev = process.env.NODE_ENV !== "production" && !!localPath;
 
@@ -37,7 +64,7 @@ async function getBrowser(): Promise<Browser> {
     defaultViewport: { width: 1100, height: 850 },
     executablePath: isLocalDev ? localPath : await chromium.executablePath(),
     headless: true,
-  });
+  }) as Promise<Browser>;
   return browserPromise;
 }
 
