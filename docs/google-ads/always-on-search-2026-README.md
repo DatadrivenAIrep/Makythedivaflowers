@@ -121,9 +121,11 @@ month 4+).
 
 ### Phase 0 (pre-launch) — image extensions
 
-Generate 4–6 images, square 1200×1200 and landscape 1200×628. Use the briefs below verbatim
-with `mcp__claude_ai_higgsfield__generate_image`. Generate 2–3 variations per concept and
-pick the best.
+**Status:** Done as of 2026-05-12. Six winning assets are committed to
+`docs/google-ads/assets/`. Used `marketing_studio_image` model on Higgsfield, generated
+2 variants per concept (12 total), selected best of each. Total cost: ~24 credits.
+
+The briefs below are kept for reference and for future A/B test refreshes.
 
 ```
 1. Hero — Lush garden-rose bouquet

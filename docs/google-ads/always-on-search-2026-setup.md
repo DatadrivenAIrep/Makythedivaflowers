@@ -623,19 +623,28 @@ Address must show: 1077 Willis Ave, Albertson, NY 11507
 (Go to Assets → Location → Connect Google Business Profile)
 ```
 
-### Image extensions (4–6 — generated via Higgsfield, see README §3)
+### Image extensions (6 — generated via Higgsfield, ready to upload)
 
-Upload all to **Assets → Image** at the campaign level. Square (1200×1200) and landscape
-(1200×628) variants for each concept.
+Upload all to **Assets → Image** at the campaign level. Square assets are 1024×1024 (above
+Google Ads minimum of 300×300), landscape is 1376×768 (above minimum of 600×314).
+
+Files live in `docs/google-ads/assets/`:
 
 ```
-1. Hero — Lush garden-rose bouquet, hand of florist tying ribbon
-2. Studio — Florist arranging flowers at marble worktable
-3. Sympathy — Restrained, elegant white arrangement
-4. Same-day proof — Bouquet at doorstep
-5. Anniversary/Romance — Bedroom vignette with bouquet on marble nightstand
-6. Bouquet variety grid (landscape only)
+01-hero-bouquet-square.png         square    Hero — abundant garden-rose bouquet, kraft paper
+02-studio-arranging-square.png     square    Studio — florist arranging on marble worktable
+03-sympathy-white-square.png       square    Sympathy — white arrangement on gray linen
+04-doorstep-delivery-square.png    square    Same-day — bouquet on Long Island doorstep
+05-romance-bedroom-square.png      square    Romance — red roses + handwritten note vignette
+06-bouquet-variety-landscape.png   landscape Variety grid — 4 arrangements side by side
 ```
+
+Recommended assignment (Google Ads lets you attach images at campaign or ad-group level):
+
+- **Campaign-level** (apply to all): 01 (hero), 02 (studio), 06 (variety landscape)
+- **Ad group 4 — Sympathy only**: 03 (sympathy)
+- **Ad group 2 — Same-Day only**: 04 (doorstep)
+- **Ad group 3 — Birthday/Anniversary/Romance**: 05 (romance bedroom)
 
 ### Price extensions (optional, recommended)
 
