@@ -11,7 +11,7 @@ import { SITE } from "@/data/site";
 import { getSubjectKey } from "@/lib/contact-subject";
 import { buildSmsHref, buildTelHref, buildWhatsappHref } from "@/lib/text-maky-links";
 import { useContactContext } from "@/components/contact/ContactContextProvider";
-import { trackWhatsappClick } from "@/lib/analytics";
+import { trackPhoneClick, trackSmsClick, trackWhatsappClick } from "@/lib/analytics";
 
 export function TextMakyModal() {
   const t = useTranslations("text_modal");
@@ -94,7 +94,11 @@ export function TextMakyModal() {
 
                   <div className="mt-6 flex flex-col gap-2">
                     <Button asChild variant="primary" size="md" className="w-full justify-center">
-                      <a href={smsHref} aria-label={`${t("send_sms")} (${SITE.mobile.display})`}>
+                      <a
+                        href={smsHref}
+                        aria-label={`${t("send_sms")} (${SITE.mobile.display})`}
+                        onClick={() => trackSmsClick("contact", "text-maky-modal")}
+                      >
                         <ChatCircleText size={18} weight="regular" className="mr-2" aria-hidden />
                         {t("send_sms")}
                       </a>
@@ -112,7 +116,11 @@ export function TextMakyModal() {
                       </a>
                     </Button>
                     <Button asChild variant="ghost" size="md" className="w-full justify-center">
-                      <a href={telHref} aria-label={`${t("call")} (${SITE.mobile.display})`}>
+                      <a
+                        href={telHref}
+                        aria-label={`${t("call")} (${SITE.mobile.display})`}
+                        onClick={() => trackPhoneClick("contact")}
+                      >
                         <Phone size={18} weight="regular" className="mr-2" aria-hidden />
                         {t("call")}
                       </a>

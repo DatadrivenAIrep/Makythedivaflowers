@@ -118,6 +118,10 @@ export function trackWhatsappClick(location: EngagementLocation, context: string
   pushDataLayer({ event: "whatsapp_click", location, context });
 }
 
+export function trackSmsClick(location: EngagementLocation, context: string): void {
+  pushDataLayer({ event: "sms_click", location, context });
+}
+
 export function trackPhoneClick(location: EngagementLocation): void {
   pushDataLayer({ event: "phone_click", location });
 }
