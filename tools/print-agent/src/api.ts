@@ -5,8 +5,9 @@ export type ServerJob = {
   orderId: string;
   // The server builds the order HTML and hands it to the agent. The agent
   // renders the HTML to PDF locally via headless Chrome, then prints.
-  htmlSideA: string;
-  htmlSideB: string;
+  // Single-page Letter-landscape sheet (worksheet on top half, tri-fold
+  // card on bottom half).
+  html: string;
 };
 
 export class PrintApi {

@@ -12,8 +12,7 @@ const ORDER_FILE = path.join(os.tmpdir(), `diva-test-print-orders-${process.pid}
 // payload instead of pulling in fonts/images. Real HTML build is
 // integration-tested in tests/unit/print-render.test.ts.
 vi.mock("@/lib/print-render-html", () => ({
-  buildSideAHtml: (o: { id: string }) => `<!doctype html><body>A:${o.id}</body>`,
-  buildSideBHtml: (o: { id: string }) => `<!doctype html><body>B:${o.id}</body>`,
+  buildSheetHtml: (o: { id: string }) => `<!doctype html><body>SHEET:${o.id}</body>`,
 }));
 
 const baseOrder: Order = {
@@ -81,8 +80,7 @@ describe("GET /api/print/queue", () => {
     const body = await res.json();
     expect(body.jobs).toHaveLength(1);
     expect(body.jobs[0]).toMatchObject({ orderId: "do_api1" });
-    expect(body.jobs[0].htmlSideA).toContain("A:do_api1");
-    expect(body.jobs[0].htmlSideB).toContain("B:do_api1");
+    expect(body.jobs[0].html).toContain("SHEET:do_api1");
 
     // Second poll returns nothing — already claimed.
     const res2 = await GET(req({ Authorization: "Bearer test-token-32bytes" }));

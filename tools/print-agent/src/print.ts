@@ -3,7 +3,6 @@ import path from "node:path";
 import os from "node:os";
 import { print as pdfPrint } from "pdf-to-printer";
 import puppeteer, { type Browser } from "puppeteer-core";
-import { PDFDocument } from "pdf-lib";
 import { logger } from "./log";
 
 // Singleton browser. Re-used across jobs to avoid Chrome cold-start
@@ -49,37 +48,21 @@ async function htmlToPdf(html: string, chromePath: string): Promise<Buffer> {
   }
 }
 
-async function mergePages(pageA: Buffer, pageB: Buffer): Promise<Buffer> {
-  const merged = await PDFDocument.create();
-  const docA = await PDFDocument.load(new Uint8Array(pageA));
-  const docB = await PDFDocument.load(new Uint8Array(pageB));
-  const [pA] = await merged.copyPages(docA, [0]);
-  const [pB] = await merged.copyPages(docB, [0]);
-  merged.addPage(pA);
-  merged.addPage(pB);
-  const bytes = await merged.save();
-  return Buffer.from(bytes);
-}
-
 export async function printJob(
   jobId: string,
-  htmlSideA: string,
-  htmlSideB: string,
+  html: string,
   printerName: string,
   chromePath: string,
 ): Promise<void> {
   const tmpPath = path.join(os.tmpdir(), `maky-print-${jobId}.pdf`);
   try {
-    logger.debug({ jobId }, "rendering side A");
-    const pdfA = await htmlToPdf(htmlSideA, chromePath);
-    logger.debug({ jobId }, "rendering side B");
-    const pdfB = await htmlToPdf(htmlSideB, chromePath);
-    const merged = await mergePages(pdfA, pdfB);
-    await fs.writeFile(tmpPath, merged);
-    logger.debug({ jobId, tmpPath, bytes: merged.length }, "wrote merged pdf");
+    logger.debug({ jobId }, "rendering sheet");
+    const pdf = await htmlToPdf(html, chromePath);
+    await fs.writeFile(tmpPath, pdf);
+    logger.debug({ jobId, tmpPath, bytes: pdf.length }, "wrote pdf");
     await pdfPrint(tmpPath, {
       printer: printerName,
-      side: "duplexlong",
+      side: "simplex",
       paperSize: "letter",
       scale: "fit",
     });
@@ -93,8 +76,7 @@ export async function printJob(
 
 export async function printJobWithRetry(
   jobId: string,
-  htmlSideA: string,
-  htmlSideB: string,
+  html: string,
   printerName: string,
   chromePath: string,
 ): Promise<void> {
@@ -103,7 +85,7 @@ export async function printJobWithRetry(
   for (let attempt = 0; attempt < delays.length; attempt++) {
     if (delays[attempt] > 0) await new Promise((r) => setTimeout(r, delays[attempt]));
     try {
-      await printJob(jobId, htmlSideA, htmlSideB, printerName, chromePath);
+      await printJob(jobId, html, printerName, chromePath);
       if (attempt > 0) logger.info({ jobId, attempt }, "print succeeded after retry");
       return;
     } catch (e) {

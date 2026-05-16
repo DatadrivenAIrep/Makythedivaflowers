@@ -16,19 +16,26 @@ function fontDataUri(relPath: string): string {
   return `data:${mime};base64,${buf.toString("base64")}`;
 }
 
-function imageDataUri(relPath: string): string {
+function imageDataUri(relPath: string, mime: string): string {
   const abs = path.join(process.cwd(), relPath);
   const buf = readFileSync(abs);
-  return `data:image/jpeg;base64,${buf.toString("base64")}`;
+  return `data:${mime};base64,${buf.toString("base64")}`;
 }
 
 let cached: string | null = null;
 let cachedBg: string | null = null;
+let cachedLogo: string | null = null;
 
 export function getCardBgDataUri(): string {
   if (cachedBg !== null) return cachedBg;
-  cachedBg = imageDataUri("public/print/card-bg-front.jpg");
+  cachedBg = imageDataUri("public/print/card-bg-front.jpg", "image/jpeg");
   return cachedBg;
+}
+
+export function getLogoDataUri(): string {
+  if (cachedLogo !== null) return cachedLogo;
+  cachedLogo = imageDataUri("public/print/logo.jpg", "image/jpeg");
+  return cachedLogo;
 }
 
 export function getPrintStyles(): string {
@@ -85,15 +92,7 @@ export function getPrintStyles(): string {
       position: relative;
       overflow: hidden;
     }
-    .cut-h { position: absolute; left: 0; right: 0; top: 4.25in; border-top: 1px dashed var(--mute-400); z-index: 5; }
-    .cut-marker {
-      position: absolute; top: 4.25in; transform: translateY(-50%);
-      background: var(--bone); padding: 2px 8px;
-      font-size: 8pt; color: var(--mute-400); z-index: 6;
-      letter-spacing: 1.5px; text-transform: uppercase; font-family: var(--font-sans);
-    }
-    .cut-marker.left { left: 0.15in; }
-    .cut-marker.right { right: 0.15in; }
+    .cut-h { position: absolute; left: 0; right: 0; top: 4.25in; border-top: 1px dashed var(--mute-200); z-index: 5; opacity: 0.6; }
 
     /* === Worksheet (top half) === */
     .worksheet {
@@ -151,62 +150,45 @@ export function getPrintStyles(): string {
     .ws-buyer { margin-top: auto; padding-top: 5pt; border-top: 1px solid var(--mute-200); font-size: 8pt; color: var(--mute-600); line-height: 1.5; }
     .ws-buyer strong { color: var(--ink); font-size: 7pt; letter-spacing: 1.5px; text-transform: uppercase; }
 
-    /* === Card row (bottom half) === */
+    /* === Card row (bottom half) — tri-fold === */
     .card-row { flex: 1; display: flex; position: relative; }
-    .card-half { flex: 1; position: relative; overflow: hidden; }
-    .fold-v { position: absolute; left: 5.5in; top: 0; bottom: 0; border-left: 1px dashed var(--rouge); opacity: 0.35; z-index: 4; }
-    .fold-marker {
-      position: absolute; left: 5.5in; transform: translate(-50%, 0);
-      background: var(--bone); color: var(--rouge);
-      font-size: 8pt; text-transform: uppercase; letter-spacing: 1.5px;
-      padding: 2pt 8pt; z-index: 5; font-weight: 600;
+    .card-panel { flex: 1; position: relative; overflow: hidden; }
+    .fold-v {
+      position: absolute; top: 0; bottom: 0;
+      border-left: 1px dashed var(--mute-200); opacity: 0.5; z-index: 4;
     }
-    .fold-marker.top { top: 0.06in; }
-    .fold-marker.bottom { bottom: 0.06in; }
+    .fold-v.f1 { left: 3.6667in; }
+    .fold-v.f2 { left: 7.3333in; }
 
-    /* Side A: front cover (right) + back cover (left) */
-    .card-half.front-cover {
+    /* Panel 1 (left): Maky brand — cover when folded */
+    .card-panel.brand-cover {
       background-image: var(--card-bg);
       background-size: cover;
       background-position: center;
       display: flex; flex-direction: column; justify-content: flex-end;
-      padding: 0.25in 0.32in;
+      padding: 0.25in 0.3in;
     }
-    .card-half.front-cover::after {
+    .card-panel.brand-cover::after {
       content: ""; position: absolute; inset: 0;
-      background: linear-gradient(180deg, transparent 50%, rgba(250,246,240,0.55) 100%);
+      background: linear-gradient(180deg, transparent 45%, rgba(250,246,240,0.6) 100%);
       pointer-events: none;
     }
     .card-brand { position: relative; z-index: 2; }
     .card-brand .name {
-      font-family: var(--font-display); font-size: 38pt; font-weight: 600;
+      font-family: var(--font-display); font-size: 34pt; font-weight: 600;
       letter-spacing: -1.5px; color: var(--ink); line-height: 0.85;
       font-variation-settings: "opsz" 144;
     }
     .card-brand .tag {
-      font-family: var(--font-sans); font-size: 9pt; text-transform: uppercase;
+      font-family: var(--font-sans); font-size: 8pt; text-transform: uppercase;
       letter-spacing: 2.5px; color: var(--rouge); margin-top: 4pt; font-weight: 600;
     }
-    .card-half.back-cover {
-      background: var(--bone);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      text-align: center;
-    }
-    .back-cover .ornament {
-      font-family: var(--font-display); color: var(--rouge); font-size: 16pt;
-    }
-    .back-cover .small-mark {
-      font-family: var(--font-sans);
-      font-size: 8pt; color: var(--mute-400); letter-spacing: 2px;
-      text-transform: uppercase; line-height: 1.6; margin-top: 6pt;
-    }
 
-    /* Side B: interior message (left) + blank (right) */
-    .ws-back { flex: 1; }
-    .card-half.inside-msg {
+    /* Panel 2 (middle): customer message — hidden when folded */
+    .card-panel.inside-msg {
       background: var(--bone);
       display: flex; flex-direction: column; justify-content: center; align-items: center;
-      text-align: center; padding: 0.3in 0.4in;
+      text-align: center; padding: 0.3in 0.3in;
     }
     .inside-msg .orn-top, .inside-msg .orn-bot {
       color: var(--rouge); font-family: var(--font-display); font-size: 14pt;
@@ -216,12 +198,45 @@ export function getPrintStyles(): string {
     .inside-msg .text {
       font-family: var(--font-display);
       font-style: italic; line-height: 1.45; color: var(--ink);
-      max-width: 90%; font-variation-settings: "opsz" 96;
+      max-width: 92%; font-variation-settings: "opsz" 96;
     }
-    .inside-msg .text.short { font-size: 18pt; }
-    .inside-msg .text.med { font-size: 14pt; }
-    .inside-msg .text.long { font-size: 12pt; }
-    .card-half.inside-blank { background: var(--bone); }
+    .inside-msg .text.short { font-size: 16pt; }
+    .inside-msg .text.med { font-size: 13pt; }
+    .inside-msg .text.long { font-size: 11pt; }
+
+    /* Panel 3 (right): logo lockup. The source logo has a flat white
+       background (no alpha), so we wrap it in a white card with soft
+       shadow to make the white edge blend rather than fight the bone. */
+    .card-panel.logo-panel {
+      background: var(--bone);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 0.3in 0.3in;
+    }
+    .logo-panel .logo-frame {
+      background: #fff;
+      border-radius: 8pt;
+      padding: 0.18in;
+      box-shadow: 0 1pt 6pt rgba(14,13,12,0.08);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-panel .logo-img {
+      width: 2.4in; height: 2.4in; object-fit: contain;
+      display: block;
+    }
+    .logo-panel .socials {
+      margin-top: 10pt; display: flex; flex-direction: column; align-items: center; gap: 4pt;
+    }
+    .logo-panel .socials .handle {
+      font-family: var(--font-sans);
+      font-size: 8pt; color: var(--ink); letter-spacing: 1.5px;
+      text-transform: uppercase; font-weight: 600;
+    }
+    .logo-panel .socials .icons {
+      display: flex; align-items: center; gap: 8pt; color: var(--rouge);
+    }
+    .logo-panel .socials .ic {
+      width: 12pt; height: 12pt; display: block;
+    }
   `;
   return cached;
 }

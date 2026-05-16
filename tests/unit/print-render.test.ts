@@ -39,35 +39,29 @@ describe("renderOrderPdf — v2", () => {
     basePages = await extractPageTexts(baseBuf);
   }, 120_000);
 
-  it("returns a 2-page Letter-landscape PDF", () => {
+  it("returns a 1-page Letter-landscape PDF", () => {
     expect(baseBuf).toBeInstanceOf(Buffer);
     expect(baseBuf.subarray(0, 5).toString()).toBe("%PDF-");
-    expect(basePages).toHaveLength(2);
+    expect(basePages).toHaveLength(1);
   });
 
-  it("page 1 contains worksheet info: order id, total, recipient, items, buyer", () => {
-    const [pageA] = basePages;
-    expect(pageA).toContain("do_test123");
-    expect(pageA).toContain("$207.47");
-    expect(pageA).toContain("Lola Cardona");
-    expect(pageA).toContain("buyer@example.com");
-    expect(pageA).toContain("Abundant Table");
+  it("contains worksheet info: order id, total, recipient, items, buyer", () => {
+    const [page] = basePages;
+    expect(page).toContain("do_test123");
+    expect(page).toContain("$207.47");
+    expect(page).toContain("Lola Cardona");
+    expect(page).toContain("buyer@example.com");
+    expect(page).toContain("Abundant Table");
   });
 
-  it("page 1 contains the Maky front-cover wordmark", () => {
-    const [pageA] = basePages;
-    expect(pageA.toLowerCase()).toContain("maky");
+  it("contains the Maky brand-cover wordmark on the tri-fold card", () => {
+    const [page] = basePages;
+    expect(page.toLowerCase()).toContain("maky");
   });
 
-  it("page 2 contains the customer's cardMessage", () => {
-    const [, pageB] = basePages;
-    expect(pageB).toContain("Happy birthday");
-  });
-
-  it("page 2 does NOT contain the order id (back of worksheet is blank)", () => {
-    const [, pageB] = basePages;
-    expect(pageB).not.toContain("do_test123");
-    expect(pageB).not.toContain("Lola Cardona");
+  it("contains the customer's cardMessage on the same page (middle panel)", () => {
+    const [page] = basePages;
+    expect(page).toContain("Happy birthday");
   });
 
   it("renders DELIVER TO block for delivery orders (en)", async () => {
@@ -82,30 +76,27 @@ describe("renderOrderPdf — v2", () => {
       },
     };
     const buf = await renderOrderPdf(order);
-    const [pageA] = await extractPageTexts(buf);
-    expect(pageA).toContain("DELIVER TO");
-    expect(pageA).toContain("123 Park Ave");
-    expect(pageA).not.toContain("PICK");
+    const [page] = await extractPageTexts(buf);
+    expect(page).toContain("DELIVER TO");
+    expect(page).toContain("123 Park Ave");
+    expect(page).not.toContain("PICK");
   }, 120_000);
 
   it("renders PICK UP AT SHOP for pickup orders (en)", () => {
-    const [pageA] = basePages;
+    const [page] = basePages;
     // pdf-parse may insert spaces inside letter-spaced glyphs; match on the
     // address which is plain text and on "SHOP" which always appears.
-    expect(pageA).toContain("SHOP");
-    expect(pageA).toContain("1077 Willis Ave");
+    expect(page).toContain("SHOP");
+    expect(page).toContain("1077 Willis Ave");
   });
 
   it("localizes worksheet to Spanish when order.locale === 'es'", async () => {
     const order: Order = { ...baseOrder, locale: "es" };
     const buf = await renderOrderPdf(order);
-    const [pageA] = await extractPageTexts(buf);
-    // Headings are letter-spaced and pdf-parse inserts gaps inside words.
-    // Use reliable plain-text strings: the order prefix in Spanish ("Orden #")
-    // and the address, which is plain text.
-    expect(pageA).toContain("Orden #");
-    expect(pageA).not.toContain("Order #");
-    expect(pageA).toContain("1077 Willis Ave");
+    const [page] = await extractPageTexts(buf);
+    expect(page).toContain("Orden #");
+    expect(page).not.toContain("Order #");
+    expect(page).toContain("1077 Willis Ave");
   }, 120_000);
 
   it("renders without crashing when cardMessage is empty", async () => {
@@ -115,7 +106,7 @@ describe("renderOrderPdf — v2", () => {
     };
     const buf = await renderOrderPdf(order);
     expect(buf.length).toBeGreaterThan(1000);
-    const [, pageB] = await extractPageTexts(buf);
-    expect(pageB).not.toContain("Happy birthday");
+    const [page] = await extractPageTexts(buf);
+    expect(page).not.toContain("Happy birthday");
   }, 120_000);
 });

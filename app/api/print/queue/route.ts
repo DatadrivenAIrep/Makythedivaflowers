@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { isPrintAuthValid } from "@/lib/print-auth";
 import { ackJob, claimPendingJobs, recoverStuckJobs } from "@/lib/print-queue";
 import { getOrder } from "@/lib/order-storage";
-import { buildSideAHtml, buildSideBHtml } from "@/lib/print-render-html";
+import { buildSheetHtml } from "@/lib/print-render-html";
 import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
@@ -28,8 +28,7 @@ export async function GET(req: Request): Promise<Response> {
   const hydrated: Array<{
     id: string;
     orderId: string;
-    htmlSideA: string;
-    htmlSideB: string;
+    html: string;
   }> = [];
   for (const job of jobs) {
     try {
@@ -41,8 +40,7 @@ export async function GET(req: Request): Promise<Response> {
       hydrated.push({
         id: job.id,
         orderId: job.orderId,
-        htmlSideA: await buildSideAHtml(order),
-        htmlSideB: await buildSideBHtml(order),
+        html: await buildSheetHtml(order),
       });
     } catch (e) {
       const errMsg = (e as Error).message ?? String(e);

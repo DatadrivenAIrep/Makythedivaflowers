@@ -15,7 +15,7 @@ export async function tick(api: PrintApi, cfg: Config): Promise<void> {
   logger.info({ count: jobs.length }, "claimed jobs");
   for (const job of jobs) {
     try {
-      await printJobWithRetry(job.id, job.htmlSideA, job.htmlSideB, cfg.printerName, cfg.chromePath);
+      await printJobWithRetry(job.id, job.html, cfg.printerName, cfg.chromePath);
       try {
         await api.ack(job.id, "printed");
         logger.info({ jobId: job.id, orderId: job.orderId }, "job printed and acked");

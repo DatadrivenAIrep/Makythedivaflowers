@@ -14,7 +14,7 @@ import { PRODUCTS } from "@/data/products";
 import { SITE } from "@/data/site";
 import { resolveCartLines } from "@/lib/cart-helpers";
 import { formatMoneyCents, formatPhoneUS, formatDeliveryWindow } from "@/lib/format";
-import { getPrintStyles, getCardBgDataUri } from "@/lib/print-styles";
+import { getPrintStyles, getCardBgDataUri, getLogoDataUri } from "@/lib/print-styles";
 
 type Locale = "en" | "es";
 
@@ -144,36 +144,14 @@ function Worksheet({ order }: { order: Order }) {
 }
 
 
-function BackCoverPanel() {
+function BrandCoverPanel() {
   return (
-    <div className="card-half back-cover">
-      <div className="ornament">❀</div>
-      <div className="small-mark">maky · diva flowers</div>
-      <div className="small-mark" style={{ opacity: 0.7 }}>@makydivaflowers</div>
-    </div>
-  );
-}
-
-function FrontCoverPanel() {
-  return (
-    <div className="card-half front-cover">
+    <div className="card-panel brand-cover">
       <div className="card-brand">
         <div className="name">maky</div>
         <div className="tag">the diva flowers</div>
       </div>
     </div>
-  );
-}
-
-function CardRowSideA() {
-  return (
-    <section className="card-row">
-      <div className="fold-marker top">↓ doblar ↓</div>
-      <div className="fold-marker bottom">↑ doblar ↑</div>
-      <div className="fold-v" />
-      <BackCoverPanel />
-      <FrontCoverPanel />
-    </section>
   );
 }
 
@@ -188,9 +166,8 @@ function classifyMessageLength(msg: string | undefined): "short" | "med" | "long
 function InsideMessagePanel({ message }: { message: string | undefined }) {
   const trimmed = message?.trim();
   if (!trimmed) {
-    // Empty message: show only ornaments, no text block.
     return (
-      <div className="card-half inside-msg">
+      <div className="card-panel inside-msg">
         <div className="orn-top">❀</div>
         <div className="orn-bot">❀</div>
       </div>
@@ -198,7 +175,7 @@ function InsideMessagePanel({ message }: { message: string | undefined }) {
   }
   const cls = classifyMessageLength(trimmed);
   return (
-    <div className="card-half inside-msg">
+    <div className="card-panel inside-msg">
       <div className="orn-top">❀</div>
       <div className={`text ${cls}`}>"{trimmed}"</div>
       <div className="orn-bot">❀</div>
@@ -206,40 +183,50 @@ function InsideMessagePanel({ message }: { message: string | undefined }) {
   );
 }
 
-function InsideBlankPanel() {
-  return <div className="card-half inside-blank" />;
-}
-
-function CardRowSideB({ message }: { message: string | undefined }) {
+function LogoPanel({ logoUri }: { logoUri: string }) {
   return (
-    <section className="card-row">
-      <div className="fold-v" />
-      <InsideMessagePanel message={message} />
-      <InsideBlankPanel />
-    </section>
-  );
-}
-
-function SheetSideA({ order }: { order: Order }) {
-  return (
-    <div className="sheet">
-      <div className="cut-marker left">✂ recortar</div>
-      <div className="cut-marker right">recortar ✂</div>
-      <div className="cut-h" />
-      <Worksheet order={order} />
-      <CardRowSideA />
+    <div className="card-panel logo-panel">
+      <div className="logo-frame">
+        <img className="logo-img" src={logoUri} alt="Maky the Diva Flowers" />
+      </div>
+      <div className="socials">
+        <div className="handle">@Makythediva</div>
+        <div className="icons">
+          <svg className="ic" viewBox="0 0 24 24" aria-label="Instagram">
+            <rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+            <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+            <circle cx="17.5" cy="6.5" r="1" fill="currentColor" />
+          </svg>
+          <svg className="ic" viewBox="0 0 24 24" aria-label="TikTok">
+            <path
+              d="M16.5 3h-2.6v12.4a2.5 2.5 0 1 1-2.5-2.5c.3 0 .5 0 .8.1V10.3a5.6 5.6 0 0 0-.8-.1 5.2 5.2 0 1 0 5.2 5.2V8.6a6.6 6.6 0 0 0 4 1.4V7.4a3.9 3.9 0 0 1-2.4-.9A3.9 3.9 0 0 1 16.5 3z"
+              fill="currentColor"
+            />
+          </svg>
+        </div>
+      </div>
     </div>
   );
 }
 
-function SheetSideB({ message }: { message: string | undefined }) {
+function CardRow({ message, logoUri }: { message: string | undefined; logoUri: string }) {
+  return (
+    <section className="card-row">
+      <div className="fold-v f1" />
+      <div className="fold-v f2" />
+      <BrandCoverPanel />
+      <InsideMessagePanel message={message} />
+      <LogoPanel logoUri={logoUri} />
+    </section>
+  );
+}
+
+function Sheet({ order, logoUri }: { order: Order; logoUri: string }) {
   return (
     <div className="sheet">
-      <div className="cut-marker left">✂ recortar</div>
-      <div className="cut-marker right">recortar ✂</div>
       <div className="cut-h" />
-      <div className="ws-back" />
-      <CardRowSideB message={message} />
+      <Worksheet order={order} />
+      <CardRow message={order.delivery.cardMessage} logoUri={logoUri} />
     </div>
   );
 }
@@ -258,12 +245,8 @@ function htmlDocument(body: string, locale: Locale): string {
 </html>`;
 }
 
-export async function buildSideAHtml(order: Order): Promise<string> {
+export async function buildSheetHtml(order: Order): Promise<string> {
   const renderToStaticMarkup = await loadRenderToStaticMarkup();
-  return htmlDocument(renderToStaticMarkup(<SheetSideA order={order} />), order.locale);
-}
-
-export async function buildSideBHtml(order: Order): Promise<string> {
-  const renderToStaticMarkup = await loadRenderToStaticMarkup();
-  return htmlDocument(renderToStaticMarkup(<SheetSideB message={order.delivery.cardMessage} />), order.locale);
+  const logoUri = getLogoDataUri();
+  return htmlDocument(renderToStaticMarkup(<Sheet order={order} logoUri={logoUri} />), order.locale);
 }
