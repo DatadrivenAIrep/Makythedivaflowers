@@ -95,7 +95,7 @@ describe("POST /api/stripe/webhook", () => {
     const res = await POST(makeReq("{}"));
     expect(res.status).toBe(200);
     const o = await getOrder("o1");
-    expect(o?.status).toBe("paid");
+    expect(o?.paymentStatus).toBe("paid");
     // Notification fires exactly once on the pending → paid transition.
     expect(notifyOrderPaidMock).toHaveBeenCalledTimes(1);
   });

@@ -71,37 +71,49 @@ describe("order-storage", () => {
     expect(o?.stripePaymentIntentId).toBe("pi_999");
   });
 
-  it("updateOrderStatusByPaymentIntent flips pending → paid", async () => {
+  it("updateOrderStatusByPaymentIntent flips pending → paid (sets paymentStatus)", async () => {
     await saveOrder(makeOrder("o1", "pi_111"));
     await updateOrderStatusByPaymentIntent("pi_111", "paid");
     const o = await getOrder("o1");
-    expect(o?.status).toBe("paid");
+    expect(o?.paymentStatus).toBe("paid");
+    expect(o?.paidAt).toBeTruthy();
   });
 
-  it("updateOrderStatusByPaymentIntent is a no-op when order already in target status", async () => {
+  it("updateOrderStatusByPaymentIntent is a no-op when paymentStatus already paid", async () => {
     const order = makeOrder("o1", "pi_111");
-    // Back-compat: set status to "paid" via cast (will be split in Task 5).
-    (order as Record<string, unknown>).status = "paid";
+    order.paymentStatus = "paid";
     await saveOrder(order);
     await updateOrderStatusByPaymentIntent("pi_111", "paid");
     const o = await getOrder("o1");
-    expect(o?.status).toBe("paid");
+    expect(o?.paymentStatus).toBe("paid");
   });
 
-  it("updateOrderStatusByPaymentIntent does NOT downgrade paid → failed", async () => {
+  it("updateOrderStatusByPaymentIntent sets fulfillment status for non-paid transitions", async () => {
     const order = makeOrder("o1", "pi_111");
-    // Back-compat: set status to "paid" via cast (will be split in Task 5).
-    (order as Record<string, unknown>).status = "paid";
     await saveOrder(order);
     await updateOrderStatusByPaymentIntent("pi_111", "failed");
     const o = await getOrder("o1");
-    // Webhook events can arrive out of order; once paid, stay paid.
-    expect(o?.status).toBe("paid");
+    expect(o?.status).toBe("failed");
   });
 
   it("updateOrderStatusByPaymentIntent silently ignores unknown PI", async () => {
     await expect(
       updateOrderStatusByPaymentIntent("pi_does_not_exist", "paid"),
     ).resolves.not.toThrow();
+  });
+});
+
+describe("order-storage SQLite mirror", () => {
+  beforeEach(() => {
+    vi.stubEnv("SQLITE_FILE", ":memory:");
+  });
+
+  it("saveOrder writes a row to the orders table", async () => {
+    const { getDb, closeDb } = await import("@/lib/db");
+    const o = makeOrder("o_mirror", "pi_mirror");
+    await saveOrder(o);
+    const row = getDb().prepare("SELECT id FROM orders WHERE id = ?").get("o_mirror") as { id: string } | undefined;
+    expect(row?.id).toBe("o_mirror");
+    closeDb();
   });
 });
