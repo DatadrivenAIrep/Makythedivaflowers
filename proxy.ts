@@ -42,6 +42,13 @@ async function adminAuthMiddleware(req: NextRequest) {
 }
 
 export default async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+  // API routes should never go through the intl middleware.
+  if (pathname.startsWith("/api/")) {
+    const adminAuthResponse = await adminAuthMiddleware(req);
+    if (adminAuthResponse) return adminAuthResponse;
+    return NextResponse.next();
+  }
   const adminAuthResponse = await adminAuthMiddleware(req);
   if (adminAuthResponse) return adminAuthResponse;
   return intlMiddleware(req);

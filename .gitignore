@@ -63,3 +63,4 @@ test-results/
 /data/diva.sqlite-journal
 /data/diva.sqlite-wal
 /data/diva.sqlite-shm
+/data/diva.e2e.sqlite*
