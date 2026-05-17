@@ -1,10 +1,11 @@
 "use client";
 import { useState } from "react";
 import type { Product } from "@/types/product";
-import type { CartLine } from "@/types/order";
+import type { CartLine, OrderTotals } from "@/types/order";
 import CustomerBlock, { type CustomerSnapshot } from "./CustomerBlock";
 import FulfillmentBlock, { type FulfillmentState } from "./FulfillmentBlock";
 import ProductPicker from "./ProductPicker";
+import CartSummary from "./CartSummary";
 
 type Channel = "walk-in" | "phone" | "whatsapp" | "event";
 const CHANNELS: { id: Channel; label: string }[] = [
@@ -25,6 +26,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
     cardMessage: "",
   });
   const [lines, setLines] = useState<CartLine[]>([]);
+  const [override, setOverride] = useState<Partial<OrderTotals>>({});
 
   function addLine(line: CartLine) {
     setLines((prev) => {
@@ -90,6 +92,14 @@ export default function IntakeForm({ products }: { products: Product[] }) {
           </section>
           <section className="p-7 bg-bone">
             <ProductPicker products={products} onAdd={addLine} />
+            <CartSummary
+              lines={lines}
+              onChangeLines={setLines}
+              fulfillmentMethod={fulfillment.method}
+              deliveryZip={fulfillment.address.zip}
+              override={override}
+              onOverride={setOverride}
+            />
           </section>
         </div>
 
