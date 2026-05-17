@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import type { Product } from "@/types/product";
 import type { CartLine, OrderTotals } from "@/types/order";
 import CustomerBlock, { type CustomerSnapshot } from "./CustomerBlock";
@@ -11,14 +12,16 @@ import { toOrderFulfillment } from "./FulfillmentBlock";
 import { useRouter } from "next/navigation";
 
 type Channel = "walk-in" | "phone" | "whatsapp" | "event";
-const CHANNELS: { id: Channel; label: string }[] = [
-  { id: "walk-in", label: "Walk-in" },
-  { id: "phone", label: "Teléfono" },
-  { id: "whatsapp", label: "WhatsApp" },
-  { id: "event", label: "Evento" },
-];
 
 export default function IntakeForm({ products }: { products: Product[] }) {
+  const t = useTranslations("admin_intake");
+  const locale = useLocale();
+  const channels: { id: Channel; label: string }[] = [
+    { id: "walk-in", label: t("channel_walk_in") },
+    { id: "phone", label: t("channel_phone") },
+    { id: "whatsapp", label: t("channel_whatsapp") },
+    { id: "event", label: t("channel_event") },
+  ];
   const [channel, setChannel] = useState<Channel>("walk-in");
   const [customer, setCustomer] = useState<CustomerSnapshot>({ name: "", phone: "", email: "" });
   const [fulfillment, setFulfillment] = useState<FulfillmentState>({
@@ -79,7 +82,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
         return;
       }
       const { orderId } = await res.json();
-      router.replace(`/en/admin/intake?ok=${encodeURIComponent(orderId)}`);
+      router.replace(`/${locale}/admin/intake?ok=${encodeURIComponent(orderId)}`);
       setCustomer({ name: "", phone: "", email: "" });
       setLines([]);
       setOverride({});
@@ -91,13 +94,13 @@ export default function IntakeForm({ products }: { products: Product[] }) {
 
   return (
     <main className="max-w-[1180px] mx-auto p-6">
-      <p className="text-mute-500 text-sm mb-2">Diva Flowers · iPad intake</p>
-      <h1 className="font-display text-3xl text-ink mb-6">Nuevo pedido</h1>
+      <p className="text-mute-500 text-sm mb-2">{t("page_subtitle")}</p>
+      <h1 className="font-display text-3xl text-ink mb-6">{t("title_new")}</h1>
 
       <div className="bg-white rounded-bento shadow-sm overflow-hidden">
         <div className="flex items-center justify-between px-7 py-5 border-b border-mute-100">
           <div className="flex gap-1.5">
-            {CHANNELS.map((c) => (
+            {channels.map((c) => (
               <button
                 key={c.id}
                 type="button"
@@ -112,7 +115,9 @@ export default function IntakeForm({ products }: { products: Product[] }) {
               </button>
             ))}
           </div>
-          <div className="text-mute-400 text-xs tabular-nums">{new Date().toLocaleString("es-MX")}</div>
+          <div className="text-mute-400 text-xs tabular-nums">
+            {new Date().toLocaleString(locale === "es" ? "es-MX" : "en-US")}
+          </div>
         </div>
 
         <div className="grid grid-cols-[1.05fr_0.95fr]">
@@ -124,11 +129,13 @@ export default function IntakeForm({ products }: { products: Product[] }) {
             />
             <FulfillmentBlock value={fulfillment} onChange={setFulfillment} />
             <div className="mb-5">
-              <label className="block text-[11px] uppercase tracking-widest text-mute-400 mb-2">Mensaje en tarjeta</label>
+              <label className="block text-[11px] uppercase tracking-widest text-mute-400 mb-2">
+                {t("card_message_label")}
+              </label>
               <textarea
                 value={fulfillment.cardMessage}
                 onChange={(e) => setFulfillment({ ...fulfillment, cardMessage: e.target.value })}
-                placeholder="Para mi mamá, con todo mi cariño..."
+                placeholder={t("card_message_placeholder")}
                 rows={3}
                 className="w-full p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white resize-none"
               />
@@ -150,14 +157,16 @@ export default function IntakeForm({ products }: { products: Product[] }) {
 
         <div className="px-7 py-4 border-t border-mute-100 bg-white">
           <div className="flex items-center justify-between">
-            <button type="button" className="px-5 py-3 rounded-full border border-mute-200 text-mute-600">Descartar</button>
+            <button type="button" className="px-5 py-3 rounded-full border border-mute-200 text-mute-600">
+              {t("action_discard")}
+            </button>
             <button
               type="button"
               disabled={submitting || lines.length === 0 || customer.name.length === 0 || customer.phone.replace(/\D/g, "").length < 10}
               onClick={onSubmit}
               className="px-7 py-3.5 rounded-full bg-ink text-bone font-display disabled:opacity-40"
             >
-              {submitting ? "Guardando…" : "Guardar e imprimir ticket"}
+              {submitting ? t("action_saving") : t("action_save")}
             </button>
           </div>
           {error && <p className="text-error text-sm mt-2 break-all">{error}</p>}

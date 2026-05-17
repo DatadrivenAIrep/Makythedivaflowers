@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import type { PaymentMethod } from "@/types/order";
 
 export type PaymentState =
@@ -7,21 +8,22 @@ export type PaymentState =
 
 type Props = { value: PaymentState; onChange: (v: PaymentState) => void };
 
-const METHODS: { id: PaymentMethod; label: string }[] = [
-  { id: "cash", label: "Efectivo" },
-  { id: "zelle", label: "Zelle" },
-  { id: "card-terminal", label: "Terminal" },
-  { id: "ach", label: "ACH" },
-  { id: "stripe", label: "Stripe" },
+const METHOD_KEYS: { id: PaymentMethod; key: string }[] = [
+  { id: "cash", key: "payment_cash" },
+  { id: "zelle", key: "payment_zelle" },
+  { id: "card-terminal", key: "payment_card_terminal" },
+  { id: "ach", key: "payment_ach" },
+  { id: "stripe", key: "payment_stripe" },
 ];
 
 export default function PaymentBlock({ value, onChange }: Props) {
+  const t = useTranslations("admin_intake");
   const selectedMethod = value.status === "paid" ? value.method : null;
   return (
     <div className="mt-5">
-      <label className="block text-[11px] uppercase tracking-widest text-mute-400 mb-2">Pago</label>
+      <label className="block text-[11px] uppercase tracking-widest text-mute-400 mb-2">{t("payment_label")}</label>
       <div className="grid grid-cols-3 gap-2">
-        {METHODS.map((m) => (
+        {METHOD_KEYS.map((m) => (
           <button
             key={m.id}
             type="button"
@@ -32,7 +34,7 @@ export default function PaymentBlock({ value, onChange }: Props) {
                 : "bg-white border-mute-200 text-mute-700 hover:border-ink"
             }`}
           >
-            {m.label}
+            {t(m.key)}
           </button>
         ))}
         <button
@@ -44,7 +46,7 @@ export default function PaymentBlock({ value, onChange }: Props) {
               : "bg-warn/[0.05] border-warn text-warn"
           }`}
         >
-          Pendiente
+          {t("payment_pending")}
         </button>
       </div>
     </div>

@@ -1,5 +1,6 @@
 "use client";
 import { useMemo } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { PRODUCTS } from "@/data/products";
 import { cartSubtotalCents } from "@/lib/cart-helpers";
 import { computeOrderTotals, computeDeliveryCentsForZip } from "@/lib/totals";
@@ -19,6 +20,9 @@ function money(cents: number): string {
 }
 
 export default function CartSummary({ lines, onChangeLines, fulfillmentMethod, deliveryZip, override, onOverride }: Props) {
+  const t = useTranslations("admin_intake");
+  const locale = useLocale() as "en" | "es";
+
   const computed = useMemo(() => {
     const subtotal = cartSubtotalCents(lines, PRODUCTS);
     const deliveryCents =
@@ -41,12 +45,12 @@ export default function CartSummary({ lines, onChangeLines, fulfillmentMethod, d
     <div>
       <div className="bg-white border border-mute-100 rounded-2xl px-3.5 mb-4">
         {lines.length === 0 && (
-          <div className="py-4 text-mute-400 text-sm">Sin productos todavía</div>
+          <div className="py-4 text-mute-400 text-sm">{t("cart_empty")}</div>
         )}
         {lines.map((l, i) => {
           const label =
             l.kind === "catalog"
-              ? PRODUCTS.find((p) => p.id === l.productId)?.title.es ?? l.productId
+              ? PRODUCTS.find((p) => p.id === l.productId)?.title[locale] ?? l.productId
               : null;
           const unit =
             l.kind === "catalog"
@@ -70,15 +74,15 @@ export default function CartSummary({ lines, onChangeLines, fulfillmentMethod, d
       </div>
 
       <div className="border-t border-mute-100 pt-3.5 text-sm">
-        <Row label="Subtotal" cents={totals.subtotalCents} computedCents={computed.subtotalCents} onOverride={(v) => onOverride({ ...override, subtotalCents: v })} />
-        <Row label="Delivery" cents={totals.deliveryCents} computedCents={computed.deliveryCents} onOverride={(v) => onOverride({ ...override, deliveryCents: v })} />
-        <Row label="Tax" cents={totals.taxCents} computedCents={computed.taxCents} onOverride={(v) => onOverride({ ...override, taxCents: v })} />
+        <Row label={t("totals_subtotal")} cents={totals.subtotalCents} computedCents={computed.subtotalCents} onOverride={(v) => onOverride({ ...override, subtotalCents: v })} />
+        <Row label={t("totals_delivery")} cents={totals.deliveryCents} computedCents={computed.deliveryCents} onOverride={(v) => onOverride({ ...override, deliveryCents: v })} />
+        <Row label={t("totals_tax")} cents={totals.taxCents} computedCents={computed.taxCents} onOverride={(v) => onOverride({ ...override, taxCents: v })} />
         <div className="flex justify-between border-t border-mute-100 mt-2 pt-2.5 font-display text-base">
-          <span>Total</span>
+          <span>{t("totals_total")}</span>
           <button
             type="button"
             onClick={() => {
-              const raw = window.prompt("Total $", (totals.totalCents / 100).toFixed(2));
+              const raw = window.prompt(t("totals_prompt", { label: t("totals_total") }), (totals.totalCents / 100).toFixed(2));
               if (raw == null) return;
               const v = Math.round(parseFloat(raw) * 100);
               if (!Number.isNaN(v) && v >= 0) onOverride({ ...override, totalCents: v });

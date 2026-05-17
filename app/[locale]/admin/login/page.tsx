@@ -1,11 +1,14 @@
 "use client";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations, useLocale } from "next-intl";
 
 export default function AdminLoginPage() {
+  const t = useTranslations("admin_login");
+  const locale = useLocale();
   const router = useRouter();
   const params = useSearchParams();
-  const next = params.get("next") ?? "/admin/intake";
+  const next = params.get("next") ?? `/${locale}/admin/intake`;
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -24,9 +27,9 @@ export default function AdminLoginPage() {
         router.replace(next);
         return;
       }
-      setError(res.status === 401 ? "Contraseña incorrecta" : "Error de conexión");
+      setError(res.status === 401 ? t("error_invalid") : t("error_network"));
     } catch {
-      setError("Error de conexión");
+      setError(t("error_network"));
     } finally {
       setBusy(false);
     }
@@ -35,9 +38,9 @@ export default function AdminLoginPage() {
   return (
     <main className="min-h-screen flex items-center justify-center bg-bone px-6">
       <form onSubmit={onSubmit} className="w-full max-w-sm">
-        <h1 className="font-display text-3xl text-ink mb-2">Diva Flowers</h1>
-        <p className="text-mute-500 text-sm mb-8">Acceso de mostrador</p>
-        <label className="block text-xs uppercase tracking-widest text-mute-400 mb-2">Contraseña</label>
+        <h1 className="font-display text-3xl text-ink mb-2">{t("brand")}</h1>
+        <p className="text-mute-500 text-sm mb-8">{t("subtitle")}</p>
+        <label className="block text-xs uppercase tracking-widest text-mute-400 mb-2">{t("password_label")}</label>
         <input
           autoFocus
           type="password"
@@ -53,7 +56,7 @@ export default function AdminLoginPage() {
           disabled={busy || password.length === 0}
           className="mt-6 w-full py-4 rounded-full bg-ink text-bone font-display text-lg disabled:opacity-40"
         >
-          {busy ? "Entrando…" : "Entrar"}
+          {busy ? t("submitting") : t("submit")}
         </button>
       </form>
     </main>

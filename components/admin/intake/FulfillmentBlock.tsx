@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import type { Address } from "@/types/address";
 import type { DeliverySlot, OrderFulfillment } from "@/types/order";
 
@@ -17,18 +18,19 @@ type Props = {
   onChange: (v: FulfillmentState) => void;
 };
 
-const SEGS: { id: Method; label: string }[] = [
-  { id: "in-store", label: "Se lo lleva" },
-  { id: "delivery", label: "Delivery" },
-  { id: "pickup", label: "Pickup" },
-];
-
 export default function FulfillmentBlock({ value, onChange }: Props) {
+  const t = useTranslations("admin_intake");
+  const segs: { id: Method; label: string }[] = [
+    { id: "in-store", label: t("fulfillment_in_store") },
+    { id: "delivery", label: t("fulfillment_delivery") },
+    { id: "pickup", label: t("fulfillment_pickup") },
+  ];
+
   return (
     <div className="mb-5">
-      <label className="block text-[11px] uppercase tracking-widest text-mute-400 mb-2">Entrega</label>
+      <label className="block text-[11px] uppercase tracking-widest text-mute-400 mb-2">{t("fulfillment_label")}</label>
       <div className="inline-flex p-1 bg-mute-100 rounded-full gap-0.5 mb-3">
-        {SEGS.map((s) => (
+        {segs.map((s) => (
           <button
             key={s.id}
             type="button"
@@ -47,14 +49,14 @@ export default function FulfillmentBlock({ value, onChange }: Props) {
           <input
             value={value.recipient.name}
             onChange={(e) => onChange({ ...value, recipient: { ...value.recipient, name: e.target.value } })}
-            placeholder="Destinatario"
+            placeholder={t("fulfillment_recipient_name_placeholder")}
             className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white"
           />
           <input
             inputMode="tel"
             value={value.recipient.phone}
             onChange={(e) => onChange({ ...value, recipient: { ...value.recipient, phone: e.target.value } })}
-            placeholder="Tel destinatario"
+            placeholder={t("fulfillment_recipient_phone_placeholder")}
             className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white"
           />
           {value.method === "delivery" && (
@@ -62,14 +64,14 @@ export default function FulfillmentBlock({ value, onChange }: Props) {
               <input
                 value={value.address.street1}
                 onChange={(e) => onChange({ ...value, address: { ...value.address, street1: e.target.value } })}
-                placeholder="Calle y número"
+                placeholder={t("fulfillment_street1_placeholder")}
                 autoComplete="address-line1"
                 className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white"
               />
               <input
                 value={value.address.street2 ?? ""}
                 onChange={(e) => onChange({ ...value, address: { ...value.address, street2: e.target.value } })}
-                placeholder="Apto, suite, piso (opcional)"
+                placeholder={t("fulfillment_street2_placeholder")}
                 autoComplete="address-line2"
                 className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white"
               />
@@ -77,14 +79,14 @@ export default function FulfillmentBlock({ value, onChange }: Props) {
                 <input
                   value={value.address.city}
                   onChange={(e) => onChange({ ...value, address: { ...value.address, city: e.target.value } })}
-                  placeholder="Ciudad"
+                  placeholder={t("fulfillment_city_placeholder")}
                   autoComplete="address-level2"
                   className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white"
                 />
                 <input
                   value={value.address.state}
                   onChange={(e) => onChange({ ...value, address: { ...value.address, state: e.target.value.toUpperCase().slice(0, 2) } })}
-                  placeholder="Estado"
+                  placeholder={t("fulfillment_state_placeholder")}
                   autoComplete="address-level1"
                   maxLength={2}
                   className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white uppercase tracking-wider text-center"
@@ -92,7 +94,7 @@ export default function FulfillmentBlock({ value, onChange }: Props) {
                 <input
                   value={value.address.zip}
                   onChange={(e) => onChange({ ...value, address: { ...value.address, zip: e.target.value.replace(/\D/g, "").slice(0, 5) } })}
-                  placeholder="ZIP"
+                  placeholder={t("fulfillment_zip_placeholder")}
                   autoComplete="postal-code"
                   inputMode="numeric"
                   className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white tabular-nums text-center"
@@ -112,10 +114,10 @@ export default function FulfillmentBlock({ value, onChange }: Props) {
               onChange={(e) => onChange({ ...value, window: { ...value.window, slot: e.target.value as DeliverySlot } })}
               className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white appearance-none"
             >
-              <option value="morning">Mañana (9 – 12)</option>
-              <option value="midday">Mediodía (12 – 2)</option>
-              <option value="afternoon">Tarde (12 – 4)</option>
-              <option value="evening">Noche (4 – 7)</option>
+              <option value="morning">{t("slot_morning")}</option>
+              <option value="midday">{t("slot_midday")}</option>
+              <option value="afternoon">{t("slot_afternoon")}</option>
+              <option value="evening">{t("slot_evening")}</option>
             </select>
           </div>
         </div>
