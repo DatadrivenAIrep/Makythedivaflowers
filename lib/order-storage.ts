@@ -41,14 +41,16 @@ function upsertSqlite(order: Order): void {
        window_date, window_slot, card_message, lines_json,
        subtotal_cents, delivery_cents, tax_cents, total_cents,
        fulfillment_status, payment_status, payment_method, paid_at,
-       stripe_payment_intent_id, taken_by, internal_notes, created_at, updated_at
+       stripe_payment_intent_id, taken_by, internal_notes,
+       stripe_checkout_session_id, created_at, updated_at
      ) VALUES (
        @id, @locale, @source, @customer_id, @recipient_name, @recipient_phone,
        @contact_email, @contact_phone, @fulfillment_method, @address_json,
        @window_date, @window_slot, @card_message, @lines_json,
        @subtotal_cents, @delivery_cents, @tax_cents, @total_cents,
        @fulfillment_status, @payment_status, @payment_method, @paid_at,
-       @stripe_payment_intent_id, @taken_by, @internal_notes, @created_at, @updated_at
+       @stripe_payment_intent_id, @taken_by, @internal_notes,
+       @stripe_checkout_session_id, @created_at, @updated_at
      )
      ON CONFLICT(id) DO UPDATE SET
        locale=excluded.locale,
@@ -75,6 +77,7 @@ function upsertSqlite(order: Order): void {
        stripe_payment_intent_id=excluded.stripe_payment_intent_id,
        taken_by=excluded.taken_by,
        internal_notes=excluded.internal_notes,
+       stripe_checkout_session_id=excluded.stripe_checkout_session_id,
        updated_at=excluded.updated_at`,
   ).run(row);
 }
@@ -153,4 +156,16 @@ export async function updateOrderStatusByPaymentIntent(
     all[idx] = next;
     await writeAll(all);
   }
+}
+
+export async function updateOrderCheckoutSessionId(
+  orderId: string,
+  sessionId: string,
+): Promise<void> {
+  ensureSchema();
+  const db = getDb();
+  const now = new Date().toISOString();
+  db.prepare(
+    `UPDATE orders SET stripe_checkout_session_id = ?, updated_at = ? WHERE id = ?`,
+  ).run(sessionId, now, orderId);
 }

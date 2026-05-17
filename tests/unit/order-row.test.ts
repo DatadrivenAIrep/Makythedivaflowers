@@ -32,6 +32,14 @@ describe("order-row", () => {
     expect(back).toEqual(sample);
   });
 
+  it("round-trips stripeCheckoutSessionId", () => {
+    const o: Order = { ...sample, stripeCheckoutSessionId: "cs_123" };
+    const row = orderToRow(o);
+    expect(row.stripe_checkout_session_id).toBe("cs_123");
+    const back = rowToOrder(row);
+    expect(back.stripeCheckoutSessionId).toBe("cs_123");
+  });
+
   it("serializes in-store fulfillment without address or window", () => {
     const inStore: Order = {
       ...sample,
