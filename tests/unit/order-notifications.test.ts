@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import type { Order } from "@/types/order";
-import { __buildBody as buildBody } from "@/lib/order-notifications";
+import { __buildBody as buildBody, __buildHtml as buildHtml } from "@/lib/order-notifications";
 
 const baseOrder: Order = {
   id: "do_test",
@@ -50,5 +50,20 @@ describe("order-notifications buildBody", () => {
     expect(body).toContain("DELIVER TO");
     expect(body).toContain("1 Test St");
     expect(body).not.toContain("PICK UP AT SHOP");
+  });
+});
+
+describe("order-notifications buildHtml", () => {
+  it("omits the Window block entirely for in-store orders", () => {
+    const order: Order = {
+      ...baseOrder,
+      fulfillment: {
+        method: "in-store",
+        recipient: { name: "Lola Cardona", phone: "5165550101" },
+        cardMessage: "",
+      },
+    };
+    const html = buildHtml(order);
+    expect(html).not.toMatch(/Window/i);
   });
 });

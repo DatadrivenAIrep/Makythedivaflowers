@@ -31,6 +31,7 @@ export async function POST(req: Request) {
   }
   const { locale, lines, form } = parsed.data;
 
+  // Web checkout never receives custom lines — stamp kind explicitly to satisfy the new union type.
   const backfilledLines: CartLine[] = lines.map((l) => ({ kind: "catalog" as const, ...l }));
 
   const subtotal = cartSubtotalCents(backfilledLines, PRODUCTS);

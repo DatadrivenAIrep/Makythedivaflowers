@@ -315,14 +315,16 @@ export function __buildHtml(order: Order): string {
                 <div style="font-size:15px;color:${COLORS.ink};line-height:1.55;">
                   ${fulfillment.rows.join('<div style="height:4px;"></div>')}
                 </div>
-                <div style="margin-top:14px;padding-top:12px;border-top:1px dashed ${fulfillment.accent}55;">
+                ${fulfillment.window
+                  ? `<div style="margin-top:14px;padding-top:12px;border-top:1px dashed ${fulfillment.accent}55;">
                   <div style="font-family:${FONT_STACKS.mono};font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:${fulfillment.accent};opacity:0.85;margin-bottom:4px;">
                     Window
                   </div>
                   <div style="font-family:${FONT_STACKS.display};font-size:18px;font-weight:600;color:${COLORS.ink};line-height:1.2;">
                     ${escapeHtml(fulfillment.window)}
                   </div>
-                </div>
+                </div>`
+                  : ""}
               </td>
             </tr>
           </table>
