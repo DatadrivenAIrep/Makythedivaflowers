@@ -3,15 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "NODE_OPTIONS='--experimental-sqlite' next dev",
     "build": "next build",
-    "start": "next start",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:ui": "vitest --ui",
+    "start": "NODE_OPTIONS='--experimental-sqlite' next start",
+    "test": "NODE_OPTIONS='--experimental-sqlite' vitest run",
+    "test:watch": "NODE_OPTIONS='--experimental-sqlite' vitest",
+    "test:ui": "NODE_OPTIONS='--experimental-sqlite' vitest --ui",
     "e2e": "playwright test",
     "e2e:ui": "playwright test --ui",
-    "migrate:orders": "tsx scripts/migrate-orders-json-to-sqlite.ts"
+    "migrate:orders": "NODE_OPTIONS='--experimental-sqlite' tsx scripts/migrate-orders-json-to-sqlite.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.92.0",
@@ -23,7 +23,6 @@
     "@sparticuz/chromium": "^131.0.1",
     "@stripe/react-stripe-js": "^6.3.0",
     "@stripe/stripe-js": "^9.4.0",
-    "better-sqlite3": "~11.10.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.38.0",
     "next": "16.2.4",
@@ -44,7 +43,6 @@
     "onlyBuiltDependencies": [
       "@parcel/watcher",
       "@swc/core",
-      "better-sqlite3",
       "sharp"
     ]
   },
@@ -55,8 +53,7 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
-    "@types/better-sqlite3": "^7.6.13",
-    "@types/node": "^20",
+    "@types/node": "^22.19.19",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitest/ui": "^4.1.5",

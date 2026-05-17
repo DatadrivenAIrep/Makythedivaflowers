@@ -2,7 +2,8 @@
 import { promises as fs } from "node:fs";
 import { readFileSync, readdirSync, mkdirSync } from "node:fs";
 import path from "node:path";
-import Database, { type Database as DB } from "better-sqlite3";
+import { DatabaseSync } from "node:sqlite";
+type DB = DatabaseSync;
 import type { Order } from "../types/order";
 
 type OrderRow = {
@@ -88,12 +89,12 @@ function resolveFile(): string {
 function getDb(): DB {
   if (dbInstance) return dbInstance;
   const file = resolveFile();
-  dbInstance = new Database(file);
+  dbInstance = new DatabaseSync(file);
   if (file !== ":memory:") {
-    dbInstance.pragma("journal_mode = WAL");
+    dbInstance.exec("PRAGMA journal_mode = WAL");
   }
-  dbInstance.pragma("foreign_keys = ON");
-  dbInstance.pragma("busy_timeout = 5000");
+  dbInstance.exec("PRAGMA foreign_keys = ON");
+  dbInstance.exec("PRAGMA busy_timeout = 5000");
   return dbInstance;
 }
 
@@ -124,11 +125,15 @@ function runMigrations(): void {
   for (const f of files) {
     if (applied.has(f)) continue;
     const sql = readFileSync(path.join(migrationsDir, f), "utf8");
-    const tx = db.transaction(() => {
+    db.exec("BEGIN");
+    try {
       db.exec(sql);
       insert.run(f, new Date().toISOString());
-    });
-    tx();
+      db.exec("COMMIT");
+    } catch (e) {
+      db.exec("ROLLBACK");
+      throw e;
+    }
     console.log(JSON.stringify({ event: "migration_applied", name: f }));
   }
 }
@@ -181,14 +186,18 @@ async function main() {
      )`,
   );
   let imported = 0;
-  const tx = db.transaction(() => {
+  db.exec("BEGIN");
+  try {
     for (const lo of legacy) {
       const order = normalize(lo);
       insert.run(orderToRow(order));
       imported++;
     }
-  });
-  tx();
+    db.exec("COMMIT");
+  } catch (e) {
+    db.exec("ROLLBACK");
+    throw e;
+  }
 
   const countOnDb = db.prepare("SELECT COUNT(*) as c FROM orders").get() as { c: number };
   console.log(JSON.stringify({ event: "migration_done", json_count: legacy.length, db_count: countOnDb.c, imported }));

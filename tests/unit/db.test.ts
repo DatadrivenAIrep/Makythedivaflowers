@@ -28,7 +28,7 @@ describe("db", () => {
     vi.stubEnv("SQLITE_FILE", "/tmp/diva-wal-test.sqlite");
     closeDb();
     const db = getDb();
-    const mode = db.pragma("journal_mode", { simple: true });
-    expect(mode).toBe("wal");
+    const row = db.prepare("PRAGMA journal_mode").get() as { journal_mode: string };
+    expect(row.journal_mode).toBe("wal");
   });
 });

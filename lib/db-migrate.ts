@@ -24,11 +24,15 @@ export function runMigrations(): void {
   for (const f of files) {
     if (applied.has(f)) continue;
     const sql = fs.readFileSync(path.join(MIGRATIONS_DIR, f), "utf8");
-    const tx = db.transaction(() => {
+    db.exec("BEGIN");
+    try {
       db.exec(sql);
       insert.run(f, new Date().toISOString());
-    });
-    tx();
+      db.exec("COMMIT");
+    } catch (e) {
+      db.exec("ROLLBACK");
+      throw e;
+    }
     console.log(JSON.stringify({ event: "migration_applied", name: f }));
   }
 }
