@@ -2,6 +2,21 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import path from "node:path";
 import os from "node:os";
 import { promises as fs } from "node:fs";
+
+vi.mock("@/lib/stripe-server", () => ({
+  stripe: {
+    checkout: {
+      sessions: {
+        create: vi.fn().mockResolvedValue({
+          id: "cs_test",
+          url: "https://buy.stripe.com/test",
+          expires_at: 9999999999,
+        }),
+      },
+    },
+  },
+}));
+
 import { POST } from "@/app/api/admin/orders/route";
 import { closeDb, getDb } from "@/lib/db";
 
@@ -12,6 +27,10 @@ beforeEach(async () => {
   vi.stubEnv("SQLITE_FILE", ":memory:");
   vi.stubEnv("ORDER_STORAGE_FILE", ORDER_FILE);
   vi.stubEnv("PRINT_QUEUE_FILE", PRINT_FILE);
+  vi.stubEnv("TWILIO_DRY_RUN", "true");
+  vi.stubEnv("TWILIO_SMS_ENABLED", "true");
+  vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_dummy");
+  vi.stubEnv("SITE_URL", "https://example.com");
   await fs.writeFile(ORDER_FILE, "[]");
   await fs.writeFile(PRINT_FILE, "[]");
 });
@@ -71,5 +90,54 @@ describe("POST /api/admin/orders", () => {
     const out = await res.json();
     const order = getDb().prepare("SELECT payment_status FROM orders WHERE id = ?").get(out.orderId) as { payment_status: string };
     expect(order.payment_status).toBe("pending");
+  });
+
+  it("creates a checkout session and dispatches payment_link for pending orders with SMS channel", async () => {
+    const res = await POST(req({
+      ...body,
+      payment: { status: "pending" },
+      customer: { ...body.customer, messagingChannel: "sms" },
+    }));
+    expect(res.status).toBe(201);
+    const out = await res.json();
+
+    const order = getDb()
+      .prepare("SELECT stripe_checkout_session_id FROM orders WHERE id = ?")
+      .get(out.orderId) as { stripe_checkout_session_id: string };
+    expect(order.stripe_checkout_session_id).toBe("cs_test");
+
+    const msg = getDb()
+      .prepare("SELECT template, status FROM messages WHERE order_id = ?")
+      .get(out.orderId) as { template: string; status: string };
+    expect(msg.template).toBe("payment_link");
+    expect(msg.status).toBe("sent");
+  });
+
+  it("dispatches order_received for paid walk-in", async () => {
+    const res = await POST(req({
+      ...body,
+      customer: { ...body.customer, messagingChannel: "sms" },
+    }));
+    expect(res.status).toBe(201);
+    const out = await res.json();
+    const msg = getDb()
+      .prepare("SELECT template FROM messages WHERE order_id = ?")
+      .get(out.orderId) as { template: string };
+    expect(msg.template).toBe("order_received");
+  });
+
+  it("does not send any message when customer channel is 'none'", async () => {
+    const res = await POST(req({
+      ...body,
+      customer: { ...body.customer, messagingChannel: "none" },
+    }));
+    expect(res.status).toBe(201);
+    const out = await res.json();
+    const count = (
+      getDb()
+        .prepare("SELECT COUNT(*) as c FROM messages WHERE order_id = ?")
+        .get(out.orderId) as { c: number }
+    ).c;
+    expect(count).toBe(0);
   });
 });

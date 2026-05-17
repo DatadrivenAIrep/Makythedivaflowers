@@ -6,6 +6,8 @@ import { computeOrderTotals, computeDeliveryCentsForZip } from "@/lib/totals";
 import { saveOrder } from "@/lib/order-storage";
 import { enqueuePrintJob } from "@/lib/print-queue";
 import { upsertOnOrder } from "@/lib/customer-storage";
+import { createCheckoutSession } from "@/lib/stripe-payment-link";
+import { dispatchOrderReceived } from "@/lib/order-dispatch";
 import type { Order, OrderFulfillment, CartLine } from "@/types/order";
 
 export const runtime = "nodejs";
@@ -45,6 +47,8 @@ export async function POST(req: Request) {
     address:
       input.fulfillment.method === "delivery" ? input.fulfillment.address : undefined,
     orderAt: now,
+    messagingChannel: input.customer.messagingChannel,
+    locale: input.customer.locale,
   });
 
   const fulfillment: OrderFulfillment = input.fulfillment;
@@ -72,6 +76,31 @@ export async function POST(req: Request) {
 
   await saveOrder(order);
   const job = await enqueuePrintJob(order);
+
+  // Generate a Stripe Checkout Session for pending orders that will be messaged
+  // via SMS or WhatsApp. Skip when the customer prefers email/none — they pay
+  // through the existing email flow or manually.
+  let paymentLinkUrl: string | undefined;
+  const channel = customer.messagingChannel ?? "sms";
+  const shouldCreateLink =
+    order.paymentStatus === "pending" &&
+    (channel === "sms" || channel === "whatsapp");
+
+  if (shouldCreateLink) {
+    try {
+      const session = await createCheckoutSession(order, customer.locale ?? order.locale);
+      paymentLinkUrl = session.url;
+      order.stripeCheckoutSessionId = session.id;
+    } catch (e) {
+      console.error(
+        JSON.stringify({ event: "checkout_session_failed", orderId: order.id, error: String(e) }),
+      );
+    }
+  }
+
+  // Dispatch the right message. order_received OR payment_link is chosen
+  // internally by dispatchOrderReceived based on order.paymentStatus + link presence.
+  await dispatchOrderReceived(order, paymentLinkUrl);
 
   // Fire-and-forget email when the order is paid AND there's an email on file.
   // Phase 1 reuses `notifyOrderPaid` from the existing web pipeline.
