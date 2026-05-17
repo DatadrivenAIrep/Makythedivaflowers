@@ -1,8 +1,10 @@
 "use client";
 import { useState } from "react";
 import type { Product } from "@/types/product";
+import type { CartLine } from "@/types/order";
 import CustomerBlock, { type CustomerSnapshot } from "./CustomerBlock";
 import FulfillmentBlock, { type FulfillmentState } from "./FulfillmentBlock";
+import ProductPicker from "./ProductPicker";
 
 type Channel = "walk-in" | "phone" | "whatsapp" | "event";
 const CHANNELS: { id: Channel; label: string }[] = [
@@ -22,7 +24,24 @@ export default function IntakeForm({ products }: { products: Product[] }) {
     window: { date: new Date().toISOString().slice(0, 10), slot: "midday" },
     cardMessage: "",
   });
-  void products; // Used by later tasks (ProductPicker)
+  const [lines, setLines] = useState<CartLine[]>([]);
+
+  function addLine(line: CartLine) {
+    setLines((prev) => {
+      if (line.kind === "catalog") {
+        const idx = prev.findIndex(
+          (l) => l.kind === "catalog" && l.productId === line.productId && l.variantId === line.variantId,
+        );
+        if (idx >= 0) {
+          const next = [...prev];
+          const cur = next[idx];
+          next[idx] = { ...cur, qty: cur.qty + 1 } as CartLine;
+          return next;
+        }
+      }
+      return [...prev, line];
+    });
+  }
 
   return (
     <main className="max-w-[1180px] mx-auto p-6">
@@ -70,7 +89,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
             </div>
           </section>
           <section className="p-7 bg-bone">
-            {/* ProductPicker + Cart + Totals + PaymentBlock in next tasks */}
+            <ProductPicker products={products} onAdd={addLine} />
           </section>
         </div>
 
