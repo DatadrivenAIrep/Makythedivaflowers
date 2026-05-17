@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import type { Product } from "@/types/product";
+import CustomerBlock, { type CustomerSnapshot } from "./CustomerBlock";
 
 type Channel = "walk-in" | "phone" | "whatsapp" | "event";
 const CHANNELS: { id: Channel; label: string }[] = [
@@ -12,6 +13,7 @@ const CHANNELS: { id: Channel; label: string }[] = [
 
 export default function IntakeForm({ products }: { products: Product[] }) {
   const [channel, setChannel] = useState<Channel>("walk-in");
+  const [customer, setCustomer] = useState<CustomerSnapshot>({ name: "", phone: "", email: "" });
   void products; // Used by later tasks (ProductPicker)
 
   return (
@@ -42,7 +44,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
 
         <div className="grid grid-cols-[1.05fr_0.95fr]">
           <section className="p-7 border-r border-mute-100">
-            {/* CustomerBlock + FulfillmentBlock + cardMessage in next tasks */}
+            <CustomerBlock value={customer} onChange={setCustomer} onApplyAddress={() => {}} />
           </section>
           <section className="p-7 bg-bone">
             {/* ProductPicker + Cart + Totals + PaymentBlock in next tasks */}
