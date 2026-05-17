@@ -58,23 +58,47 @@ export default function FulfillmentBlock({ value, onChange }: Props) {
             className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white"
           />
           {value.method === "delivery" && (
-            <input
-              value={`${value.address.street1}${value.address.street1 ? ", " : ""}${value.address.city} ${value.address.state} ${value.address.zip}`.trim()}
-              onChange={(e) => {
-                const raw = e.target.value;
-                const m = /^(.*?),\s*(.+?)\s+([A-Z]{2})\s+(\d{5})$/.exec(raw);
-                if (m) {
-                  onChange({
-                    ...value,
-                    address: { street1: m[1], city: m[2], state: m[3], zip: m[4], country: "US" },
-                  });
-                } else {
-                  onChange({ ...value, address: { ...value.address, street1: raw } });
-                }
-              }}
-              placeholder="Dirección completa (calle, ciudad, estado, ZIP)"
-              className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white"
-            />
+            <>
+              <input
+                value={value.address.street1}
+                onChange={(e) => onChange({ ...value, address: { ...value.address, street1: e.target.value } })}
+                placeholder="Calle y número"
+                autoComplete="address-line1"
+                className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white"
+              />
+              <input
+                value={value.address.street2 ?? ""}
+                onChange={(e) => onChange({ ...value, address: { ...value.address, street2: e.target.value } })}
+                placeholder="Apto, suite, piso (opcional)"
+                autoComplete="address-line2"
+                className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white"
+              />
+              <div className="grid grid-cols-[1.4fr_0.6fr_0.7fr] gap-2">
+                <input
+                  value={value.address.city}
+                  onChange={(e) => onChange({ ...value, address: { ...value.address, city: e.target.value } })}
+                  placeholder="Ciudad"
+                  autoComplete="address-level2"
+                  className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white"
+                />
+                <input
+                  value={value.address.state}
+                  onChange={(e) => onChange({ ...value, address: { ...value.address, state: e.target.value.toUpperCase().slice(0, 2) } })}
+                  placeholder="Estado"
+                  autoComplete="address-level1"
+                  maxLength={2}
+                  className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white uppercase tracking-wider text-center"
+                />
+                <input
+                  value={value.address.zip}
+                  onChange={(e) => onChange({ ...value, address: { ...value.address, zip: e.target.value.replace(/\D/g, "").slice(0, 5) } })}
+                  placeholder="ZIP"
+                  autoComplete="postal-code"
+                  inputMode="numeric"
+                  className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white tabular-nums text-center"
+                />
+              </div>
+            </>
           )}
           <div className="grid grid-cols-2 gap-2">
             <input
