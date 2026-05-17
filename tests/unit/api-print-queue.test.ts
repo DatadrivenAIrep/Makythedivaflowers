@@ -4,6 +4,7 @@ import path from "node:path";
 import os from "node:os";
 import type { Order } from "@/types/order";
 import { __resetRateLimitForTests } from "@/lib/rate-limit";
+import { closeDb } from "@/lib/db";
 
 const TEST_FILE = path.join(os.tmpdir(), `diva-test-print-api-${process.pid}.json`);
 const ORDER_FILE = path.join(os.tmpdir(), `diva-test-print-orders-${process.pid}.json`);
@@ -17,13 +18,16 @@ vi.mock("@/lib/print-render-html", () => ({
 
 const baseOrder: Order = {
   id: "do_api1",
+  source: "web",
   locale: "en",
   lines: [],
   contact: { email: "x@y.com", phone: "5555555555" },
   totals: { subtotalCents: 1000, deliveryCents: 0, taxCents: 0, totalCents: 1000 },
-  status: "paid",
+  status: "pending",
+  paymentStatus: "paid",
   createdAt: "2026-05-07T00:00:00.000Z",
-  delivery: {
+  updatedAt: "2026-05-07T00:00:00.000Z",
+  fulfillment: {
     method: "pickup",
     recipient: { name: "R", phone: "5555555555" },
     window: { date: "2099-01-01", slot: "midday" },
@@ -34,11 +38,13 @@ beforeEach(async () => {
   vi.stubEnv("PRINT_QUEUE_FILE", TEST_FILE);
   vi.stubEnv("ORDER_STORAGE_FILE", ORDER_FILE);
   vi.stubEnv("PRINT_AGENT_TOKEN", "test-token-32bytes");
+  vi.stubEnv("SQLITE_FILE", ":memory:");
   await fs.writeFile(TEST_FILE, "[]", "utf8");
   await fs.writeFile(ORDER_FILE, "[]", "utf8");
   __resetRateLimitForTests();
 });
 afterEach(async () => {
+  closeDb();
   try { await fs.unlink(TEST_FILE); } catch {}
   try { await fs.unlink(ORDER_FILE); } catch {}
   vi.unstubAllEnvs();

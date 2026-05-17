@@ -10,7 +10,8 @@
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "e2e": "playwright test",
-    "e2e:ui": "playwright test --ui"
+    "e2e:ui": "playwright test --ui",
+    "migrate:orders": "tsx scripts/migrate-orders-json-to-sqlite.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.92.0",
@@ -22,6 +23,7 @@
     "@sparticuz/chromium": "^131.0.1",
     "@stripe/react-stripe-js": "^6.3.0",
     "@stripe/stripe-js": "^9.4.0",
+    "better-sqlite3": "^12.10.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.38.0",
     "next": "16.2.4",
@@ -41,6 +43,7 @@
     "onlyBuiltDependencies": [
       "@parcel/watcher",
       "@swc/core",
+      "better-sqlite3",
       "sharp"
     ]
   },
@@ -51,6 +54,7 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

@@ -20,6 +20,7 @@ export function ReciprocityCard({ order, locale }: Props) {
   const code = deriveReferralCode(order.id);
 
   const hasSubscription = order.lines.some((l) => {
+    if (l.kind !== "catalog") return false;
     const p = PRODUCTS.find((p) => p.id === l.productId);
     return p?.category === "subscriptions";
   });

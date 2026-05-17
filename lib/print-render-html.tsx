@@ -67,7 +67,7 @@ function Worksheet({ order }: { order: Order }) {
         </div>
         <div className="ws-window">
           <div className="lbl">{t.deliveryWindow}</div>
-          <div className="val-time">{formatDeliveryWindow(order.delivery.window, locale)}</div>
+          <div className="val-time">{order.fulfillment.method !== "in-store" ? formatDeliveryWindow(order.fulfillment.window, locale) : ""}</div>
           <div className="total-row">
             <span className="lbl">{t.total}</span>
             <span className="val">{m(order.totals.totalCents)}</span>
@@ -77,30 +77,35 @@ function Worksheet({ order }: { order: Order }) {
 
       {/* Col 2 — recipient + message */}
       <div className="ws-col">
-        {order.delivery.method === "delivery" ? (
+        {order.fulfillment.method === "delivery" ? (
           <div className="ws-section accent">
             <span className="pill">{t.deliverTo}</span>
-            <p><strong>{order.delivery.recipient.name}</strong></p>
-            <p>{formatPhoneUS(order.delivery.recipient.phone)}</p>
+            <p><strong>{order.fulfillment.recipient.name}</strong></p>
+            <p>{formatPhoneUS(order.fulfillment.recipient.phone)}</p>
             <p>
-              {order.delivery.address.street1}
-              {order.delivery.address.street2 ? `, ${order.delivery.address.street2}` : ""}
+              {order.fulfillment.address.street1}
+              {order.fulfillment.address.street2 ? `, ${order.fulfillment.address.street2}` : ""}
             </p>
-            <p>{order.delivery.address.city}, {order.delivery.address.state} {order.delivery.address.zip}</p>
+            <p>{order.fulfillment.address.city}, {order.fulfillment.address.state} {order.fulfillment.address.zip}</p>
           </div>
-        ) : (
+        ) : order.fulfillment.method === "pickup" ? (
           <div className="ws-section accent">
             <span className="pill">{t.pickUp}</span>
             <p><strong>{SITE.brand}</strong></p>
             <p>{SITE.address.line1}</p>
             <p>{SITE.address.locality}, {SITE.address.region} {SITE.address.postal}</p>
-            <p>{order.delivery.recipient.name} · {formatPhoneUS(order.delivery.recipient.phone)}</p>
+            <p>{order.fulfillment.recipient.name} · {formatPhoneUS(order.fulfillment.recipient.phone)}</p>
+          </div>
+        ) : (
+          <div className="ws-section accent">
+            <p><strong>{order.fulfillment.recipient.name}</strong></p>
+            <p>{formatPhoneUS(order.fulfillment.recipient.phone)}</p>
           </div>
         )}
-        {order.delivery.cardMessage?.trim() ? (
+        {order.fulfillment.cardMessage?.trim() ? (
           <div className="ws-section">
             <div className="ws-section-label">{t.cardMessage}</div>
-            <p className="ws-msg-quote">"{order.delivery.cardMessage.trim()}"</p>
+            <p className="ws-msg-quote">"{order.fulfillment.cardMessage.trim()}"</p>
           </div>
         ) : null}
       </div>
@@ -226,7 +231,7 @@ function Sheet({ order, logoUri }: { order: Order; logoUri: string }) {
     <div className="sheet">
       <div className="cut-h" />
       <Worksheet order={order} />
-      <CardRow message={order.delivery.cardMessage} logoUri={logoUri} />
+      <CardRow message={order.fulfillment.cardMessage} logoUri={logoUri} />
     </div>
   );
 }

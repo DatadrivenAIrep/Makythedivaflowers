@@ -15,7 +15,8 @@ export async function ConfirmationView({ order, locale }: { order: Order; locale
   const t = await getTranslations({ locale, namespace: "confirmation" });
   const resolved = resolveCartLines(order.lines, PRODUCTS);
   const hasSubscription = resolved.some((r) => r.product.category === "subscriptions");
-  const windowLabel = formatDeliveryWindow(order.delivery.window, locale);
+  const f = order.fulfillment;
+  const windowLabel = "window" in f ? formatDeliveryWindow(f.window, locale) : "";
 
   return (
     <div className="space-y-12">
@@ -25,10 +26,10 @@ export async function ConfirmationView({ order, locale }: { order: Order; locale
           {t("paid_label")}
         </span>
         <h1 className="font-display text-5xl sm:text-6xl text-ink leading-[0.95] tracking-tighter">
-          {t("title", { name: order.delivery.recipient.name })}
+          {t("title", { name: f.recipient.name })}
         </h1>
         <p className="text-base text-ink/75 max-w-[58ch]">
-          {hasSubscription ? t("body_subscription", { date: order.delivery.window.date }) : t("body")}
+          {hasSubscription ? t("body_subscription", { date: "window" in f ? f.window.date : "" }) : t("body")}
         </p>
         <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/55">
           {t("order_id")}: <span className="text-ink">{order.id}</span>
@@ -36,36 +37,46 @@ export async function ConfirmationView({ order, locale }: { order: Order; locale
       </header>
       <section className="grid gap-12 lg:grid-cols-[1fr_360px]">
         <div className="space-y-8">
-          {order.delivery.method === "pickup" ? (
+          {f.method === "pickup" ? (
             <div>
               <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/55 mb-3">{t("pickup_at_label")}</p>
-              <p className="font-display text-2xl text-ink">{order.delivery.recipient.name}</p>
+              <p className="font-display text-2xl text-ink">{f.recipient.name}</p>
               <p className="text-sm text-ink/75">
                 {SITE.address.line1}<br />
                 {SITE.address.locality}, {SITE.address.region} {SITE.address.postal}
               </p>
-              <p className="font-mono text-sm text-ink mt-2">{formatPhoneUS(order.delivery.recipient.phone)}</p>
+              <p className="font-mono text-sm text-ink mt-2">{formatPhoneUS(f.recipient.phone)}</p>
               <p className="font-mono text-sm text-ink mt-2">{windowLabel}</p>
-              {order.delivery.cardMessage && (
+              {f.cardMessage && (
                 <blockquote className="mt-4 border-l-2 border-rouge pl-4 text-ink/80 italic">
-                  &ldquo;{order.delivery.cardMessage}&rdquo;
+                  &ldquo;{f.cardMessage}&rdquo;
+                </blockquote>
+              )}
+            </div>
+          ) : f.method === "delivery" ? (
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/55 mb-3">{t("delivery_to")}</p>
+              <p className="font-display text-2xl text-ink">{f.recipient.name}</p>
+              <p className="text-sm text-ink/75">
+                {f.address.street1}{f.address.street2 && `, ${f.address.street2}`}
+                <br />
+                {f.address.city}, {f.address.state} {f.address.zip}
+              </p>
+              <p className="font-mono text-sm text-ink mt-2">{formatPhoneUS(f.recipient.phone)}</p>
+              <p className="font-mono text-sm text-ink mt-2">{windowLabel}</p>
+              {f.cardMessage && (
+                <blockquote className="mt-4 border-l-2 border-rouge pl-4 text-ink/80 italic">
+                  &ldquo;{f.cardMessage}&rdquo;
                 </blockquote>
               )}
             </div>
           ) : (
             <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/55 mb-3">{t("delivery_to")}</p>
-              <p className="font-display text-2xl text-ink">{order.delivery.recipient.name}</p>
-              <p className="text-sm text-ink/75">
-                {order.delivery.address.street1}{order.delivery.address.street2 && `, ${order.delivery.address.street2}`}
-                <br />
-                {order.delivery.address.city}, {order.delivery.address.state} {order.delivery.address.zip}
-              </p>
-              <p className="font-mono text-sm text-ink mt-2">{formatPhoneUS(order.delivery.recipient.phone)}</p>
-              <p className="font-mono text-sm text-ink mt-2">{windowLabel}</p>
-              {order.delivery.cardMessage && (
+              <p className="font-display text-2xl text-ink">{f.recipient.name}</p>
+              <p className="font-mono text-sm text-ink mt-2">{formatPhoneUS(f.recipient.phone)}</p>
+              {f.cardMessage && (
                 <blockquote className="mt-4 border-l-2 border-rouge pl-4 text-ink/80 italic">
-                  &ldquo;{order.delivery.cardMessage}&rdquo;
+                  &ldquo;{f.cardMessage}&rdquo;
                 </blockquote>
               )}
             </div>

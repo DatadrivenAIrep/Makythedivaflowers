@@ -25,8 +25,9 @@ export function suggestExtrasForCart(
   lines: CartLine[],
   allProducts: Product[],
 ): GiftExtraId[] {
-  const inCart = new Set(lines.map((l) => l.productId));
-  const productOccasions = lines
+  const catalogLines = lines.filter((l) => l.kind === "catalog");
+  const inCart = new Set(catalogLines.map((l) => l.productId));
+  const productOccasions = catalogLines
     .map((l) => allProducts.find((p) => p.id === l.productId))
     .filter((p): p is Product => Boolean(p))
     .flatMap((p) => p.occasions);

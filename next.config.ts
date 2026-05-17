@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
   // doesn't try to bundle them. On hosts where chromium can't actually
   // load, `lib/print-chromium.ts` defers the import to runtime; the
   // module graph still resolves cleanly at build time.
-  serverExternalPackages: ["puppeteer-core", "@sparticuz/chromium", "sharp", "pdf-parse"],
+  serverExternalPackages: ["puppeteer-core", "@sparticuz/chromium", "sharp", "pdf-parse", "better-sqlite3"],
   experimental: {
     optimizePackageImports: ["@phosphor-icons/react", "framer-motion"],
     staleTimes: { dynamic: 0 },

@@ -3,11 +3,42 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import type { PrintJob, PrintJobStatus } from "@/types/print-job";
 import type { Order } from "@/types/order";
+import { getDb } from "@/lib/db";
+import { runMigrations } from "@/lib/db-migrate";
 
 function storageFile(): string {
   const override = process.env.PRINT_QUEUE_FILE;
   if (override) return path.isAbsolute(override) ? override : path.resolve(override);
   return path.join(process.cwd(), "print-queue.json");
+}
+
+function mirrorJob(job: PrintJob): void {
+  try {
+    runMigrations();
+    const db = getDb();
+    db.prepare(
+      `INSERT INTO print_jobs (id, order_id, status, attempts, error, created_at, updated_at, printed_at)
+       VALUES (@id, @order_id, @status, @attempts, @error, @created_at, @updated_at, @printed_at)
+       ON CONFLICT(id) DO UPDATE SET
+         order_id=excluded.order_id,
+         status=excluded.status,
+         attempts=excluded.attempts,
+         error=excluded.error,
+         updated_at=excluded.updated_at,
+         printed_at=excluded.printed_at`,
+    ).run({
+      id: job.id,
+      order_id: job.orderId,
+      status: job.status,
+      attempts: job.attempts,
+      error: job.error ?? null,
+      created_at: job.createdAt,
+      updated_at: job.updatedAt,
+      printed_at: job.printedAt ?? null,
+    });
+  } catch (e) {
+    console.error(JSON.stringify({ event: "sqlite_print_mirror_failed", jobId: job.id, error: String(e) }));
+  }
 }
 
 export async function __readAll(): Promise<PrintJob[]> {
@@ -44,6 +75,7 @@ export async function enqueuePrintJob(order: Order): Promise<PrintJob> {
   const all = await __readAll();
   all.push(job);
   await __writeAll(all);
+  mirrorJob(job);
   console.log(JSON.stringify({ event: "print_job_enqueued", orderId: order.id, jobId: job.id }));
   return job;
 }
@@ -58,6 +90,9 @@ export async function claimPendingJobs(limit: number): Promise<PrintJob[]> {
     j.updatedAt = now;
   }
   await __writeAll(all);
+  for (const j of pending) {
+    mirrorJob(j);
+  }
   if (pending.length > 0) {
     console.log(JSON.stringify({ event: "print_queue_fetched", count: pending.length, jobIds: pending.map((j) => j.id) }));
   }
@@ -83,6 +118,7 @@ export async function ackJob(
     job.error = error;
   }
   await __writeAll(all);
+  mirrorJob(job);
   console.log(JSON.stringify({
     event: status === "printed" ? "print_job_acked" : "print_job_failed",
     jobId: id,
@@ -97,15 +133,20 @@ export async function recoverStuckJobs(timeoutMs: number): Promise<number> {
   const cutoff = Date.now() - timeoutMs;
   let count = 0;
   const now = new Date().toISOString();
+  const unstuckJobs: PrintJob[] = [];
   for (const j of all) {
     if (j.status === "printing" && Date.parse(j.updatedAt) < cutoff) {
       j.status = "pending";
       j.updatedAt = now;
+      unstuckJobs.push(j);
       count += 1;
     }
   }
   if (count > 0) {
     await __writeAll(all);
+    for (const j of unstuckJobs) {
+      mirrorJob(j);
+    }
     console.log(JSON.stringify({ event: "print_recovery_unstuck", count }));
   }
   return count;

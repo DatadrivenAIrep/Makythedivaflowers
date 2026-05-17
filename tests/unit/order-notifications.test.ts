@@ -1,16 +1,19 @@
 import { describe, it, expect } from "vitest";
 import type { Order } from "@/types/order";
-import { __buildBody as buildBody } from "@/lib/order-notifications";
+import { __buildBody as buildBody, __buildHtml as buildHtml } from "@/lib/order-notifications";
 
 const baseOrder: Order = {
   id: "do_test",
+  source: "web",
   locale: "en",
-  lines: [{ productId: "p-arr-m01", variantId: "standard", addOnIds: [], qty: 1 }],
+  lines: [{ kind: "catalog", productId: "p-arr-m01", variantId: "standard", addOnIds: [], qty: 1 }],
   contact: { email: "buyer@example.com", phone: "5165551234" },
   totals: { subtotalCents: 19100, deliveryCents: 0, taxCents: 1647, totalCents: 20747 },
-  status: "paid",
+  status: "pending",
+  paymentStatus: "paid",
   createdAt: "2026-05-07T15:30:00.000Z",
-  delivery: {
+  updatedAt: "2026-05-07T15:30:00.000Z",
+  fulfillment: {
     method: "pickup",
     recipient: { name: "Lola Cardona", phone: "5165550101" },
     window: { date: "2026-05-15", slot: "midday" },
@@ -29,7 +32,7 @@ describe("order-notifications buildBody", () => {
   it("renders DELIVER TO section for delivery orders", () => {
     const order: Order = {
       ...baseOrder,
-      delivery: {
+      fulfillment: {
         method: "delivery",
         recipient: { name: "Lola Cardona", phone: "5165550101" },
         address: {
@@ -47,5 +50,20 @@ describe("order-notifications buildBody", () => {
     expect(body).toContain("DELIVER TO");
     expect(body).toContain("1 Test St");
     expect(body).not.toContain("PICK UP AT SHOP");
+  });
+});
+
+describe("order-notifications buildHtml", () => {
+  it("omits the Window block entirely for in-store orders", () => {
+    const order: Order = {
+      ...baseOrder,
+      fulfillment: {
+        method: "in-store",
+        recipient: { name: "Lola Cardona", phone: "5165550101" },
+        cardMessage: "",
+      },
+    };
+    const html = buildHtml(order);
+    expect(html).not.toMatch(/Window/i);
   });
 });

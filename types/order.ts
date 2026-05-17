@@ -1,5 +1,4 @@
 import type { Address } from "@/types/address";
-import type { CartLine } from "@/lib/cart-store";
 
 export type DeliverySlot = "morning" | "midday" | "afternoon" | "evening";
 
@@ -8,10 +7,7 @@ export type DeliveryWindow = {
   slot: DeliverySlot;
 };
 
-export type Recipient = {
-  name: string;
-  phone: string;
-};
+export type Recipient = { name: string; phone: string };
 
 export type OrderTotals = {
   subtotalCents: number;
@@ -20,14 +16,36 @@ export type OrderTotals = {
   totalCents: number;
 };
 
-export type OrderStatus =
+export type OrderSource = "web" | "walk-in" | "phone" | "whatsapp" | "event";
+export type PaymentMethod = "cash" | "zelle" | "card-terminal" | "ach" | "stripe";
+export type PaymentStatus = "paid" | "pending" | "refunded";
+
+// "paid" is gone — payment is tracked separately in PaymentStatus.
+export type FulfillmentStatus =
   | "pending"
-  | "paid"
   | "preparing"
   | "out-for-delivery"
   | "delivered"
   | "failed"
   | "canceled";
+
+export type CatalogCartLine = {
+  kind: "catalog";
+  productId: string;
+  variantId: string;
+  addOnIds: string[];
+  qty: number;
+};
+
+export type CustomCartLine = {
+  kind: "custom";
+  title: string;
+  priceCents: number;
+  designerNotes?: string;
+  qty: number;
+};
+
+export type CartLine = CatalogCartLine | CustomCartLine;
 
 export type DeliveryFulfillment = {
   method: "delivery";
@@ -44,19 +62,36 @@ export type PickupFulfillment = {
   cardMessage?: string;
 };
 
-export type OrderFulfillment = DeliveryFulfillment | PickupFulfillment;
+export type InStoreFulfillment = {
+  method: "in-store";
+  recipient: Recipient;
+  cardMessage?: string;
+};
+
+export type OrderFulfillment =
+  | DeliveryFulfillment
+  | PickupFulfillment
+  | InStoreFulfillment;
+
+// Kept for back-compat at the storage seam only — do NOT use in new code.
+export type OrderStatus = FulfillmentStatus | "paid";
 
 export type Order = {
   id: string;
+  source: OrderSource;
   locale: "en" | "es";
+  customerId?: string;
   lines: CartLine[];
-  delivery: OrderFulfillment;
-  contact: {
-    email: string;
-    phone: string;
-  };
+  fulfillment: OrderFulfillment; // was: delivery
+  contact: { email?: string; phone: string };
   totals: OrderTotals;
+  status: FulfillmentStatus;
+  paymentStatus: PaymentStatus;
+  paymentMethod?: PaymentMethod;
+  paidAt?: string;
   stripePaymentIntentId?: string;
-  status: OrderStatus;
-  createdAt: string; // ISO
+  takenBy?: string;
+  internalNotes?: string;
+  createdAt: string;
+  updatedAt: string;
 };

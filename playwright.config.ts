@@ -7,14 +7,20 @@ export default defineConfig({
   workers: 1,
   reporter: "list",
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: "http://localhost:3333",
     trace: "retain-on-failure",
   },
   webServer: {
     command: "npm run dev",
-    url: "http://localhost:3000/en",
+    url: "http://localhost:3333/en",
+    env: {
+      PORT: "3333",
+      INTAKE_PASSWORD: "test-pass",
+      INTAKE_SESSION_SECRET: "test-secret-32-chars-minimum-1234",
+      SQLITE_FILE: "data/diva.e2e.sqlite",
+    },
     reuseExistingServer: !process.env.CI,
-    timeout: 60_000,
+    timeout: 120_000,
   },
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },

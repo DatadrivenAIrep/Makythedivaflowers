@@ -14,10 +14,11 @@ vi.mock("next-intl", () => ({
 // so hasSubscription is always false and the subscription nudge always renders.
 const baseOrder = (overrides: Partial<Order> = {}): Order => ({
   id: "ord_a4f2c9",
+  source: "web",
   locale: "en",
-  lines: [{ productId: "p-arr-m01", variantId: "lush", addOnIds: [], qty: 1 }],
+  lines: [{ kind: "catalog", productId: "p-arr-m01", variantId: "lush", addOnIds: [], qty: 1 }],
   contact: { email: "x@y.z", phone: "5161234567" },
-  delivery: {
+  fulfillment: {
     method: "delivery",
     recipient: { name: "Test", phone: "5160000000" },
     address: { street1: "1 a", city: "Albertson", state: "NY", zip: "11507", country: "US" },
@@ -25,8 +26,10 @@ const baseOrder = (overrides: Partial<Order> = {}): Order => ({
     cardMessage: "",
   },
   totals: { subtotalCents: 25500, deliveryCents: 0, taxCents: 0, totalCents: 25500 },
-  status: "paid",
+  status: "pending",
+  paymentStatus: "paid",
   createdAt: "2026-05-02T12:00:00Z",
+  updatedAt: "2026-05-02T12:00:00Z",
   ...overrides,
 });
 

@@ -57,3 +57,10 @@ test-results/
 
 # Superpowers brainstorming sessions
 .superpowers/
+
+# SQLite database file lives here; never committed
+/data/diva.sqlite
+/data/diva.sqlite-journal
+/data/diva.sqlite-wal
+/data/diva.sqlite-shm
+/data/diva.e2e.sqlite*

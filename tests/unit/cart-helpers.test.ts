@@ -37,12 +37,16 @@ const products: Product[] = [
 
 describe("resolveCartLine", () => {
   it("returns null when product or variant missing", () => {
-    expect(resolveCartLine({ productId: "missing", variantId: "std", addOnIds: [], qty: 1 }, products)).toBeNull();
-    expect(resolveCartLine({ productId: "p1", variantId: "missing", addOnIds: [], qty: 1 }, products)).toBeNull();
+    expect(resolveCartLine({ kind: "catalog", productId: "missing", variantId: "std", addOnIds: [], qty: 1 }, products)).toBeNull();
+    expect(resolveCartLine({ kind: "catalog", productId: "p1", variantId: "missing", addOnIds: [], qty: 1 }, products)).toBeNull();
+  });
+
+  it("returns null for custom lines (not catalog)", () => {
+    expect(resolveCartLine({ kind: "custom", title: "Custom", priceCents: 5000, qty: 1 }, products)).toBeNull();
   });
 
   it("computes line total from variant + add-ons × qty", () => {
-    const line: CartLine = { productId: "p1", variantId: "grand", addOnIds: ["vase"], qty: 2 };
+    const line: CartLine = { kind: "catalog", productId: "p1", variantId: "grand", addOnIds: ["vase"], qty: 2 };
     const r = resolveCartLine(line, products);
     expect(r).not.toBeNull();
     expect(r!.product.id).toBe("p1");
@@ -56,8 +60,17 @@ describe("resolveCartLine", () => {
 describe("resolveCartLines", () => {
   it("filters out unresolvable lines", () => {
     const lines: CartLine[] = [
-      { productId: "p1", variantId: "std", addOnIds: [], qty: 1 },
-      { productId: "missing", variantId: "x", addOnIds: [], qty: 1 },
+      { kind: "catalog", productId: "p1", variantId: "std", addOnIds: [], qty: 1 },
+      { kind: "catalog", productId: "missing", variantId: "x", addOnIds: [], qty: 1 },
+    ];
+    const r = resolveCartLines(lines, products);
+    expect(r).toHaveLength(1);
+  });
+
+  it("filters out custom lines (not catalog)", () => {
+    const lines: CartLine[] = [
+      { kind: "catalog", productId: "p1", variantId: "std", addOnIds: [], qty: 1 },
+      { kind: "custom", title: "Custom", priceCents: 5000, qty: 1 },
     ];
     const r = resolveCartLines(lines, products);
     expect(r).toHaveLength(1);
@@ -67,18 +80,26 @@ describe("resolveCartLines", () => {
 describe("cartSubtotalCents", () => {
   it("sums line totals, ignoring missing products", () => {
     const lines: CartLine[] = [
-      { productId: "p1", variantId: "std", addOnIds: [], qty: 1 },
-      { productId: "p1", variantId: "grand", addOnIds: ["vase"], qty: 2 },
+      { kind: "catalog", productId: "p1", variantId: "std", addOnIds: [], qty: 1 },
+      { kind: "catalog", productId: "p1", variantId: "grand", addOnIds: ["vase"], qty: 2 },
     ];
     expect(cartSubtotalCents(lines, products)).toBe(18700 + (26400 + 3500) * 2);
+  });
+
+  it("includes custom line prices in subtotal", () => {
+    const lines: CartLine[] = [
+      { kind: "catalog", productId: "p1", variantId: "std", addOnIds: [], qty: 1 },
+      { kind: "custom", title: "Custom bouquet", priceCents: 5000, qty: 2 },
+    ];
+    expect(cartSubtotalCents(lines, products)).toBe(18700 + 5000 * 2);
   });
 });
 
 describe("cartCount", () => {
   it("sums qty across lines", () => {
     expect(cartCount([
-      { productId: "p1", variantId: "std", addOnIds: [], qty: 2 },
-      { productId: "p1", variantId: "grand", addOnIds: [], qty: 3 },
+      { kind: "catalog", productId: "p1", variantId: "std", addOnIds: [], qty: 2 },
+      { kind: "catalog", productId: "p1", variantId: "grand", addOnIds: [], qty: 3 },
     ])).toBe(5);
   });
 });
