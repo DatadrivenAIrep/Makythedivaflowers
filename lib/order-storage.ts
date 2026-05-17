@@ -169,3 +169,20 @@ export async function updateOrderCheckoutSessionId(
     `UPDATE orders SET stripe_checkout_session_id = ?, updated_at = ? WHERE id = ?`,
   ).run(sessionId, now, orderId);
 }
+
+export async function getOrderByCheckoutSessionId(sessionId: string): Promise<Order | null> {
+  ensureSchema();
+  const row = getDb()
+    .prepare("SELECT * FROM orders WHERE stripe_checkout_session_id = ? LIMIT 1")
+    .get(sessionId) as OrderRow | undefined;
+  return row ? rowToOrder(row) : null;
+}
+
+export async function updateOrderPaidByCheckoutSession(sessionId: string): Promise<void> {
+  ensureSchema();
+  const db = getDb();
+  const now = new Date().toISOString();
+  db.prepare(
+    `UPDATE orders SET payment_status = 'paid', paid_at = COALESCE(paid_at, ?), updated_at = ? WHERE stripe_checkout_session_id = ? AND payment_status != 'paid'`,
+  ).run(now, now, sessionId);
+}

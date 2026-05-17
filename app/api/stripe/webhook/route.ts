@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { stripe } from "@/lib/stripe-server";
-import { getOrderByPaymentIntent, updateOrderStatusByPaymentIntent } from "@/lib/order-storage";
+import { getOrderByPaymentIntent, updateOrderStatusByPaymentIntent, getOrderByCheckoutSessionId, updateOrderPaidByCheckoutSession } from "@/lib/order-storage";
+import { dispatchPaymentConfirmed } from "@/lib/order-dispatch";
 import { notifyOrderPaid } from "@/lib/order-notifications";
 import { enqueuePrintJob } from "@/lib/print-queue";
 import { sendPurchaseToGA4 } from "@/lib/analytics-server";
@@ -64,6 +65,21 @@ export async function POST(req: Request) {
             // Do not propagate: payment is recorded; print can be re-issued manually.
           }
         }
+        break;
+      }
+      case "checkout.session.completed": {
+        const session = event.data.object as Stripe.Checkout.Session;
+        const orderId = (session.metadata?.orderId ?? session.client_reference_id) ?? null;
+        if (!orderId) {
+          console.log(JSON.stringify({ event: "checkout_session_completed_no_orderid", sessionId: session.id }));
+          break;
+        }
+        const csOrder = await getOrderByCheckoutSessionId(session.id);
+        if (!csOrder) break;
+        if (csOrder.paymentStatus === "paid") break; // idempotent
+
+        await updateOrderPaidByCheckoutSession(session.id);
+        await dispatchPaymentConfirmed({ ...csOrder, paymentStatus: "paid", paidAt: csOrder.paidAt ?? new Date().toISOString() });
         break;
       }
       case "payment_intent.payment_failed": {
