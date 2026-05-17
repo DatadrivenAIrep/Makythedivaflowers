@@ -3,6 +3,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import os from "node:os";
 import type { Order } from "@/types/order";
+import { closeDb } from "@/lib/db";
 
 const TEST_FILE = path.join(os.tmpdir(), `diva-test-ack-${process.pid}.json`);
 
@@ -43,6 +44,7 @@ beforeEach(async () => {
   await fs.writeFile(TEST_FILE, "[]", "utf8");
 });
 afterEach(async () => {
+  closeDb();
   try { await fs.unlink(TEST_FILE); } catch {}
   vi.unstubAllEnvs();
 });

@@ -4,6 +4,7 @@ import path from "node:path";
 import os from "node:os";
 import type { Order } from "@/types/order";
 import { __resetRateLimitForTests } from "@/lib/rate-limit";
+import { closeDb } from "@/lib/db";
 
 const TEST_FILE = path.join(os.tmpdir(), `diva-test-print-api-${process.pid}.json`);
 const ORDER_FILE = path.join(os.tmpdir(), `diva-test-print-orders-${process.pid}.json`);
@@ -43,6 +44,7 @@ beforeEach(async () => {
   __resetRateLimitForTests();
 });
 afterEach(async () => {
+  closeDb();
   try { await fs.unlink(TEST_FILE); } catch {}
   try { await fs.unlink(ORDER_FILE); } catch {}
   vi.unstubAllEnvs();
