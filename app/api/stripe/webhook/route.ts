@@ -50,7 +50,9 @@ export async function POST(req: Request) {
       case "payment_intent.succeeded": {
         const pi = event.data.object as Stripe.PaymentIntent;
         const order = await getOrderByPaymentIntent(pi.id);
-        const wasAlreadyPaid = order?.status === "paid";
+        // Back-compat: "paid" is an OrderStatus alias stored in status during Task 4.
+        // Task 5 will move this to paymentStatus. For now, check both.
+        const wasAlreadyPaid = (order?.status as string) === "paid" || order?.paymentStatus === "paid";
         await updateOrderStatusByPaymentIntent(pi.id, "paid");
         if (order && !wasAlreadyPaid) {
           await notifyOrderPaid(order);

@@ -1,8 +1,8 @@
 import type { Product, ProductAddOn, ProductVariant } from "@/types/product";
-import type { CartLine } from "@/lib/cart-store";
+import type { CartLine, CatalogCartLine } from "@/types/order";
 
 export type ResolvedCartLine = {
-  line: CartLine;
+  line: CatalogCartLine;
   product: Product;
   variant: ProductVariant;
   addOns: ProductAddOn[];
@@ -14,6 +14,7 @@ export function resolveCartLine(
   line: CartLine,
   products: readonly Product[],
 ): ResolvedCartLine | null {
+  if (line.kind !== "catalog") return null;
   const product = products.find((p) => p.id === line.productId);
   if (!product) return null;
   const variant = product.variants.find((v) => v.id === line.variantId);
@@ -44,7 +45,13 @@ export function cartSubtotalCents(
   lines: readonly CartLine[],
   products: readonly Product[],
 ): number {
-  return resolveCartLines(lines, products).reduce((s, r) => s + r.lineTotalCents, 0);
+  return lines.reduce((sum, line) => {
+    if (line.kind === "custom") {
+      return sum + line.priceCents * line.qty;
+    }
+    const resolved = resolveCartLine(line, products);
+    return sum + (resolved ? resolved.lineTotalCents : 0);
+  }, 0);
 }
 
 export function cartCount(lines: readonly CartLine[]): number {

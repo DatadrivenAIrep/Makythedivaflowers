@@ -25,9 +25,10 @@ afterEach(async () => {
 function makeOrder(id: string, paymentIntentId?: string): Order {
   return {
     id,
+    source: "web",
     locale: "en",
     lines: [],
-    delivery: {
+    fulfillment: {
       method: "delivery",
       recipient: { name: "Test", phone: "5555555555" },
       address: {
@@ -43,7 +44,9 @@ function makeOrder(id: string, paymentIntentId?: string): Order {
     totals: { subtotalCents: 1000, deliveryCents: 1000, taxCents: 173, totalCents: 2173 },
     stripePaymentIntentId: paymentIntentId,
     status: "pending",
+    paymentStatus: "pending",
     createdAt: "2026-05-06T00:00:00.000Z",
+    updatedAt: "2026-05-06T00:00:00.000Z",
   };
 }
 
@@ -77,7 +80,8 @@ describe("order-storage", () => {
 
   it("updateOrderStatusByPaymentIntent is a no-op when order already in target status", async () => {
     const order = makeOrder("o1", "pi_111");
-    order.status = "paid";
+    // Back-compat: set status to "paid" via cast (will be split in Task 5).
+    (order as Record<string, unknown>).status = "paid";
     await saveOrder(order);
     await updateOrderStatusByPaymentIntent("pi_111", "paid");
     const o = await getOrder("o1");
@@ -86,7 +90,8 @@ describe("order-storage", () => {
 
   it("updateOrderStatusByPaymentIntent does NOT downgrade paid → failed", async () => {
     const order = makeOrder("o1", "pi_111");
-    order.status = "paid";
+    // Back-compat: set status to "paid" via cast (will be split in Task 5).
+    (order as Record<string, unknown>).status = "paid";
     await saveOrder(order);
     await updateOrderStatusByPaymentIntent("pi_111", "failed");
     const o = await getOrder("o1");

@@ -17,13 +17,16 @@ vi.mock("@/lib/print-render-html", () => ({
 
 const baseOrder: Order = {
   id: "do_api1",
+  source: "web",
   locale: "en",
   lines: [],
   contact: { email: "x@y.com", phone: "5555555555" },
   totals: { subtotalCents: 1000, deliveryCents: 0, taxCents: 0, totalCents: 1000 },
-  status: "paid",
+  status: "pending",
+  paymentStatus: "paid",
   createdAt: "2026-05-07T00:00:00.000Z",
-  delivery: {
+  updatedAt: "2026-05-07T00:00:00.000Z",
+  fulfillment: {
     method: "pickup",
     recipient: { name: "R", phone: "5555555555" },
     window: { date: "2099-01-01", slot: "midday" },

@@ -1,12 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { CartLine, CatalogCartLine } from "@/types/order";
 
-export type CartLine = {
-  productId: string;
-  variantId: string;
-  addOnIds: string[];
-  qty: number;
-};
+export type { CartLine } from "@/types/order";
 
 type CartState = {
   lines: CartLine[];
@@ -26,32 +22,43 @@ export const useCartStore = create<CartState>()(
       cardMessage: "",
       add: (line) =>
         set((state) => {
-          const existingIdx = state.lines.findIndex(
-            (l) => l.productId === line.productId && l.variantId === line.variantId,
-          );
-          if (existingIdx >= 0) {
-            const next = [...state.lines];
-            next[existingIdx] = { ...next[existingIdx], qty: next[existingIdx].qty + line.qty };
-            return { lines: next };
+          if (line.kind === "catalog") {
+            const existingIdx = state.lines.findIndex(
+              (l) =>
+                l.kind === "catalog" &&
+                l.productId === line.productId &&
+                l.variantId === line.variantId,
+            );
+            if (existingIdx >= 0) {
+              const next = [...state.lines];
+              const cur = next[existingIdx] as CatalogCartLine;
+              next[existingIdx] = { ...cur, qty: cur.qty + line.qty };
+              return { lines: next };
+            }
           }
           return { lines: [...state.lines, line] };
         }),
       setCardMessage: (msg) => set({ cardMessage: msg }),
       remove: (productId, variantId) =>
         set((state) => ({
-          lines: state.lines.filter((l) => !(l.productId === productId && l.variantId === variantId)),
+          lines: state.lines.filter(
+            (l) =>
+              !(l.kind === "catalog" && l.productId === productId && l.variantId === variantId),
+          ),
         })),
       setQty: (productId, variantId, qty) =>
         set((state) => ({
           lines: state.lines
             .map((l) =>
-              l.productId === productId && l.variantId === variantId ? { ...l, qty } : l,
+              l.kind === "catalog" && l.productId === productId && l.variantId === variantId
+                ? { ...l, qty }
+                : l,
             )
             .filter((l) => l.qty > 0),
         })),
       clear: () => set({ lines: [], cardMessage: "" }),
       count: () => get().lines.reduce((s, l) => s + l.qty, 0),
     }),
-    { name: "diva-cart" },
+    { name: "diva-cart", version: 2 },
   ),
 );

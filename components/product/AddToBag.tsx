@@ -33,11 +33,11 @@ function AddToBagImpl({ productId, variantId, addOnIds, totalCents, disabled, lo
 
   const onClick = () => {
     if (disabled) return;
-    add({ productId, variantId, addOnIds, qty: 1 });
+    add({ kind: "catalog", productId, variantId, addOnIds, qty: 1 });
     if (cardMessage && cardMessage.trim().length > 0) {
       setCardMessage(cardMessage);
     }
-    const resolved = resolveCartLine({ productId, variantId, addOnIds, qty: 1 }, PRODUCTS);
+    const resolved = resolveCartLine({ kind: "catalog", productId, variantId, addOnIds, qty: 1 }, PRODUCTS);
     if (resolved) {
       trackAddToCart(resolvedLineToAnalyticsItem(resolved));
     }

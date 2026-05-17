@@ -19,9 +19,10 @@ afterEach(async () => {
 function makeOrder(id: string, status: Order["status"]): Order {
   return {
     id,
+    source: "web",
     locale: "en",
     lines: [],
-    delivery: {
+    fulfillment: {
       method: "delivery",
       recipient: { name: "T", phone: "5555555555" },
       address: { street1: "1", city: "Albertson", state: "NY", zip: "11507", country: "US" },
@@ -30,7 +31,9 @@ function makeOrder(id: string, status: Order["status"]): Order {
     contact: { email: "t@example.com", phone: "5555555555" },
     totals: { subtotalCents: 1000, deliveryCents: 1000, taxCents: 173, totalCents: 2173 },
     status,
+    paymentStatus: "pending",
     createdAt: "2026-05-06T00:00:00.000Z",
+    updatedAt: "2026-05-06T00:00:00.000Z",
   };
 }
 

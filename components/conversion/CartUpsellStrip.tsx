@@ -30,7 +30,7 @@ export function CartUpsellStrip({ locale }: Props) {
     if (!product) return;
     const variant = product.variants[0];
     if (!variant) return;
-    add({ productId: product.id, variantId: variant.id, addOnIds: [], qty: 1 });
+    add({ kind: "catalog", productId: product.id, variantId: variant.id, addOnIds: [], qty: 1 });
     setRecentlyAdded(extraId);
     setTimeout(() => setRecentlyAdded(null), 2000);
   };

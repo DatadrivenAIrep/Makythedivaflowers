@@ -49,12 +49,13 @@ function makeReq(body: string, sig: string | null = "test_sig") {
   });
 }
 
-function makeOrder(id: string, piId: string, status: Order["status"] = "pending"): Order {
+function makeOrder(id: string, piId: string, paymentStatus: Order["paymentStatus"] = "pending"): Order {
   return {
     id,
+    source: "web",
     locale: "en",
     lines: [],
-    delivery: {
+    fulfillment: {
       method: "delivery",
       recipient: { name: "T", phone: "5555555555" },
       address: { street1: "1", city: "Albertson", state: "NY", zip: "11507", country: "US" },
@@ -63,8 +64,10 @@ function makeOrder(id: string, piId: string, status: Order["status"] = "pending"
     contact: { email: "t@example.com", phone: "5555555555" },
     totals: { subtotalCents: 1000, deliveryCents: 1000, taxCents: 173, totalCents: 2173 },
     stripePaymentIntentId: piId,
-    status,
+    status: "pending",
+    paymentStatus,
     createdAt: "2026-05-06T00:00:00.000Z",
+    updatedAt: "2026-05-06T00:00:00.000Z",
   };
 }
 
@@ -141,7 +144,7 @@ describe("POST /api/stripe/webhook", () => {
     await POST(makeReq("{}"));
     await POST(makeReq("{}"));
     const o = await getOrder("o1");
-    expect(o?.status).toBe("paid");
+    expect(o?.paymentStatus).toBe("paid");
     // Order was already paid before either event; no notification should fire.
     expect(notifyOrderPaidMock).not.toHaveBeenCalled();
   });

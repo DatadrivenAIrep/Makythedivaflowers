@@ -11,16 +11,19 @@ afterAll(async () => {
 
 const baseOrder: Order = {
   id: "do_test123",
+  source: "web",
   locale: "en",
   lines: [
-    { productId: "p-arr-b1-01", variantId: "standard", addOnIds: ["candles"], qty: 1 },
+    { kind: "catalog", productId: "p-arr-b1-01", variantId: "standard", addOnIds: ["candles"], qty: 1 },
   ],
   contact: { email: "buyer@example.com", phone: "5165551234" },
   totals: { subtotalCents: 19100, deliveryCents: 0, taxCents: 1647, totalCents: 20747 },
-  status: "paid",
+  status: "pending",
+  paymentStatus: "paid",
   createdAt: "2026-05-07T15:30:00.000Z",
+  updatedAt: "2026-05-07T15:30:00.000Z",
   stripePaymentIntentId: "pi_3O123abc",
-  delivery: {
+  fulfillment: {
     method: "pickup",
     recipient: { name: "Lola Cardona", phone: "5165550101" },
     window: { date: "2026-05-15", slot: "midday" },
@@ -67,7 +70,7 @@ describe("renderOrderPdf — v2", () => {
   it("renders DELIVER TO block for delivery orders (en)", async () => {
     const order: Order = {
       ...baseOrder,
-      delivery: {
+      fulfillment: {
         method: "delivery",
         recipient: { name: "María González", phone: "2125550142" },
         address: { street1: "123 Park Ave", street2: "Apt 4B", city: "New York", state: "NY", zip: "10016", country: "US" },
@@ -102,7 +105,7 @@ describe("renderOrderPdf — v2", () => {
   it("renders without crashing when cardMessage is empty", async () => {
     const order: Order = {
       ...baseOrder,
-      delivery: { ...baseOrder.delivery, cardMessage: "" } as Order["delivery"],
+      fulfillment: { ...baseOrder.fulfillment, cardMessage: "" } as Order["fulfillment"],
     };
     const buf = await renderOrderPdf(order);
     expect(buf.length).toBeGreaterThan(1000);

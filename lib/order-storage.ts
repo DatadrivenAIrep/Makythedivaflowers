@@ -1,7 +1,7 @@
 // lib/order-storage.ts
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import type { Order, OrderStatus } from "@/types/order";
+import type { Order, OrderStatus, FulfillmentStatus } from "@/types/order";
 
 // Tests override `ORDER_STORAGE_FILE` to isolate parallel runs. In production this is unset
 // and we use the project-root pending-orders.json (same path the legacy code used).
@@ -55,6 +55,7 @@ export async function updateOrderPaymentIntent(
 // `paid` and `delivered` are both terminal for webhook purposes.
 // `delivered` is set by internal fulfilment tooling, never by Stripe events.
 // Once in either state, status must not regress regardless of late-arriving webhooks.
+// NOTE: "paid" is a back-compat value from OrderStatus; Task 5 will move it to paymentStatus.
 const TERMINAL: OrderStatus[] = ["paid", "delivered"];
 
 export async function updateOrderStatusByPaymentIntent(
@@ -64,9 +65,11 @@ export async function updateOrderStatusByPaymentIntent(
   const all = await readAll();
   const idx = all.findIndex((o) => o.stripePaymentIntentId === paymentIntentId);
   if (idx < 0) return;
-  const current = all[idx].status;
+  const current = (all[idx].status as OrderStatus);
   if (TERMINAL.includes(current) && current !== status) return;
   if (current === status) return;
-  all[idx] = { ...all[idx], status };
+  // Back-compat: OrderStatus includes "paid" which is not a FulfillmentStatus.
+  // Task 5 will split this into paymentStatus. For now, cast to satisfy the type.
+  all[idx] = { ...all[idx], status: status as FulfillmentStatus };
   await writeAll(all);
 }

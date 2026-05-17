@@ -6,8 +6,7 @@ import { cartSubtotalCents } from "@/lib/cart-helpers";
 import { PRODUCTS } from "@/data/products";
 import { saveOrder, updateOrderPaymentIntent } from "@/lib/order-storage";
 import { stripe } from "@/lib/stripe-server";
-import type { Order } from "@/types/order";
-import type { CartLine } from "@/lib/cart-store";
+import type { Order, OrderFulfillment, CartLine } from "@/types/order";
 
 export const runtime = "nodejs";
 
@@ -32,7 +31,9 @@ export async function POST(req: Request) {
   }
   const { locale, lines, form } = parsed.data;
 
-  const subtotal = cartSubtotalCents(lines as CartLine[], PRODUCTS);
+  const backfilledLines: CartLine[] = lines.map((l) => ({ kind: "catalog" as const, ...l }));
+
+  const subtotal = cartSubtotalCents(backfilledLines, PRODUCTS);
   if (subtotal <= 0) {
     return NextResponse.json(
       { errors: { formErrors: ["cart_empty"] } },
@@ -55,31 +56,35 @@ export async function POST(req: Request) {
   const totals = computeOrderTotals(subtotal, deliveryCents);
   const orderId = `do_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
 
-  const fulfillment =
+  const fulfillment: OrderFulfillment =
     form.delivery.method === "delivery"
       ? {
-          method: "delivery" as const,
+          method: "delivery",
           recipient: form.delivery.recipient,
           address: form.delivery.address,
           window: form.delivery.window,
           cardMessage: form.delivery.cardMessage || undefined,
         }
       : {
-          method: "pickup" as const,
+          method: "pickup",
           recipient: form.delivery.recipient,
           window: form.delivery.window,
           cardMessage: form.delivery.cardMessage || undefined,
         };
 
+  const now = new Date().toISOString();
   const order: Order = {
     id: orderId,
+    source: "web",
     locale,
-    lines: lines as CartLine[],
-    delivery: fulfillment,
+    lines: backfilledLines,
+    fulfillment,
     contact: form.contact,
     totals,
     status: "pending",
-    createdAt: new Date().toISOString(),
+    paymentStatus: "pending",
+    createdAt: now,
+    updatedAt: now,
   };
 
   try {

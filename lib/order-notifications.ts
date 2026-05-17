@@ -51,23 +51,27 @@ export function __buildBody(order: Order): string {
   );
   lines.push("");
 
-  if (order.delivery.method === "pickup") {
+  const f = order.fulfillment;
+  if (f.method === "pickup") {
     lines.push("PICK UP AT SHOP");
     lines.push(`${SITE.brand} · ${SITE.address.line1}, ${SITE.address.locality}, ${SITE.address.region} ${SITE.address.postal}`);
-    lines.push(`${order.delivery.recipient.name} · ${formatPhoneUS(order.delivery.recipient.phone)}`);
-    lines.push(formatDeliveryWindow(order.delivery.window, "en"));
-  } else {
+    lines.push(`${f.recipient.name} · ${formatPhoneUS(f.recipient.phone)}`);
+    lines.push(formatDeliveryWindow(f.window, "en"));
+  } else if (f.method === "delivery") {
     lines.push("DELIVER TO");
-    lines.push(`${order.delivery.recipient.name} · ${formatPhoneUS(order.delivery.recipient.phone)}`);
-    const addr = order.delivery.address;
+    lines.push(`${f.recipient.name} · ${formatPhoneUS(f.recipient.phone)}`);
+    const addr = f.address;
     lines.push(addr.street1 + (addr.street2 ? `, ${addr.street2}` : ""));
     lines.push(`${addr.city}, ${addr.state} ${addr.zip}`);
-    lines.push(formatDeliveryWindow(order.delivery.window, "en"));
+    lines.push(formatDeliveryWindow(f.window, "en"));
+  } else {
+    lines.push("IN STORE");
+    lines.push(`${f.recipient.name} · ${formatPhoneUS(f.recipient.phone)}`);
   }
   lines.push("");
 
   lines.push("CARD MESSAGE");
-  lines.push(order.delivery.cardMessage?.trim() ? `"${order.delivery.cardMessage.trim()}"` : "—");
+  lines.push(f.cardMessage?.trim() ? `"${f.cardMessage.trim()}"` : "—");
   lines.push("");
 
   lines.push("ITEMS");
@@ -139,8 +143,9 @@ export function __buildHtml(order: Order): string {
   const abs = (relPath: string) =>
     `${SITE.url.replace(/\/$/, "")}${relPath.startsWith("/") ? relPath : `/${relPath}`}`;
 
+  const of_ = order.fulfillment;
   const fulfillment =
-    order.delivery.method === "pickup"
+    of_.method === "pickup"
       ? {
           label: "Pick up at shop",
           accent: "#1F6E3D",
@@ -148,24 +153,34 @@ export function __buildHtml(order: Order): string {
           rows: [
             `<strong>${escapeHtml(SITE.brand)}</strong>`,
             `${escapeHtml(SITE.address.line1)}<br/>${escapeHtml(SITE.address.locality)}, ${escapeHtml(SITE.address.region)} ${escapeHtml(SITE.address.postal)}`,
-            `Picked up by <strong>${escapeHtml(order.delivery.recipient.name)}</strong> · ${escapeHtml(formatPhoneUS(order.delivery.recipient.phone))}`,
+            `Picked up by <strong>${escapeHtml(of_.recipient.name)}</strong> · ${escapeHtml(formatPhoneUS(of_.recipient.phone))}`,
           ],
-          window: formatDeliveryWindow(order.delivery.window, "en"),
+          window: formatDeliveryWindow(of_.window, "en"),
         }
-      : (() => {
-          const addr = order.delivery.address;
+      : of_.method === "delivery"
+      ? (() => {
+          const addr = of_.address;
           const addrLine = addr.street1 + (addr.street2 ? `, ${addr.street2}` : "");
           return {
             label: "Deliver to",
             accent: COLORS.rouge,
             bg: "#FCEEF2",
             rows: [
-              `<strong>${escapeHtml(order.delivery.recipient.name)}</strong> · ${escapeHtml(formatPhoneUS(order.delivery.recipient.phone))}`,
+              `<strong>${escapeHtml(of_.recipient.name)}</strong> · ${escapeHtml(formatPhoneUS(of_.recipient.phone))}`,
               `${escapeHtml(addrLine)}<br/>${escapeHtml(addr.city)}, ${escapeHtml(addr.state)} ${escapeHtml(addr.zip)}`,
             ],
-            window: formatDeliveryWindow(order.delivery.window, "en"),
+            window: formatDeliveryWindow(of_.window, "en"),
           };
-        })();
+        })()
+      : {
+          label: "In store",
+          accent: "#1F6E3D",
+          bg: "#EAF3EC",
+          rows: [
+            `<strong>${escapeHtml(of_.recipient.name)}</strong> · ${escapeHtml(formatPhoneUS(of_.recipient.phone))}`,
+          ],
+          window: "",
+        };
 
   const resolved = resolveCartLines(order.lines, PRODUCTS);
   const heroProduct = resolved[0];
@@ -204,14 +219,14 @@ export function __buildHtml(order: Order): string {
     })
     .join("");
 
-  const cardMessageHtml = order.delivery.cardMessage?.trim()
+  const cardMessageHtml = order.fulfillment.cardMessage?.trim()
     ? `
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${COLORS.bone};border-radius:8px;">
         <tr>
           <td style="padding:24px 26px;text-align:center;">
             <div style="font-family:${FONT_STACKS.display};font-size:22px;color:${COLORS.rouge};line-height:1;margin-bottom:12px;">❀</div>
             <div style="font-family:${FONT_STACKS.display};font-style:italic;font-size:17px;line-height:1.5;color:${COLORS.ink};max-width:380px;margin:0 auto;">
-              ${escapeHtml(order.delivery.cardMessage.trim())}
+              ${escapeHtml(order.fulfillment.cardMessage!.trim())}
             </div>
             <div style="font-family:${FONT_STACKS.display};font-size:22px;color:${COLORS.rouge};line-height:1;margin-top:12px;">❀</div>
           </td>
@@ -362,7 +377,7 @@ export function __buildHtml(order: Order): string {
                   Buyer contact
                 </div>
                 <div style="font-size:14px;color:${COLORS.ink};line-height:1.5;">
-                  <a href="mailto:${escapeHtml(order.contact.email)}" style="color:${COLORS.ink};text-decoration:none;">${escapeHtml(order.contact.email)}</a><br/>
+                  ${order.contact.email ? `<a href="mailto:${escapeHtml(order.contact.email)}" style="color:${COLORS.ink};text-decoration:none;">${escapeHtml(order.contact.email)}</a><br/>` : ""}
                   <a href="tel:${escapeHtml(order.contact.phone)}" style="color:${COLORS.ink};text-decoration:none;">${escapeHtml(formatPhoneUS(order.contact.phone))}</a>
                 </div>
               </td>

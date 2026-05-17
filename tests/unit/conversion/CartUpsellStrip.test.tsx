@@ -21,7 +21,7 @@ describe("CartUpsellStrip", () => {
 
   it("renders chips for suggested extras when cart has a romance product", () => {
     useCartStore.setState({
-      lines: [{ productId: "p-arr-m01", variantId: "lush", addOnIds: [], qty: 1 }],
+      lines: [{ kind: "catalog", productId: "p-arr-m01", variantId: "lush", addOnIds: [], qty: 1 }],
     });
     render(<CartUpsellStrip locale="en" />);
     expect(screen.getByText(/title/)).toBeInTheDocument();
@@ -30,13 +30,13 @@ describe("CartUpsellStrip", () => {
 
   it("adds an extra to the cart when chip clicked", async () => {
     useCartStore.setState({
-      lines: [{ productId: "p-arr-m01", variantId: "lush", addOnIds: [], qty: 1 }],
+      lines: [{ kind: "catalog", productId: "p-arr-m01", variantId: "lush", addOnIds: [], qty: 1 }],
     });
     const user = userEvent.setup();
     render(<CartUpsellStrip locale="en" />);
     const firstChip = screen.getAllByRole("button")[0];
     await user.click(firstChip);
     const lines = useCartStore.getState().lines;
-    expect(lines.some((l) => l.productId.startsWith("x-"))).toBe(true);
+    expect(lines.some((l) => l.kind === "catalog" && l.productId.startsWith("x-"))).toBe(true);
   });
 });
