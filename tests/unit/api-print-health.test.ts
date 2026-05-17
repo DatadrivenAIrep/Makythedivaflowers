@@ -31,6 +31,7 @@ const baseOrder: Order = {
 beforeEach(async () => {
   vi.stubEnv("PRINT_QUEUE_FILE", TEST_FILE);
   vi.stubEnv("PRINT_AGENT_TOKEN", "tok-32bytes");
+  vi.stubEnv("SQLITE_FILE", ":memory:");
   await fs.writeFile(TEST_FILE, "[]", "utf8");
 });
 afterEach(async () => {
