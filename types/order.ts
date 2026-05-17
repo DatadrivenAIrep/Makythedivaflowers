@@ -20,6 +20,8 @@ export type OrderSource = "web" | "walk-in" | "phone" | "whatsapp" | "event";
 export type PaymentMethod = "cash" | "zelle" | "card-terminal" | "ach" | "stripe";
 export type PaymentStatus = "paid" | "pending" | "refunded";
 
+export type MessagingChannel = "sms" | "whatsapp" | "email" | "none";
+
 // "paid" is gone — payment is tracked separately in PaymentStatus.
 export type FulfillmentStatus =
   | "pending"
@@ -90,6 +92,7 @@ export type Order = {
   paymentMethod?: PaymentMethod;
   paidAt?: string;
   stripePaymentIntentId?: string;
+  stripeCheckoutSessionId?: string;
   takenBy?: string;
   internalNotes?: string;
   createdAt: string;

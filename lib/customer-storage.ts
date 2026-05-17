@@ -2,6 +2,7 @@ import "server-only";
 import { getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import type { Address } from "@/types/address";
+import type { MessagingChannel } from "@/types/order";
 
 export type Customer = {
   id: string;
@@ -12,6 +13,8 @@ export type Customer = {
   orderCount: number;
   firstSeenAt: string;
   lastSeenAt: string;
+  messagingChannel?: MessagingChannel;
+  locale?: "en" | "es";
 };
 
 type CustomerRow = {
@@ -23,6 +26,8 @@ type CustomerRow = {
   order_count: number;
   first_seen_at: string;
   last_seen_at: string;
+  messaging_channel: string | null;
+  locale: string | null;
 };
 
 function normalizePhone(p: string): string {
@@ -39,6 +44,8 @@ function rowToCustomer(r: CustomerRow): Customer {
     orderCount: r.order_count,
     firstSeenAt: r.first_seen_at,
     lastSeenAt: r.last_seen_at,
+    messagingChannel: (r.messaging_channel as MessagingChannel | null) ?? undefined,
+    locale: (r.locale as "en" | "es" | null) ?? undefined,
   };
 }
 
@@ -60,6 +67,8 @@ export type UpsertInput = {
   email?: string;
   address?: Address;
   orderAt: string;
+  messagingChannel?: MessagingChannel;
+  locale?: "en" | "es";
 };
 
 export function upsertOnOrder(input: UpsertInput): Customer {
@@ -75,13 +84,17 @@ export function upsertOnOrder(input: UpsertInput): Customer {
          name = ?, email = COALESCE(?, email),
          last_address_json = COALESCE(?, last_address_json),
          order_count = order_count + 1,
-         last_seen_at = ?
+         last_seen_at = ?,
+         messaging_channel = COALESCE(?, messaging_channel),
+         locale = COALESCE(?, locale)
        WHERE id = ?`,
     ).run(
       input.name,
       input.email ?? null,
       input.address ? JSON.stringify(input.address) : null,
       input.orderAt,
+      input.messagingChannel ?? null,
+      input.locale ?? null,
       existing.id,
     );
     const updated = db
@@ -91,8 +104,11 @@ export function upsertOnOrder(input: UpsertInput): Customer {
   }
   const id = newId();
   db.prepare(
-    `INSERT INTO customers (id, name, phone, email, last_address_json, order_count, first_seen_at, last_seen_at)
-     VALUES (?, ?, ?, ?, ?, 1, ?, ?)`,
+    `INSERT INTO customers (
+       id, name, phone, email, last_address_json,
+       order_count, first_seen_at, last_seen_at,
+       messaging_channel, locale
+     ) VALUES (?, ?, ?, ?, ?, 1, ?, ?, ?, ?)`,
   ).run(
     id,
     input.name,
@@ -101,6 +117,8 @@ export function upsertOnOrder(input: UpsertInput): Customer {
     input.address ? JSON.stringify(input.address) : null,
     input.orderAt,
     input.orderAt,
+    input.messagingChannel ?? null,
+    input.locale ?? null,
   );
   const fresh = db.prepare("SELECT * FROM customers WHERE id = ?").get(id) as CustomerRow;
   return rowToCustomer(fresh);

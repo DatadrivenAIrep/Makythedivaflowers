@@ -39,3 +39,51 @@ describe("customer-storage", () => {
     expect(got?.name).toBe("Maria");
   });
 });
+
+
+describe("messaging preferences", () => {
+  it("upsertOnOrder persists messagingChannel + locale", () => {
+    const c = upsertOnOrder({
+      name: "Maria",
+      phone: "5165550100",
+      orderAt: "2026-05-17T10:00:00Z",
+      messagingChannel: "whatsapp",
+      locale: "es",
+    });
+    expect(c.messagingChannel).toBe("whatsapp");
+    expect(c.locale).toBe("es");
+  });
+
+  it("upsertOnOrder preserves existing preferences when omitted on update", () => {
+    upsertOnOrder({
+      name: "Maria",
+      phone: "5165550100",
+      orderAt: "2026-05-17T10:00:00Z",
+      messagingChannel: "whatsapp",
+      locale: "es",
+    });
+    const c2 = upsertOnOrder({
+      name: "Maria",
+      phone: "5165550100",
+      orderAt: "2026-05-17T11:00:00Z",
+    });
+    expect(c2.messagingChannel).toBe("whatsapp");
+    expect(c2.locale).toBe("es");
+  });
+
+  it("upsertOnOrder overwrites preferences when explicitly provided", () => {
+    upsertOnOrder({
+      name: "Maria",
+      phone: "5165550100",
+      orderAt: "2026-05-17T10:00:00Z",
+      messagingChannel: "sms",
+    });
+    const c2 = upsertOnOrder({
+      name: "Maria",
+      phone: "5165550100",
+      orderAt: "2026-05-17T11:00:00Z",
+      messagingChannel: "whatsapp",
+    });
+    expect(c2.messagingChannel).toBe("whatsapp");
+  });
+});
