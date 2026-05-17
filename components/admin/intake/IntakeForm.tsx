@@ -2,6 +2,7 @@
 import { useState } from "react";
 import type { Product } from "@/types/product";
 import CustomerBlock, { type CustomerSnapshot } from "./CustomerBlock";
+import FulfillmentBlock, { type FulfillmentState } from "./FulfillmentBlock";
 
 type Channel = "walk-in" | "phone" | "whatsapp" | "event";
 const CHANNELS: { id: Channel; label: string }[] = [
@@ -14,6 +15,13 @@ const CHANNELS: { id: Channel; label: string }[] = [
 export default function IntakeForm({ products }: { products: Product[] }) {
   const [channel, setChannel] = useState<Channel>("walk-in");
   const [customer, setCustomer] = useState<CustomerSnapshot>({ name: "", phone: "", email: "" });
+  const [fulfillment, setFulfillment] = useState<FulfillmentState>({
+    method: "delivery",
+    recipient: { name: "", phone: "" },
+    address: { street1: "", city: "", state: "NY", zip: "", country: "US" },
+    window: { date: new Date().toISOString().slice(0, 10), slot: "midday" },
+    cardMessage: "",
+  });
   void products; // Used by later tasks (ProductPicker)
 
   return (
@@ -44,7 +52,22 @@ export default function IntakeForm({ products }: { products: Product[] }) {
 
         <div className="grid grid-cols-[1.05fr_0.95fr]">
           <section className="p-7 border-r border-mute-100">
-            <CustomerBlock value={customer} onChange={setCustomer} onApplyAddress={() => {}} />
+            <CustomerBlock
+              value={customer}
+              onChange={setCustomer}
+              onApplyAddress={(addr) => setFulfillment((f) => ({ ...f, address: addr, method: "delivery" }))}
+            />
+            <FulfillmentBlock value={fulfillment} onChange={setFulfillment} />
+            <div className="mb-5">
+              <label className="block text-[11px] uppercase tracking-widest text-mute-400 mb-2">Mensaje en tarjeta</label>
+              <textarea
+                value={fulfillment.cardMessage}
+                onChange={(e) => setFulfillment({ ...fulfillment, cardMessage: e.target.value })}
+                placeholder="Para mi mamá, con todo mi cariño..."
+                rows={3}
+                className="w-full p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white resize-none"
+              />
+            </div>
           </section>
           <section className="p-7 bg-bone">
             {/* ProductPicker + Cart + Totals + PaymentBlock in next tasks */}
