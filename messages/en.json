@@ -940,6 +940,12 @@
     "channel_pref_whatsapp": "WhatsApp",
     "channel_pref_email": "Email only",
     "channel_pref_none": "None",
-    "channel_pref_email_disabled_hint": "Email needed"
+    "channel_pref_email_disabled_hint": "Email needed",
+    "banner_saved": "Order {orderId} saved · ticket queued",
+    "banner_message_sent": "{channel} sent to {phone}",
+    "banner_message_skipped": "{channel} not sent ({reason})",
+    "banner_message_failed": "{channel} to {phone} failed",
+    "banner_retry": "Retry",
+    "banner_dismiss": "Dismiss"
   }
 }

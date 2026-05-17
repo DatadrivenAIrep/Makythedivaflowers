@@ -942,6 +942,12 @@
     "channel_pref_whatsapp": "WhatsApp",
     "channel_pref_email": "Solo email",
     "channel_pref_none": "Ninguno",
-    "channel_pref_email_disabled_hint": "Falta email"
+    "channel_pref_email_disabled_hint": "Falta email",
+    "banner_saved": "Pedido {orderId} guardado · ticket en cola",
+    "banner_message_sent": "{channel} enviado a {phone}",
+    "banner_message_skipped": "{channel} no enviado ({reason})",
+    "banner_message_failed": "{channel} a {phone} falló",
+    "banner_retry": "Reintentar",
+    "banner_dismiss": "Cerrar"
   }
 }

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import type { Product } from "@/types/product";
 import type { CartLine, OrderTotals } from "@/types/order";
@@ -9,13 +9,13 @@ import ProductPicker from "./ProductPicker";
 import CartSummary from "./CartSummary";
 import PaymentBlock, { type PaymentState } from "./PaymentBlock";
 import { toOrderFulfillment } from "./FulfillmentBlock";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type Channel = "walk-in" | "phone" | "whatsapp" | "event";
 
 export default function IntakeForm({ products }: { products: Product[] }) {
   const t = useTranslations("admin_intake");
-  const locale = useLocale();
+  const locale = useLocale() as "en" | "es";
   const channels: { id: Channel; label: string }[] = [
     { id: "walk-in", label: t("channel_walk_in") },
     { id: "phone", label: t("channel_phone") },
@@ -34,6 +34,44 @@ export default function IntakeForm({ products }: { products: Product[] }) {
   const [lines, setLines] = useState<CartLine[]>([]);
   const [override, setOverride] = useState<Partial<OrderTotals>>({});
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const okOrderId = searchParams.get("ok");
+  const [banner, setBanner] = useState<{
+    orderId: string;
+    channel?: string;
+    phone?: string;
+    status?: string;
+    reason?: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!okOrderId) {
+      setBanner(null);
+      return;
+    }
+    setBanner({ orderId: okOrderId });
+    fetch(`/api/admin/orders/${encodeURIComponent(okOrderId)}/last-message`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((m) => {
+        if (!m || !m.found) return;
+        setBanner((b) =>
+          b
+            ? { ...b, channel: m.channel, phone: m.toPhone, status: m.status, reason: m.error }
+            : null,
+        );
+      })
+      .catch(() => {});
+  }, [okOrderId]);
+
+  async function retrySend() {
+    if (!banner) return;
+    await fetch(`/api/admin/orders/${encodeURIComponent(banner.orderId)}/payment-link`, {
+      method: "POST",
+    });
+    // Re-trigger the banner fetch by replacing the URL with the same ok param.
+    router.replace(`/${locale}/admin/intake?ok=${encodeURIComponent(banner.orderId)}&r=${Date.now()}`);
+  }
+
   const [payment, setPayment] = useState<PaymentState>({ status: "pending" });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -65,6 +103,8 @@ export default function IntakeForm({ products }: { products: Product[] }) {
           phone: customer.phone,
           name: customer.name,
           email: customer.email || undefined,
+          messagingChannel: customer.messagingChannel,
+          locale,
         },
         fulfillment: toOrderFulfillment(fulfillment),
         lines,
@@ -96,6 +136,59 @@ export default function IntakeForm({ products }: { products: Product[] }) {
     <main className="max-w-[1180px] mx-auto p-6">
       <p className="text-mute-500 text-sm mb-2">{t("page_subtitle")}</p>
       <h1 className="font-display text-3xl text-ink mb-6">{t("title_new")}</h1>
+
+      {banner && (
+        <div className="mb-4 px-5 py-3 rounded-2xl bg-bone border border-mute-200 flex items-center justify-between gap-3 text-sm">
+          <div>
+            <span className="font-medium">{t("banner_saved", { orderId: banner.orderId })}</span>
+            {banner.channel && banner.status === "sent" && (
+              <span className="text-mute-600">
+                {" · "}
+                {t("banner_message_sent", {
+                  channel: banner.channel.toUpperCase(),
+                  phone: banner.phone ?? "",
+                })}
+              </span>
+            )}
+            {banner.status === "skipped" && (
+              <span className="text-mute-600">
+                {" · "}
+                {t("banner_message_skipped", {
+                  channel: (banner.channel ?? "").toUpperCase(),
+                  reason: banner.reason ?? "",
+                })}
+              </span>
+            )}
+            {banner.status === "failed" && (
+              <span className="text-error">
+                {" · "}
+                {t("banner_message_failed", {
+                  channel: (banner.channel ?? "").toUpperCase(),
+                  phone: banner.phone ?? "",
+                })}
+              </span>
+            )}
+          </div>
+          <div className="flex gap-2">
+            {banner.status === "failed" && (
+              <button
+                type="button"
+                onClick={retrySend}
+                className="px-3 py-1.5 rounded-full bg-ink text-bone text-xs"
+              >
+                {t("banner_retry")}
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => setBanner(null)}
+              className="px-3 py-1.5 rounded-full border border-mute-200 text-mute-600 text-xs"
+            >
+              {t("banner_dismiss")}
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="bg-white rounded-bento shadow-sm overflow-hidden">
         <div className="flex items-center justify-between px-7 py-5 border-b border-mute-100">
