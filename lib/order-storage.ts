@@ -3,7 +3,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
-import { orderToRow } from "@/lib/order-row";
+import { orderToRow, rowToOrder, type OrderRow } from "@/lib/order-row";
 import type { Order, FulfillmentStatus } from "@/types/order";
 
 function storageFile(): string {
@@ -79,42 +79,47 @@ function upsertSqlite(order: Order): void {
   ).run(row);
 }
 
-function safeMirror(order: Order): void {
-  try {
-    upsertSqlite(order);
-  } catch (e) {
-    console.error(JSON.stringify({ event: "sqlite_mirror_failed", orderId: order.id, error: String(e) }));
-  }
-}
-
 export async function saveOrder(order: Order): Promise<void> {
+  ensureSchema();
+  upsertSqlite(order);
   const all = await readAll();
   all.push(order);
   await writeAll(all);
-  safeMirror(order);
 }
 
 export async function getOrder(id: string): Promise<Order | null> {
-  const all = await readAll();
-  return all.find((o) => o.id === id) ?? null;
+  ensureSchema();
+  const row = getDb().prepare("SELECT * FROM orders WHERE id = ?").get(id) as OrderRow | undefined;
+  return row ? rowToOrder(row) : null;
 }
 
 export async function getOrderByPaymentIntent(piId: string): Promise<Order | null> {
-  const all = await readAll();
-  return all.find((o) => o.stripePaymentIntentId === piId) ?? null;
+  ensureSchema();
+  const row = getDb()
+    .prepare("SELECT * FROM orders WHERE stripe_payment_intent_id = ? LIMIT 1")
+    .get(piId) as OrderRow | undefined;
+  return row ? rowToOrder(row) : null;
 }
 
 export async function updateOrderPaymentIntent(
   orderId: string,
   paymentIntentId: string,
 ): Promise<void> {
+  ensureSchema();
+  const db = getDb();
+  const row = db.prepare("SELECT * FROM orders WHERE id = ?").get(orderId) as OrderRow | undefined;
+  if (!row) return;
+  const order = rowToOrder(row);
+  const now = new Date().toISOString();
+  const next: Order = { ...order, stripePaymentIntentId: paymentIntentId, updatedAt: now };
+  upsertSqlite(next);
+  // legacy mirror — JSON write continues for the dual-write safety window
   const all = await readAll();
   const idx = all.findIndex((o) => o.id === orderId);
-  if (idx < 0) return;
-  const next = { ...all[idx], stripePaymentIntentId: paymentIntentId, updatedAt: new Date().toISOString() };
-  all[idx] = next;
-  await writeAll(all);
-  safeMirror(next);
+  if (idx >= 0) {
+    all[idx] = next;
+    await writeAll(all);
+  }
 }
 
 const TERMINAL_FULFILLMENT: FulfillmentStatus[] = ["delivered", "canceled"];
@@ -123,13 +128,16 @@ export async function updateOrderStatusByPaymentIntent(
   paymentIntentId: string,
   status: FulfillmentStatus | "paid",
 ): Promise<void> {
-  const all = await readAll();
-  const idx = all.findIndex((o) => o.stripePaymentIntentId === paymentIntentId);
-  if (idx < 0) return;
-  const cur = all[idx];
+  ensureSchema();
+  const db = getDb();
+  const row = db
+    .prepare("SELECT * FROM orders WHERE stripe_payment_intent_id = ? LIMIT 1")
+    .get(paymentIntentId) as OrderRow | undefined;
+  if (!row) return;
+  const cur = rowToOrder(row);
   const now = new Date().toISOString();
 
-  let next = { ...cur, updatedAt: now };
+  let next: Order = { ...cur, updatedAt: now };
   if (status === "paid") {
     if (cur.paymentStatus === "paid") return;
     next = { ...next, paymentStatus: "paid", paidAt: now };
@@ -138,7 +146,11 @@ export async function updateOrderStatusByPaymentIntent(
     if (cur.status === status) return;
     next = { ...next, status };
   }
-  all[idx] = next;
-  await writeAll(all);
-  safeMirror(next);
+  upsertSqlite(next);
+  const all = await readAll();
+  const idx = all.findIndex((o) => o.id === cur.id);
+  if (idx >= 0) {
+    all[idx] = next;
+    await writeAll(all);
+  }
 }

@@ -15,10 +15,13 @@ const TEST_FILE = path.join(os.tmpdir(), `diva-test-orders-storage-${process.pid
 
 beforeEach(async () => {
   vi.stubEnv("ORDER_STORAGE_FILE", TEST_FILE);
+  vi.stubEnv("SQLITE_FILE", ":memory:");
   await fs.writeFile(TEST_FILE, "[]", "utf8");
 });
 afterEach(async () => {
   try { await fs.unlink(TEST_FILE); } catch {}
+  const { closeDb } = await import("@/lib/db");
+  closeDb();
   vi.unstubAllEnvs();
 });
 
@@ -104,16 +107,11 @@ describe("order-storage", () => {
 });
 
 describe("order-storage SQLite mirror", () => {
-  beforeEach(() => {
-    vi.stubEnv("SQLITE_FILE", ":memory:");
-  });
-
   it("saveOrder writes a row to the orders table", async () => {
-    const { getDb, closeDb } = await import("@/lib/db");
+    const { getDb } = await import("@/lib/db");
     const o = makeOrder("o_mirror", "pi_mirror");
     await saveOrder(o);
     const row = getDb().prepare("SELECT id FROM orders WHERE id = ?").get("o_mirror") as { id: string } | undefined;
     expect(row?.id).toBe("o_mirror");
-    closeDb();
   });
 });
