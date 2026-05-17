@@ -24,12 +24,40 @@ describe("runMigrations", () => {
     expect(tables).toContain("schema_migrations");
   });
 
-  it("is idempotent — running twice records the migration once", () => {
+  it("is idempotent — running twice records each migration once", () => {
     runMigrations();
     runMigrations();
     const db = getDb();
-    const rows = db.prepare("SELECT name FROM schema_migrations").all();
-    expect(rows.length).toBe(1);
-    expect((rows[0] as { name: string }).name).toBe("001_init.sql");
+    const rows = db.prepare("SELECT name FROM schema_migrations ORDER BY name").all() as { name: string }[];
+    expect(rows.length).toBe(2);
+    expect(rows[0].name).toBe("001_init.sql");
+    expect(rows[1].name).toBe("002_messaging.sql");
+  });
+});
+
+describe("002_messaging migration", () => {
+  it("adds messaging_channel + locale to customers", () => {
+    runMigrations();
+    const db = getDb();
+    const cols = db.prepare("PRAGMA table_info(customers)").all() as { name: string }[];
+    const names = cols.map((c) => c.name);
+    expect(names).toContain("messaging_channel");
+    expect(names).toContain("locale");
+  });
+
+  it("adds stripe_checkout_session_id to orders", () => {
+    runMigrations();
+    const db = getDb();
+    const cols = db.prepare("PRAGMA table_info(orders)").all() as { name: string }[];
+    expect(cols.map((c) => c.name)).toContain("stripe_checkout_session_id");
+  });
+
+  it("creates the messages table", () => {
+    runMigrations();
+    const db = getDb();
+    const tables = db
+      .prepare("SELECT name FROM sqlite_master WHERE type = 'table'")
+      .all() as { name: string }[];
+    expect(tables.map((t) => t.name)).toContain("messages");
   });
 });
