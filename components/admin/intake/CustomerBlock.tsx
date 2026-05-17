@@ -2,11 +2,14 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import type { Address } from "@/types/address";
+import type { MessagingChannel } from "@/types/order";
+import ChannelPicker from "./ChannelPicker";
 
 export type CustomerSnapshot = {
   name: string;
   phone: string;
   email: string;
+  messagingChannel: MessagingChannel;
 };
 
 type Props = {
@@ -17,7 +20,7 @@ type Props = {
 
 export default function CustomerBlock({ value, onChange, onApplyAddress }: Props) {
   const t = useTranslations("admin_intake");
-  const [match, setMatch] = useState<{ orderCount: number; lastCity?: string; lastAddress?: Address } | null>(null);
+  const [match, setMatch] = useState<{ orderCount: number; lastCity?: string; lastAddress?: Address; messagingChannel?: MessagingChannel } | null>(null);
 
   useEffect(() => {
     const digits = value.phone.replace(/\D/g, "");
@@ -39,11 +42,17 @@ export default function CustomerBlock({ value, onChange, onApplyAddress }: Props
           orderCount: c.orderCount,
           lastCity: c.lastAddress?.city,
           lastAddress: c.lastAddress,
+          messagingChannel: c.messagingChannel,
         });
         onChange({
           ...value,
           name: value.name || c.name,
           email: value.email || c.email || "",
+          // Adopt the saved channel only if user is still on default.
+          messagingChannel:
+            value.messagingChannel === "sms" && c.messagingChannel
+              ? c.messagingChannel
+              : value.messagingChannel,
         });
       } catch {
         // ignore network errors here
@@ -82,6 +91,11 @@ export default function CustomerBlock({ value, onChange, onApplyAddress }: Props
         onChange={(e) => onChange({ ...value, email: e.target.value })}
         placeholder={t("customer_email_placeholder")}
         className="mt-2 w-full p-3.5 rounded-xl bg-bone border border-mute-200 text-ink outline-none focus:border-ink focus:bg-white"
+      />
+      <ChannelPicker
+        value={value.messagingChannel}
+        onChange={(v: MessagingChannel) => onChange({ ...value, messagingChannel: v })}
+        emailAvailable={value.email.trim().length > 0}
       />
       {match && (
         <div className="mt-2 flex items-center justify-between gap-3 px-3 py-2 rounded-lg bg-rouge/[0.06] border-l-2 border-rouge text-[12.5px] text-mute-700">

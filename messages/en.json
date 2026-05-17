@@ -934,6 +934,12 @@
     "payment_pending": "Pending",
     "action_discard": "Discard",
     "action_save": "Save and print ticket",
-    "action_saving": "Saving…"
+    "action_saving": "Saving…",
+    "channel_pref_label": "How should we reach them",
+    "channel_pref_sms": "SMS",
+    "channel_pref_whatsapp": "WhatsApp",
+    "channel_pref_email": "Email only",
+    "channel_pref_none": "None",
+    "channel_pref_email_disabled_hint": "Email needed"
   }
 }

@@ -23,7 +23,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
     { id: "event", label: t("channel_event") },
   ];
   const [channel, setChannel] = useState<Channel>("walk-in");
-  const [customer, setCustomer] = useState<CustomerSnapshot>({ name: "", phone: "", email: "" });
+  const [customer, setCustomer] = useState<CustomerSnapshot>({ name: "", phone: "", email: "", messagingChannel: "sms" });
   const [fulfillment, setFulfillment] = useState<FulfillmentState>({
     method: "delivery",
     recipient: { name: "", phone: "" },
@@ -83,7 +83,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
       }
       const { orderId } = await res.json();
       router.replace(`/${locale}/admin/intake?ok=${encodeURIComponent(orderId)}`);
-      setCustomer({ name: "", phone: "", email: "" });
+      setCustomer({ name: "", phone: "", email: "", messagingChannel: "sms" });
       setLines([]);
       setOverride({});
       setPayment({ status: "pending" });

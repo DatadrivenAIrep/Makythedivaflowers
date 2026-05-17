@@ -934,6 +934,14 @@
     "payment_pending": "Pendiente",
     "action_discard": "Descartar",
     "action_save": "Guardar e imprimir ticket",
-    "action_saving": "Guardando…"
+    "action_discard": "Descartar",
+    "action_save": "Guardar e imprimir ticket",
+    "action_saving": "Guardando…",
+    "channel_pref_label": "Cómo lo contactamos",
+    "channel_pref_sms": "SMS",
+    "channel_pref_whatsapp": "WhatsApp",
+    "channel_pref_email": "Solo email",
+    "channel_pref_none": "Ninguno",
+    "channel_pref_email_disabled_hint": "Falta email"
   }
 }
