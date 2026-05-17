@@ -6,6 +6,9 @@ import CustomerBlock, { type CustomerSnapshot } from "./CustomerBlock";
 import FulfillmentBlock, { type FulfillmentState } from "./FulfillmentBlock";
 import ProductPicker from "./ProductPicker";
 import CartSummary from "./CartSummary";
+import PaymentBlock, { type PaymentState } from "./PaymentBlock";
+import { toOrderFulfillment } from "./FulfillmentBlock";
+import { useRouter } from "next/navigation";
 
 type Channel = "walk-in" | "phone" | "whatsapp" | "event";
 const CHANNELS: { id: Channel; label: string }[] = [
@@ -27,6 +30,10 @@ export default function IntakeForm({ products }: { products: Product[] }) {
   });
   const [lines, setLines] = useState<CartLine[]>([]);
   const [override, setOverride] = useState<Partial<OrderTotals>>({});
+  const router = useRouter();
+  const [payment, setPayment] = useState<PaymentState>({ status: "pending" });
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   function addLine(line: CartLine) {
     setLines((prev) => {
@@ -43,6 +50,43 @@ export default function IntakeForm({ products }: { products: Product[] }) {
       }
       return [...prev, line];
     });
+  }
+
+  async function onSubmit() {
+    setError(null);
+    setSubmitting(true);
+    try {
+      const body = {
+        source: channel,
+        customer: {
+          phone: customer.phone,
+          name: customer.name,
+          email: customer.email || undefined,
+        },
+        fulfillment: toOrderFulfillment(fulfillment),
+        lines,
+        totalsOverride: override,
+        payment,
+      };
+      const res = await fetch("/api/admin/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(JSON.stringify(data.errors ?? data.error ?? "unknown"));
+        return;
+      }
+      const { orderId } = await res.json();
+      router.replace(`/en/admin/intake?ok=${encodeURIComponent(orderId)}`);
+      setCustomer({ name: "", phone: "", email: "" });
+      setLines([]);
+      setOverride({});
+      setPayment({ status: "pending" });
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -100,12 +144,23 @@ export default function IntakeForm({ products }: { products: Product[] }) {
               override={override}
               onOverride={setOverride}
             />
+            <PaymentBlock value={payment} onChange={setPayment} />
           </section>
         </div>
 
-        <div className="flex items-center justify-between px-7 py-4 border-t border-mute-100 bg-white">
-          <button type="button" className="px-5 py-3 rounded-full border border-mute-200 text-mute-600">Descartar</button>
-          <button type="submit" className="px-7 py-3.5 rounded-full bg-ink text-bone font-display">Guardar e imprimir ticket</button>
+        <div className="px-7 py-4 border-t border-mute-100 bg-white">
+          <div className="flex items-center justify-between">
+            <button type="button" className="px-5 py-3 rounded-full border border-mute-200 text-mute-600">Descartar</button>
+            <button
+              type="button"
+              disabled={submitting || lines.length === 0 || customer.name.length === 0 || customer.phone.replace(/\D/g, "").length < 10}
+              onClick={onSubmit}
+              className="px-7 py-3.5 rounded-full bg-ink text-bone font-display disabled:opacity-40"
+            >
+              {submitting ? "Guardando…" : "Guardar e imprimir ticket"}
+            </button>
+          </div>
+          {error && <p className="text-error text-sm mt-2 break-all">{error}</p>}
         </div>
       </div>
     </main>
