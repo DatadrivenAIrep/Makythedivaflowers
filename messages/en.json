@@ -224,6 +224,15 @@
       "cta": "Subscribe",
       "success": "Welcome aboard.",
       "error": "Something went wrong. Try again?"
+    },
+    "tiktok": {
+      "eyebrow": "Behind the studio · TikTok",
+      "title": "Watch the bouquets come together",
+      "follow_cta": "Follow @makythediva",
+      "lightbox": {
+        "view_on_tiktok": "Watch on TikTok",
+        "close": "Close"
+      }
     }
   },
   "footer": {
