@@ -94,3 +94,8 @@ export const PROM_PIECES: readonly PromPiece[] = [
     },
   },
 ];
+
+export const FLOWER_GRADIENT: Record<PromPiece["flower"], string> = {
+  rose: "bg-gradient-to-br from-[#e89aa6] to-[#c45f72]",
+  orchid: "bg-gradient-to-br from-[#b4a4d4] to-[#6e5b9c]",
+};

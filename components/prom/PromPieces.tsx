@@ -1,12 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/locale";
-import { PROM_PIECES, type PromPiece } from "@/data/prom-collection";
+import { PROM_PIECES, FLOWER_GRADIENT } from "@/data/prom-collection";
 import { cn } from "@/lib/cn";
-
-const FLOWER_GRADIENT: Record<PromPiece["flower"], string> = {
-  rose: "bg-gradient-to-br from-[#e89aa6] to-[#c45f72]",
-  orchid: "bg-gradient-to-br from-[#b4a4d4] to-[#6e5b9c]",
-};
 
 export async function PromPieces({ locale }: { locale: Locale }) {
   const t = await getTranslations("prom.pieces");
