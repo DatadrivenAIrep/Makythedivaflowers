@@ -14,7 +14,10 @@ export async function PromCTA({ locale: _locale }: { locale: Locale }) {
           {t("title")}
         </h2>
         <div className="mt-10 flex justify-center">
-          <PromOpenModalButton variant="ghost" className="text-bone border-bone/40 hover:bg-bone/10">
+          <PromOpenModalButton
+            variant="ghost"
+            className="text-bone border-bone/40 hover:bg-bone/10 focus-visible:ring-bone/40"
+          >
             {t("button")}
           </PromOpenModalButton>
         </div>
