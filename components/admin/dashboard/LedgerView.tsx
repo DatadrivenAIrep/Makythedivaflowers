@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import DashboardShell from "./DashboardShell";
 import LedgerFilters, { type LedgerFilterValue } from "./LedgerFilters";
+import OrderDetailDrawer from "./OrderDetailDrawer";
 import type { Order } from "@/types/order";
 
 type ListResp = { orders: Order[]; nextCursor: string | null; approxTotal: number };
@@ -135,14 +136,11 @@ export default function LedgerView({ locale }: { locale: string }) {
       </section>
 
       {drawerOrderId && (
-        <div className="fixed inset-0 z-20 flex" onClick={() => setDrawerOrderId(null)}>
-          <div className="ml-auto h-full w-full max-w-xl bg-bone p-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
-            <p className="text-sm">Detalle de {drawerOrderId} — se completa en Task 23.</p>
-            <button className="mt-2 rounded border border-ink/20 px-3 py-1 text-sm" onClick={() => setDrawerOrderId(null)}>
-              Cerrar
-            </button>
-          </div>
-        </div>
+        <OrderDetailDrawer
+          orderId={drawerOrderId}
+          onClose={() => setDrawerOrderId(null)}
+          onChanged={() => { void fetchPage(null); }}
+        />
       )}
     </DashboardShell>
   );

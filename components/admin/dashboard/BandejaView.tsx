@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useRef, useState } from "react";
 import DashboardShell from "./DashboardShell";
+import OrderDetailDrawer from "./OrderDetailDrawer";
 import PendingCard, { type PendingReason, type PendingActionId } from "./PendingCard";
 import { useDashboardPolling } from "./useDashboardPolling";
 import type { Order } from "@/types/order";
@@ -143,20 +144,13 @@ export default function BandejaView({ locale }: { locale: string }) {
         </section>
 
         {drawerOrderId && (
-          <OrderDetailDrawerStub orderId={drawerOrderId} onClose={() => setDrawerOrderId(null)} />
+          <OrderDetailDrawer
+            orderId={drawerOrderId}
+            onClose={() => setDrawerOrderId(null)}
+            onChanged={() => { void refresh(); }}
+          />
         )}
       </DashboardShell>
-    </div>
-  );
-}
-
-function OrderDetailDrawerStub({ orderId, onClose }: { orderId: string; onClose: () => void }) {
-  return (
-    <div className="fixed inset-0 z-20 flex" onClick={onClose}>
-      <div className="ml-auto h-full w-full max-w-xl bg-bone p-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
-        <p className="text-sm">Detalle de {orderId} — se completa en Task 23.</p>
-        <button className="mt-2 rounded border border-ink/20 px-3 py-1 text-sm" onClick={onClose}>Cerrar</button>
-      </div>
     </div>
   );
 }
