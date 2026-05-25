@@ -34,7 +34,7 @@ describe("markPaidManual", () => {
   it("is idempotent — second call returns the already-paid order untouched", async () => {
     seed("o2", "pending");
     const a = await markPaidManual("o2", { method: "cash" });
-    const b = await markPaidManual("o2", { method: "venmo" });
+    const b = await markPaidManual("o2", { method: "venmo" as never });
     expect(b.paymentMethod).toBe("cash");
     expect(b.paidAt).toBe(a.paidAt);
   });

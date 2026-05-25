@@ -42,7 +42,6 @@ describe("changeFulfillmentStatus", () => {
 
   it("rejects unsupported statuses (failed, canceled) from this endpoint", async () => {
     seed("o5", "pending");
-    // @ts-expect-error testing invalid input
     await expect(changeFulfillmentStatus("o5", "canceled")).rejects.toThrow();
   });
 });

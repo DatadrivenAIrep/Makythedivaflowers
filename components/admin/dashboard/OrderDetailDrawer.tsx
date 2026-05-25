@@ -103,7 +103,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
           <div>{f.method === "delivery" ? "Delivery" : f.method === "pickup" ? "Pickup" : "En tienda"}
             {f.method !== "in-store" && <> · {f.window.date} · {f.window.slot}</>}
           </div>
-          {addrLink && (
+          {f.method === "delivery" && addrLink && (
             <div className="mt-1">
               <a href={addrLink} target="_blank" rel="noreferrer" className="underline">
                 {f.address.street1}, {f.address.city}, {f.address.state} {f.address.zip}
