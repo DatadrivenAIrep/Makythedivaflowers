@@ -178,7 +178,14 @@
       "clock_open": "Open",
       "clock_closed": "Closed",
       "clock_closes_at": "Closes at",
-      "clock_opens_at": "Opens at"
+      "clock_opens_at": "Opens at",
+      "prom": {
+        "eyebrow": "Prom · 2026",
+        "count": "4 pieces",
+        "title": "For the night they remember",
+        "limited": "Limited season",
+        "cta": "Reserve"
+      }
     },
     "categories_title": "Find your bloom.",
     "editorial_split": {
@@ -633,7 +640,36 @@
       "weddings": "I'd like to inquire about wedding florals.",
       "events": "I'd like to ask about florals for an event.",
       "checkout": "I need help completing my order.",
+      "prom": "I'd like to reserve a corsage or boutonnière for prom.",
       "default": "I have a quick question."
+    }
+  },
+  "prom": {
+    "hero": {
+      "eyebrow": "Prom · 2026",
+      "title": "For the night they remember",
+      "subtitle": "Four pieces, two flowers, made the day before so the blooms are fresh for photos.",
+      "cta": "Reserve by message"
+    },
+    "pieces": {
+      "section_eyebrow": "The collection",
+      "section_title": "Four pieces",
+      "reserve_this": "Reserve this piece"
+    },
+    "how": {
+      "eyebrow": "How it works",
+      "title": "Three steps",
+      "step1_title": "Tell us the night",
+      "step1_body": "Date, color of the dress or tux, pickup or delivery.",
+      "step2_title": "We confirm and craft",
+      "step2_body": "Day-before assembly so blooms are fresh for photos.",
+      "step3_title": "Pay at confirmation",
+      "step3_body": "Cash, Zelle, or a Stripe link by message."
+    },
+    "cta": {
+      "eyebrow": "Limited season",
+      "title": "Reserve your pieces",
+      "button": "Message Maky"
     }
   },
   "product": {

@@ -178,7 +178,14 @@
       "clock_open": "Abierto",
       "clock_closed": "Cerrado",
       "clock_closes_at": "Cierra a las",
-      "clock_opens_at": "Abre a las"
+      "clock_opens_at": "Abre a las",
+      "prom": {
+        "eyebrow": "Prom · 2026",
+        "count": "4 piezas",
+        "title": "Para una noche inolvidable",
+        "limited": "Temporada limitada",
+        "cta": "Reservar"
+      }
     },
     "categories_title": "Encuentra tu flor.",
     "editorial_split": {
@@ -633,7 +640,36 @@
       "weddings": "me gustaría consultar sobre flores para una boda.",
       "events": "me gustaría consultar sobre flores para un evento.",
       "checkout": "necesito ayuda para completar mi pedido.",
+      "prom": "Quisiera reservar un corsage o boutonnière para Prom.",
       "default": "tengo una pregunta rápida."
+    }
+  },
+  "prom": {
+    "hero": {
+      "eyebrow": "Prom · 2026",
+      "title": "Para una noche inolvidable",
+      "subtitle": "Cuatro piezas, dos flores, armadas el día anterior para que las flores se vean frescas en las fotos.",
+      "cta": "Reservar por mensaje"
+    },
+    "pieces": {
+      "section_eyebrow": "La colección",
+      "section_title": "Cuatro piezas",
+      "reserve_this": "Reservar esta pieza"
+    },
+    "how": {
+      "eyebrow": "Cómo funciona",
+      "title": "Tres pasos",
+      "step1_title": "Cuéntanos sobre la noche",
+      "step1_body": "Fecha, color del vestido o smoking, recoger o entrega.",
+      "step2_title": "Confirmamos y armamos",
+      "step2_body": "Armado el día anterior para que las flores se vean frescas en las fotos.",
+      "step3_title": "Pago al confirmar",
+      "step3_body": "Efectivo, Zelle o link de Stripe por mensaje."
+    },
+    "cta": {
+      "eyebrow": "Temporada limitada",
+      "title": "Reserva tus piezas",
+      "button": "Escribir a Maky"
     }
   },
   "product": {
