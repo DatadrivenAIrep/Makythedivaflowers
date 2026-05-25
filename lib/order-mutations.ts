@@ -35,6 +35,26 @@ export async function markPaidManual(
     updatedAt: now,
   };
   upsert(next);
+
+  // Mirror the Stripe webhook side-effects so customers get the same paid-order
+  // confirmation regardless of whether payment landed via Stripe or manual.
+  // Failures are swallowed: the DB mutation already succeeded, and dispatch can
+  // be retried via the resend endpoint.
+  try {
+    const { dispatchPaymentConfirmed } = await import("@/lib/order-dispatch");
+    await dispatchPaymentConfirmed(next);
+  } catch (e) {
+    console.error(JSON.stringify({ event: "dispatch_payment_confirmed_failed", orderId, error: String(e) }));
+  }
+  if (next.contact.email) {
+    try {
+      const { notifyOrderPaid } = await import("@/lib/order-notifications");
+      await notifyOrderPaid(next);
+    } catch (e) {
+      console.error(JSON.stringify({ event: "notify_order_paid_failed", orderId, error: String(e) }));
+    }
+  }
+
   return next;
 }
 
@@ -55,9 +75,6 @@ function upsert(order: Order): void {
     updated_at: row.updated_at,
   });
 }
-
-// Exported so later tasks can reuse the same upsert path.
-export const __testing_upsert = upsert;
 
 const STATUS_ORDER: FulfillmentStatus[] = ["pending", "preparing", "out-for-delivery", "delivered"];
 

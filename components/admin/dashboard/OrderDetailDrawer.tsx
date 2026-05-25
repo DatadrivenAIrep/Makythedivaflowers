@@ -116,6 +116,19 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
         </section>
 
         <section className="mb-3 rounded border border-ink/10 bg-bone p-3 text-sm">
+          <div className="mb-1 text-xs uppercase tracking-wide text-ink/50">Items ({order.lines.length})</div>
+          {order.lines.length === 0 && <div className="text-ink/50">Sin items.</div>}
+          <ul className="space-y-0.5">
+            {order.lines.map((l, i) => (
+              <li key={i} className="flex justify-between">
+                <span>{l.kind === "catalog" ? l.productId : l.title} × {l.qty}</span>
+                {l.kind === "custom" && <span className="text-ink/60">{money(l.priceCents * l.qty)}</span>}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="mb-3 rounded border border-ink/10 bg-bone p-3 text-sm">
           <div className="mb-1 text-xs uppercase tracking-wide text-ink/50">Totales</div>
           <div className="grid grid-cols-2 gap-y-0.5">
             <span>Subtotal</span><span className="text-right">{money(order.totals.subtotalCents)}</span>
