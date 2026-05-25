@@ -16,6 +16,7 @@ const STATIC_PATHS = [
   "shop/sympathy",
   "subscriptions",
   "weddings",
+  "prom",
   "events",
   "story",
   "journal",
