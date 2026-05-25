@@ -186,3 +186,99 @@ export async function updateOrderPaidByCheckoutSession(sessionId: string): Promi
     `UPDATE orders SET payment_status = 'paid', paid_at = COALESCE(paid_at, ?), updated_at = ? WHERE stripe_checkout_session_id = ? AND payment_status != 'paid'`,
   ).run(now, now, sessionId);
 }
+
+export type ListOrdersFilters = {
+  q?: string;
+  from?: string;
+  to?: string;
+  paymentStatus?: string[];
+  fulfillmentStatus?: string[];
+  source?: string[];
+  fulfillmentMethod?: string[];
+  limit?: number;
+  cursor?: string; // base64url(`${createdAt}|${id}`)
+};
+
+export type ListOrdersResult = {
+  orders: import("@/types/order").Order[];
+  nextCursor: string | null;
+  approxTotal: number;
+};
+
+function encodeCursor(createdAt: string, id: string): string {
+  return Buffer.from(`${createdAt}|${id}`, "utf8").toString("base64url");
+}
+
+function decodeCursor(c: string): { createdAt: string; id: string } | null {
+  try {
+    const s = Buffer.from(c, "base64url").toString("utf8");
+    const i = s.indexOf("|");
+    if (i < 0) return null;
+    return { createdAt: s.slice(0, i), id: s.slice(i + 1) };
+  } catch { return null; }
+}
+
+export async function listOrders(filters: ListOrdersFilters): Promise<ListOrdersResult> {
+  ensureSchema();
+  const db = getDb();
+  const where: string[] = [];
+  const params: unknown[] = [];
+
+  if (filters.from) { where.push("created_at >= ?"); params.push(filters.from); }
+  if (filters.to)   { where.push("created_at <= ?"); params.push(filters.to); }
+  if (filters.paymentStatus?.length) {
+    where.push(`payment_status IN (${filters.paymentStatus.map(() => "?").join(",")})`);
+    params.push(...filters.paymentStatus);
+  }
+  if (filters.fulfillmentStatus?.length) {
+    where.push(`fulfillment_status IN (${filters.fulfillmentStatus.map(() => "?").join(",")})`);
+    params.push(...filters.fulfillmentStatus);
+  }
+  if (filters.source?.length) {
+    where.push(`source IN (${filters.source.map(() => "?").join(",")})`);
+    params.push(...filters.source);
+  }
+  if (filters.fulfillmentMethod?.length) {
+    where.push(`fulfillment_method IN (${filters.fulfillmentMethod.map(() => "?").join(",")})`);
+    params.push(...filters.fulfillmentMethod);
+  }
+  if (filters.q) {
+    const like = `%${filters.q}%`;
+    where.push(
+      "(recipient_name LIKE ? OR recipient_phone LIKE ? OR contact_email LIKE ? OR id LIKE ? OR card_message LIKE ?)",
+    );
+    params.push(like, like, like, like, like);
+  }
+
+  const baseWhere = where.length ? `WHERE ${where.join(" AND ")}` : "";
+
+  // total (no cursor)
+  const totalRow = db.prepare(`SELECT COUNT(*) AS n FROM orders ${baseWhere}`).get(...params) as { n: number };
+  const approxTotal = totalRow.n;
+
+  // page (with cursor)
+  const limit = Math.min(Math.max(filters.limit ?? 50, 1), 200);
+  const pageWhere = [...where];
+  const pageParams = [...params];
+  if (filters.cursor) {
+    const c = decodeCursor(filters.cursor);
+    if (c) {
+      pageWhere.push("(created_at < ? OR (created_at = ? AND id < ?))");
+      pageParams.push(c.createdAt, c.createdAt, c.id);
+    }
+  }
+  const pageWhereSql = pageWhere.length ? `WHERE ${pageWhere.join(" AND ")}` : "";
+
+  const rows = db.prepare(
+    `SELECT * FROM orders ${pageWhereSql}
+     ORDER BY created_at DESC, id DESC
+     LIMIT ?`,
+  ).all(...pageParams, limit + 1) as OrderRow[];
+
+  const hasMore = rows.length > limit;
+  const page = hasMore ? rows.slice(0, limit) : rows;
+  const last = page[page.length - 1];
+  const nextCursor = hasMore && last ? encodeCursor(last.created_at, last.id) : null;
+
+  return { orders: page.map(rowToOrder), nextCursor, approxTotal };
+}
