@@ -231,7 +231,8 @@
       "follow_cta": "Follow @makythediva",
       "lightbox": {
         "view_on_tiktok": "Watch on TikTok",
-        "close": "Close"
+        "close": "Close",
+        "video_label": "TikTok video"
       }
     }
   },

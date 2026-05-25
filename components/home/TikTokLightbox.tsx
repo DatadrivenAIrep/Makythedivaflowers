@@ -35,7 +35,7 @@ export function TikTokLightbox({
                   transition={{ duration: 0.2 }}
                 />
               </Dialog.Overlay>
-              <Dialog.Content asChild aria-label="TikTok video">
+              <Dialog.Content asChild>
                 <motion.div
                   className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 md:p-8"
                   initial={{ opacity: 0, scale: 0.96 }}
@@ -43,6 +43,7 @@ export function TikTokLightbox({
                   exit={{ opacity: 0, scale: 0.96 }}
                   transition={{ type: "spring", stiffness: 220, damping: 28 }}
                 >
+                  <Dialog.Title className="sr-only">{t("video_label")}</Dialog.Title>
                   <Dialog.Close
                     aria-label={t("close")}
                     className="absolute top-4 right-4 size-10 rounded-full bg-bone/15 text-bone hover:bg-bone/25 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bone/50"
@@ -56,7 +57,7 @@ export function TikTokLightbox({
                       allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
                       allowFullScreen
                       className="size-full"
-                      title="TikTok video"
+                      title={t("video_label")}
                     />
                   </div>
 
