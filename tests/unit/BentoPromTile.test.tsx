@@ -1,7 +1,5 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { NextIntlClientProvider } from "next-intl";
-import en from "@/messages/en.json";
 
 // next-intl's server `getTranslations` requires RSC context that jsdom doesn't
 // provide. Stub it with a synchronous lookup against our messages so the async
@@ -38,14 +36,14 @@ const { BentoPromTile } = await import("@/components/home/BentoPromTile");
 async function renderTile(locale: "en" | "es" = "en") {
   globalThis.__BENTO_PROM_LOCALE__ = locale;
   const ui = await BentoPromTile({ locale });
-  return render(
-    <NextIntlClientProvider locale={locale} messages={en}>
-      {ui}
-    </NextIntlClientProvider>,
-  );
+  return render(ui);
 }
 
 describe("BentoPromTile", () => {
+  afterEach(() => {
+    delete (globalThis as any).__BENTO_PROM_LOCALE__;
+  });
+
   it("renders all four prom pieces with their prices", async () => {
     await renderTile("en");
     expect(screen.getByText("Rose corsage")).toBeDefined();
