@@ -3,7 +3,7 @@ import { intakeSchema, type IntakeInput } from "@/schemas/intake";
 import { PRODUCTS } from "@/data/products";
 import { cartSubtotalCents } from "@/lib/cart-helpers";
 import { computeOrderTotals, computeDeliveryCentsForZip } from "@/lib/totals";
-import { saveOrder } from "@/lib/order-storage";
+import { saveOrder, listOrders, type ListOrdersFilters } from "@/lib/order-storage";
 import { enqueuePrintJob } from "@/lib/print-queue";
 import { upsertOnOrder } from "@/lib/customer-storage";
 import { createCheckoutSession } from "@/lib/stripe-payment-link";
@@ -112,4 +112,28 @@ export async function POST(req: Request) {
   }
 
   return NextResponse.json({ orderId: order.id, printJobId: job.id }, { status: 201 });
+}
+
+function parseList(sp: URLSearchParams, key: string): string[] | undefined {
+  const values = sp.getAll(key);
+  if (values.length === 0) return undefined;
+  // Support both ?key=a&key=b and ?key=a,b
+  return values.flatMap((v) => v.split(",")).map((s) => s.trim()).filter(Boolean);
+}
+
+export async function GET(req: Request): Promise<Response> {
+  const sp = new URL(req.url).searchParams;
+  const filters: ListOrdersFilters = {
+    q: sp.get("q") ?? undefined,
+    from: sp.get("from") ?? undefined,
+    to: sp.get("to") ?? undefined,
+    paymentStatus: parseList(sp, "paymentStatus"),
+    fulfillmentStatus: parseList(sp, "fulfillmentStatus"),
+    source: parseList(sp, "source"),
+    fulfillmentMethod: parseList(sp, "fulfillmentMethod"),
+    limit: sp.get("limit") ? Number(sp.get("limit")) : undefined,
+    cursor: sp.get("cursor") ?? undefined,
+  };
+  const result = await listOrders(filters);
+  return NextResponse.json(result);
 }
