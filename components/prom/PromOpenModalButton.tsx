@@ -26,7 +26,7 @@ export function PromOpenModalButton({
         variant === "primary" &&
           "bg-ink text-bone hover:bg-ink/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40",
         variant === "ghost" &&
-          "border border-ink/30 text-ink hover:bg-ink/5",
+          "border border-ink/30 text-ink hover:bg-ink/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30",
         className,
       )}
     >
