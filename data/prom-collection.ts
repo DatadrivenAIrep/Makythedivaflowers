@@ -1,4 +1,6 @@
 // data/prom-collection.ts
+import type { Localized } from "@/types/product";
+
 export type PromPieceId =
   | "rose-corsage"
   | "rose-boutonniere"
@@ -10,11 +12,11 @@ export type PromPiece = {
   flower: "rose" | "orchid";
   type: "corsage" | "boutonniere";
   priceUSD: number;
-  name: { en: string; es: string };
-  description: { en: string; es: string };
+  name: Localized;
+  description: Localized;
   image: {
     src: string;
-    alt: { en: string; es: string };
+    alt: Localized;
   };
 };
 
