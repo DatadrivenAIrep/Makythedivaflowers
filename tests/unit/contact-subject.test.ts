@@ -75,6 +75,14 @@ describe("getSubjectKey", () => {
     });
     expect(result).toEqual({ key: "weddings" });
   });
+
+  it("returns prom on /prom", () => {
+    expect(getSubjectKey({ pathname: "/en/prom", override: null })).toEqual({ key: "prom" });
+  });
+
+  it("returns prom on /es/prom", () => {
+    expect(getSubjectKey({ pathname: "/es/prom", override: null })).toEqual({ key: "prom" });
+  });
 });
 
 describe("isAllowlistedRoute", () => {
@@ -89,6 +97,7 @@ describe("isAllowlistedRoute", () => {
       "/en/events",
       "/en/cart",
       "/en/checkout",
+      "/en/prom",
     ]) {
       expect(isAllowlistedRoute(p)).toBe(true);
     }
