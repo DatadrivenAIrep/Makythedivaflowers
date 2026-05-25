@@ -29,9 +29,10 @@ describe("runMigrations", () => {
     runMigrations();
     const db = getDb();
     const rows = db.prepare("SELECT name FROM schema_migrations ORDER BY name").all() as { name: string }[];
-    expect(rows.length).toBe(2);
+    expect(rows.length).toBe(3);
     expect(rows[0].name).toBe("001_init.sql");
     expect(rows[1].name).toBe("002_messaging.sql");
+    expect(rows[2].name).toBe("003_dashboard.sql");
   });
 });
 

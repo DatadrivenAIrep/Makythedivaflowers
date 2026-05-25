@@ -208,7 +208,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
               </button>
             ))}
           </div>
-          <div className="text-mute-400 text-xs tabular-nums">
+          <div className="text-mute-400 text-xs tabular-nums" suppressHydrationWarning>
             {new Date().toLocaleString(locale === "es" ? "es-MX" : "en-US")}
           </div>
         </div>
