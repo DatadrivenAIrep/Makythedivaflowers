@@ -8,6 +8,7 @@ export const occasionSchema = z.enum([
   "congrats",
   "just-because",
   "mothers-day",
+  "get-well",
 ]);
 
 export const relationSchema = z.enum([

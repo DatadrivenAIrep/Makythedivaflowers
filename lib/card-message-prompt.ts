@@ -24,7 +24,8 @@ Tone varies by occasion:
 - just-because → the small gesture that lands big
 - congrats → pride, milestone, "you did it"
 - sympathy → dignity, no clichés
-- mothers-day → mother, gratitude for the unseen labor, the small rituals she made into love`;
+- mothers-day → mother, gratitude for the unseen labor, the small rituals she made into love
+- get-well → warmth and presence, soft humor okay, no medical talk, no "stay strong" platitudes`;
 
 const SYMPATHY_CLAUSE = `
 
