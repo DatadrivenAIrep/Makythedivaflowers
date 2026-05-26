@@ -13,6 +13,7 @@
   },
   "nav": {
     "shop": "Tienda",
+    "sympathy": "Pésame",
     "subscriptions": "Suscripciones",
     "weddings": "Bodas",
     "events": "Eventos",
@@ -649,6 +650,7 @@
       "shop_category": "estoy viendo tu colección de {category} y tengo una pregunta.",
       "weddings": "me gustaría consultar sobre flores para una boda.",
       "events": "me gustaría consultar sobre flores para un evento.",
+      "sympathy": "me gustaría consultar sobre una pieza de pésame.",
       "checkout": "necesito ayuda para completar mi pedido.",
       "prom": "quisiera reservar un corsage o boutonnière para Prom.",
       "default": "tengo una pregunta rápida."
@@ -759,11 +761,11 @@
     "meta_description": "Suscripciones semanales y quincenales de ramos, curadas y entregadas en casa.",
     "eyebrow": "Programa · Suscripción",
     "hero": {
-      "title": "Flores frescas, todas las semanas.",
-      "body": "Una suscripción curada por el estudio. Cada lunes elegimos lo más bello de la semana y lo dejamos en tu puerta."
+      "title": "Flores frescas, en tu rutina.",
+      "body": "Una suscripción curada por el estudio. Elige tamaño y cadencia — semanal o quincenal — y dejamos las flores en tu puerta."
     },
     "tiers": {
-      "heading": "Tres planes, una rutina",
+      "heading": "Tres tamaños, dos cadencias",
       "popular_badge": "Más Querido",
       "per_delivery": "por entrega",
       "cta": "Elegir {name}",
@@ -777,7 +779,7 @@
       },
       "step_2": {
         "title": "Curamos según temporada",
-        "body": "Nuestras floristas arman cada entrega con tallos de temporada — ninguna semana es igual."
+        "body": "Nuestras floristas arman cada entrega con lo más fresco de la semana — ninguna semana es igual."
       },
       "step_3": {
         "title": "Entregamos el día acordado",
@@ -835,7 +837,8 @@
         "romance": "Romance",
         "just-because": "Sin razón",
         "congrats": "Felicitaciones",
-        "sympathy": "Pésame"
+        "sympathy": "Pésame",
+        "get-well": "Mejórate"
       },
       "card_relations": {
         "partner": "Pareja",

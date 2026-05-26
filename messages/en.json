@@ -13,6 +13,7 @@
   },
   "nav": {
     "shop": "Shop",
+    "sympathy": "Sympathy",
     "subscriptions": "Subscriptions",
     "weddings": "Weddings",
     "events": "Events",
@@ -649,6 +650,7 @@
       "shop_category": "I'm browsing your {category} collection and have a question.",
       "weddings": "I'd like to inquire about wedding florals.",
       "events": "I'd like to ask about florals for an event.",
+      "sympathy": "I'd like to inquire about a sympathy piece.",
       "checkout": "I need help completing my order.",
       "prom": "I'd like to reserve a corsage or boutonnière for prom.",
       "default": "I have a quick question."
@@ -757,13 +759,13 @@
   "subscriptions": {
     "page_title": "Subscriptions — Diva Flowers",
     "meta_description": "Weekly and biweekly bouquet subscriptions, curated and delivered.",
-    "eyebrow": "Programa · Suscripción",
+    "eyebrow": "Program · Subscription",
     "hero": {
-      "title": "Flores frescas, todas las semanas.",
-      "body": "Una suscripción curada por el estudio. Cada lunes elegimos lo más bello de la semana y lo dejamos en tu puerta."
+      "title": "Fresh flowers, on your schedule.",
+      "body": "A studio-curated subscription. Pick a size and cadence — weekly or bi-weekly — and we drop the flowers at your door."
     },
     "tiers": {
-      "heading": "Tres planes, una rutina",
+      "heading": "Three sizes, two cadences",
       "popular_badge": "Most Loved",
       "per_delivery": "per delivery",
       "cta": "Choose {name}",
@@ -777,7 +779,7 @@
       },
       "step_2": {
         "title": "We curate by season",
-        "body": "Our florists build each delivery from in-season stems — no two weeks alike."
+        "body": "Our florists build each delivery from what's freshest that week — no two weeks alike."
       },
       "step_3": {
         "title": "We deliver on schedule",
@@ -835,7 +837,8 @@
         "romance": "Romance",
         "just-because": "Just because",
         "congrats": "Congratulations",
-        "sympathy": "Sympathy"
+        "sympathy": "Sympathy",
+        "get-well": "Get well"
       },
       "card_relations": {
         "partner": "Partner",

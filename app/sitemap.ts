@@ -1,6 +1,7 @@
 // app/sitemap.ts
 import type { MetadataRoute } from "next";
 import { PRODUCTS } from "@/data/products";
+import { isAvailableNow } from "@/data/product-helpers";
 import { journalArticles } from "@/data/journal";
 import { locales } from "@/types/locale";
 
@@ -41,7 +42,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         },
       });
     }
-    for (const product of PRODUCTS) {
+    for (const product of PRODUCTS.filter((p) => isAvailableNow(p))) {
       entries.push({
         url: `${SITE}/${locale}/product/${product.slug}`,
         lastModified: now,
