@@ -9,6 +9,7 @@ import { CATS, LABELS } from "@/lib/shop-categories";
 import type { Locale } from "@/types/locale";
 
 const NAV_LINKS = (locale: Locale) => [
+  { href: `/${locale}/sympathy`, key: "sympathy" },
   { href: `/${locale}/weddings`, key: "weddings" },
   { href: `/${locale}/events`, key: "events" },
   { href: `/${locale}/story`, key: "story" },

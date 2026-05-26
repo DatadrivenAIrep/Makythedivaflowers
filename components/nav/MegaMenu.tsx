@@ -40,7 +40,7 @@ function MegaMenuImpl({ locale, label }: Props) {
             transition={{ duration: 0.18 }}
             className="fixed inset-x-0 top-16 z-40 hidden border-y border-ink/10 bg-bone/95 px-6 py-8 backdrop-blur lg:block"
           >
-            <div className="mx-auto grid max-w-[var(--container-max)] grid-cols-6 gap-4">
+            <div className="mx-auto grid max-w-[var(--container-max)] grid-cols-7 gap-3">
               {CATS.map((c) => (
                 <Link
                   role="menuitem"
@@ -52,10 +52,14 @@ function MegaMenuImpl({ locale, label }: Props) {
                     src={c.img}
                     alt={LABELS[c.slug][locale]}
                     className="h-full w-full"
-                    sizes="200px"
+                    sizes="160px"
                   />
-                  <div className="absolute inset-x-3 bottom-3">
-                    <span className="font-display text-xl leading-none tracking-tight text-bone drop-shadow-[0_2px_4px_rgba(14,13,12,0.4)]">
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink/85 via-ink/40 to-transparent"
+                  />
+                  <div className="absolute inset-x-2 bottom-2">
+                    <span className="font-display text-base font-medium leading-tight tracking-tight text-bone [text-shadow:0_1px_3px_rgba(0,0,0,0.6)]">
                       {LABELS[c.slug][locale]}
                     </span>
                   </div>

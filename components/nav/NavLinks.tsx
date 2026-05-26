@@ -6,6 +6,7 @@ import { MegaMenu } from "./MegaMenu";
 export async function NavLinks({ locale }: { locale: Locale }) {
   const t = await getTranslations("nav");
   const links: { href: string; label: string }[] = [
+    { href: `/${locale}/sympathy`, label: t("sympathy") },
     { href: `/${locale}/subscriptions`, label: t("subscriptions") },
     { href: `/${locale}/weddings`, label: t("weddings") },
     { href: `/${locale}/events`, label: t("events") },
