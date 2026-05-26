@@ -1,6 +1,6 @@
 import type { Filter, Sort } from "@/data/product-helpers";
 
-const OCCASIONS = ["birthday", "anniversary", "sympathy", "romance", "congrats", "just-because"] as const;
+const OCCASIONS = ["birthday", "anniversary", "sympathy", "romance", "congrats", "just-because", "get-well"] as const;
 const COLORS = ["pink", "red", "white", "mixed", "green", "pastel"] as const;
 const SIZES = ["standard", "grand", "diva"] as const;
 const PRICES = ["under-200", "200-300", "300-plus"] as const;
@@ -28,6 +28,8 @@ export function parseFilterParams(params: RawSearchParams): { filter: Filter; so
   const sameDayRaw = first(params.same_day);
   const sameDay = sameDayRaw === "1" || sameDayRaw === "true" ? true : undefined;
   const sort = pickEnum(SORTS, first(params.sort)) ?? "newest";
+  const qRaw = first(params.q);
+  const q = qRaw ? qRaw.trim().slice(0, 80) : undefined;
 
   const filter: Filter = {};
   if (occasion) filter.occasion = occasion;
@@ -35,6 +37,7 @@ export function parseFilterParams(params: RawSearchParams): { filter: Filter; so
   if (size) filter.size = size;
   if (price) filter.price = price;
   if (sameDay) filter.sameDay = true;
+  if (q) filter.q = q;
 
   return { filter, sort };
 }
@@ -52,6 +55,7 @@ export function serializeFilterParams({
   if (filter.size) params.set("size", filter.size);
   if (filter.price) params.set("price", filter.price);
   if (filter.sameDay) params.set("same_day", "1");
+  if (filter.q) params.set("q", filter.q);
   if (sort !== "newest") params.set("sort", sort);
   return params.toString();
 }

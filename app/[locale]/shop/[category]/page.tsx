@@ -1,7 +1,7 @@
 // app/[locale]/shop/[category]/page.tsx
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Locale } from "@/types/locale";
 import { PRODUCTS } from "@/data/products";
 import {
@@ -20,26 +20,33 @@ import { BreadcrumbListLD } from "@/components/seo/BreadcrumbListLD";
 import { ShopCategoryContactSubject } from "@/components/contact/ShopCategoryContactSubject";
 import { TrackEvent } from "@/components/analytics/TrackEvent";
 import type { AnalyticsItem } from "@/lib/analytics-types";
+import { isRoseProduct, isExoticProduct } from "@/lib/shop-categories";
 
-const ALLOWED: ProductCategory[] = [
+type ShopSlug = ProductCategory | "roses" | "exotic";
+
+const ALLOWED: ShopSlug[] = [
   "arrangements",
   "bouquets",
+  "roses",
+  "exotic",
   "plants",
   "gifts",
   "sympathy",
   "subscriptions",
 ];
 
-const CATEGORY_TITLES: Record<ProductCategory, { en: string; es: string }> = {
+const CATEGORY_TITLES: Record<ShopSlug, { en: string; es: string }> = {
   arrangements: { en: "Arrangements", es: "Arreglos" },
   bouquets: { en: "Bouquets", es: "Ramos" },
+  roses: { en: "Roses", es: "Rosas" },
+  exotic: { en: "Exotic", es: "Exóticas" },
   plants: { en: "Plants & Orchids", es: "Plantas y Orquídeas" },
   gifts: { en: "Gifts", es: "Regalos" },
   sympathy: { en: "Sympathy", es: "Condolencias" },
   subscriptions: { en: "Subscriptions", es: "Suscripciones" },
 };
 
-const CATEGORY_DESCS: Record<ProductCategory, { en: string; es: string }> = {
+const CATEGORY_DESCS: Record<ShopSlug, { en: string; es: string }> = {
   arrangements: {
     en: "Statement arrangements, hand-built daily.",
     es: "Arreglos de declaración, hechos a mano cada día.",
@@ -47,6 +54,14 @@ const CATEGORY_DESCS: Record<ProductCategory, { en: string; es: string }> = {
   bouquets: {
     en: "Hand-tied bouquets, cut and wrapped the morning of delivery.",
     es: "Ramos atados a mano, cortados y envueltos la mañana del envío.",
+  },
+  roses: {
+    en: "Red roses and pink-rose picks, hand-built the morning of delivery.",
+    es: "Rosas rojas y selección en rosado, armadas la mañana del envío.",
+  },
+  exotic: {
+    en: "Tropical orchids and rainforest blooms — bold, sculptural, hand-built.",
+    es: "Orquídeas tropicales y flores de selva — atrevidas, escultóricas, hechas a mano.",
   },
   plants: {
     en: "Long-lasting plants and orchids in studio-poured planters.",
@@ -67,7 +82,7 @@ const CATEGORY_DESCS: Record<ProductCategory, { en: string; es: string }> = {
 };
 
 export async function generateStaticParams() {
-  return ALLOWED.map((c) => ({ category: c }));
+  return ALLOWED.filter((c) => c !== "sympathy").map((c) => ({ category: c }));
 }
 
 export async function generateMetadata({
@@ -77,7 +92,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, category } = await params;
   if (!(ALLOWED as string[]).includes(category)) return {};
-  const cat = category as ProductCategory;
+  const cat = category as ShopSlug;
   return {
     title: `${CATEGORY_TITLES[cat][locale]} — Diva Flowers`,
     description: CATEGORY_DESCS[cat][locale],
@@ -99,21 +114,30 @@ export default async function CategoryPage({
   searchParams: Promise<RawSearchParams>;
 }) {
   const { locale, category } = await params;
+  if (category === "sympathy") redirect(`/${locale}/sympathy`);
   if (!(ALLOWED as string[]).includes(category)) notFound();
   setRequestLocale(locale);
 
-  const cat = category as ProductCategory;
+  const cat = category as ShopSlug;
   const sp = await searchParams;
   const { filter, sort } = parseFilterParams(sp);
 
-  const all = productsByCategory(PRODUCTS, cat);
+  const all =
+    cat === "roses"
+      ? PRODUCTS.filter(isRoseProduct)
+      : cat === "exotic"
+        ? PRODUCTS.filter(isExoticProduct)
+        : productsByCategory(PRODUCTS, cat as ProductCategory);
   const filtered = sortProducts(filterProducts(all, filter), sort);
 
   const isSympathy = cat === "sympathy";
+  const isRoses = cat === "roses";
   const motionMode = isSympathy ? "sympathy" : "default";
   const filtersToShow: Array<"occasion" | "color" | "size" | "price" | "sameDay"> = isSympathy
     ? ["price", "sameDay"]
-    : ["occasion", "color", "size", "price", "sameDay"];
+    : isRoses
+      ? ["occasion", "size", "price", "sameDay"]
+      : ["occasion", "color", "size", "price", "sameDay"];
 
   return (
     <main className="bg-bone text-ink">

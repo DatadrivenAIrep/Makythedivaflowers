@@ -37,7 +37,8 @@ export type Occasion =
   | "romance"
   | "congrats"
   | "just-because"
-  | "mothers-day";
+  | "mothers-day"
+  | "get-well";
 export type ColorFamily =
   | "pink"
   | "red"
@@ -63,6 +64,7 @@ export type Product = {
   occasions: Occasion[];
   colorFamily: ColorFamily[];
   active: boolean;
+  seasonMonths?: number[];
   subscription?: { cadences: SubscriptionCadence[] };
   pairsWith?: string[];
   seo: {

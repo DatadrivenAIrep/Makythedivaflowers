@@ -20,6 +20,7 @@ const OCCASIONS = [
   "anniversary",
   "birthday",
   "congrats",
+  "get-well",
   "sympathy",
   "just-because",
 ] as const;
@@ -41,6 +42,7 @@ const COPY: Copy = {
   congrats: { en: "Congratulations", es: "Felicitaciones" },
   sympathy: { en: "Sympathy", es: "Condolencias" },
   "just-because": { en: "Just because", es: "Sin razón" },
+  "get-well": { en: "Get well", es: "Mejórate" },
   pink: { en: "Pink", es: "Rosa" },
   red: { en: "Red", es: "Rojo" },
   white: { en: "White", es: "Blanco" },

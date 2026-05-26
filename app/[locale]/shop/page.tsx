@@ -5,9 +5,9 @@ import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/types/locale";
 import { ShopHubHero } from "@/components/shop/ShopHubHero";
-import { CategoryMosaic } from "@/components/shop/CategoryMosaic";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { FilterBar } from "@/components/product/FilterBar";
+import { SearchBox } from "@/components/product/SearchBox";
 import { EmptyFilterState } from "@/components/product/EmptyFilterState";
 import { PRODUCTS } from "@/data/products";
 import {
@@ -56,24 +56,36 @@ export default async function ShopHubPage({
 
   const allActive = PRODUCTS.filter((p) => p.active && !p.giftExtra);
   const allFiltered = sortProducts(filterProducts(allActive, filter), sort);
-  const allTitle = locale === "es" ? "Todos los productos" : "All products";
+  const allTitle = filter.q
+    ? locale === "es"
+      ? "Resultados"
+      : "Results"
+    : locale === "es"
+      ? "Todos los productos"
+      : "All products";
   const allSubtitle =
     locale === "es"
       ? `${allFiltered.length} de ${allActive.length}`
       : `${allFiltered.length} of ${allActive.length}`;
 
+  const isSearching = Boolean(filter.q);
+
   return (
     <main className="bg-bone text-ink">
       <ShopHubHero locale={locale} />
-      <CategoryMosaic locale={locale} />
-      <section className="mx-auto max-w-[var(--container-max)] px-6 pb-16">
-        <div className="mb-8 flex items-baseline justify-between">
-          <h2 className="font-display text-4xl leading-none tracking-tighter md:text-5xl">
-            {newestTitle}
-          </h2>
-        </div>
-        <ProductGrid products={newest} locale={locale} />
+      <section className="mx-auto max-w-[var(--container-max)] px-6 pb-8">
+        <SearchBox locale={locale} />
       </section>
+      {!isSearching && (
+        <section className="mx-auto max-w-[var(--container-max)] px-6 pb-16">
+          <div className="mb-8 flex items-baseline justify-between">
+            <h2 className="font-display text-4xl leading-none tracking-tighter md:text-5xl">
+              {newestTitle}
+            </h2>
+          </div>
+          <ProductGrid products={newest} locale={locale} />
+        </section>
+      )}
 
       <section className="mx-auto max-w-[var(--container-max)] px-6 pb-24">
         <div className="mb-6 flex items-baseline justify-between">

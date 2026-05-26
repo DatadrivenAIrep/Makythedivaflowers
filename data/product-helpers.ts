@@ -14,17 +14,47 @@ export type Filter = {
   size?: "standard" | "grand" | "diva";
   price?: PriceBand;
   sameDay?: boolean;
+  q?: string;
 };
+
+function matchesQuery(p: Product, q: string): boolean {
+  const needle = q.trim().toLowerCase();
+  if (!needle) return true;
+  const haystack = [
+    p.title.en,
+    p.title.es,
+    p.blurb.en,
+    p.blurb.es,
+    p.tags.join(" "),
+    p.occasions.join(" "),
+    p.colorFamily.join(" "),
+    p.category,
+  ]
+    .join(" ")
+    .toLowerCase();
+  return haystack.includes(needle);
+}
 
 export function startingPriceCents(p: Product): number {
   if (p.variants.length === 0) return 0;
   return p.variants.reduce((min, v) => (v.priceCents < min ? v.priceCents : min), p.variants[0].priceCents);
 }
 
+export function isInSeason(p: Product, date: Date = new Date()): boolean {
+  if (p.category === "sympathy") return true;
+  if (!p.seasonMonths || p.seasonMonths.length === 0) return true;
+  return p.seasonMonths.includes(date.getMonth() + 1);
+}
+
+export function isAvailableNow(p: Product, date: Date = new Date()): boolean {
+  return p.active && !p.giftExtra && isInSeason(p, date);
+}
+
 export function filterProducts(products: Product[], f: Filter): Product[] {
   return products.filter((p) => {
     if (!p.active) return false;
     if (p.giftExtra) return false;
+    if (!isInSeason(p)) return false;
     if (f.occasion && !p.occasions.includes(f.occasion)) return false;
     if (f.color && !p.colorFamily.includes(f.color)) return false;
     if (f.size) {
@@ -39,6 +69,7 @@ export function filterProducts(products: Product[], f: Filter): Product[] {
       if (f.price === "200-300" && (c < 20000 || c >= 30000)) return false;
       if (f.price === "300-plus" && c < 30000) return false;
     }
+    if (f.q && !matchesQuery(p, f.q)) return false;
     return true;
   });
 }
@@ -63,12 +94,14 @@ export function productsByCategory(
   products: Product[],
   category: ProductCategory,
 ): Product[] {
-  return products.filter((p) => p.active && !p.giftExtra && p.category === category);
+  return products.filter(
+    (p) => p.active && !p.giftExtra && isInSeason(p) && p.category === category,
+  );
 }
 
 export function newestArrivals(products: Product[], limit = 12): Product[] {
   return [...products]
-    .filter((p) => p.active && !p.giftExtra)
+    .filter((p) => p.active && !p.giftExtra && isInSeason(p))
     .sort((a, b) => Number(b.tags.includes("new")) - Number(a.tags.includes("new")))
     .slice(0, limit);
 }

@@ -72,9 +72,9 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 14200, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["same-day"],
-    occasions: ["romance", "anniversary"],
+    occasions: ["romance", "anniversary", "birthday", "congrats", "just-because"],
     colorFamily: ["red"],
-    active: true,
+    active: false,
     seo: {
       title: { en: "Dozen Red Roses Bouquet | Diva Flowers", es: "Ramo de Doce Rosas Rojas | Diva Flowers" },
       description: {
@@ -294,7 +294,7 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 25700, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["same-day", "new"],
-    occasions: ["romance", "anniversary", "just-because"],
+    occasions: ["romance", "anniversary", "just-because", "birthday", "congrats"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -331,10 +331,11 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "candles", label: { en: "Add taper candle pair", es: "Añadir par de velas" }, priceCents: 2500 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["new", "same-day", "staff-pick", "seasonal"],
     occasions: ["just-because", "congrats"],
     colorFamily: ["mixed"],
     active: true,
+    seasonMonths: [9, 10, 11],
     seo: {
       title: { en: "Abundant Table — Diva Flowers", es: "Mesa Abundante — Diva Flowers" },
       description: {
@@ -368,7 +369,7 @@ export const PRODUCTS: Product[] = [
       { id: "champagne", label: { en: "Add Veuve Clicquot", es: "Añadir Veuve Clicquot" }, priceCents: 8900 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["anniversary", "romance"],
+    occasions: ["anniversary", "romance", "birthday", "congrats", "just-because"],
     colorFamily: ["red"],
     active: true,
     seo: {
@@ -569,7 +570,7 @@ export const PRODUCTS: Product[] = [
       { id: "chocolates", label: { en: "Add dark chocolate truffles", es: "Añadir trufas de chocolate" }, priceCents: 2500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday"],
+    occasions: ["just-because", "birthday", "get-well"],
     colorFamily: ["red", "mixed"],
     active: true,
     seo: {
@@ -668,7 +669,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 13500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday"],
+    occasions: ["just-because", "birthday", "get-well"],
     colorFamily: ["mixed", "green"],
     active: true,
     seo: {
@@ -1069,7 +1070,7 @@ export const PRODUCTS: Product[] = [
     tags: ["new", "same-day"],
     occasions: ["birthday", "just-because", "congrats"],
     colorFamily: ["mixed"],
-    active: true,
+    active: false,
     seo: {
       title: { en: "Dozen Multi-Color Roses — Diva Flowers", es: "Docena Rosas Multicolor — Diva Flowers" },
       description: {
@@ -1103,9 +1104,9 @@ export const PRODUCTS: Product[] = [
       { id: "chocolates", label: { en: "Add chocolate truffles", es: "Añadir trufas de chocolate" }, priceCents: 2500 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["romance", "anniversary"],
+    occasions: ["romance", "anniversary", "birthday", "congrats", "just-because"],
     colorFamily: ["pink"],
-    active: true,
+    active: false,
     seo: {
       title: { en: "Dozen Pink Roses — Diva Flowers", es: "Docena Rosas Rosadas — Diva Flowers" },
       description: {
@@ -1139,9 +1140,9 @@ export const PRODUCTS: Product[] = [
       { id: "champagne", label: { en: "Add Veuve Clicquot", es: "Añadir Veuve Clicquot" }, priceCents: 8900 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["romance", "anniversary"],
+    occasions: ["romance", "anniversary", "birthday", "congrats", "just-because"],
     colorFamily: ["red"],
-    active: true,
+    active: false,
     seo: {
       title: { en: "Dozen Roses in Vase — Diva Flowers", es: "Docena Rosas en Florero — Diva Flowers" },
       description: {
@@ -1174,7 +1175,7 @@ export const PRODUCTS: Product[] = [
     tags: ["new", "same-day"],
     occasions: ["romance", "anniversary", "congrats", "sympathy"],
     colorFamily: ["white"],
-    active: true,
+    active: false,
     seo: {
       title: { en: "Dozen White Roses — Diva Flowers", es: "Docena Rosas Blancas — Diva Flowers" },
       description: {
@@ -1207,7 +1208,7 @@ export const PRODUCTS: Product[] = [
     tags: ["new", "same-day"],
     occasions: ["just-because", "birthday", "congrats"],
     colorFamily: ["mixed"],
-    active: true,
+    active: false,
     seo: {
       title: { en: "Dozen Yellow Roses — Diva Flowers", es: "Docena Rosas Amarillas — Diva Flowers" },
       description: {
@@ -1671,7 +1672,7 @@ export const PRODUCTS: Product[] = [
       { id: "card", label: { en: "Handwritten card", es: "Tarjeta escrita a mano" }, priceCents: 500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "congrats", "birthday"],
+    occasions: ["just-because", "congrats", "birthday", "get-well"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -1873,7 +1874,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday", "sympathy"],
+    occasions: ["just-because", "birthday", "get-well", "sympathy"],
     colorFamily: ["pastel", "white"],
     active: true,
     seo: {
@@ -1888,7 +1889,7 @@ export const PRODUCTS: Product[] = [
     id: "p-sym-b2-01",
     slug: "lilies-for-lottie",
     title: { en: "Lilies for Lottie", es: "Lirios para Lottie" },
-    category: "sympathy",
+    category: "arrangements",
     blurb: {
       en: "White lilies and soft greens — the quiet presence a hard week needs.",
       es: "Lirios blancos y verdes suaves — la presencia callada que pide una semana dura.",
@@ -2123,7 +2124,7 @@ export const PRODUCTS: Product[] = [
     id: "p-pla-b2-02",
     slug: "monstera-mood",
     title: { en: "Monstera Mood", es: "Estado Monstera" },
-    category: "plants",
+    category: "sympathy",
     blurb: {
       en: "A statement monstera in a hand-thrown pot for the friend rebuilding the corner.",
       es: "Una monstera de presencia en maceta artesanal para la amiga que rearma el rincón.",
@@ -2141,7 +2142,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 16500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["congrats", "just-because", "birthday"],
+    occasions: ["sympathy", "congrats", "just-because", "birthday"],
     colorFamily: ["green"],
     active: true,
     seo: {
@@ -2156,7 +2157,7 @@ export const PRODUCTS: Product[] = [
     id: "p-sym-b2-02",
     slug: "natures-cornucopia",
     title: { en: "Nature's Cornucopia", es: "Cornucopia de la Naturaleza" },
-    category: "sympathy",
+    category: "arrangements",
     blurb: {
       en: "Earth-toned blooms and gathered branches for the family that's been holding it together.",
       es: "Flores en tonos tierra y ramas reunidas para la familia que ha estado sosteniéndolo todo.",
@@ -2177,6 +2178,7 @@ export const PRODUCTS: Product[] = [
     occasions: ["sympathy"],
     colorFamily: ["mixed", "white"],
     active: true,
+    seasonMonths: [9, 10, 11],
     seo: {
       title: { en: "Nature's Cornucopia — Diva Flowers", es: "Cornucopia de la Naturaleza — Diva Flowers" },
       description: {
@@ -2709,7 +2711,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 14000 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday"],
+    occasions: ["just-because", "birthday", "get-well"],
     colorFamily: ["mixed", "white"],
     active: true,
     seo: {
@@ -2793,7 +2795,7 @@ export const PRODUCTS: Product[] = [
     id: "p-sym-b3-17",
     slug: "thorn-grace",
     title: { en: "Thorn & Grace", es: "Espina y Gracia" },
-    category: "sympathy",
+    category: "arrangements",
     blurb: {
       en: "White roses and olive branches for the quiet presence that matters most.",
       es: "Rosas blancas y ramas de olivo para la presencia callada que más importa.",
@@ -2848,7 +2850,7 @@ export const PRODUCTS: Product[] = [
       { id: "chocolates", label: { en: "Add dark chocolate truffles", es: "Añadir trufas de chocolate oscuro" }, priceCents: 3500 },
     ],
     tags: ["new", "staff-pick"],
-    occasions: ["anniversary", "romance"],
+    occasions: ["anniversary", "romance", "birthday", "congrats", "just-because"],
     colorFamily: ["red"],
     active: true,
     seo: {
@@ -2884,7 +2886,7 @@ export const PRODUCTS: Product[] = [
       { id: "champagne", label: { en: "Add Veuve Clicquot", es: "Añadir Veuve Clicquot" }, priceCents: 8900 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["anniversary", "romance"],
+    occasions: ["anniversary", "romance", "birthday", "congrats", "just-because"],
     colorFamily: ["pink", "white"],
     active: true,
     seo: {
@@ -2987,7 +2989,7 @@ export const PRODUCTS: Product[] = [
       { id: "chocolates", label: { en: "Add dark chocolate truffles", es: "Añadir trufas de chocolate oscuro" }, priceCents: 3500 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["anniversary", "romance"],
+    occasions: ["anniversary", "romance", "birthday", "congrats", "just-because"],
     colorFamily: ["red"],
     active: true,
     seo: {
@@ -3343,6 +3345,100 @@ export const PRODUCTS: Product[] = [
     seo: {
       title: { en: "Mini chocolates | Diva Flowers", es: "Mini chocolates | Diva Flowers" },
       description: { en: "Four-piece chocolate add-on from a Long Island chocolatier.", es: "Caja de cuatro chocolates de un chocolatero de Long Island." },
+    },
+  },
+  {
+    id: "p-bou-rose-red-wrap",
+    slug: "wrapped-red-roses",
+    title: { en: "Wrapped Red Roses", es: "Rosas Rojas Wrapped" },
+    category: "bouquets",
+    blurb: {
+      en: "Twelve long-stem red roses, hand-tied and wrapped — the classic, done right.",
+      es: "Doce rosas rojas de tallo largo, atadas a mano y envueltas — el clásico, hecho como debe ser.",
+    },
+    description: {
+      en: "A dozen long-stem red roses, cut that morning and wrapped in matte paper — no plastic ribbon, no theatrics. The gift that says it was thought through before leaving the office. Add the ceramic base for the kind of arrangement that stays standing on the table all week. Order before 2pm and they go out today on Long Island.",
+      es: "Una docena de rosas rojas de tallo largo, cortadas esa misma mañana y envueltas en papel mate — sin cinta plástica, sin floritura. El regalo que demuestra que fue pensado antes de salir de la oficina. Añade la base cerámica para que se mantenga firme en la mesa toda la semana. Pídelas antes de las 2pm y salen hoy mismo en Long Island.",
+    },
+    images: [
+      {
+        src: "/products/dozen-roses-bouquet.jpg",
+        alt: { en: "Twelve red roses wrapped in matte paper, tied with cord", es: "Doce rosas rojas envueltas en papel mate, atadas con cordón" },
+        aspect: "4/5",
+      },
+    ],
+    variants: [
+      { id: "wrapped", label: { en: "Wrapped — 12 red roses", es: "Wrapped — 12 rosas rojas" }, priceCents: 8000 },
+    ],
+    addOns: [
+      { id: "ceramic-base", label: { en: "Add ceramic base", es: "Añadir base cerámica" }, priceCents: 1500 },
+    ],
+    tags: ["new", "same-day", "staff-pick"],
+    occasions: ["romance", "anniversary", "birthday", "congrats", "just-because"],
+    colorFamily: ["red"],
+    active: true,
+    seo: {
+      title: { en: "Wrapped Red Roses — Dozen Hand-Tied | Diva Flowers", es: "Rosas Rojas Wrapped — Docena Atada a Mano | Diva Flowers" },
+      description: {
+        en: "Twelve hand-tied red roses, paper wrapped. Optional ceramic base. Same-day delivery on Long Island.",
+        es: "Doce rosas rojas atadas a mano y envueltas en papel. Base cerámica opcional. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-bou-rose-color-wrap",
+    slug: "wrapped-roses-colored",
+    title: { en: "Wrapped Roses — Pick a Color", es: "Rosas Wrapped — Elige el Color" },
+    category: "bouquets",
+    blurb: {
+      en: "A dozen roses in the color that suits the day — pink, yellow, white, or mixed.",
+      es: "Una docena de rosas en el color que el día pida — rosadas, amarillas, blancas o mixtas.",
+    },
+    description: {
+      en: "Twelve roses hand-tied and wrapped in matte paper, in the color you choose. Blush pink for the romance that takes its time, sunny yellow for the friend who needs a Tuesday, ivory white for the win you're celebrating, or mixed for the day that's all of it. Add the ceramic base for tabletop staying power. Same-day Long Island delivery on orders before 2pm.",
+      es: "Una docena de rosas atadas a mano y envueltas en papel mate, en el color que elijas. Rosado pálido para el romance que se toma su tiempo, amarillo soleado para la amiga que necesita un martes, blanco marfil para las felicitaciones, o mixto para el día que es todo a la vez. Añade la base cerámica para que aguante en la mesa. Entrega el mismo día en Long Island antes de las 2pm.",
+    },
+    images: [
+      {
+        src: "/products/dozen-roses-in-pink.png",
+        alt: { en: "Twelve pink roses wrapped in matte paper", es: "Doce rosas rosadas envueltas en papel mate" },
+        aspect: "4/5",
+      },
+      {
+        src: "/products/dozen-roses-in-yellow.png",
+        alt: { en: "Twelve yellow roses wrapped in matte paper", es: "Doce rosas amarillas envueltas en papel mate" },
+        aspect: "4/5",
+      },
+      {
+        src: "/products/dozen-roses-in-white.png",
+        alt: { en: "Twelve white roses wrapped in matte paper", es: "Doce rosas blancas envueltas en papel mate" },
+        aspect: "4/5",
+      },
+      {
+        src: "/products/dozen-roses-in-multi-color.jpg",
+        alt: { en: "Twelve mixed-color roses wrapped in matte paper", es: "Doce rosas de colores mixtos envueltas en papel mate" },
+        aspect: "4/5",
+      },
+    ],
+    variants: [
+      { id: "pink", label: { en: "Pink (12)", es: "Rosadas (12)" }, priceCents: 6500 },
+      { id: "yellow", label: { en: "Yellow (12)", es: "Amarillas (12)" }, priceCents: 6500 },
+      { id: "white", label: { en: "White (12)", es: "Blancas (12)" }, priceCents: 6500 },
+      { id: "mixed", label: { en: "Mixed (12)", es: "Mixtas (12)" }, priceCents: 6500 },
+    ],
+    addOns: [
+      { id: "ceramic-base", label: { en: "Add ceramic base", es: "Añadir base cerámica" }, priceCents: 1500 },
+    ],
+    tags: ["new", "same-day"],
+    occasions: ["birthday", "congrats", "just-because", "romance", "anniversary", "mothers-day"],
+    colorFamily: ["pink", "white", "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Wrapped Roses by Color — Dozen Hand-Tied | Diva Flowers", es: "Rosas Wrapped por Color — Docena Atada a Mano | Diva Flowers" },
+      description: {
+        en: "Twelve hand-tied roses in your choice of color: pink, yellow, white, or mixed. Optional ceramic base. Same-day Long Island.",
+        es: "Doce rosas atadas a mano en el color que elijas: rosado, amarillo, blanco o mixto. Base cerámica opcional. Mismo día en Long Island.",
+      },
     },
   },
   // ─── TEST PRODUCT — $1 for end-to-end checkout validation. DELETE AFTER TESTING. ─────

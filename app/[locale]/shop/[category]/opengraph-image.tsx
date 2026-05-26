@@ -7,6 +7,8 @@ export const contentType = "image/png";
 const CATEGORY_LABELS: Record<string, { en: string; es: string }> = {
   arrangements: { en: "Arrangements", es: "Arreglos" },
   bouquets: { en: "Bouquets", es: "Ramos" },
+  roses: { en: "Roses", es: "Rosas" },
+  exotic: { en: "Exotic", es: "Exóticas" },
   plants: { en: "Plants & Orchids", es: "Plantas y Orquídeas" },
   gifts: { en: "Gifts", es: "Regalos" },
   sympathy: { en: "Sympathy", es: "Condolencias" },
