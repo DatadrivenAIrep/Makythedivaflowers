@@ -224,6 +224,16 @@
       "cta": "Suscribirme",
       "success": "Bienvenido a bordo.",
       "error": "Algo salió mal. ¿Intentar de nuevo?"
+    },
+    "tiktok": {
+      "eyebrow": "Detrás del estudio · TikTok",
+      "title": "Mira cómo nacen los ramos",
+      "follow_cta": "Síguenos @makythediva",
+      "lightbox": {
+        "view_on_tiktok": "Ver en TikTok",
+        "close": "Cerrar",
+        "video_label": "Video de TikTok"
+      }
     }
   },
   "footer": {

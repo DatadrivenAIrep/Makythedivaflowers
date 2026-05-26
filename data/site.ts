@@ -33,7 +33,7 @@ export const SITE = {
   cutoff24: "14:00",  // HH:mm format for parseCutoff/isSameDayEligible
   social: [
     { label: "Instagram", href: "https://instagram.com/divaflowersli" },
-    { label: "TikTok", href: "https://tiktok.com/@divaflowers" },
+    { label: "TikTok", href: "https://www.tiktok.com/@makythediva" },
   ],
   recentDeliveries: [
     { city: "Garden City", time: "8 min ago" },
