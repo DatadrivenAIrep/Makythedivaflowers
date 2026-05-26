@@ -1,19 +1,13 @@
 import { getTranslations } from "next-intl/server";
-import { BentoFeaturedTile } from "./BentoFeaturedTile";
+import { BentoPromTile } from "./BentoPromTile";
 import { BentoSubscriptionsTile } from "./BentoSubscriptionsTile";
 import { BentoLiveStatusTile } from "./BentoLiveStatusTile";
 import { BentoPressTile } from "./BentoPressTile";
 import { BentoStudioClock } from "./BentoStudioClock";
-import { PRODUCTS } from "@/data/products";
 import type { Locale } from "@/types/locale";
-
-const FEATURED_SLUG = "a-thousand-heartbeats";
 
 export async function BentoGrid({ locale }: { locale: Locale }) {
   const t = await getTranslations("home.bento");
-  const featured = PRODUCTS.find((p) => p.slug === FEATURED_SLUG) ?? PRODUCTS[0];
-  const featuredImage = featured.images[0];
-  const featuredPriceUSD = Math.round(featured.variants[0].priceCents / 100);
 
   return (
     <section className="max-w-[1400px] mx-auto px-6 py-24 md:py-32">
@@ -39,14 +33,7 @@ export async function BentoGrid({ locale }: { locale: Locale }) {
         style={{ gridAutoRows: "minmax(140px, auto)" }}
       >
         <div className="md:col-span-2 md:row-span-3">
-          <BentoFeaturedTile
-            locale={locale}
-            slug={featured.slug}
-            title={featured.title[locale]}
-            imageSrc={featuredImage.src}
-            imageAlt={featuredImage.alt[locale]}
-            priceUSD={featuredPriceUSD}
-          />
+          <BentoPromTile locale={locale} />
         </div>
         <div className="md:col-span-2 md:row-span-2">
           <BentoLiveStatusTile />

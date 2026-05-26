@@ -5,6 +5,7 @@ export type SubjectKey =
   | "shop_category"
   | "weddings"
   | "events"
+  | "prom"
   | "checkout"
   | "default";
 
@@ -41,6 +42,7 @@ export function getSubjectKey(input: {
   if (path === "/shop" || path.startsWith("/shop/")) return { key: "shop_all" };
   if (path === "/weddings") return { key: "weddings" };
   if (path === "/events") return { key: "events" };
+  if (path === "/prom") return { key: "prom" };
   if (path === "/cart" || path === "/checkout") return { key: "checkout" };
 
   return { key: "default" };
