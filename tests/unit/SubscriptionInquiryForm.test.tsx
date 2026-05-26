@@ -5,7 +5,7 @@ import { NextIntlClientProvider } from "next-intl";
 import en from "@/messages/en.json";
 import { SubscriptionInquiryForm } from "@/components/subscription/SubscriptionInquiryForm";
 
-function renderForm(plan: "petit" | "maison" | "atelier" = "maison") {
+function renderForm(plan: "small" | "medium" | "large" = "medium") {
   return render(
     <NextIntlClientProvider locale="en" messages={en}>
       <SubscriptionInquiryForm locale="en" plan={plan} />
@@ -49,7 +49,7 @@ describe("SubscriptionInquiryForm", () => {
       json: async () => ({ ok: true, id: "iq_test" }),
     });
     const user = userEvent.setup();
-    renderForm("atelier");
+    renderForm("large");
 
     const future = new Date();
     future.setDate(future.getDate() + 5);
@@ -78,7 +78,7 @@ describe("SubscriptionInquiryForm", () => {
     );
     const body = JSON.parse(fetchMock.mock.calls[0][1].body);
     expect(body.type).toBe("subscription");
-    expect(body.plan).toBe("atelier");
+    expect(body.plan).toBe("large");
     expect(body.cadence).toBe("weekly");
   });
 
@@ -99,7 +99,7 @@ describe("SubscriptionInquiryForm", () => {
       json: async () => ({ ok: false, errors: { formErrors: ["unknown_error"] } }),
     });
     const user = userEvent.setup();
-    renderForm("maison");
+    renderForm("medium");
 
     const future = new Date();
     future.setDate(future.getDate() + 5);

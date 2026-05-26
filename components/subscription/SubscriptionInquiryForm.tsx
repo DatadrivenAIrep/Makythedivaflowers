@@ -45,9 +45,9 @@ const CARD_OCCASIONS: Occasion[] = [
 ];
 
 const PLAN_IMAGES: Record<SubscriptionPlanId, string> = {
-  petit: "/products/blush-enchantment.jpg",
-  maison: "/products/timeless-romance.jpg",
-  atelier: "/products/hundred-roses-vase.png",
+  small: "/products/blush-enchantment.jpg",
+  medium: "/products/timeless-romance.jpg",
+  large: "/products/hundred-roses-vase.png",
 };
 
 export function SubscriptionInquiryForm({ locale, plan }: Props) {

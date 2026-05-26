@@ -14,27 +14,27 @@ function renderWithIntl(ui: React.ReactElement) {
 
 describe("SubscriptionTiers", () => {
   it("renders all three plans", () => {
-    renderWithIntl(<SubscriptionTiers locale="en" selected="maison" onSelect={() => {}} />);
-    expect(screen.getByText("Petit Bouquet")).toBeInTheDocument();
-    expect(screen.getByText("Maison")).toBeInTheDocument();
-    expect(screen.getByText("Atelier")).toBeInTheDocument();
+    renderWithIntl(<SubscriptionTiers locale="en" selected="medium" onSelect={() => {}} />);
+    expect(screen.getByText("Small Bouquet")).toBeInTheDocument();
+    expect(screen.getByText("Medium Bouquet")).toBeInTheDocument();
+    expect(screen.getByText("Large Bouquet")).toBeInTheDocument();
   });
 
-  it("shows the popular badge on Maison", () => {
-    renderWithIntl(<SubscriptionTiers locale="en" selected="petit" onSelect={() => {}} />);
+  it("shows the popular badge on Medium", () => {
+    renderWithIntl(<SubscriptionTiers locale="en" selected="small" onSelect={() => {}} />);
     expect(screen.getByText(/most loved/i)).toBeInTheDocument();
   });
 
   it("calls onSelect with the clicked plan id", () => {
     const onSelect = vi.fn();
-    renderWithIntl(<SubscriptionTiers locale="en" selected="maison" onSelect={onSelect} />);
-    fireEvent.click(screen.getByRole("button", { name: /choose atelier/i }));
-    expect(onSelect).toHaveBeenCalledWith("atelier");
+    renderWithIntl(<SubscriptionTiers locale="en" selected="medium" onSelect={onSelect} />);
+    fireEvent.click(screen.getByRole("button", { name: /choose large bouquet/i }));
+    expect(onSelect).toHaveBeenCalledWith("large");
   });
 
   it("marks the selected card with aria-pressed", () => {
-    renderWithIntl(<SubscriptionTiers locale="en" selected="atelier" onSelect={() => {}} />);
-    const atelierBtn = screen.getByRole("button", { name: /selected/i });
-    expect(atelierBtn).toHaveAttribute("aria-pressed", "true");
+    renderWithIntl(<SubscriptionTiers locale="en" selected="large" onSelect={() => {}} />);
+    const largeBtn = screen.getByRole("button", { name: /selected/i });
+    expect(largeBtn).toHaveAttribute("aria-pressed", "true");
   });
 });

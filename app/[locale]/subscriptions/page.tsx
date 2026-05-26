@@ -35,7 +35,7 @@ export default async function SubscriptionsPage({
     <main>
       <SubscriptionLanding
         locale={locale}
-        initialPlan="maison"
+        initialPlan="medium"
         hero={<SubscriptionHero locale={locale} />}
         howItWorks={<SubscriptionHowItWorks locale={locale} />}
       />

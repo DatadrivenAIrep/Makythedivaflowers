@@ -22,7 +22,7 @@ const startDate = z
 export const subscriptionInquirySchema = z.object({
   type: z.literal("subscription"),
   locale: z.enum(["en", "es"]),
-  plan: z.enum(["petit", "maison", "atelier"]),
+  plan: z.enum(["small", "medium", "large"]),
   cadence: z.enum(["weekly", "biweekly"]),
   startDate,
   recipient: z.object({

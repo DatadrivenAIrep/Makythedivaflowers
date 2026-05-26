@@ -1,61 +1,58 @@
 import type { Localized } from "@/types/product";
 
-export type SubscriptionPlanId = "petit" | "maison" | "atelier";
+export type SubscriptionPlanId = "small" | "medium" | "large";
 
 export type SubscriptionPlan = {
   id: SubscriptionPlanId;
   name: Localized;
   priceCents: number;
   blurb: Localized;
-  stems?: number;
   highlights: [Localized, Localized, Localized];
   popular?: boolean;
 };
 
 export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
   {
-    id: "petit",
-    name: { en: "Petit Bouquet", es: "Petit Bouquet" },
+    id: "small",
+    name: { en: "Small Bouquet", es: "Ramo Small" },
     priceCents: 4500,
-    stems: 15,
     blurb: {
-      en: "A hand-tied bouquet of about fifteen seasonal stems, wrapped in kraft and signed by the studio.",
-      es: "Un ramo atado a mano con unos quince tallos de temporada, envuelto en kraft y firmado por el estudio.",
+      en: "An intimate hand-tied bouquet, kraft-wrapped — sized for the bedside or kitchen counter.",
+      es: "Un ramo íntimo atado a mano y envuelto en kraft — del tamaño justo para la mesita o la cocina.",
     },
     highlights: [
-      { en: "~15 seasonal stems, hand-tied", es: "~15 tallos de temporada, atados a mano" },
-      { en: "Kraft wrap, hand-written card", es: "Envoltura kraft, tarjeta a mano" },
-      { en: "Cancel anytime", es: "Cancela cuando quieras" },
+      { en: "Intimate hand-tied wrap", es: "Ramo íntimo atado a mano" },
+      { en: "Kraft paper, hand-written card", es: "Papel kraft, tarjeta a mano" },
+      { en: "Weekly or bi-weekly · cancel anytime", es: "Semanal o quincenal · cancela cuando quieras" },
     ],
   },
   {
-    id: "maison",
-    name: { en: "Maison", es: "Maison" },
+    id: "medium",
+    name: { en: "Medium Bouquet", es: "Ramo Medium" },
     priceCents: 8500,
-    stems: 25,
     popular: true,
     blurb: {
-      en: "Our most-loved plan: a generous bouquet of about twenty-five stems with premium seasonal flowers.",
-      es: "Nuestro plan más querido: un ramo generoso de unos veinticinco tallos con flores premium de temporada.",
+      en: "Our most-loved size: a generous wrap with premium seasonal flowers, made for the dining table.",
+      es: "Nuestro tamaño más querido: un ramo generoso con flores premium de temporada, pensado para la mesa del comedor.",
     },
     highlights: [
-      { en: "~25 stems incl. premium varieties", es: "~25 tallos con variedades premium" },
+      { en: "Generous wrap, premium varieties", es: "Ramo generoso, variedades premium" },
       { en: "Signed paper, hand-written card", es: "Papel firmado, tarjeta a mano" },
-      { en: "Cancel anytime", es: "Cancela cuando quieras" },
+      { en: "Weekly or bi-weekly · cancel anytime", es: "Semanal o quincenal · cancela cuando quieras" },
     ],
   },
   {
-    id: "atelier",
-    name: { en: "Atelier", es: "Atelier" },
+    id: "large",
+    name: { en: "Large Bouquet", es: "Ramo Large" },
     priceCents: 14500,
     blurb: {
-      en: "A vase arrangement of rare seasonal flowers, with a studio vase rotated in every fourth delivery.",
-      es: "Un arreglo en jarrón con flores raras de temporada y un jarrón del estudio cada cuatro entregas.",
+      en: "A statement bouquet with focal blooms — peonies, garden roses, and seasonal rarities, sized for the entryway.",
+      es: "Un ramo de presencia con flores focales — peonías, rosas de jardín y rarezas de temporada, del tamaño del recibidor.",
     },
     highlights: [
-      { en: "Vase arrangement, rare seasonal", es: "Arreglo en jarrón, raras de temporada" },
-      { en: "Studio vase every 4th delivery", es: "Jarrón del estudio cada 4 entregas" },
-      { en: "Priority delivery window", es: "Ventana de entrega prioritaria" },
+      { en: "Statement wrap with focal blooms", es: "Ramo de presencia con flores focales" },
+      { en: "Signed paper, priority delivery window", es: "Papel firmado, ventana de entrega prioritaria" },
+      { en: "Weekly or bi-weekly · cancel anytime", es: "Semanal o quincenal · cancela cuando quieras" },
     ],
   },
 ];

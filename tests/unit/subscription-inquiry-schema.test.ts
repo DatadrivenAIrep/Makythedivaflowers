@@ -3,14 +3,18 @@ import { subscriptionInquirySchema } from "@/schemas/subscription-inquiry";
 
 function tomorrow(plus = 2): string {
   const d = new Date();
+  d.setHours(0, 0, 0, 0);
   d.setDate(d.getDate() + plus);
-  return d.toISOString().slice(0, 10);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 }
 
 const baseSubscription = {
   type: "subscription" as const,
   locale: "en" as const,
-  plan: "maison" as const,
+  plan: "medium" as const,
   cadence: "weekly" as const,
   startDate: tomorrow(3),
   recipient: { name: "Lola Cardona", phone: "5165550101" },
