@@ -605,6 +605,16 @@
       "eyebrow": "Preguntas frecuentes",
       "title": "Las preguntas que más nos hacen."
     },
+    "stories": {
+      "eyebrow": "Portafolio",
+      "title": "Nuestro trabajo, boda por boda.",
+      "photo_count": "{count} fotos",
+      "open_label": "Ver galería",
+      "close": "Cerrar galería",
+      "prev": "Foto anterior",
+      "next": "Foto siguiente",
+      "go_to": "Ir a la foto"
+    },
     "form": {
       "shell": {
         "eyebrow": "Bodas · desde 2018",

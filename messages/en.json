@@ -605,6 +605,16 @@
       "eyebrow": "FAQ",
       "title": "Questions we hear most."
     },
+    "stories": {
+      "eyebrow": "Portfolio",
+      "title": "Our work, wedding by wedding.",
+      "photo_count": "{count} photos",
+      "open_label": "View gallery",
+      "close": "Close gallery",
+      "prev": "Previous photo",
+      "next": "Next photo",
+      "go_to": "Go to photo"
+    },
     "form": {
       "shell": {
         "eyebrow": "Weddings · est. 2018",
