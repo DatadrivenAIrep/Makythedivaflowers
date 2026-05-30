@@ -1,8 +1,10 @@
 "use client";
 import { useCallback, useRef, useState } from "react";
+import { WarningCircle, CheckCircle } from "@phosphor-icons/react/dist/ssr";
 import DashboardShell from "./DashboardShell";
 import OrderDetailDrawer from "./OrderDetailDrawer";
 import PendingCard, { type PendingReason, type PendingActionId } from "./PendingCard";
+import AdminButton from "./AdminButton";
 import { useDashboardPolling } from "./useDashboardPolling";
 import type { Order } from "@/types/order";
 
@@ -46,7 +48,7 @@ export default function BandejaView({ locale }: { locale: string }) {
     flashTitle(ids.length);
   }, []);
 
-  const { queue, feed, lastUpdated, refresh } = useDashboardPolling({ onNewOrder });
+  const { queue, feed, lastUpdated, error, refresh } = useDashboardPolling({ onNewOrder });
 
   function unlockAudio() {
     if (audioUnlockedRef.current) return;
@@ -103,12 +105,21 @@ export default function BandejaView({ locale }: { locale: string }) {
         lastUpdated={lastUpdated ? timeOf(lastUpdated) : undefined}
         onRefresh={() => { void refresh(); }}
       >
+        {error && (
+          <div className="mb-4 flex items-center gap-2 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
+            <WarningCircle size={18} weight="fill" />
+            <span>Sin conexión — mostrando datos anteriores.</span>
+            <AdminButton variant="danger" className="ml-auto" onClick={() => { void refresh(); }}>Reintentar</AdminButton>
+          </div>
+        )}
         <section className="mb-6">
           <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-ink/60">
             Pendientes · {queue.length}
           </h2>
           {queue.length === 0 ? (
-            <p className="rounded border border-ink/10 bg-bone p-4 text-sm text-ink/60">✓ Todo al día</p>
+            <p className="flex items-center gap-1.5 rounded-lg border border-ink/10 bg-bone p-4 text-sm text-ink/60">
+              <CheckCircle size={18} weight="fill" className="text-success" /> Todo al día
+            </p>
           ) : (
             <ul className="space-y-2">
               {queue.map((item) => (

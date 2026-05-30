@@ -1,4 +1,6 @@
 "use client";
+import { useEffect, useRef, useState } from "react";
+import { X } from "@phosphor-icons/react/dist/ssr";
 
 export type LedgerFilterValue = {
   q?: string;
@@ -61,12 +63,9 @@ export default function LedgerFilters({ value, onChange }: Props) {
 
   return (
     <div className="space-y-3">
-      <input
-        type="search"
-        defaultValue={value.q ?? ""}
-        placeholder="Buscar por nombre, teléfono, email, ID o mensaje de tarjeta"
-        onChange={(e) => patch({ q: e.target.value || undefined })}
-        className="w-full rounded border border-ink/15 bg-bone px-3 py-2 text-sm"
+      <DebouncedSearch
+        value={value.q ?? ""}
+        onDebouncedChange={(q) => patch({ q: q || undefined })}
       />
 
       <div className="flex flex-wrap gap-1.5 text-xs">
@@ -96,6 +95,35 @@ export default function LedgerFilters({ value, onChange }: Props) {
 
       <ActiveChips value={value} onChange={onChange} />
     </div>
+  );
+}
+
+function DebouncedSearch({ value, onDebouncedChange }: {
+  value: string;
+  onDebouncedChange: (q: string) => void;
+}) {
+  const [text, setText] = useState(value);
+  const lastEmitted = useRef(value);
+
+  // Sync external resets (e.g. "limpiar filtros") into the local input.
+  useEffect(() => {
+    if (value !== lastEmitted.current) { setText(value); lastEmitted.current = value; }
+  }, [value]);
+
+  useEffect(() => {
+    if (text === lastEmitted.current) return;
+    const t = setTimeout(() => { lastEmitted.current = text; onDebouncedChange(text); }, 350);
+    return () => clearTimeout(t);
+  }, [text, onDebouncedChange]);
+
+  return (
+    <input
+      type="search"
+      value={text}
+      placeholder="Buscar por nombre, teléfono, email, ID o mensaje de tarjeta"
+      onChange={(e) => setText(e.target.value)}
+      className="w-full rounded border border-ink/15 bg-bone px-3 py-2 text-sm"
+    />
   );
 }
 
@@ -130,13 +158,13 @@ function ActiveChips({ value, onChange }: Props) {
   return (
     <div className="flex flex-wrap gap-2 pt-1 text-xs">
       {chips.map((c) => (
-        <span key={String(c.key)} className="rounded-full bg-ink/5 px-2 py-0.5">
-          {c.label}{" "}
+        <span key={String(c.key)} className="inline-flex items-center gap-1 rounded-full bg-ink/5 px-2 py-0.5">
+          {c.label}
           <button
             aria-label={`Quitar ${c.label.split(":")[0]}`}
             onClick={() => onChange({ ...value, [c.key]: undefined } as Props["value"])}
-            className="ml-1 text-ink/40 hover:text-ink"
-          >✕</button>
+            className="text-ink/40 hover:text-ink"
+          ><X size={12} weight="bold" /></button>
         </span>
       ))}
     </div>

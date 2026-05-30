@@ -187,6 +187,21 @@ export async function updateOrderPaidByCheckoutSession(sessionId: string): Promi
   ).run(now, now, sessionId);
 }
 
+// Deliveries scheduled for a given window date (not order-creation date),
+// excluding canceled orders. Ordered by slot then time placed, for the driver
+// run sheet. Returns delivered orders too so staff can see what's already done.
+export async function listDeliveriesForDate(date: string): Promise<Order[]> {
+  ensureSchema();
+  const rows = getDb().prepare(
+    `SELECT * FROM orders
+     WHERE fulfillment_method = 'delivery'
+       AND window_date = ?
+       AND fulfillment_status != 'canceled'
+     ORDER BY created_at ASC`,
+  ).all(date) as OrderRow[];
+  return rows.map(rowToOrder);
+}
+
 export type ListOrdersFilters = {
   q?: string;
   from?: string;

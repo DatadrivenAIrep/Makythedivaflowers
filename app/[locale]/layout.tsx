@@ -6,6 +6,7 @@ import { TopNav } from "@/components/nav/TopNav";
 import { NavLinks } from "@/components/nav/NavLinks";
 import { MobileNavProvider } from "@/components/nav/MobileNavProvider";
 import { Footer } from "@/components/nav/Footer";
+import { LocaleChrome } from "@/components/nav/LocaleChrome";
 import { CartDrawerHost } from "@/components/cart/CartDrawerHost";
 import { ToastAddedToBag } from "@/components/cart/ToastAddedToBag";
 import { LocalBusinessLD } from "@/components/seo/LocalBusinessLD";
@@ -31,16 +32,25 @@ export default async function LocaleLayout({
     <NextIntlClientProvider locale={locale}>
       <LocalBusinessLD />
       <ContactContextProvider>
-        <TopNav
-          locale={locale as Locale}
-          navLinksSlot={<NavLinks locale={locale as Locale} />}
-          mobileMenuSlot={<MobileNavProvider locale={locale as Locale} />}
-        />
-        <div className="pt-16">{children}</div>
-        <Footer locale={locale as Locale} />
-        <CartDrawerHost locale={locale as Locale} />
-        <ToastAddedToBag />
-        <TextMakyTrigger />
+        <LocaleChrome
+          topNav={
+            <TopNav
+              locale={locale as Locale}
+              navLinksSlot={<NavLinks locale={locale as Locale} />}
+              mobileMenuSlot={<MobileNavProvider locale={locale as Locale} />}
+            />
+          }
+          footer={<Footer locale={locale as Locale} />}
+          extras={
+            <>
+              <CartDrawerHost locale={locale as Locale} />
+              <ToastAddedToBag />
+              <TextMakyTrigger />
+            </>
+          }
+        >
+          {children}
+        </LocaleChrome>
       </ContactContextProvider>
     </NextIntlClientProvider>
   );

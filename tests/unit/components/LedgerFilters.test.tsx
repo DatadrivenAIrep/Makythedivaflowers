@@ -1,12 +1,19 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import LedgerFilters from "@/components/admin/dashboard/LedgerFilters";
 
-it("emits q on text input change (debounced not exercised here)", () => {
-  const onChange = vi.fn();
-  render(<LedgerFilters value={{}} onChange={onChange} />);
-  fireEvent.change(screen.getByPlaceholderText(/Buscar/i), { target: { value: "Maria" } });
-  expect(onChange).toHaveBeenCalledWith({ q: "Maria" });
+it("emits q on text input change after debounce", () => {
+  vi.useFakeTimers();
+  try {
+    const onChange = vi.fn();
+    render(<LedgerFilters value={{}} onChange={onChange} />);
+    fireEvent.change(screen.getByPlaceholderText(/Buscar/i), { target: { value: "Maria" } });
+    expect(onChange).not.toHaveBeenCalled();
+    act(() => { vi.advanceTimersByTime(350); });
+    expect(onChange).toHaveBeenCalledWith({ q: "Maria" });
+  } finally {
+    vi.useRealTimers();
+  }
 });
 
 it("toggles a date-range chip", () => {

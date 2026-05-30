@@ -101,6 +101,39 @@ export async function changeFulfillmentStatus(
   return next;
 }
 
+// Records cancellation (and optional refund) state. Does NOT process a real
+// Stripe/Zelle refund — that is handled manually by staff; this only reflects
+// the resulting status so the ledger and customer notifications stay accurate.
+export async function cancelOrder(
+  orderId: string,
+  args: { refund: boolean; reason?: string },
+): Promise<Order> {
+  runMigrations();
+  const db = getDb();
+  const row = db.prepare("SELECT * FROM orders WHERE id = ?").get(orderId) as OrderRow | undefined;
+  if (!row) throw new Error(`order not found: ${orderId}`);
+  const cur = rowToOrder(row);
+  if (cur.status === "delivered") throw new Error("cannot cancel a delivered order");
+  if (cur.status === "canceled") return cur;
+  if (args.refund && cur.paymentStatus !== "paid") {
+    throw new Error("cannot refund an unpaid order");
+  }
+
+  const now = new Date().toISOString();
+  const noteLine = `[${now}] [canceled${args.refund ? " + refunded" : ""}]${args.reason ? " " + args.reason : ""}`;
+  const internalNotes = cur.internalNotes ? `${cur.internalNotes}\n${noteLine}` : noteLine;
+
+  const next: Order = {
+    ...cur,
+    status: "canceled",
+    paymentStatus: args.refund ? "refunded" : cur.paymentStatus,
+    internalNotes,
+    updatedAt: now,
+  };
+  upsert(next);
+  return next;
+}
+
 export async function appendInternalNote(
   orderId: string,
   text: string,

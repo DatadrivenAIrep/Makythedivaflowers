@@ -4,7 +4,17 @@ import { useRouter, useSearchParams } from "next/navigation";
 import DashboardShell from "./DashboardShell";
 import LedgerFilters, { type LedgerFilterValue } from "./LedgerFilters";
 import OrderDetailDrawer from "./OrderDetailDrawer";
+import { resolveLine } from "./product-lookup";
+import AdminButton from "./AdminButton";
 import type { Order } from "@/types/order";
+
+function ledgerItemSummary(order: Order): string {
+  if (order.lines.length === 0) return "—";
+  const first = resolveLine(order.lines[0]);
+  const variantLabel = first.variantLabel ? ` · ${first.variantLabel}` : "";
+  const suffix = order.lines.length > 1 ? ` + ${order.lines.length - 1} más` : "";
+  return first.name + variantLabel + suffix;
+}
 
 type ListResp = { orders: Order[]; nextCursor: string | null; approxTotal: number };
 
@@ -53,7 +63,7 @@ function LedgerRow({ order, onOpen }: { order: Order; onOpen: (id: string) => vo
   return (
     <li
       onClick={() => onOpen(order.id)}
-      className="cursor-pointer rounded border border-ink/10 bg-bone p-3 text-sm hover:bg-ink/5"
+      className="cursor-pointer rounded-lg border border-ink/10 bg-bone p-3 text-sm shadow-sm transition-shadow hover:shadow-md"
     >
       <div className="flex items-center gap-2">
         <span className="text-xs text-ink/50 uppercase">{order.source}</span>
@@ -61,6 +71,7 @@ function LedgerRow({ order, onOpen }: { order: Order; onOpen: (id: string) => vo
         <span className="text-xs text-ink/40">#{order.id.slice(-6)}</span>
         <span className="ml-auto font-semibold">{money(order.totals.totalCents)}</span>
       </div>
+      <div className="mt-0.5 text-xs text-ink/60">{ledgerItemSummary(order)}</div>
       <div className="mt-1 flex items-center gap-2 text-xs text-ink/60">
         <span className={`rounded px-1.5 py-0.5 text-[10px] ${PAY_BADGE[order.paymentStatus] ?? ""}`}>
           {order.paymentStatus === "paid" ? "Pagado" : order.paymentStatus === "pending" ? "Pendiente" : "Reembolsado"}
@@ -123,14 +134,12 @@ export default function LedgerView({ locale }: { locale: string }) {
             ))}
           </ul>
         )}
-        <footer className="mt-4 text-center text-xs text-ink/60">
-          Mostrando {orders.length} de ~{approxTotal}
+        <footer className="mt-4 flex items-center justify-center gap-3 text-xs text-ink/60">
+          <span>Mostrando {orders.length} de ~{approxTotal}</span>
           {nextCursor && (
-            <button
-              onClick={() => fetchPage(nextCursor)}
-              disabled={loading}
-              className="ml-3 rounded border border-ink/20 px-3 py-1 text-xs disabled:opacity-50"
-            >Cargar 50 más</button>
+            <AdminButton variant="secondary" onClick={() => fetchPage(nextCursor)} disabled={loading}>
+              Cargar 50 más
+            </AdminButton>
           )}
         </footer>
       </section>

@@ -15,6 +15,7 @@ export type DashboardPollingState = {
   queue: PendingItem[];
   feed: FeedEvent[];
   lastUpdated: string | null;
+  error: boolean;
   refresh: () => Promise<void>;
 };
 
@@ -23,6 +24,7 @@ export function useDashboardPolling(opts: DashboardPollingOptions = {}): Dashboa
   const [queue, setQueue] = useState<PendingItem[]>([]);
   const [feed, setFeed] = useState<FeedEvent[]>([]);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+  const [error, setError] = useState(false);
   const seenIdsRef = useRef<Set<string>>(new Set());
   const primedRef = useRef(false);
   const onNewOrderRef = useRef(opts.onNewOrder);
@@ -34,6 +36,7 @@ export function useDashboardPolling(opts: DashboardPollingOptions = {}): Dashboa
         fetch("/api/admin/orders/queue", { cache: "no-store" }),
         fetch("/api/admin/orders/feed", { cache: "no-store" }),
       ]);
+      if (!qRes.ok || !fRes.ok) throw new Error(`poll failed: queue ${qRes.status}, feed ${fRes.status}`);
       const q = (await qRes.json()) as QueueResp;
       const f = (await fRes.json()) as FeedResp;
       const previous = seenIdsRef.current;
@@ -47,9 +50,10 @@ export function useDashboardPolling(opts: DashboardPollingOptions = {}): Dashboa
       setQueue(q.items);
       setFeed(f.events);
       setLastUpdated(new Date().toISOString());
+      setError(false);
       if (newIds.length > 0 && onNewOrderRef.current) onNewOrderRef.current(newIds);
     } catch {
-      // swallow; next tick retries
+      setError(true); // surface to UI; keeps last good data on screen
     }
   }
 
@@ -73,5 +77,5 @@ export function useDashboardPolling(opts: DashboardPollingOptions = {}): Dashboa
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [intervalMs]);
 
-  return { queue, feed, lastUpdated, refresh: tick };
+  return { queue, feed, lastUpdated, error, refresh: tick };
 }
