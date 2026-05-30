@@ -48,7 +48,11 @@ pending-inquiries.json
 
 # Print queue + orders are runtime state, never committed
 print-queue.json
+orders.db
 .DS_Store
+
+# Claude Code session files
+.claude/
 playwright-report/
 test-results/
 
