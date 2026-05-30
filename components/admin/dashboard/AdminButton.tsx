@@ -3,7 +3,7 @@ import type { Icon } from "@phosphor-icons/react";
 type Variant = "primary" | "secondary" | "danger" | "dangerSolid";
 
 const VARIANT: Record<Variant, string> = {
-  primary: "bg-ink text-bone hover:bg-ink/90 disabled:opacity-40",
+  primary: "bg-rouge text-bone hover:bg-rouge/90 disabled:opacity-40",
   secondary: "border border-ink/20 bg-bone text-ink hover:bg-ink/5 disabled:opacity-40",
   danger: "border border-error/40 bg-bone text-error hover:bg-error/10 disabled:opacity-40",
   dangerSolid: "bg-error text-bone hover:bg-error/90 disabled:opacity-40",

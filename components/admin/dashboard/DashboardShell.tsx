@@ -28,15 +28,15 @@ export default function DashboardShell({ locale, children, lastUpdated, onRefres
           <nav className="ml-2 flex gap-1 text-sm">
             <Link
               href={base}
-              className={`flex min-h-11 items-center rounded-lg px-3 ${isBandeja ? "bg-ink text-bone" : "hover:bg-ink/5"}`}
+              className={`flex min-h-11 items-center rounded-lg px-3 ${isBandeja ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >Bandeja</Link>
             <Link
               href={`${base}/run-sheet`}
-              className={`flex min-h-11 items-center rounded-lg px-3 ${isRunSheet ? "bg-ink text-bone" : "hover:bg-ink/5"}`}
+              className={`flex min-h-11 items-center rounded-lg px-3 ${isRunSheet ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >Entregas hoy</Link>
             <Link
               href={`${base}/ledger`}
-              className={`flex min-h-11 items-center rounded-lg px-3 ${isLedger ? "bg-ink text-bone" : "hover:bg-ink/5"}`}
+              className={`flex min-h-11 items-center rounded-lg px-3 ${isLedger ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >Libro de órdenes</Link>
             <Link
               href={`/${locale}/admin/intake`}
