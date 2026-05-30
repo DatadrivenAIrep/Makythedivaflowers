@@ -23,10 +23,8 @@ export function WeddingLightbox({ event, locale, onClose }: Props) {
   const closeRef = useRef<HTMLButtonElement | null>(null);
   const triggerRef = useRef<Element | null>(null);
   const onCloseRef = useRef(onClose);
-  const indexRef = useRef(index);
 
   useEffect(() => { onCloseRef.current = onClose; });
-  useEffect(() => { indexRef.current = index; }, [index]);
 
   // Reset index when a different event opens
   useEffect(() => {
