@@ -7,6 +7,7 @@ export type SubjectKey =
   | "events"
   | "sympathy"
   | "prom"
+  | "corsages"
   | "checkout"
   | "default";
 
@@ -45,6 +46,7 @@ export function getSubjectKey(input: {
   if (path === "/events") return { key: "events" };
   if (path === "/sympathy") return { key: "sympathy" };
   if (path === "/prom") return { key: "prom" };
+  if (path === "/corsages-boutonnieres") return { key: "corsages" };
   if (path === "/cart" || path === "/checkout") return { key: "checkout" };
 
   return { key: "default" };

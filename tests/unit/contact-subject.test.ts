@@ -83,6 +83,18 @@ describe("getSubjectKey", () => {
   it("returns prom on /es/prom", () => {
     expect(getSubjectKey({ pathname: "/es/prom", override: null })).toEqual({ key: "prom" });
   });
+
+  it("returns corsages on /corsages-boutonnieres", () => {
+    expect(getSubjectKey({ pathname: "/en/corsages-boutonnieres", override: null })).toEqual({
+      key: "corsages",
+    });
+  });
+
+  it("returns corsages on /es/corsages-boutonnieres", () => {
+    expect(getSubjectKey({ pathname: "/es/corsages-boutonnieres", override: null })).toEqual({
+      key: "corsages",
+    });
+  });
 });
 
 describe("isAllowlistedRoute", () => {
@@ -98,6 +110,7 @@ describe("isAllowlistedRoute", () => {
       "/en/cart",
       "/en/checkout",
       "/en/prom",
+      "/en/corsages-boutonnieres",
     ]) {
       expect(isAllowlistedRoute(p)).toBe(true);
     }
