@@ -180,6 +180,12 @@
       "clock_closed": "Cerrado",
       "clock_closes_at": "Cierra a las",
       "clock_opens_at": "Abre a las",
+      "corsages": {
+        "eyebrow": "Para toda ocasión",
+        "title": "El detalle que completa el look.",
+        "count": "4 piezas",
+        "cta": "Ver colección"
+      },
       "prom": {
         "eyebrow": "Prom · 2026",
         "count": "4 piezas",
@@ -662,9 +668,30 @@
       "events": "me gustaría consultar sobre flores para un evento.",
       "sympathy": "me gustaría consultar sobre una pieza de pésame.",
       "checkout": "necesito ayuda para completar mi pedido.",
+      "corsages": "Quisiera reservar un corsage o boutonnière.",
       "prom": "quisiera reservar un corsage o boutonnière para Prom.",
       "default": "tengo una pregunta rápida."
     }
+  },
+  "corsages": {
+    "page_title": "Corsages y Boutonnières — Diva Flowers",
+    "meta_description": "Corsages y boutonnières para bodas, prom, quinceañeras, graduaciones y toda ocasión especial. Hechos el día anterior.",
+    "hero_eyebrow": "Corsages · Boutonnières",
+    "hero_title": "Para el momento que lo merece.",
+    "hero_sub": "Para bodas, prom, quinceañeras, graduaciones y toda ocasión especial.",
+    "pieces_eyebrow": "La colección",
+    "pieces_title": "Cuatro piezas.",
+    "reserve_this": "Reservar esta pieza",
+    "how_eyebrow": "Cómo funciona",
+    "how_title": "Hecho el día antes. Flores frescas para la foto.",
+    "how_step1_title": "Cuéntanos la fecha",
+    "how_step1_body": "Escríbenos con la fecha y la ocasión.",
+    "how_step2_title": "Confirmamos y armamos",
+    "how_step2_body": "Armamos tu pieza el día antes del evento.",
+    "how_step3_title": "Pagas al confirmar",
+    "how_step3_body": "Efectivo, Zelle o link de Stripe.",
+    "cta_title": "¿Listo para reservar?",
+    "cta_button": "Escribirle a Maky"
   },
   "prom": {
     "hero": {
