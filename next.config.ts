@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      { source: "/:locale(en|es)/prom", destination: "/:locale/corsages-boutonnieres", permanent: true },
       { source: "/:locale(en|es)/shop/sympathy", destination: "/:locale/sympathy", permanent: true },
       { source: "/:locale(en|es)/product/dozen-roses-bouquet", destination: "/:locale/product/wrapped-red-roses", permanent: true },
       { source: "/:locale(en|es)/product/dozen-roses-in-vase", destination: "/:locale/product/wrapped-red-roses", permanent: true },
