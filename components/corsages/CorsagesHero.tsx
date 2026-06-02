@@ -1,5 +1,8 @@
 // components/corsages/CorsagesHero.tsx
-import Image from "next/image";
+// Photos use plain <img> (not next/image) so the decorative collage renders
+// even when an ad-blocker or privacy extension blocks the /_next/image
+// optimizer. The assets are pre-optimized WebP (q82, max 1600px). This also
+// matches the raw-<img> pattern used by CorsagesPieces.
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/locale";
 
@@ -14,33 +17,29 @@ export async function CorsagesHero({ locale: _locale }: { locale: Locale }) {
       >
         {/* Main photo — spans both rows */}
         <div className="relative row-span-2 overflow-hidden">
-          <Image
+          <img
             src="/corsages/hero-1.webp"
             alt=""
-            fill
-            className="object-cover"
-            priority
-            sizes="66vw"
+            className="absolute inset-0 size-full object-cover"
+            loading="eager"
           />
         </div>
         {/* Top-right photo */}
         <div className="relative overflow-hidden border-l-2 border-b border-bone">
-          <Image
+          <img
             src="/corsages/hero-2.webp"
             alt=""
-            fill
-            className="object-cover"
-            sizes="34vw"
+            className="absolute inset-0 size-full object-cover"
+            loading="eager"
           />
         </div>
         {/* Bottom-right photo */}
         <div className="relative overflow-hidden border-l-2 border-t border-bone">
-          <Image
+          <img
             src="/corsages/hero-3.webp"
             alt=""
-            fill
-            className="object-cover"
-            sizes="34vw"
+            className="absolute inset-0 size-full object-cover"
+            loading="eager"
           />
         </div>
       </div>

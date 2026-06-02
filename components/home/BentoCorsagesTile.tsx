@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/locale";
 import { cn } from "@/lib/cn";
@@ -15,14 +14,14 @@ export async function BentoCorsagesTile({ locale }: { locale: Locale }) {
         "shadow-[var(--shadow-tile-rest)]",
       )}
     >
-      {/* Hero image */}
+      {/* Hero image — plain <img> so an ad-blocker that blocks /_next/image
+          can't blank the tile; asset is already an optimized WebP. */}
       <div className="relative flex-1 min-h-[220px]">
-        <Image
+        <img
           src="/corsages/hero-1.webp"
           alt=""
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, 50vw"
+          className="absolute inset-0 size-full object-cover"
+          loading="lazy"
         />
         {/* Gradient to ensure badges are readable */}
         <div className="absolute inset-0 bg-gradient-to-b from-ink/30 to-ink/10" />
