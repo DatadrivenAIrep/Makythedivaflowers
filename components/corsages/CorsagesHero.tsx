@@ -20,7 +20,7 @@ export async function CorsagesHero({ locale: _locale }: { locale: Locale }) {
             fill
             className="object-cover"
             priority
-            sizes="(max-width: 768px) 100vw, 66vw"
+            sizes="66vw"
           />
         </div>
         {/* Top-right photo */}
@@ -30,7 +30,7 @@ export async function CorsagesHero({ locale: _locale }: { locale: Locale }) {
             alt=""
             fill
             className="object-cover"
-            sizes="(max-width: 768px) 0vw, 34vw"
+            sizes="34vw"
           />
         </div>
         {/* Bottom-right photo */}
@@ -40,7 +40,7 @@ export async function CorsagesHero({ locale: _locale }: { locale: Locale }) {
             alt=""
             fill
             className="object-cover"
-            sizes="(max-width: 768px) 0vw, 34vw"
+            sizes="34vw"
           />
         </div>
       </div>
