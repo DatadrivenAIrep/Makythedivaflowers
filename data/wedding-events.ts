@@ -12,9 +12,32 @@ export type WeddingEvent = {
   photos: WeddingEventPhoto[];
 };
 
-// Placeholder data — replace heroSrc/photos with real paths once event photos
-// are imported to public/weddings/{event-id}/
 export const weddingEvents: WeddingEvent[] = [
+  {
+    id: "dani-bridal-shower-jun-2026",
+    venue: { en: "Private Venue", es: "Salón Privado" },
+    date:  { en: "June 2, 2026", es: "2 de junio de 2026" },
+    heroSrc: "/weddings/dani-bridal-shower-jun-2026/7234.webp",
+    heroAlt: {
+      en: "Dani's bridal shower floral arrangements by Diva Flowers",
+      es: "Arreglos florales del bridal shower de Dani por Diva Flowers",
+    },
+    photos: [
+      { src: "/weddings/dani-bridal-shower-jun-2026/7234.webp", alt: { en: "Floral centerpiece at Dani's bridal shower",       es: "Centro de mesa floral en el bridal shower de Dani" } },
+      { src: "/weddings/dani-bridal-shower-jun-2026/7236.webp", alt: { en: "Soft floral arrangement in pastel tones",          es: "Arreglo floral suave en tonos pastel" } },
+      { src: "/weddings/dani-bridal-shower-jun-2026/7238.webp", alt: { en: "Detail of fresh blooms for the celebration",       es: "Detalle de flores frescas para la celebración" } },
+      { src: "/weddings/dani-bridal-shower-jun-2026/7240a.webp", alt: { en: "Wide view of the bridal shower floral decor",     es: "Vista general de la decoración floral del bridal shower" } },
+      { src: "/weddings/dani-bridal-shower-jun-2026/7240b.webp", alt: { en: "Elegant floral display at the venue",             es: "Exhibición floral elegante en el salón" } },
+      { src: "/weddings/dani-bridal-shower-jun-2026/7240c.webp", alt: { en: "Romantic florals by Diva Flowers",                es: "Florales románticos por Diva Flowers" } },
+      { src: "/weddings/dani-bridal-shower-jun-2026/7243.webp", alt: { en: "Lush bouquet arrangement for the bride-to-be",    es: "Arreglo exuberante para la futura novia" } },
+      { src: "/weddings/dani-bridal-shower-jun-2026/7244.webp", alt: { en: "Table setting with seasonal blooms",              es: "Mesa decorada con flores de temporada" } },
+      { src: "/weddings/dani-bridal-shower-jun-2026/7246.webp", alt: { en: "Cascading floral installation detail",            es: "Detalle de instalación floral en cascada" } },
+      { src: "/weddings/dani-bridal-shower-jun-2026/7247.webp", alt: { en: "Full floral setup at the bridal shower",          es: "Montaje floral completo del bridal shower" } },
+      { src: "/weddings/dani-bridal-shower-jun-2026/7248.webp", alt: { en: "Close-up of mixed blooms and greenery",           es: "Primer plano de flores mixtas y follaje" } },
+    ],
+  },
+
+  // Placeholder events — replace with real photos when available
   {
     id: "westbury-oct-2024",
     venue: { en: "Westbury Manor", es: "Westbury Manor" },
