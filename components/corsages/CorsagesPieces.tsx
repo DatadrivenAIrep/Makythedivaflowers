@@ -26,7 +26,7 @@ export async function CorsagesPieces({ locale }: { locale: Locale }) {
             >
               <div
                 className={cn(
-                  "relative aspect-[4/3] overflow-hidden",
+                  "relative aspect-[4/5] overflow-hidden",
                   FLOWER_GRADIENT[piece.flower],
                 )}
               >
