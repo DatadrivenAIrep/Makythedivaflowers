@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { BentoPromTile } from "./BentoPromTile";
+import { BentoCorsagesTile } from "./BentoCorsagesTile";
 import { BentoSubscriptionsTile } from "./BentoSubscriptionsTile";
 import { BentoLiveStatusTile } from "./BentoLiveStatusTile";
 import { BentoPressTile } from "./BentoPressTile";
@@ -33,7 +33,7 @@ export async function BentoGrid({ locale }: { locale: Locale }) {
         style={{ gridAutoRows: "minmax(140px, auto)" }}
       >
         <div className="md:col-span-2 md:row-span-3">
-          <BentoPromTile locale={locale} />
+          <BentoCorsagesTile locale={locale} />
         </div>
         <div className="md:col-span-2 md:row-span-2">
           <BentoLiveStatusTile />
