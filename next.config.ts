@@ -26,6 +26,14 @@ const nextConfig: NextConfig = {
   // load, `lib/print-chromium.ts` defers the import to runtime; the
   // module graph still resolves cleanly at build time.
   serverExternalPackages: ["puppeteer-core", "@sparticuz/chromium", "sharp", "pdf-parse", "twilio"],
+  // /api/print/queue builds the order-sheet HTML by reading embedded fonts +
+  // card art from public/ at runtime (readFileSync, in lib/print-styles.ts).
+  // Those reads use a dynamic path the file tracer can't detect, so the assets
+  // get dropped from the serverless bundle on Vercel and buildSheetHtml throws
+  // ENOENT → no job is ever hydrated. Ship them explicitly with the route.
+  outputFileTracingIncludes: {
+    "/api/print/queue": ["./public/fonts/**/*", "./public/print/**/*"],
+  },
   experimental: {
     optimizePackageImports: ["@phosphor-icons/react", "framer-motion"],
     staleTimes: { dynamic: 0 },
