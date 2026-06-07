@@ -72,7 +72,11 @@ export async function renderHtmlToPdf(html: string): Promise<Buffer> {
   const browser = await getBrowser();
   const page = await browser.newPage();
   try {
-    await page.setContent(html, { waitUntil: "networkidle0" });
+    // "load", not "networkidle0": the HTML is fully self-contained (data: URI
+    // fonts + images), so there's no network to idle. Large data: URIs make
+    // networkidle0 hang until timeout — switch to load, which fires once the
+    // embedded assets are parsed. Mirrors tools/print-agent/src/print.ts.
+    await page.setContent(html, { waitUntil: "load" });
     const pdf = await page.pdf({
       format: "Letter",
       landscape: true,

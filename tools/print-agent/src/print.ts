@@ -35,7 +35,14 @@ async function htmlToPdf(html: string, chromePath: string): Promise<Buffer> {
   const browser = await getBrowser(chromePath);
   const page = await browser.newPage();
   try {
-    await page.setContent(html, { waitUntil: "networkidle0", timeout: 30_000 });
+    // Wait for "load" (all inline resources parsed), NOT "networkidle0".
+    // The sheet HTML is fully self-contained — fonts and images are embedded
+    // as data: URIs, so there is no network to go idle. With large data: URIs
+    // Chrome's idle accounting never reaches 0-for-500ms, so networkidle0 hangs
+    // until the timeout and the render fails → a job that never prints (or, on
+    // some drivers, ejects a blank sheet). "load" fires as soon as the embedded
+    // assets are parsed, which is what we actually need before page.pdf().
+    await page.setContent(html, { waitUntil: "load", timeout: 30_000 });
     const pdf = await page.pdf({
       format: "Letter",
       landscape: true,
