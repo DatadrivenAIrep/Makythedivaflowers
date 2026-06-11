@@ -149,13 +149,39 @@ function Worksheet({ order }: { order: Order }) {
 }
 
 
-function BrandCoverPanel() {
+function CoverRecipient({ order }: { order: Order }) {
+  const f = order.fulfillment;
+  const phone = formatPhoneUS(f.recipient.phone);
+  if (f.method === "delivery") {
+    const a = f.address;
+    return (
+      <div className="cover-recipient">
+        <div className="cr-name">{f.recipient.name}</div>
+        <div className="cr-line">
+          {a.street1}{a.street2 ? `, ${a.street2}` : ""}
+        </div>
+        <div className="cr-line">{a.city}, {a.state} {a.zip}</div>
+        <div className="cr-line">{phone}</div>
+      </div>
+    );
+  }
+  // pickup / in-store: no delivery address — recipient name + phone only.
+  return (
+    <div className="cover-recipient">
+      <div className="cr-name">{f.recipient.name}</div>
+      <div className="cr-line">{phone}</div>
+    </div>
+  );
+}
+
+function BrandCoverPanel({ order }: { order: Order }) {
   return (
     <div className="card-panel brand-cover">
       <div className="card-brand">
         <div className="name">maky</div>
         <div className="tag">the diva flowers</div>
       </div>
+      <CoverRecipient order={order} />
     </div>
   );
 }
@@ -214,14 +240,13 @@ function LogoPanel({ logoUri }: { logoUri: string }) {
   );
 }
 
-function CardRow({ message, logoUri }: { message: string | undefined; logoUri: string }) {
+function CardRow({ order, logoUri }: { order: Order; logoUri: string }) {
+  // Card 1: brand cover + recipient · Card 2: logo · Card 3: message.
   return (
     <section className="card-row">
-      <div className="fold-v f1" />
-      <div className="fold-v f2" />
-      <BrandCoverPanel />
-      <InsideMessagePanel message={message} />
+      <BrandCoverPanel order={order} />
       <LogoPanel logoUri={logoUri} />
+      <InsideMessagePanel message={order.fulfillment.cardMessage} />
     </section>
   );
 }
@@ -229,9 +254,8 @@ function CardRow({ message, logoUri }: { message: string | undefined; logoUri: s
 function Sheet({ order, logoUri }: { order: Order; logoUri: string }) {
   return (
     <div className="sheet">
-      <div className="cut-h" />
       <Worksheet order={order} />
-      <CardRow message={order.fulfillment.cardMessage} logoUri={logoUri} />
+      <CardRow order={order} logoUri={logoUri} />
     </div>
   );
 }

@@ -92,7 +92,6 @@ export function getPrintStyles(): string {
       position: relative;
       overflow: hidden;
     }
-    .cut-h { position: absolute; left: 0; right: 0; top: 4.25in; border-top: 1px dashed var(--mute-200); z-index: 5; opacity: 0.6; }
 
     /* === Worksheet (top half) === */
     .worksheet {
@@ -153,12 +152,6 @@ export function getPrintStyles(): string {
     /* === Card row (bottom half) — tri-fold === */
     .card-row { flex: 1; display: flex; position: relative; }
     .card-panel { flex: 1; position: relative; overflow: hidden; }
-    .fold-v {
-      position: absolute; top: 0; bottom: 0;
-      border-left: 1px dashed var(--mute-200); opacity: 0.5; z-index: 4;
-    }
-    .fold-v.f1 { left: 3.6667in; }
-    .fold-v.f2 { left: 7.3333in; }
 
     /* Panel 1 (left): Maky brand — cover when folded */
     .card-panel.brand-cover {
@@ -182,6 +175,25 @@ export function getPrintStyles(): string {
     .card-brand .tag {
       font-family: var(--font-sans); font-size: 8pt; text-transform: uppercase;
       letter-spacing: 2.5px; color: var(--rouge); margin-top: 4pt; font-weight: 600;
+    }
+    /* Recipient block on the brand cover (card 1) — a light "shipping label"
+       chip so the delivery info is legible over the rose photo. No header. */
+    .brand-cover .cover-recipient {
+      position: relative; z-index: 2;
+      margin-top: 8pt;
+      background: rgba(250, 246, 240, 0.9);
+      border: 1px solid var(--petal);
+      border-radius: 4pt;
+      padding: 6pt 8pt;
+    }
+    .cover-recipient .cr-name {
+      font-family: var(--font-sans);
+      font-weight: 700; font-size: 11pt; color: var(--ink);
+      line-height: 1.2; margin-bottom: 2pt;
+    }
+    .cover-recipient .cr-line {
+      font-family: var(--font-sans);
+      font-size: 9pt; color: var(--mute-600); line-height: 1.4;
     }
 
     /* Panel 2 (middle): customer message — hidden when folded */
