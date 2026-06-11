@@ -22,7 +22,7 @@ function seed(o: {
      VALUES (?, 'es', ?, 'R', '555', '555', 'delivery', '2026-06-01', '[]', 0,0,0,15000,
        ?, ?, ?, ?, ?)`,
   ).run(
-    o.id, o.source ?? "web", o.status ?? "pending", o.paymentStatus ?? "pending",
+    o.id, o.source ?? "web", o.status ?? "pending", o.paymentStatus ?? "paid",
     o.paidAt ?? null, o.createdAt, o.updatedAt ?? o.createdAt,
   );
 }
@@ -49,6 +49,14 @@ describe("getRecentFeed", () => {
     const r = await getRecentFeed(24);
     expect(r.events.some(e => e.orderId === "old")).toBe(false);
     expect(r.events.some(e => e.orderId === "new")).toBe(true);
+  });
+
+  it("hides unpaid web orders but keeps unpaid intake orders", async () => {
+    seed({ id: "web_unpaid", source: "web", paymentStatus: "pending", createdAt: "2026-05-25T13:00:00Z" });
+    seed({ id: "intake_unpaid", source: "phone", paymentStatus: "pending", createdAt: "2026-05-25T13:10:00Z" });
+    const r = await getRecentFeed(24);
+    expect(r.events.some(e => e.orderId === "web_unpaid")).toBe(false);
+    expect(r.events.some(e => e.orderId === "intake_unpaid")).toBe(true);
   });
 
   it("sorts events by timestamp DESC across kinds", async () => {

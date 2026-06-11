@@ -2,6 +2,7 @@ import "server-only";
 import { getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import { rowToOrder, type OrderRow } from "@/lib/order-row";
+import { activeOrderVisibilitySql } from "@/lib/order-visibility";
 import type { Order } from "@/types/order";
 
 export const INTAKE_UNPAID_STALE_HOURS = 1;
@@ -48,7 +49,7 @@ export async function getPendingQueue(): Promise<PendingItem[]> {
   const rows = db.prepare(`
     SELECT o.* FROM orders o
     LEFT JOIN order_acknowledgments a ON a.order_id = o.id
-    WHERE (
+    WHERE ${activeOrderVisibilitySql("o")} AND (
       -- web_unacknowledged
       (o.source = 'web' AND a.order_id IS NULL AND o.created_at >= ?)
       -- intake_unpaid_stale

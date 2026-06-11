@@ -100,6 +100,22 @@ describe("getPendingQueue", () => {
     expect(q.find(i => i.orderId === "p1")?.reason).toBe("pickup_today_unpaid");
   });
 
+  it("hides unpaid web orders (failed/abandoned checkout) from the queue", async () => {
+    // A web checkout that never completed payment: recent + unacknowledged would
+    // otherwise flag as web_unacknowledged, but unpaid web orders are noise.
+    seed({ id: "web_unpaid", source: "web", paymentStatus: "pending", fulfillmentStatus: "pending",
+      fulfillmentMethod: "delivery", windowDate: "2026-05-25", createdAt: "2026-05-25T13:00:00Z" });
+    const q = await getPendingQueue();
+    expect(q.find(i => i.orderId === "web_unpaid")).toBeUndefined();
+  });
+
+  it("still flags unpaid intake orders (pay-on-delivery is legitimate)", async () => {
+    seed({ id: "intake_unpaid_today", source: "phone", paymentStatus: "pending", fulfillmentStatus: "pending",
+      fulfillmentMethod: "delivery", windowDate: "2026-05-25", createdAt: "2026-05-25T08:00:00Z" });
+    const q = await getPendingQueue();
+    expect(q.find(i => i.orderId === "intake_unpaid_today")).toBeDefined();
+  });
+
   it("dedupes one order matching multiple rules by id", async () => {
     seed({ id: "dup", source: "walk-in", paymentStatus: "pending", fulfillmentStatus: "pending",
       fulfillmentMethod: "delivery", windowDate: "2026-05-25",

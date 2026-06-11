@@ -1,6 +1,7 @@
 import "server-only";
 import { getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
+import { activeOrderVisibilitySql } from "@/lib/order-visibility";
 
 export type FeedEvent = {
   kind: "created" | "paid" | "status_changed";
@@ -32,7 +33,7 @@ export async function getRecentFeed(sinceHours = 24): Promise<{ events: FeedEven
     SELECT id, source, recipient_name, total_cents, fulfillment_status, payment_status,
            created_at, paid_at, updated_at
       FROM orders
-     WHERE created_at >= ? OR paid_at >= ? OR updated_at >= ?
+     WHERE ${activeOrderVisibilitySql()} AND (created_at >= ? OR paid_at >= ? OR updated_at >= ?)
   `).all(since, since, since) as {
     id: string; source: string; recipient_name: string; total_cents: number;
     fulfillment_status: string; payment_status: string;
