@@ -244,7 +244,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
                   onClick={() => call("PATCH", `/api/admin/orders/${order.id}/payment`, { method: "zelle" })}>Zelle</AdminButton>
               </>
             )}
-            {order.paymentStatus === "paid" && order.status !== "delivered" && (
+            {order.status !== "delivered" && order.status !== "canceled" && (
               <>
                 {order.status === "pending" && (
                   <AdminButton variant="secondary" icon={Package} disabled={busy}

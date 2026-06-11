@@ -39,6 +39,40 @@ it("calls /ack for unacknowledged web orders", async () => {
   expect(calls.some((u) => u.endsWith("/o1/ack"))).toBe(true);
 });
 
+it("shows fulfillment-advance actions for an unpaid phone order", async () => {
+  const phoneOrder = { ...order, id: "o2", source: "phone", status: "pending", paymentStatus: "pending" };
+  vi.spyOn(global, "fetch").mockImplementation((input) => {
+    const url = String(input);
+    if (url.endsWith("/o2") && !url.includes("/ack")) {
+      return Promise.resolve(new Response(JSON.stringify({ order: phoneOrder, customer: null, messages: [] }), { status: 200 }));
+    }
+    return Promise.resolve(new Response("{}", { status: 200 }));
+  });
+  render(<OrderDetailDrawer orderId="o2" onClose={() => {}} onChanged={() => {}} />);
+  await waitFor(() => expect(screen.getAllByText(/Maria Lopez/).length).toBeGreaterThan(0));
+  // payment-collection actions stay available for the unpaid order…
+  expect(screen.getByRole("button", { name: /Cash/ })).toBeInTheDocument();
+  // …and fulfillment can be advanced even though it isn't paid yet.
+  expect(screen.getByRole("button", { name: /Preparar/ })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: /Entregada/ })).toBeInTheDocument();
+});
+
+it("shows fulfillment-advance actions for an unpaid walk-in order", async () => {
+  const walkInOrder = { ...order, id: "o3", source: "walk-in", status: "pending", paymentStatus: "pending" };
+  vi.spyOn(global, "fetch").mockImplementation((input) => {
+    const url = String(input);
+    if (url.endsWith("/o3") && !url.includes("/ack")) {
+      return Promise.resolve(new Response(JSON.stringify({ order: walkInOrder, customer: null, messages: [] }), { status: 200 }));
+    }
+    return Promise.resolve(new Response("{}", { status: 200 }));
+  });
+  render(<OrderDetailDrawer orderId="o3" onClose={() => {}} onChanged={() => {}} />);
+  await waitFor(() => expect(screen.getAllByText(/Maria Lopez/).length).toBeGreaterThan(0));
+  expect(screen.getByRole("button", { name: /Cash/ })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: /Preparar/ })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: /Entregada/ })).toBeInTheDocument();
+});
+
 it("closes on Esc", async () => {
   const onClose = vi.fn();
   render(<OrderDetailDrawer orderId="o1" onClose={onClose} onChanged={() => {}} />);
