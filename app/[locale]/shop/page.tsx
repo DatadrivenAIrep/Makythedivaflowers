@@ -16,6 +16,7 @@ import {
   sortProducts,
 } from "@/data/product-helpers";
 import { parseFilterParams, type RawSearchParams } from "@/lib/search-params";
+import { getAllImageOverrides, applyImageOverrides } from "@/lib/product-images";
 
 export async function generateMetadata({
   params,
@@ -51,10 +52,11 @@ export default async function ShopHubPage({
   const sp = await searchParams;
   const { filter, sort } = parseFilterParams(sp);
 
-  const newest = newestArrivals(PRODUCTS.filter((p) => !p.giftExtra), 12);
+  const products = applyImageOverrides(PRODUCTS, getAllImageOverrides());
+  const newest = newestArrivals(products.filter((p) => !p.giftExtra), 12);
   const newestTitle = locale === "es" ? "Lo más nuevo" : "Newest arrivals";
 
-  const allActive = PRODUCTS.filter((p) => p.active && !p.giftExtra);
+  const allActive = products.filter((p) => p.active && !p.giftExtra);
   const allFiltered = sortProducts(filterProducts(allActive, filter), sort);
   const allTitle = filter.q
     ? locale === "es"

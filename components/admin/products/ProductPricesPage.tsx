@@ -1,15 +1,17 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
-import { PencilSimple, Check, X, ArrowCounterClockwise, MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
+import { PencilSimple, Check, X, ArrowCounterClockwise, MagnifyingGlass, Camera } from "@phosphor-icons/react/dist/ssr";
 import type { Product } from "@/types/product";
 import type { PriceOverride } from "@/lib/product-prices";
+import type { ImageOverride } from "@/lib/product-images";
 
 type Props = {
   products: Product[];
   initialOverrides: PriceOverride[];
+  initialImageOverrides: ImageOverride[];
 };
 
 type EditState = { productId: string; variantId: string; raw: string } | null;
@@ -19,15 +21,24 @@ function money(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
 }
 
-export default function ProductPricesPage({ products, initialOverrides }: Props) {
+export default function ProductPricesPage({ products, initialOverrides, initialImageOverrides }: Props) {
   const t = useTranslations("admin_products");
   const locale = useLocale() as "en" | "es";
+
   const [overrides, setOverrides] = useState<Map<string, number>>(
     () => new Map(initialOverrides.map((o) => [`${o.productId}::${o.variantId}`, o.priceCents])),
   );
+  const [imgOverrides, setImgOverrides] = useState<Map<string, string>>(
+    () => new Map(initialImageOverrides.map((o) => [o.productId, o.src])),
+  );
+  const [uploadingId, setUploadingId] = useState<string | null>(null);
+
   const [editing, setEditing] = useState<EditState>(null);
   const [status, setStatus] = useState<SaveStatus>("idle");
   const [search, setSearch] = useState("");
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const pendingProductId = useRef<string | null>(null);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
@@ -92,11 +103,65 @@ export default function ProductPricesPage({ products, initialOverrides }: Props)
     }
   }
 
+  function triggerImageUpload(productId: string) {
+    pendingProductId.current = productId;
+    fileInputRef.current?.click();
+  }
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    const productId = pendingProductId.current;
+    if (!file || !productId) return;
+    e.target.value = "";
+
+    setUploadingId(productId);
+    try {
+      const form = new FormData();
+      form.append("productId", productId);
+      form.append("file", file);
+      const res = await fetch("/api/admin/product-images", { method: "POST", body: form });
+      if (!res.ok) throw new Error();
+      const { src } = await res.json() as { src: string };
+      setImgOverrides((prev) => new Map(prev).set(productId, src));
+    } catch {
+      // silent — user can retry
+    } finally {
+      setUploadingId(null);
+    }
+  }
+
+  async function resetImage(productId: string) {
+    setUploadingId(productId);
+    try {
+      await fetch("/api/admin/product-images", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId }),
+      });
+      setImgOverrides((prev) => {
+        const next = new Map(prev);
+        next.delete(productId);
+        return next;
+      });
+    } finally {
+      setUploadingId(null);
+    }
+  }
+
   const isEditing = (pid: string, vid: string) =>
     editing?.productId === pid && editing?.variantId === vid;
 
   return (
     <main className="max-w-[860px] mx-auto p-6">
+      {/* Hidden file input shared across all products */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        className="hidden"
+        onChange={handleFileChange}
+      />
+
       <div className="flex items-center justify-between mb-6">
         <Link href={`/${locale}/admin/settings`} className="text-mute-500 hover:text-ink text-sm">
           {t("back")}
@@ -127,117 +192,153 @@ export default function ProductPricesPage({ products, initialOverrides }: Props)
       </div>
 
       <div className="space-y-3">
-        {filtered.map((product) => (
-          <div key={product.id} className="bg-white rounded-bento shadow-sm overflow-hidden">
-            <div className="px-5 py-3 border-b border-mute-100 flex items-center gap-3">
-              {product.images[0] && (
-                <div className="relative w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
-                  <Image
-                    src={product.images[0].src}
-                    alt={product.images[0].alt[locale]}
-                    fill
-                    className="object-cover"
-                    sizes="40px"
-                  />
-                </div>
-              )}
-              <div className="flex items-center gap-2 min-w-0">
-                <span className="font-display text-sm text-ink truncate">{product.title[locale]}</span>
-                <span className="text-xs text-mute-400 capitalize flex-shrink-0">{product.category}</span>
-              </div>
-            </div>
+        {filtered.map((product) => {
+          const customSrc = imgOverrides.get(product.id);
+          const imageSrc = customSrc ?? product.images[0]?.src;
+          const isUploading = uploadingId === product.id;
 
-            <table className="w-full text-sm">
-              <tbody>
-                {product.variants.map((variant) => {
-                  const key = `${product.id}::${variant.id}`;
-                  const overrideCents = overrides.get(key);
-                  const hasOverride = overrideCents !== undefined;
-                  const activeCents = overrideCents ?? variant.priceCents;
-
-                  return (
-                    <tr key={variant.id} className="border-t border-mute-50 first:border-0">
-                      <td className="px-5 py-3 text-mute-700">
-                        {variant.label[locale]}
-                        {variant.subtitle && (
-                          <span className="ml-1.5 text-xs text-mute-400">{variant.subtitle[locale]}</span>
-                        )}
-                      </td>
-
-                      {/* Base price */}
-                      <td className="px-3 py-3 text-right tabular-nums text-mute-400 text-xs whitespace-nowrap">
-                        {hasOverride ? (
-                          <span>{t("base_label")}: {money(variant.priceCents)}</span>
-                        ) : null}
-                      </td>
-
-                      {/* Active price / edit */}
-                      <td className="px-5 py-3 text-right whitespace-nowrap">
-                        {isEditing(product.id, variant.id) ? (
-                          <span className="inline-flex items-center gap-1.5">
-                            <span className="text-mute-500 text-sm">$</span>
-                            <input
-                              type="number"
-                              min="0"
-                              step="0.01"
-                              value={editing!.raw}
-                              onChange={(e) => setEditing({ ...editing!, raw: e.target.value })}
-                              onKeyDown={(e) => { if (e.key === "Enter") saveEdit(); if (e.key === "Escape") setEditing(null); }}
-                              autoFocus
-                              className="w-24 px-2 py-1 rounded-lg border border-ink bg-white text-right tabular-nums outline-none text-sm"
-                            />
-                            <button
-                              type="button"
-                              onClick={saveEdit}
-                              disabled={status === "saving"}
-                              className="p-1.5 rounded-lg bg-rouge text-bone hover:bg-rouge/90 disabled:opacity-40"
-                              aria-label={t("save")}
-                            >
-                              <Check size={13} weight="bold" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setEditing(null)}
-                              className="p-1.5 rounded-lg border border-mute-200 text-mute-600 hover:bg-mute-100"
-                              aria-label={t("cancel")}
-                            >
-                              <X size={13} weight="bold" />
-                            </button>
-                          </span>
+          return (
+            <div key={product.id} className="bg-white rounded-bento shadow-sm overflow-hidden">
+              <div className="px-5 py-3 border-b border-mute-100 flex items-center gap-3">
+                {/* Thumbnail with upload overlay */}
+                {imageSrc && (
+                  <div className="relative flex-shrink-0 group">
+                    <div className="relative w-10 h-10 rounded-lg overflow-hidden">
+                      <Image
+                        src={imageSrc}
+                        alt={product.images[0]?.alt[locale] ?? product.title[locale]}
+                        fill
+                        className="object-cover"
+                        sizes="40px"
+                        unoptimized={!!customSrc}
+                      />
+                      {/* Upload overlay */}
+                      <button
+                        type="button"
+                        onClick={() => triggerImageUpload(product.id)}
+                        disabled={isUploading}
+                        className="absolute inset-0 bg-ink/0 group-hover:bg-ink/50 transition-colors flex items-center justify-center"
+                        title={t("change_photo")}
+                      >
+                        {isUploading ? (
+                          <span className="w-4 h-4 border-2 border-white/60 border-t-white rounded-full animate-spin" />
                         ) : (
-                          <span className="inline-flex items-center gap-2">
-                            <span className={`tabular-nums font-medium ${hasOverride ? "text-rouge" : "text-ink"}`}>
-                              {money(activeCents)}
-                            </span>
-                            <button
-                              type="button"
-                              onClick={() => startEdit(product.id, variant.id, activeCents)}
-                              className="p-1.5 rounded-lg text-mute-400 hover:text-ink hover:bg-mute-100 transition"
-                              aria-label={t("edit_label")}
-                            >
-                              <PencilSimple size={13} weight="bold" />
-                            </button>
-                            {hasOverride && (
+                          <Camera size={14} weight="bold" className="text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                        )}
+                      </button>
+                    </div>
+                    {/* Reset button — only when there's a custom photo */}
+                    {customSrc && !isUploading && (
+                      <button
+                        type="button"
+                        onClick={() => resetImage(product.id)}
+                        className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-rouge text-bone flex items-center justify-center shadow hover:bg-rouge/80 transition"
+                        title={t("reset_photo")}
+                      >
+                        <X size={8} weight="bold" />
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="font-display text-sm text-ink truncate">{product.title[locale]}</span>
+                  <span className="text-xs text-mute-400 capitalize flex-shrink-0">{product.category}</span>
+                </div>
+              </div>
+
+              <table className="w-full text-sm">
+                <tbody>
+                  {product.variants.map((variant) => {
+                    const key = `${product.id}::${variant.id}`;
+                    const overrideCents = overrides.get(key);
+                    const hasOverride = overrideCents !== undefined;
+                    const activeCents = overrideCents ?? variant.priceCents;
+
+                    return (
+                      <tr key={variant.id} className="border-t border-mute-50 first:border-0">
+                        <td className="px-5 py-3 text-mute-700">
+                          {variant.label[locale]}
+                          {variant.subtitle && (
+                            <span className="ml-1.5 text-xs text-mute-400">{variant.subtitle[locale]}</span>
+                          )}
+                        </td>
+
+                        {/* Base price */}
+                        <td className="px-3 py-3 text-right tabular-nums text-mute-400 text-xs whitespace-nowrap">
+                          {hasOverride ? (
+                            <span>{t("base_label")}: {money(variant.priceCents)}</span>
+                          ) : null}
+                        </td>
+
+                        {/* Active price / edit */}
+                        <td className="px-5 py-3 text-right whitespace-nowrap">
+                          {isEditing(product.id, variant.id) ? (
+                            <span className="inline-flex items-center gap-1.5">
+                              <span className="text-mute-500 text-sm">$</span>
+                              <input
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                value={editing!.raw}
+                                onChange={(e) => setEditing({ ...editing!, raw: e.target.value })}
+                                onKeyDown={(e) => { if (e.key === "Enter") saveEdit(); if (e.key === "Escape") setEditing(null); }}
+                                autoFocus
+                                className="w-24 px-2 py-1 rounded-lg border border-ink bg-white text-right tabular-nums outline-none text-sm"
+                              />
                               <button
                                 type="button"
-                                onClick={() => resetVariant(product.id, variant.id)}
-                                className="p-1.5 rounded-lg text-mute-400 hover:text-rouge hover:bg-rouge/5 transition"
-                                aria-label={t("reset")}
-                                title={t("reset")}
+                                onClick={saveEdit}
+                                disabled={status === "saving"}
+                                className="p-1.5 rounded-lg bg-rouge text-bone hover:bg-rouge/90 disabled:opacity-40"
+                                aria-label={t("save")}
                               >
-                                <ArrowCounterClockwise size={13} weight="bold" />
+                                <Check size={13} weight="bold" />
                               </button>
-                            )}
-                          </span>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        ))}
+                              <button
+                                type="button"
+                                onClick={() => setEditing(null)}
+                                className="p-1.5 rounded-lg border border-mute-200 text-mute-600 hover:bg-mute-100"
+                                aria-label={t("cancel")}
+                              >
+                                <X size={13} weight="bold" />
+                              </button>
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-2">
+                              <span className={`tabular-nums font-medium ${hasOverride ? "text-rouge" : "text-ink"}`}>
+                                {money(activeCents)}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => startEdit(product.id, variant.id, activeCents)}
+                                className="p-1.5 rounded-lg text-mute-400 hover:text-ink hover:bg-mute-100 transition"
+                                aria-label={t("edit_label")}
+                              >
+                                <PencilSimple size={13} weight="bold" />
+                              </button>
+                              {hasOverride && (
+                                <button
+                                  type="button"
+                                  onClick={() => resetVariant(product.id, variant.id)}
+                                  className="p-1.5 rounded-lg text-mute-400 hover:text-rouge hover:bg-rouge/5 transition"
+                                  aria-label={t("reset")}
+                                  title={t("reset")}
+                                >
+                                  <ArrowCounterClockwise size={13} weight="bold" />
+                                </button>
+                              )}
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          );
+        })}
       </div>
     </main>
   );

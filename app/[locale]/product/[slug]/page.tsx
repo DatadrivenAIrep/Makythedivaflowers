@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import type { Locale } from "@/types/locale";
 import { getProductBySlug, getPairsWith, PRODUCTS } from "@/data/products";
+import { getAllImageOverrides, applyImageOverrides } from "@/lib/product-images";
 import { TrackEvent } from "@/components/analytics/TrackEvent";
 import type { AnalyticsItem } from "@/lib/analytics-types";
 import { parseCampaign } from "@/lib/campaign-occasion";
@@ -60,8 +61,9 @@ export default async function ProductPage({
   const { locale, slug } = await params;
   const sp = await searchParams;
   const campaign = parseCampaign(sp.campaign);
-  const product = getProductBySlug(slug);
-  if (!product || !product.active) notFound();
+  const rawProduct = getProductBySlug(slug);
+  if (!rawProduct || !rawProduct.active) notFound();
+  const [product] = applyImageOverrides([rawProduct], getAllImageOverrides());
   setRequestLocale(locale);
 
   const isSympathy = product.category === "sympathy";

@@ -996,7 +996,9 @@
     "saved": "Saved",
     "error": "Error saving",
     "back": "← Settings",
-    "search_placeholder": "Search product..."
+    "search_placeholder": "Search product...",
+    "change_photo": "Change photo",
+    "reset_photo": "Restore original photo"
   },
   "admin_intake": {
     "page_subtitle": "Diva Flowers · iPad intake",

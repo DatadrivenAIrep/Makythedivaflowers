@@ -21,6 +21,7 @@ import { ShopCategoryContactSubject } from "@/components/contact/ShopCategoryCon
 import { TrackEvent } from "@/components/analytics/TrackEvent";
 import type { AnalyticsItem } from "@/lib/analytics-types";
 import { isRoseProduct, isExoticProduct } from "@/lib/shop-categories";
+import { getAllImageOverrides, applyImageOverrides } from "@/lib/product-images";
 
 type ShopSlug = ProductCategory | "roses" | "exotic";
 
@@ -122,12 +123,13 @@ export default async function CategoryPage({
   const sp = await searchParams;
   const { filter, sort } = parseFilterParams(sp);
 
+  const products = applyImageOverrides(PRODUCTS, getAllImageOverrides());
   const all =
     cat === "roses"
-      ? PRODUCTS.filter(isRoseProduct)
+      ? products.filter(isRoseProduct)
       : cat === "exotic"
-        ? PRODUCTS.filter(isExoticProduct)
-        : productsByCategory(PRODUCTS, cat as ProductCategory);
+        ? products.filter(isExoticProduct)
+        : productsByCategory(products, cat as ProductCategory);
   const filtered = sortProducts(filterProducts(all, filter), sort);
 
   const isSympathy = cat === "sympathy";
