@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
-import { GearSix, Key, CheckCircle, WarningCircle, Eye, EyeSlash } from "@phosphor-icons/react/dist/ssr";
+import { GearSix, Key, CheckCircle, WarningCircle, Eye, EyeSlash, Tag } from "@phosphor-icons/react/dist/ssr";
 
 export default function SettingsPage() {
   const t = useTranslations("admin_settings");
@@ -68,6 +68,20 @@ export default function SettingsPage() {
         <GearSix size={24} weight="duotone" className="text-rouge" />
         <h1 className="font-display text-3xl text-ink">{t("title")}</h1>
       </div>
+
+      {/* Catalog prices shortcut */}
+      <section className="bg-white rounded-bento shadow-sm overflow-hidden mb-4">
+        <Link
+          href={`/${locale}/admin/products`}
+          className="flex items-center justify-between px-6 py-4 hover:bg-bone transition group"
+        >
+          <div className="flex items-center gap-2">
+            <Tag size={18} weight="duotone" className="text-rouge" />
+            <span className="font-medium text-sm text-ink">{t("products_link")}</span>
+          </div>
+          <span className="text-mute-400 group-hover:text-ink transition">›</span>
+        </Link>
+      </section>
 
       <section className="bg-white rounded-bento shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-mute-100">

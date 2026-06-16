@@ -4,6 +4,7 @@ import { checkoutSchema } from "@/schemas/checkout";
 import { computeOrderTotals, computeDeliveryCentsForZip } from "@/lib/totals";
 import { cartSubtotalCents } from "@/lib/cart-helpers";
 import { PRODUCTS } from "@/data/products";
+import { getAllPriceOverrides, applyPriceOverrides } from "@/lib/product-prices";
 import { saveOrder, updateOrderPaymentIntent } from "@/lib/order-storage";
 import { stripe } from "@/lib/stripe-server";
 import type { Order, OrderFulfillment, CartLine } from "@/types/order";
@@ -34,7 +35,8 @@ export async function POST(req: Request) {
   // Web checkout never receives custom lines — stamp kind explicitly to satisfy the new union type.
   const backfilledLines: CartLine[] = lines.map((l) => ({ kind: "catalog" as const, ...l }));
 
-  const subtotal = cartSubtotalCents(backfilledLines, PRODUCTS);
+  const effectiveProducts = applyPriceOverrides(PRODUCTS, getAllPriceOverrides());
+  const subtotal = cartSubtotalCents(backfilledLines, effectiveProducts);
   if (subtotal <= 0) {
     return NextResponse.json(
       { errors: { formErrors: ["cart_empty"] } },

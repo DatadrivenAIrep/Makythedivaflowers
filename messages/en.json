@@ -980,7 +980,23 @@
     "places_error": "Error saving",
     "places_instructions_title": "How to get the key",
     "places_instructions": "1. Go to console.cloud.google.com\n2. Create or select a project\n3. Enable \"Places API\"\n4. Create an API Key under \"Credentials\"\n5. Restrict the key to your domain (recommended)",
+    "products_link": "Catalog prices →",
     "back": "← Dashboard"
+  },
+  "admin_products": {
+    "title": "Catalog prices",
+    "subtitle": "Change the price of any variant. The base catalog price is shown in grey; the active price applies in the order form and web store.",
+    "base_label": "Base",
+    "active_label": "Active",
+    "edit_label": "Edit price",
+    "save": "Save",
+    "cancel": "Cancel",
+    "reset": "Restore base",
+    "saving": "Saving...",
+    "saved": "Saved",
+    "error": "Error saving",
+    "back": "← Settings",
+    "search_placeholder": "Search product..."
   },
   "admin_intake": {
     "page_subtitle": "Diva Flowers · iPad intake",

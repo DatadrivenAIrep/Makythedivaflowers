@@ -1,9 +1,11 @@
 import Link from "next/link";
 import IntakeForm from "@/components/admin/intake/IntakeForm";
 import { PRODUCTS } from "@/data/products";
+import { getAllPriceOverrides, applyPriceOverrides } from "@/lib/product-prices";
 
 export default async function IntakePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
+  const products = applyPriceOverrides(PRODUCTS, getAllPriceOverrides());
   return (
     <>
       <div className="sticky top-0 z-10 border-b border-ink/10 bg-bone/95 backdrop-blur">
@@ -15,7 +17,7 @@ export default async function IntakePage({ params }: { params: Promise<{ locale:
           <span className="font-semibold tracking-wide">Nueva orden</span>
         </div>
       </div>
-      <IntakeForm products={PRODUCTS} />
+      <IntakeForm products={products} />
     </>
   );
 }

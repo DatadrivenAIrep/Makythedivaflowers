@@ -980,7 +980,23 @@
     "places_error": "Error al guardar",
     "places_instructions_title": "Cómo obtener la clave",
     "places_instructions": "1. Ve a console.cloud.google.com\n2. Crea o selecciona un proyecto\n3. Activa \"Places API\"\n4. Crea una API Key en \"Credenciales\"\n5. Restringe la clave a tu dominio (recomendado)",
+    "products_link": "Precios del catálogo →",
     "back": "← Dashboard"
+  },
+  "admin_products": {
+    "title": "Precios del catálogo",
+    "subtitle": "Modifica el precio de cualquier variante. El precio base del catálogo se muestra en gris; el precio activo se aplica en el formulario de órdenes y en la tienda web.",
+    "base_label": "Base",
+    "active_label": "Activo",
+    "edit_label": "Editar precio",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "reset": "Restaurar base",
+    "saving": "Guardando...",
+    "saved": "Guardado",
+    "error": "Error al guardar",
+    "back": "← Ajustes",
+    "search_placeholder": "Buscar producto..."
   },
   "admin_intake": {
     "page_subtitle": "Diva Flowers · iPad intake",
