@@ -44,8 +44,9 @@ function getResend(): Resend | null {
 export function __buildBody(order: Order): string {
   const lines: string[] = [];
   const m = (cents: number) => formatMoneyCents(cents, "en");
+  const orderLabel = order.orderNumber ? `#${order.orderNumber} · ${order.id}` : order.id;
 
-  lines.push(`ORDER ${order.id} · paid ${order.createdAt}`);
+  lines.push(`ORDER ${orderLabel} · paid ${order.createdAt}`);
   lines.push(
     `Total: ${m(order.totals.totalCents)} (subtotal ${m(order.totals.subtotalCents)} + delivery ${m(order.totals.deliveryCents)} + tax ${m(order.totals.taxCents)})`,
   );
@@ -113,7 +114,7 @@ export async function notifyOrderPaid(order: Order): Promise<void> {
     return;
   }
 
-  const subject = `New order ${order.id} — ${formatMoneyCents(order.totals.totalCents, "en")}`;
+  const subject = `New order ${order.orderNumber ? `#${order.orderNumber}` : order.id} — ${formatMoneyCents(order.totals.totalCents, "en")}`;
   const text = __buildBody(order);
   const html = __buildHtml(order);
 
@@ -130,6 +131,7 @@ export async function notifyOrderPaid(order: Order): Promise<void> {
 export function __buildHtml(order: Order): string {
   const m = (cents: number) => formatMoneyCents(cents, "en");
   const totalLabel = m(order.totals.totalCents);
+  const orderLabel = order.orderNumber ? `#${order.orderNumber}` : order.id;
   const createdAt = new Date(order.createdAt).toLocaleString("en-US", {
     weekday: "short",
     month: "short",
@@ -260,7 +262,7 @@ export function __buildHtml(order: Order): string {
 </head>
 <body style="margin:0;padding:0;background:#f3efe7;font-family:${FONT_STACKS.body};color:${COLORS.ink};">
   <div style="display:none;visibility:hidden;mso-hide:all;max-height:0;max-width:0;overflow:hidden;font-size:1px;line-height:1px;color:#f3efe7;">
-    New order ${escapeHtml(order.id)} · ${escapeHtml(totalLabel)} · ${escapeHtml(fulfillment.label)} · ${escapeHtml(fulfillment.window)}
+    New order ${escapeHtml(orderLabel)} · ${escapeHtml(totalLabel)} · ${escapeHtml(fulfillment.label)} · ${escapeHtml(fulfillment.window)}
   </div>
   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#f3efe7;">
     <tr><td align="center" style="padding:32px 16px;">
@@ -292,7 +294,7 @@ export function __buildHtml(order: Order): string {
                   ${escapeHtml(totalLabel)}
                 </h1>
                 <div style="font-family:${FONT_STACKS.mono};font-size:11px;color:${COLORS.inkMute};letter-spacing:0.04em;margin-top:10px;line-height:1.5;">
-                  ${escapeHtml(order.id)}<br/>paid ${escapeHtml(createdAt)}
+                  <span style="font-size:15px;color:${COLORS.ink};font-weight:700;">${escapeHtml(orderLabel)}</span><br/>${escapeHtml(order.id)}<br/>paid ${escapeHtml(createdAt)}
                 </div>
               </td>
               <td style="padding:24px 32px 24px 0;vertical-align:middle;text-align:right;width:40%;">

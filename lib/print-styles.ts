@@ -38,6 +38,26 @@ export function getLogoDataUri(): string {
   return cachedLogo;
 }
 
+// Product thumbnail for the work sheet. Reads the local file under public/ and
+// inlines it as a data URI (so the agent's Chrome needs no network). Returns
+// null for remote/placeholder srcs (e.g. picsum) or a missing file — the row
+// then renders without a photo instead of breaking the whole sheet.
+const productImgCache = new Map<string, string | null>();
+export function getProductImageDataUri(src: string | undefined): string | null {
+  if (!src || !src.startsWith("/")) return null;
+  if (productImgCache.has(src)) return productImgCache.get(src)!;
+  const ext = path.extname(src).toLowerCase();
+  const mime = ext === ".png" ? "image/png" : ext === ".webp" ? "image/webp" : "image/jpeg";
+  let uri: string | null;
+  try {
+    uri = imageDataUri(`public${src}`, mime);
+  } catch {
+    uri = null;
+  }
+  productImgCache.set(src, uri);
+  return uri;
+}
+
 export function getPrintStyles(): string {
   if (cached !== null) return cached;
 
@@ -141,7 +161,12 @@ export function getPrintStyles(): string {
       font-variation-settings: "opsz" 60;
     }
     .ws-items table { width: 100%; font-size: 9pt; border-collapse: collapse; }
-    .ws-items td { padding: 2pt 0; vertical-align: top; }
+    .ws-items td { padding: 4pt 0; vertical-align: top; }
+    .ws-items td.thumb-cell { width: 80pt; padding-right: 8pt; }
+    .ws-items .item-thumb {
+      width: 80pt; height: 80pt; object-fit: cover; border-radius: 4pt;
+      border: 1px solid var(--mute-200); display: block;
+    }
     .ws-items td.qty { width: 18pt; font-weight: 700; }
     .ws-items td.price { text-align: right; font-variant-numeric: tabular-nums; width: 50pt; }
     .ws-items .addon { font-size: 8pt; color: var(--mute-600); padding-left: 8pt; }
@@ -188,12 +213,12 @@ export function getPrintStyles(): string {
     }
     .cover-recipient .cr-name {
       font-family: var(--font-sans);
-      font-weight: 700; font-size: 11pt; color: var(--ink);
-      line-height: 1.2; margin-bottom: 2pt;
+      font-weight: 700; font-size: 13pt; color: var(--ink);
+      line-height: 1.2; margin-bottom: 3pt;
     }
     .cover-recipient .cr-line {
       font-family: var(--font-sans);
-      font-size: 9pt; color: var(--mute-600); line-height: 1.4;
+      font-size: 11pt; color: var(--mute-600); line-height: 1.4;
     }
 
     /* Panel 2 (middle): customer message — hidden when folded */

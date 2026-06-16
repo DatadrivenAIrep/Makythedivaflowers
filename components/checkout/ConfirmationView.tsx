@@ -32,7 +32,7 @@ export async function ConfirmationView({ order, locale }: { order: Order; locale
           {hasSubscription ? t("body_subscription", { date: "window" in f ? f.window.date : "" }) : t("body")}
         </p>
         <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/55">
-          {t("order_id")}: <span className="text-ink">{order.id}</span>
+          {t("order_id")}: <span className="text-ink">{order.orderNumber ? `#${order.orderNumber}` : order.id}</span>
         </p>
       </header>
       <section className="grid gap-12 lg:grid-cols-[1fr_360px]">

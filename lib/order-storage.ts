@@ -30,6 +30,19 @@ function ensureSchema(): void {
   runMigrations();
 }
 
+// Atomically assign the next sequential order number. node:sqlite is
+// synchronous + single-threaded, so the increment + read run back-to-back
+// without another request interleaving between them.
+function nextOrderNumber(): number {
+  const db = getDb();
+  db.prepare("UPDATE order_number_seq SET last_value = last_value + 1").run();
+  const row = db.prepare("SELECT last_value AS n FROM order_number_seq").get() as
+    | { n: number }
+    | undefined;
+  if (!row) throw new Error("order_number_seq row missing");
+  return row.n;
+}
+
 function upsertSqlite(order: Order): void {
   ensureSchema();
   const db = getDb();
@@ -42,7 +55,7 @@ function upsertSqlite(order: Order): void {
        subtotal_cents, delivery_cents, tax_cents, total_cents,
        fulfillment_status, payment_status, payment_method, paid_at,
        stripe_payment_intent_id, taken_by, internal_notes,
-       stripe_checkout_session_id, created_at, updated_at
+       stripe_checkout_session_id, order_number, created_at, updated_at
      ) VALUES (
        @id, @locale, @source, @customer_id, @recipient_name, @recipient_phone,
        @contact_email, @contact_phone, @fulfillment_method, @address_json,
@@ -50,7 +63,7 @@ function upsertSqlite(order: Order): void {
        @subtotal_cents, @delivery_cents, @tax_cents, @total_cents,
        @fulfillment_status, @payment_status, @payment_method, @paid_at,
        @stripe_payment_intent_id, @taken_by, @internal_notes,
-       @stripe_checkout_session_id, @created_at, @updated_at
+       @stripe_checkout_session_id, @order_number, @created_at, @updated_at
      )
      ON CONFLICT(id) DO UPDATE SET
        locale=excluded.locale,
@@ -78,12 +91,22 @@ function upsertSqlite(order: Order): void {
        taken_by=excluded.taken_by,
        internal_notes=excluded.internal_notes,
        stripe_checkout_session_id=excluded.stripe_checkout_session_id,
+       order_number=COALESCE(excluded.order_number, order_number),
        updated_at=excluded.updated_at`,
   ).run(row);
 }
 
 export async function saveOrder(order: Order): Promise<void> {
   ensureSchema();
+  // Assign the short sequential number. Best-effort: if the counter fails,
+  // the order (and payment) must still save — it just won't have a number.
+  if (order.orderNumber == null) {
+    try {
+      order.orderNumber = nextOrderNumber();
+    } catch (e) {
+      console.error(JSON.stringify({ event: "order_number_assign_failed", orderId: order.id, error: String(e) }));
+    }
+  }
   upsertSqlite(order);
   const all = await readAll();
   all.push(order);

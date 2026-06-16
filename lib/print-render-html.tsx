@@ -14,7 +14,7 @@ import { PRODUCTS } from "@/data/products";
 import { SITE } from "@/data/site";
 import { resolveCartLines } from "@/lib/cart-helpers";
 import { formatMoneyCents, formatPhoneUS, formatDeliveryWindow } from "@/lib/format";
-import { getPrintStyles, getCardBgDataUri, getLogoDataUri } from "@/lib/print-styles";
+import { getPrintStyles, getCardBgDataUri, getLogoDataUri, getProductImageDataUri } from "@/lib/print-styles";
 
 type Locale = "en" | "es";
 
@@ -59,7 +59,7 @@ function Worksheet({ order }: { order: Order }) {
       <div className="ws-col meta">
         <div>
           <div className="ws-brand">{t.eyebrow}</div>
-          <h1 className="ws-title">{t.order} #{order.id}</h1>
+          <h1 className="ws-title">{t.order} #{order.orderNumber ?? order.id}</h1>
           <div className="ws-paid">
             <strong>{t.paid}:</strong> {order.createdAt}<br />
             {order.stripePaymentIntentId ? <span style={{ opacity: 0.7 }}>Stripe {order.stripePaymentIntentId}</span> : null}
@@ -116,18 +116,22 @@ function Worksheet({ order }: { order: Order }) {
         <div className="ws-items">
           <table>
             <tbody>
-              {resolved.map((r) => (
-                <tr key={`${r.line.productId}-${r.line.variantId}`}>
-                  <td className="qty">{r.line.qty}×</td>
-                  <td>
-                    {r.product.title[locale]} <span style={{ color: "var(--mute-600)" }}>— {r.variant.label[locale]}</span>
-                    {r.addOns.length > 0 ? (
-                      <div className="addon">+ {r.addOns.map((a) => a.label[locale]).join(", ")}</div>
-                    ) : null}
-                  </td>
-                  <td className="price">{m(r.lineTotalCents)}</td>
-                </tr>
-              ))}
+              {resolved.map((r) => {
+                const thumb = getProductImageDataUri(r.product.images[0]?.src);
+                return (
+                  <tr key={`${r.line.productId}-${r.line.variantId}`}>
+                    <td className="qty">{r.line.qty}×</td>
+                    <td>
+                      {thumb ? <img className="item-thumb" src={thumb} alt="" /> : null}
+                      {r.product.title[locale]} <span style={{ color: "var(--mute-600)" }}>— {r.variant.label[locale]}</span>
+                      {r.addOns.length > 0 ? (
+                        <div className="addon">+ {r.addOns.map((a) => a.label[locale]).join(", ")}</div>
+                      ) : null}
+                    </td>
+                    <td className="price">{m(r.lineTotalCents)}</td>
+                  </tr>
+                );
+              })}
               <tr className="subtotal">
                 <td></td>
                 <td>{t.subtotalRow}</td>

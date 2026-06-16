@@ -32,7 +32,7 @@ const nextConfig: NextConfig = {
   // get dropped from the serverless bundle on Vercel and buildSheetHtml throws
   // ENOENT → no job is ever hydrated. Ship them explicitly with the route.
   outputFileTracingIncludes: {
-    "/api/print/queue": ["./public/fonts/**/*", "./public/print/**/*"],
+    "/api/print/queue": ["./public/fonts/**/*", "./public/print/**/*", "./public/products/**/*"],
   },
   experimental: {
     optimizePackageImports: ["@phosphor-icons/react", "framer-motion"],

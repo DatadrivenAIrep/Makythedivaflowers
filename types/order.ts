@@ -80,6 +80,10 @@ export type OrderStatus = FulfillmentStatus | "paid";
 
 export type Order = {
   id: string;
+  // Short human-friendly sequential number (e.g. 1001) for the work sheet,
+  // confirmation page, and shop email. Assigned at creation in saveOrder.
+  // Optional: orders created before this feature have no number.
+  orderNumber?: number;
   source: OrderSource;
   locale: "en" | "es";
   customerId?: string;
