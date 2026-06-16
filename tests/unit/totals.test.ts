@@ -3,6 +3,7 @@ import { describe, it, expect } from "vitest";
 import {
   computeOrderTotals,
   computeDeliveryCentsForZip,
+  computeDeliveryCentsForAddress,
   TAX_RATE,
 } from "@/lib/totals";
 
@@ -48,5 +49,29 @@ describe("computeDeliveryCentsForZip", () => {
   it("returns null for invalid ZIPs", () => {
     expect(computeDeliveryCentsForZip("nope")).toBeNull();
     expect(computeDeliveryCentsForZip("")).toBeNull();
+  });
+});
+
+describe("computeDeliveryCentsForAddress", () => {
+  it("resolves by ZIP when the ZIP is in a zone", () => {
+    expect(computeDeliveryCentsForAddress({ zip: "11507", city: "" })).toBe(1000);
+  });
+
+  it("falls back to the city when the ZIP is missing", () => {
+    expect(computeDeliveryCentsForAddress({ zip: "", city: "Great Neck" })).toBe(2500);
+  });
+
+  it("falls back to the city when the ZIP is out of zone", () => {
+    expect(computeDeliveryCentsForAddress({ zip: "90210", city: "Manhasset" })).toBe(1800);
+  });
+
+  it("lets the ZIP win when both ZIP and city resolve", () => {
+    // ZIP says Albertson ($10), city says Great Neck ($25) — ZIP is more specific.
+    expect(computeDeliveryCentsForAddress({ zip: "11507", city: "Great Neck" })).toBe(1000);
+  });
+
+  it("returns null when neither ZIP nor city resolves", () => {
+    expect(computeDeliveryCentsForAddress({ zip: "", city: "" })).toBeNull();
+    expect(computeDeliveryCentsForAddress({ zip: "90210", city: "Nowhere" })).toBeNull();
   });
 });

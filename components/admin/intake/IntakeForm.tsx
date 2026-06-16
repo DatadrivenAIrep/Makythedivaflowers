@@ -241,6 +241,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
               onChangeLines={setLines}
               fulfillmentMethod={fulfillment.method}
               deliveryZip={fulfillment.address.zip}
+              deliveryCity={fulfillment.address.city}
               override={override}
               onOverride={setOverride}
             />

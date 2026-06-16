@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { findDeliveryZoneByZip, isValidZip } from "@/lib/delivery-zones";
+import { findDeliveryZoneByZip, findDeliveryZoneByCity, isValidZip } from "@/lib/delivery-zones";
 
 describe("isValidZip", () => {
   it("accepts 5-digit numeric strings", () => {
@@ -71,5 +71,31 @@ describe("findDeliveryZoneByZip", () => {
 
   it("returns null for an invalid ZIP", () => {
     expect(findDeliveryZoneByZip("nope")).toBeNull();
+  });
+});
+
+describe("findDeliveryZoneByCity", () => {
+  it("matches a named city regardless of case and surrounding whitespace", () => {
+    expect(findDeliveryZoneByCity("Great Neck")?.id).toBe("great-neck");
+    expect(findDeliveryZoneByCity("great neck")?.id).toBe("great-neck");
+    expect(findDeliveryZoneByCity("  GREAT NECK  ")?.id).toBe("great-neck");
+  });
+
+  it("matches each named-city zone by its label", () => {
+    expect(findDeliveryZoneByCity("Albertson")?.priceCents).toBe(1000);
+    expect(findDeliveryZoneByCity("Roslyn")?.priceCents).toBe(1500);
+    expect(findDeliveryZoneByCity("Manhasset")?.priceCents).toBe(1800);
+    expect(findDeliveryZoneByCity("Port Washington")?.priceCents).toBe(1500);
+  });
+
+  it("returns null for a city that is not a named zone", () => {
+    // Garden City is only reachable by ZIP (further zone), not by city label.
+    expect(findDeliveryZoneByCity("Garden City")).toBeNull();
+    expect(findDeliveryZoneByCity("Los Angeles")).toBeNull();
+  });
+
+  it("returns null for empty input", () => {
+    expect(findDeliveryZoneByCity("")).toBeNull();
+    expect(findDeliveryZoneByCity("   ")).toBeNull();
   });
 });

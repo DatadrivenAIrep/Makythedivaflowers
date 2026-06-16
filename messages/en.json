@@ -1011,6 +1011,8 @@
     "totals_tax": "Tax",
     "totals_total": "Total",
     "totals_prompt": "{label} $",
+    "totals_delivery_unresolved": "Set fee",
+    "totals_delivery_unresolved_hint": "Couldn't price delivery from this address. Tap to enter the fee.",
     "payment_label": "Payment",
     "payment_cash": "Cash",
     "payment_zelle": "Zelle",

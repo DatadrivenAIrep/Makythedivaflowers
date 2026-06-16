@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { intakeSchema, type IntakeInput } from "@/schemas/intake";
 import { PRODUCTS } from "@/data/products";
 import { cartSubtotalCents } from "@/lib/cart-helpers";
-import { computeOrderTotals, computeDeliveryCentsForZip } from "@/lib/totals";
+import { computeOrderTotals, computeDeliveryCentsForAddress } from "@/lib/totals";
 import { saveOrder, listOrders, type ListOrdersFilters } from "@/lib/order-storage";
 import { enqueuePrintJob } from "@/lib/print-queue";
 import { upsertOnOrder } from "@/lib/customer-storage";
@@ -16,7 +16,11 @@ function computeTotals(input: IntakeInput): Order["totals"] {
   const subtotal = cartSubtotalCents(input.lines as CartLine[], PRODUCTS);
   let delivery = 0;
   if (input.fulfillment.method === "delivery") {
-    delivery = computeDeliveryCentsForZip(input.fulfillment.address.zip) ?? 0;
+    delivery =
+      computeDeliveryCentsForAddress({
+        zip: input.fulfillment.address.zip,
+        city: input.fulfillment.address.city,
+      }) ?? 0;
   }
   const computed = computeOrderTotals(subtotal, delivery);
   return {

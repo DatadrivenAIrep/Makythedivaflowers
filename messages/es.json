@@ -1011,6 +1011,8 @@
     "totals_tax": "Tax",
     "totals_total": "Total",
     "totals_prompt": "{label} $",
+    "totals_delivery_unresolved": "Ingresar",
+    "totals_delivery_unresolved_hint": "No se pudo calcular el envío con esta dirección. Toca para ingresar el costo.",
     "payment_label": "Pago",
     "payment_cash": "Efectivo",
     "payment_zelle": "Zelle",
