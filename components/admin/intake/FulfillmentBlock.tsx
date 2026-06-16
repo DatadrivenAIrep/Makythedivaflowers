@@ -2,6 +2,7 @@
 import { useTranslations } from "next-intl";
 import type { Address } from "@/types/address";
 import type { DeliverySlot, OrderFulfillment } from "@/types/order";
+import AddressAutocomplete from "./AddressAutocomplete";
 
 type Method = "in-store" | "delivery" | "pickup";
 
@@ -61,12 +62,12 @@ export default function FulfillmentBlock({ value, onChange }: Props) {
           />
           {value.method === "delivery" && (
             <>
-              <input
+              <AddressAutocomplete
                 value={value.address.street1}
-                onChange={(e) => onChange({ ...value, address: { ...value.address, street1: e.target.value } })}
+                onChange={(v) => onChange({ ...value, address: { ...value.address, street1: v } })}
+                onSelect={(addr) => onChange({ ...value, address: { ...value.address, ...addr } })}
                 placeholder={t("fulfillment_street1_placeholder")}
-                autoComplete="address-line1"
-                className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white"
+                className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white w-full"
               />
               <input
                 value={value.address.street2 ?? ""}

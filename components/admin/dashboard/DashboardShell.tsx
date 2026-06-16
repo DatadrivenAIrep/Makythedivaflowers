@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowsClockwise, Plus } from "@phosphor-icons/react/dist/ssr";
+import { ArrowsClockwise, Plus, GearSix } from "@phosphor-icons/react/dist/ssr";
 
 type Props = {
   locale: string;
@@ -15,7 +15,8 @@ export default function DashboardShell({ locale, children, lastUpdated, onRefres
   const pathname = usePathname();
   const isLedger = pathname.endsWith("/ledger");
   const isRunSheet = pathname.endsWith("/run-sheet");
-  const isBandeja = !isLedger && !isRunSheet;
+  const isSettings = pathname.endsWith("/settings");
+  const isBandeja = !isLedger && !isRunSheet && !isSettings;
   const base = `/${locale}/admin/dashboard`;
 
   return (
@@ -43,6 +44,10 @@ export default function DashboardShell({ locale, children, lastUpdated, onRefres
               className="flex min-h-11 items-center gap-1 rounded-lg px-3 hover:bg-ink/5"
             ><Plus size={16} weight="bold" /> Nueva orden</Link>
           </nav>
+          <Link
+              href={`/${locale}/admin/settings`}
+              className={`flex min-h-11 items-center gap-1 rounded-lg px-3 ${isSettings ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
+            ><GearSix size={16} weight="bold" /></Link>
           <div className="ml-auto flex items-center gap-3 text-xs text-ink/60">
             {lastUpdated && <span>Actualizado: {lastUpdated}</span>}
             {onRefresh && (

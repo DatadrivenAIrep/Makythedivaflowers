@@ -22,6 +22,7 @@ describe("runMigrations", () => {
     expect(tables).toContain("customers");
     expect(tables).toContain("print_jobs");
     expect(tables).toContain("schema_migrations");
+    expect(tables).toContain("settings");
   });
 
   it("is idempotent — running twice records each migration once", () => {
@@ -29,10 +30,11 @@ describe("runMigrations", () => {
     runMigrations();
     const db = getDb();
     const rows = db.prepare("SELECT name FROM schema_migrations ORDER BY name").all() as { name: string }[];
-    expect(rows.length).toBe(3);
+    expect(rows.length).toBe(4);
     expect(rows[0].name).toBe("001_init.sql");
     expect(rows[1].name).toBe("002_messaging.sql");
     expect(rows[2].name).toBe("003_dashboard.sql");
+    expect(rows[3].name).toBe("004_settings.sql");
   });
 });
 

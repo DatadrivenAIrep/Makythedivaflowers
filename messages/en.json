@@ -965,6 +965,23 @@
     "error_invalid": "Incorrect password",
     "error_network": "Connection error"
   },
+  "admin_settings": {
+    "title": "Settings",
+    "section_integrations": "Integrations",
+    "places_label": "Google Places API Key",
+    "places_description": "Required for address autocomplete when creating orders. Get it from Google Cloud Console by enabling the \"Places API\".",
+    "places_placeholder": "AIzaSy...",
+    "places_current": "Key configured:",
+    "places_not_set": "Not configured",
+    "places_save": "Save key",
+    "places_delete": "Remove key",
+    "places_saving": "Saving...",
+    "places_saved": "Saved",
+    "places_error": "Error saving",
+    "places_instructions_title": "How to get the key",
+    "places_instructions": "1. Go to console.cloud.google.com\n2. Create or select a project\n3. Enable \"Places API\"\n4. Create an API Key under \"Credentials\"\n5. Restrict the key to your domain (recommended)",
+    "back": "← Dashboard"
+  },
   "admin_intake": {
     "page_subtitle": "Diva Flowers · iPad intake",
     "title_new": "New order",
