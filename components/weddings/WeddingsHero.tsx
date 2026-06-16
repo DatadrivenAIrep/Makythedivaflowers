@@ -9,7 +9,7 @@ export async function WeddingsHero({ locale }: { locale: Locale }) {
   return (
     <section className="relative min-h-[100dvh] flex items-end overflow-hidden">
       <Image
-        src="https://picsum.photos/seed/diva-weddings-hero/2400/3000"
+        src="/images/wedding-stories-header.webp"
         alt={t("hero_alt")}
         fill
         priority
