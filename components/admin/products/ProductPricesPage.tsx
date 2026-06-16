@@ -2,6 +2,7 @@
 import { useState, useMemo } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
+import Image from "next/image";
 import { PencilSimple, Check, X, ArrowCounterClockwise, MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
 import type { Product } from "@/types/product";
 import type { PriceOverride } from "@/lib/product-prices";
@@ -128,9 +129,22 @@ export default function ProductPricesPage({ products, initialOverrides }: Props)
       <div className="space-y-3">
         {filtered.map((product) => (
           <div key={product.id} className="bg-white rounded-bento shadow-sm overflow-hidden">
-            <div className="px-5 py-3 border-b border-mute-100 flex items-center gap-2">
-              <span className="font-display text-sm text-ink">{product.title[locale]}</span>
-              <span className="text-xs text-mute-400 capitalize">{product.category}</span>
+            <div className="px-5 py-3 border-b border-mute-100 flex items-center gap-3">
+              {product.images[0] && (
+                <div className="relative w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+                  <Image
+                    src={product.images[0].src}
+                    alt={product.images[0].alt[locale]}
+                    fill
+                    className="object-cover"
+                    sizes="40px"
+                  />
+                </div>
+              )}
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="font-display text-sm text-ink truncate">{product.title[locale]}</span>
+                <span className="text-xs text-mute-400 capitalize flex-shrink-0">{product.category}</span>
+              </div>
             </div>
 
             <table className="w-full text-sm">
