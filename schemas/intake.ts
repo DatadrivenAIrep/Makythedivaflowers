@@ -85,6 +85,7 @@ export const intakeSchema = z.object({
     })
     .optional(),
   internalNotes: z.string().max(400).optional(),
+  giftCardCode: z.string().min(1).max(50).optional(),
   payment,
 });
 

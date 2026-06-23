@@ -72,6 +72,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
     router.replace(`/${locale}/admin/intake?ok=${encodeURIComponent(banner.orderId)}&r=${Date.now()}`);
   }
 
+  const [giftCardCode, setGiftCardCode] = useState("");
   const [payment, setPayment] = useState<PaymentState>({ status: "pending" });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -109,6 +110,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
         fulfillment: toOrderFulfillment(fulfillment),
         lines,
         totalsOverride: override,
+        giftCardCode: giftCardCode || undefined,
         payment,
       };
       const res = await fetch("/api/admin/orders", {
@@ -126,6 +128,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
       setCustomer({ name: "", phone: "", email: "", messagingChannel: "sms" });
       setLines([]);
       setOverride({});
+      setGiftCardCode("");
       setPayment({ status: "pending" });
     } finally {
       setSubmitting(false);
@@ -246,6 +249,10 @@ export default function IntakeForm({ products }: { products: Product[] }) {
               onOverride={setOverride}
             />
             <PaymentBlock value={payment} onChange={setPayment} />
+            <label className="block mt-4">
+              <span className="mb-1 block text-xs font-semibold">Gift card</span>
+              <input value={giftCardCode} onChange={(e) => setGiftCardCode(e.target.value)} placeholder="DIVA-XXXX-XXXX" className="w-full rounded-lg border border-ink/20 px-3 py-2 font-mono" />
+            </label>
           </section>
         </div>
 
