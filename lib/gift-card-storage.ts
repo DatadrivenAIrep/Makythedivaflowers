@@ -227,3 +227,66 @@ export function voidGiftCard(cardId: string): void {
     .prepare("UPDATE gift_cards SET status = 'void', updated_at = ? WHERE id = ?")
     .run(new Date().toISOString(), cardId);
 }
+
+export type GiftCardStats = {
+  activeCount: number;
+  pendingCents: number;  // sum of balances on non-void cards = liability
+  issuedCents: number;   // sum of initial amounts
+  redeemedCents: number; // net of redeem (+) and refund (-) ledger amounts
+};
+
+export type GiftCardListItem = GiftCard & { display: GiftCardDisplayStatus };
+
+export function listGiftCards(): { cards: GiftCardListItem[]; stats: GiftCardStats } {
+  const db = getDb();
+  const rows = db
+    .prepare("SELECT * FROM gift_cards ORDER BY created_at DESC, rowid DESC")
+    .all() as GiftCardRow[];
+  const cards: GiftCardListItem[] = rows.map((r) => {
+    const c = rowToCard(r);
+    return { ...c, display: displayStatus(c) };
+  });
+
+  const nonVoid = cards.filter((c) => c.status !== "void");
+  const pendingCents = nonVoid.reduce((s, c) => s + c.balanceCents, 0);
+  const issuedCents = cards.reduce((s, c) => s + c.initialCents, 0);
+  const redeemed = db
+    .prepare("SELECT COALESCE(SUM(amount_cents), 0) AS n FROM gift_card_redemptions")
+    .get() as { n: number };
+  const activeCount = cards.filter(
+    (c) => c.display === "active" || c.display === "partial",
+  ).length;
+
+  return {
+    cards,
+    stats: { activeCount, pendingCents, issuedCents, redeemedCents: redeemed.n },
+  };
+}
+
+export function getGiftCardWithHistory(
+  id: string,
+): { card: GiftCard; redemptions: GiftCardRedemption[] } | null {
+  const card = getGiftCardById(id);
+  if (!card) return null;
+  const rows = getDb()
+    .prepare(
+      "SELECT * FROM gift_card_redemptions WHERE gift_card_id = ? ORDER BY created_at DESC, rowid DESC",
+    )
+    .all(id) as {
+    id: string;
+    gift_card_id: string;
+    order_id: string | null;
+    amount_cents: number;
+    type: string;
+    created_at: string;
+  }[];
+  const redemptions: GiftCardRedemption[] = rows.map((r) => ({
+    id: r.id,
+    giftCardId: r.gift_card_id,
+    orderId: r.order_id ?? undefined,
+    amountCents: r.amount_cents,
+    type: r.type === "refund" ? "refund" : "redeem",
+    createdAt: r.created_at,
+  }));
+  return { card, redemptions };
+}
