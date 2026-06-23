@@ -55,7 +55,8 @@ function upsertSqlite(order: Order): void {
        subtotal_cents, delivery_cents, tax_cents, total_cents,
        fulfillment_status, payment_status, payment_method, paid_at,
        stripe_payment_intent_id, taken_by, internal_notes,
-       stripe_checkout_session_id, order_number, created_at, updated_at
+       stripe_checkout_session_id, gift_card_id, gift_card_cents,
+       order_number, created_at, updated_at
      ) VALUES (
        @id, @locale, @source, @customer_id, @recipient_name, @recipient_phone,
        @contact_name, @contact_email, @contact_phone, @fulfillment_method, @address_json,
@@ -63,7 +64,8 @@ function upsertSqlite(order: Order): void {
        @subtotal_cents, @delivery_cents, @tax_cents, @total_cents,
        @fulfillment_status, @payment_status, @payment_method, @paid_at,
        @stripe_payment_intent_id, @taken_by, @internal_notes,
-       @stripe_checkout_session_id, @order_number, @created_at, @updated_at
+       @stripe_checkout_session_id, @gift_card_id, @gift_card_cents,
+       @order_number, @created_at, @updated_at
      )
      ON CONFLICT(id) DO UPDATE SET
        locale=excluded.locale,
@@ -92,6 +94,8 @@ function upsertSqlite(order: Order): void {
        taken_by=excluded.taken_by,
        internal_notes=excluded.internal_notes,
        stripe_checkout_session_id=excluded.stripe_checkout_session_id,
+       gift_card_id=excluded.gift_card_id,
+       gift_card_cents=excluded.gift_card_cents,
        order_number=COALESCE(excluded.order_number, order_number),
        updated_at=excluded.updated_at`,
   ).run(row);

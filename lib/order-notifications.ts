@@ -90,6 +90,10 @@ export function __buildBody(order: Order): string {
   }
   lines.push("");
 
+  if (order.giftCardCents && order.giftCardCents > 0) {
+    lines.push(`Gift card: -$${(order.giftCardCents / 100).toFixed(2)}`);
+  }
+
   lines.push("BUYER CONTACT");
   lines.push(`${order.contact.email} · ${formatPhoneUS(order.contact.phone)}`);
 
@@ -365,6 +369,12 @@ export function __buildHtml(order: Order): string {
               <td style="padding:5px 0;font-size:14px;color:${COLORS.inkSoft};">Tax</td>
               <td style="padding:5px 0;font-size:14px;color:${COLORS.ink};text-align:right;">${m(order.totals.taxCents)}</td>
             </tr>
+            ${order.giftCardCents && order.giftCardCents > 0
+              ? `<tr>
+              <td style="padding:5px 0;font-size:14px;color:${COLORS.inkSoft};">Gift card</td>
+              <td style="padding:5px 0;font-size:14px;color:${COLORS.ink};text-align:right;">-$${(order.giftCardCents / 100).toFixed(2)}</td>
+            </tr>`
+              : ""}
             <tr>
               <td style="padding:12px 0 0 0;border-top:2px solid ${COLORS.ink};font-size:17px;color:${COLORS.ink};font-weight:700;">Total</td>
               <td style="padding:12px 0 0 0;border-top:2px solid ${COLORS.ink};font-size:17px;color:${COLORS.ink};font-weight:700;text-align:right;">${m(order.totals.totalCents)}</td>

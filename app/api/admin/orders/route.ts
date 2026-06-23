@@ -8,6 +8,7 @@ import { enqueuePrintJob } from "@/lib/print-queue";
 import { upsertOnOrder } from "@/lib/customer-storage";
 import { createCheckoutSession } from "@/lib/stripe-payment-link";
 import { dispatchOrderReceived } from "@/lib/order-dispatch";
+import { validateForRedemption, redeem } from "@/lib/gift-card-storage";
 import type { Order, OrderFulfillment, CartLine } from "@/types/order";
 
 export const runtime = "nodejs";
@@ -79,7 +80,35 @@ export async function POST(req: Request) {
     updatedAt: now,
   };
 
+  let giftCardId: string | undefined;
+  let giftCardCents = 0;
+  if (input.giftCardCode) {
+    const check = validateForRedemption(input.giftCardCode, order.totals.totalCents);
+    if (!check.ok) {
+      return NextResponse.json({ errors: { formErrors: ["gift_card_invalid"] } }, { status: 400 });
+    }
+    giftCardId = check.card.id;
+    giftCardCents = check.applicableCents;
+    order.giftCardId = giftCardId;
+    order.giftCardCents = giftCardCents || undefined;
+    // Full coverage → mark paid by gift card regardless of the chosen method.
+    if (order.totals.totalCents - giftCardCents <= 0) {
+      order.paymentStatus = "paid";
+      order.paymentMethod = "gift-card";
+      order.paidAt = now;
+    }
+  }
+
   await saveOrder(order);
+
+  if (giftCardId && order.paymentStatus === "paid") {
+    try {
+      redeem(giftCardId, order.id, giftCardCents);
+    } catch (e) {
+      console.error("[gift-card] intake redeem failed for order", order.id, e);
+    }
+  }
+
   const job = await enqueuePrintJob(order);
 
   // Generate a Stripe Checkout Session for pending orders that will be messaged

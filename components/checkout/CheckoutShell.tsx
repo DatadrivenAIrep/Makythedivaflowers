@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/Button";
 import { ContactStep } from "@/components/checkout/ContactStep";
 import { DeliveryStep } from "@/components/checkout/DeliveryStep";
 import { StripePaymentStep } from "@/components/checkout/StripePaymentStep";
+import GiftCardField from "@/components/checkout/GiftCardField";
 import { FormShell } from "@/components/ui/form/shell/FormShell";
 import { OrderSummaryPanel } from "@/components/checkout/OrderSummaryPanel";
 import { FormSubmit } from "@/components/ui/form/FormSubmit";
@@ -43,7 +44,8 @@ async function createIntent(payload: {
   locale: Locale;
   lines: CartLine[];
   form: CheckoutInput;
-}): Promise<{ clientSecret: string; orderId: string } | { error: string }> {
+  giftCardCode?: string;
+}): Promise<{ clientSecret: string; orderId: string } | { paid: true; orderId: string } | { error: string }> {
   const res = await fetch("/api/checkout/intent", {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -53,6 +55,9 @@ async function createIntent(payload: {
   if (!res.ok) {
     const code = data?.errors?.formErrors?.[0] ?? "unknown_error";
     return { error: code };
+  }
+  if (data.paid) {
+    return { paid: true, orderId: data.orderId };
   }
   return { clientSecret: data.clientSecret, orderId: data.orderId };
 }
@@ -108,6 +113,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
   const [topError, setTopError] = useState<string | null>(null);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [intent, setIntent] = useState<IntentState>({ status: "idle" });
+  const [giftCard, setGiftCard] = useState<{ code: string; appliedCents: number } | null>(null);
   const stripeRef = useRef<{ stripe: StripeJs; elements: StripeElements } | null>(null);
 
   const handleStripeReady = useCallback((stripe: StripeJs, elements: StripeElements) => {
@@ -123,6 +129,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
     () => computeOrderTotals(subtotal, isPickup ? 0 : (zipFee ?? 0)),
     [subtotal, zipFee, isPickup],
   );
+  const payableCents = Math.max(0, totals.totalCents - (giftCard?.appliedCents ?? 0));
 
   // Recreate the PaymentIntent if the amount changes after we already have one.
   // Transition to "creating" first so <StripePaymentStep> unmounts and the user
@@ -134,11 +141,15 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
     let cancelled = false;
     setIntent({ status: "creating" });
     (async () => {
-      const r = await createIntent({ locale, lines, form: form.getValues() });
+      const r = await createIntent({ locale, lines, form: form.getValues(), giftCardCode: giftCard?.code });
       if (cancelled) return;
       if ("error" in r) {
         setIntent({ status: "error", message: r.error });
-      } else {
+      } else if ("paid" in r && r.paid) {
+        clear();
+        closeDrawer();
+        router.push(`/${locale}/order/${r.orderId}/confirmation`);
+      } else if ("clientSecret" in r) {
         setIntent({
           status: "ready",
           clientSecret: r.clientSecret,
@@ -150,7 +161,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
     return () => {
       cancelled = true;
     };
-  }, [totals.totalCents, intent, locale, lines, form]);
+  }, [totals.totalCents, intent, locale, lines, form, giftCard]);
 
   async function nextFrom(step: StepKey) {
     const fields: Record<StepKey, string[]> = {
@@ -190,18 +201,26 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
 
       // Create the PaymentIntent before showing step 3.
       setIntent({ status: "creating" });
-      const r = await createIntent({ locale, lines, form: form.getValues() });
+      const r = await createIntent({ locale, lines, form: form.getValues(), giftCardCode: giftCard?.code });
       if ("error" in r) {
         setIntent({ status: "error", message: r.error });
         setTopError(t(errorKey(r.error)));
         return;
       }
-      setIntent({
-        status: "ready",
-        clientSecret: r.clientSecret,
-        orderId: r.orderId,
-        amountCents: totals.totalCents,
-      });
+      if ("paid" in r && r.paid) {
+        clear();
+        closeDrawer();
+        router.push(`/${locale}/order/${r.orderId}/confirmation`);
+        return;
+      }
+      if ("clientSecret" in r) {
+        setIntent({
+          status: "ready",
+          clientSecret: r.clientSecret,
+          orderId: r.orderId,
+          amountCents: totals.totalCents,
+        });
+      }
     }
     setOpen(step === "contact" ? "delivery" : "payment");
   }
@@ -255,7 +274,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
       }))}
       subtotal={totals.subtotalCents}
       delivery={totals.deliveryCents}
-      total={totals.totalCents}
+      total={payableCents}
       deliveryPending={deliveryPending}
       isPickup={isPickup}
       locale={locale}
@@ -309,6 +328,11 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
           onHeaderClick={() => setOpen("payment")}
           reduce={!!reduce}
         >
+          <GiftCardField
+            totalCents={totals.totalCents}
+            onApply={(a) => setGiftCard(a)}
+            onClear={() => setGiftCard(null)}
+          />
           {intent.status === "ready" && (
             <StripePaymentStep
               clientSecret={intent.clientSecret}
