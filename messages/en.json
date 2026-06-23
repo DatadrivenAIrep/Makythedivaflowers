@@ -1098,6 +1098,7 @@
     "form_optional": "optional",
     "form_submit": "Issue and email",
     "form_submitting": "Issuing…",
+    "form_error": "Could not issue the gift card. Check the details and try again.",
     "reason_loyalty": "Loyalty",
     "reason_apology": "Apology",
     "reason_prize": "Prize",

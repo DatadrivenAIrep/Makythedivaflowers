@@ -29,19 +29,21 @@ describe("validateForRedemption", () => {
     const card = newCard(15000);
     const r = validateForRedemption(card.code, 9000);
     expect(r.ok).toBe(true);
-    expect(r.applicableCents).toBe(9000);
+    if (r.ok) expect(r.applicableCents).toBe(9000);
   });
   it("caps applicable at the balance when the order exceeds it", () => {
     const card = newCard(15000);
     const r = validateForRedemption(card.code, 22000);
     expect(r.ok).toBe(true);
-    expect(r.applicableCents).toBe(15000);
+    if (r.ok) expect(r.applicableCents).toBe(15000);
   });
   it("rejects an unknown / void / empty / expired card", () => {
     expect(validateForRedemption("DIVA-0000-0000", 100).ok).toBe(false);
     const v = newCard();
     voidGiftCard(v.id);
-    expect(validateForRedemption(v.code, 100).reason).toBe("void");
+    const res = validateForRedemption(v.code, 100);
+    expect(res.ok).toBe(false);
+    if (!res.ok) expect(res.reason).toBe("void");
   });
 });
 

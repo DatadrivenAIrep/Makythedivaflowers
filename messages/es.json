@@ -1100,6 +1100,7 @@
     "form_optional": "opcional",
     "form_submit": "Emitir y enviar por email",
     "form_submitting": "Emitiendo…",
+    "form_error": "No se pudo emitir la gift card. Revisa los datos e inténtalo de nuevo.",
     "reason_loyalty": "Lealtad",
     "reason_apology": "Disculpa",
     "reason_prize": "Premio/sorteo",

@@ -40,6 +40,12 @@ export default function DashboardShell({ locale, children, lastUpdated, onRefres
               className={`flex min-h-11 items-center rounded-lg px-3 ${isLedger ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >Libro de órdenes</Link>
             <Link
+              href={`/${locale}/admin/gift-cards`}
+              className="flex min-h-11 items-center rounded-lg px-3 hover:bg-ink/5"
+            >
+              Gift Cards
+            </Link>
+            <Link
               href={`/${locale}/admin/intake`}
               className="flex min-h-11 items-center gap-1 rounded-lg px-3 hover:bg-ink/5"
             ><Plus size={16} weight="bold" /> Nueva orden</Link>
