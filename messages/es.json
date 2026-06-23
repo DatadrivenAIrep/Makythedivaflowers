@@ -1075,6 +1075,8 @@
   },
   "admin_gift_cards": {
     "title": "Gift Cards",
+    "back_to_dashboard": "Volver al panel",
+    "subtitle": "Emite, envía y haz seguimiento de las tarjetas de regalo.",
     "issue_cta": "Emitir gift card",
     "stat_active": "Activas",
     "stat_pending": "Saldo pendiente",

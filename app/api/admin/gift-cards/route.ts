@@ -28,6 +28,6 @@ export async function POST(req: Request) {
   });
 
   // Email failure must NOT roll back issuance — the card exists and staff can resend.
-  const mail = await notifyGiftCardIssued(card, "es");
+  const mail = await notifyGiftCardIssued(card, "en");
   return NextResponse.json({ card, emailSent: mail.sent, emailError: mail.error });
 }

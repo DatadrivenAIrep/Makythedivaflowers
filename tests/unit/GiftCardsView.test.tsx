@@ -22,14 +22,16 @@ const cards: GiftCardListItem[] = [
     display: "partial",
   },
 ];
-const stats: GiftCardStats = { activeCount: 1, pendingCents: 6000, issuedCents: 15000, redeemedCents: 9000 };
+// Stat amounts deliberately distinct from the card's balance so assertions stay unambiguous.
+const stats: GiftCardStats = { activeCount: 1, pendingCents: 60000, issuedCents: 150000, redeemedCents: 90000 };
 
 describe("GiftCardsView", () => {
   it("renders the stats and a row with its code, balance and status", () => {
     wrap(<GiftCardsView initialCards={cards} initialStats={stats} locale="es" />);
     expect(screen.getByText("DIVA-7K2M-9XQ4")).toBeDefined();
     expect(screen.getByText("José")).toBeDefined();
-    expect(screen.getByText("$60.00 / $150.00")).toBeDefined();
+    expect(screen.getByText("$60.00")).toBeDefined(); // card balance (bold), distinct from the $600.00 pending stat
     expect(screen.getByText("Usada parcial")).toBeDefined();
+    expect(screen.getByText("Volver al panel")).toBeDefined(); // back link present
   });
 });

@@ -3,17 +3,20 @@ import { Resend } from "resend";
 import type { GiftCard } from "@/types/gift-card";
 
 const COLORS = {
-  ink: "#0E0D0C",
-  bone: "#FAF6F0",
+  ink: "#2A2320",
+  inkSoft: "#8a7a6a",
+  ivory: "#F4EEE4",
+  white: "#FFFFFF",
   rouge: "#B8345E",
-  rougeDark: "#7d1f3d",
-  rougeLight: "#d4677f",
+  gold: "#B0894B",
 };
 const FONT_DISPLAY = `Georgia, "Times New Roman", serif`;
 const FONT_BODY = `-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif`;
 const FONT_MONO = `"SF Mono", Menlo, Consolas, monospace`;
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://makythedivaflowers.com";
+// Brand "email marketing header" asset (logo + bouquet on cream) — full-width banner.
+const HEADER_SRC = `${BASE_URL}/gift-card-email-header.jpg`;
 
 let resendClient: Resend | null = null;
 function getResend(): Resend | null {
@@ -26,6 +29,11 @@ function getResend(): Resend | null {
 
 function money(cents: number): string {
   return `$${(cents / 100).toFixed(2)}`;
+}
+
+// Whole-dollar amounts render without cents on the card face ("$150"); otherwise "$150.50".
+function amountFace(cents: number): string {
+  return cents % 100 === 0 ? `$${cents / 100}` : money(cents);
 }
 
 function escapeHtml(s: string): string {
@@ -81,56 +89,88 @@ export function __buildGiftCardBody(card: GiftCard, locale: "en" | "es"): string
 
 export function __buildGiftCardHtml(card: GiftCard, locale: "en" | "es"): string {
   const name = card.recipientName ? escapeHtml(card.recipientName) : "";
-  const greeting =
-    locale === "es"
-      ? name
-        ? `${name}, alguien pensó en ti`
-        : "Alguien pensó en ti"
-      : name
-        ? `${name}, someone thought of you`
-        : "Someone thought of you";
-  const sub =
-    locale === "es" ? "Tienes una gift card" : "You have a gift card";
-  const codeLabel = locale === "es" ? "Tu código" : "Your code";
-  const cta = locale === "es" ? "Canjear mi tarjeta →" : "Redeem my card →";
-  const howto =
-    locale === "es"
-      ? "Escribe el código en el checkout, en la web o en la tienda."
-      : "Enter the code at checkout, online or in store.";
-  const validUntil = card.expiresAt
-    ? (locale === "es" ? "Válida hasta " : "Valid until ") + formatExpiry(card.expiresAt, locale)
-    : "";
+  const t = {
+    eyebrow: locale === "es" ? "Un regalo para ti" : "A gift for you",
+    headline:
+      locale === "es"
+        ? name
+          ? `${name}, te regalaron flores`
+          : "Te regalaron flores"
+        : name
+          ? `${name}, someone sent you flowers`
+          : "Someone sent you flowers",
+    gcLabel: locale === "es" ? "Tarjeta de regalo" : "Gift card",
+    spendAt: locale === "es" ? "para gastar en Diva Flowers" : "to spend at Diva Flowers",
+    codeLabel: locale === "es" ? "Tu código" : "Your code",
+    cta: locale === "es" ? "Canjear mi tarjeta →" : "Redeem my card →",
+    howto:
+      locale === "es"
+        ? "Escribe el código en el checkout, en la web o en la tienda."
+        : "Enter the code at checkout — online or in store.",
+    validUntil: card.expiresAt
+      ? (locale === "es" ? "Válida hasta " : "Valid until ") + formatExpiry(card.expiresAt, locale)
+      : "",
+  };
+
   const message = card.personalMessage
-    ? `<p style="font-style:italic;font-size:15px;color:${COLORS.ink};opacity:.82;margin:0 4px 16px;">"${escapeHtml(card.personalMessage)}"${card.fromLabel ? `<br><span style="opacity:.6;font-size:12px;">— ${escapeHtml(card.fromLabel)}</span>` : ""}</p>`
+    ? `<p style="font-family:${FONT_DISPLAY};font-style:italic;font-size:16px;line-height:1.55;color:${COLORS.ink};margin:0 26px 4px;">&ldquo;${escapeHtml(card.personalMessage)}&rdquo;${
+        card.fromLabel
+          ? `<br><span style="font-family:${FONT_BODY};font-style:normal;font-size:11px;letter-spacing:0.04em;color:${COLORS.inkSoft};">— ${escapeHtml(card.fromLabel)}</span>`
+          : ""
+      }</p>`
     : "";
 
   return `<!DOCTYPE html>
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;background:${COLORS.bone};font-family:${FONT_BODY};">
-  <div style="max-width:420px;margin:0 auto;background:${COLORS.bone};border-radius:13px;overflow:hidden;">
-    <div style="background:linear-gradient(135deg,${COLORS.rougeDark} 0%,${COLORS.rouge} 60%,${COLORS.rougeLight} 100%);padding:30px 28px 26px;text-align:center;color:${COLORS.bone};font-family:${FONT_DISPLAY};">
-      <div style="font-size:12px;letter-spacing:0.32em;text-transform:uppercase;opacity:.9;">maky · diva flowers</div>
-      <div style="font-family:${FONT_BODY};font-size:11px;letter-spacing:0.16em;text-transform:uppercase;margin-top:18px;opacity:.85;">${escapeHtml(greeting)}</div>
-      <div style="font-size:27px;line-height:1.15;margin:6px 0;">${sub}</div>
-      <div style="font-size:52px;margin:6px 0 2px;">${money(card.initialCents)}</div>
-      <div style="font-size:20px;margin-top:4px;">🌸</div>
-    </div>
-    <div style="padding:22px 28px 26px;text-align:center;">
-      ${message}
-      <div style="background:${COLORS.ink};border-radius:10px;padding:14px;">
-        <div style="font-family:${FONT_BODY};font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:${COLORS.rougeLight};">${codeLabel}</div>
-        <div style="font-family:${FONT_MONO};font-size:21px;font-weight:700;letter-spacing:0.1em;color:${COLORS.bone};margin-top:5px;">${card.code}</div>
+<html lang="${locale}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light only"></head>
+<body style="margin:0;padding:0;background:${COLORS.ivory};font-family:${FONT_BODY};color:${COLORS.ink};">
+  <div style="max-width:600px;margin:0 auto;background:${COLORS.ivory};">
+
+    <!-- Branded header banner (logo + bouquet, integrated cream background) -->
+    <img src="${HEADER_SRC}" alt="Maky the Diva — Flowers &amp; Events" width="600" style="display:block;width:100%;max-width:600px;height:auto;border:0;" />
+
+    <!-- Intro + denomination -->
+    <div style="padding:28px 30px 6px;text-align:center;">
+      <div style="font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:${COLORS.gold};">${t.eyebrow}</div>
+      <h1 style="font-family:${FONT_DISPLAY};font-weight:normal;font-size:27px;line-height:1.18;margin:10px 0 4px;color:${COLORS.ink};">${escapeHtml(t.headline)}</h1>
+
+      <div style="display:inline-block;border:1px solid rgba(176,137,75,0.5);border-radius:13px;padding:15px 34px;margin:16px 0 2px;">
+        <div style="font-size:10px;letter-spacing:0.24em;text-transform:uppercase;color:${COLORS.gold};">${t.gcLabel}</div>
+        <div style="font-family:${FONT_DISPLAY};font-size:52px;line-height:1;color:${COLORS.rouge};margin:6px 0 4px;">${amountFace(card.initialCents)}</div>
+        <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:${COLORS.inkSoft};">${t.spendAt}</div>
       </div>
-      <a href="${BASE_URL}/${locale}" style="display:inline-block;background:${COLORS.ink};color:${COLORS.bone};padding:13px 26px;border-radius:8px;font-family:${FONT_BODY};font-size:13px;font-weight:700;margin-top:16px;text-decoration:none;">${cta}</a>
-      <div style="font-family:${FONT_BODY};font-size:11px;opacity:.55;margin-top:16px;line-height:1.5;">${howto}<br>${validUntil}</div>
     </div>
+
+    <!-- Botanical divider -->
+    <div style="text-align:center;margin:18px 0 6px;color:${COLORS.gold};font-size:13px;letter-spacing:0.34em;">&#10022;&nbsp;&#10047;&nbsp;&#10022;</div>
+
+    ${message}
+
+    <!-- Code voucher -->
+    <div style="border:1px dashed rgba(176,137,75,0.6);border-radius:12px;background:${COLORS.white};padding:15px;margin:18px 30px;text-align:center;">
+      <div style="font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:${COLORS.gold};">${t.codeLabel}</div>
+      <div style="font-family:${FONT_MONO};font-size:23px;font-weight:700;letter-spacing:0.14em;color:${COLORS.ink};margin-top:7px;">${card.code}</div>
+    </div>
+
+    <!-- CTA -->
+    <div style="text-align:center;margin:4px 0 2px;">
+      <a href="${BASE_URL}/${locale}" style="display:inline-block;background:${COLORS.rouge};color:#FBF7F1;text-decoration:none;padding:14px 34px;border-radius:32px;font-family:${FONT_BODY};font-size:13px;font-weight:700;letter-spacing:0.03em;">${t.cta}</a>
+    </div>
+    <div style="text-align:center;font-size:11.5px;color:${COLORS.inkSoft};margin:14px 30px 0;line-height:1.5;">${t.howto}</div>
+
+    <!-- Footer -->
+    <div style="border-top:1px solid rgba(42,35,32,0.12);margin:22px 30px 0;padding:16px 0 28px;text-align:center;font-size:10.5px;line-height:1.7;color:${COLORS.inkSoft};">
+      ${t.validUntil ? `${t.validUntil}<br>` : ""}
+      1077 Willis Ave, Albertson NY 11507 &middot; (516) 484-3456<br>
+      <a href="${BASE_URL}/${locale}" style="color:${COLORS.gold};text-decoration:none;">makythedivaflowers.com</a> &middot; @makythediva
+    </div>
+
   </div>
 </body></html>`;
 }
 
 export async function notifyGiftCardIssued(
   card: GiftCard,
-  locale: "en" | "es" = "es",
+  locale: "en" | "es" = "en",
 ): Promise<{ sent: boolean; error?: string }> {
   const resend = getResend();
   const from = process.env.ORDER_NOTIFICATIONS_FROM;
@@ -143,7 +183,7 @@ export async function notifyGiftCardIssued(
   const subject =
     locale === "es"
       ? `Tienes una gift card de Diva Flowers 💐`
-      : `You have a Diva Flowers gift card 💐`;
+      : `You've received a Diva Flowers gift card 💐`;
   try {
     const result = await resend.emails.send({
       from,

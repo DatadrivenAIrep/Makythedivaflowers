@@ -1,4 +1,5 @@
 import { listGiftCards } from "@/lib/gift-card-storage";
+import DashboardShell from "@/components/admin/dashboard/DashboardShell";
 import GiftCardsView from "@/components/admin/gift-cards/GiftCardsView";
 
 export default async function AdminGiftCardsPage({
@@ -8,5 +9,9 @@ export default async function AdminGiftCardsPage({
 }) {
   const { locale } = await params;
   const { cards, stats } = listGiftCards();
-  return <GiftCardsView initialCards={cards} initialStats={stats} locale={locale} />;
+  return (
+    <DashboardShell locale={locale}>
+      <GiftCardsView initialCards={cards} initialStats={stats} locale={locale} />
+    </DashboardShell>
+  );
 }

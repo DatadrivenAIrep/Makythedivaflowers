@@ -16,7 +16,8 @@ export default function DashboardShell({ locale, children, lastUpdated, onRefres
   const isLedger = pathname.endsWith("/ledger");
   const isRunSheet = pathname.endsWith("/run-sheet");
   const isSettings = pathname.endsWith("/settings");
-  const isBandeja = !isLedger && !isRunSheet && !isSettings;
+  const isGiftCards = pathname.includes("/admin/gift-cards");
+  const isBandeja = !isLedger && !isRunSheet && !isSettings && !isGiftCards;
   const base = `/${locale}/admin/dashboard`;
 
   return (
@@ -41,7 +42,7 @@ export default function DashboardShell({ locale, children, lastUpdated, onRefres
             >Libro de órdenes</Link>
             <Link
               href={`/${locale}/admin/gift-cards`}
-              className="flex min-h-11 items-center rounded-lg px-3 hover:bg-ink/5"
+              className={`flex min-h-11 items-center rounded-lg px-3 ${isGiftCards ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >
               Gift Cards
             </Link>
