@@ -8,6 +8,6 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
   const { id } = await ctx.params;
   const card = getGiftCardById(id);
   if (!card) return NextResponse.json({ error: "not_found" }, { status: 404 });
-  const mail = await notifyGiftCardIssued(card, "es");
+  const mail = await notifyGiftCardIssued(card, "en");
   return NextResponse.json({ ok: mail.sent, error: mail.error });
 }

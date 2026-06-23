@@ -1073,6 +1073,8 @@
   },
   "admin_gift_cards": {
     "title": "Gift Cards",
+    "back_to_dashboard": "Back to dashboard",
+    "subtitle": "Issue, send and track your gift cards.",
     "issue_cta": "Issue gift card",
     "stat_active": "Active",
     "stat_pending": "Outstanding balance",
