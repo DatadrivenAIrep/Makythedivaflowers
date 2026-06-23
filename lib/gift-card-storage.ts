@@ -126,3 +126,104 @@ export function isRedeemable(card: GiftCard): boolean {
 
 // --- exported for later tasks; declared here to keep the module cohesive ---
 export type { GiftCardRedemption };
+
+export type RedemptionCheck =
+  | { ok: true; card: GiftCard; applicableCents: number }
+  | { ok: false; reason: "invalid" | "void" | "empty" | "expired" };
+
+export function validateForRedemption(code: string, wantCents: number): RedemptionCheck {
+  const card = getGiftCardByCode(code);
+  if (!card) return { ok: false, reason: "invalid" };
+  if (card.status === "void") return { ok: false, reason: "void" };
+  if (card.expiresAt && Date.parse(card.expiresAt) < Date.now())
+    return { ok: false, reason: "expired" };
+  if (card.balanceCents <= 0) return { ok: false, reason: "empty" };
+  return { ok: true, card, applicableCents: Math.min(card.balanceCents, wantCents) };
+}
+
+/**
+ * Atomically debit `amountCents` from the card for `orderId`.
+ * node:sqlite is synchronous so the read-check-write below cannot interleave with
+ * another redemption; BEGIN/COMMIT adds rollback safety across the two writes.
+ * Throws if the card is gone/void/expired or has insufficient balance.
+ */
+export function redeem(cardId: string, orderId: string, amountCents: number): void {
+  const db = getDb();
+  db.exec("BEGIN");
+  try {
+    const card = getGiftCardById(cardId);
+    if (!card) throw new Error("gift card not found");
+
+    // Idempotent per order: a Stripe webhook retry (or a double-call) must not double-debit.
+    const dup = db
+      .prepare(
+        "SELECT 1 FROM gift_card_redemptions WHERE gift_card_id = ? AND order_id = ? AND type = 'redeem' LIMIT 1",
+      )
+      .get(cardId, orderId);
+    if (dup) {
+      db.exec("COMMIT");
+      return;
+    }
+
+    if (card.status === "void") throw new Error("gift card is void");
+    if (card.expiresAt && Date.parse(card.expiresAt) < Date.now())
+      throw new Error("gift card expired");
+    if (amountCents <= 0) throw new Error("redeem amount must be positive");
+    if (card.balanceCents < amountCents) throw new Error("insufficient gift card balance");
+
+    const nowIso = new Date().toISOString();
+    db.prepare("UPDATE gift_cards SET balance_cents = balance_cents - ?, updated_at = ? WHERE id = ?")
+      .run(amountCents, nowIso, cardId);
+    db.prepare(
+      `INSERT INTO gift_card_redemptions (id, gift_card_id, order_id, amount_cents, type, created_at)
+       VALUES (?, ?, ?, ?, 'redeem', ?)`,
+    ).run(newId("gcr"), cardId, orderId, amountCents, nowIso);
+    db.exec("COMMIT");
+  } catch (e) {
+    db.exec("ROLLBACK");
+    throw e;
+  }
+}
+
+/** Credit balance back when an order paid by gift card is canceled/refunded. Idempotent per order. */
+export function refund(cardId: string, orderId: string, amountCents: number): void {
+  const db = getDb();
+  db.exec("BEGIN");
+  try {
+    const card = getGiftCardById(cardId);
+    if (!card) throw new Error("gift card not found");
+
+    const already = db
+      .prepare(
+        "SELECT 1 FROM gift_card_redemptions WHERE gift_card_id = ? AND order_id = ? AND type = 'refund' LIMIT 1",
+      )
+      .get(cardId, orderId);
+    if (already) {
+      db.exec("COMMIT");
+      return;
+    }
+
+    const credit = Math.min(amountCents, card.initialCents - card.balanceCents);
+    if (credit <= 0) {
+      db.exec("COMMIT");
+      return;
+    }
+    const nowIso = new Date().toISOString();
+    db.prepare("UPDATE gift_cards SET balance_cents = balance_cents + ?, updated_at = ? WHERE id = ?")
+      .run(credit, nowIso, cardId);
+    db.prepare(
+      `INSERT INTO gift_card_redemptions (id, gift_card_id, order_id, amount_cents, type, created_at)
+       VALUES (?, ?, ?, ?, 'refund', ?)`,
+    ).run(newId("gcr"), cardId, orderId, -credit, nowIso);
+    db.exec("COMMIT");
+  } catch (e) {
+    db.exec("ROLLBACK");
+    throw e;
+  }
+}
+
+export function voidGiftCard(cardId: string): void {
+  getDb()
+    .prepare("UPDATE gift_cards SET status = 'void', updated_at = ? WHERE id = ?")
+    .run(new Date().toISOString(), cardId);
+}
