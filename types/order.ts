@@ -17,7 +17,7 @@ export type OrderTotals = {
 };
 
 export type OrderSource = "web" | "walk-in" | "phone" | "whatsapp" | "event";
-export type PaymentMethod = "cash" | "zelle" | "card-terminal" | "ach" | "stripe";
+export type PaymentMethod = "cash" | "zelle" | "card-terminal" | "ach" | "stripe" | "gift-card";
 export type PaymentStatus = "paid" | "pending" | "refunded";
 
 export type MessagingChannel = "sms" | "whatsapp" | "email" | "none";
@@ -97,6 +97,8 @@ export type Order = {
   paidAt?: string;
   stripePaymentIntentId?: string;
   stripeCheckoutSessionId?: string;
+  giftCardId?: string;
+  giftCardCents?: number; // amount the gift card covered on this order
   takenBy?: string;
   internalNotes?: string;
   createdAt: string;
