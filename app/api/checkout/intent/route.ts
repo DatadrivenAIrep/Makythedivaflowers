@@ -7,6 +7,9 @@ import { PRODUCTS } from "@/data/products";
 import { getAllPriceOverrides, applyPriceOverrides } from "@/lib/product-prices";
 import { saveOrder, updateOrderPaymentIntent } from "@/lib/order-storage";
 import { stripe } from "@/lib/stripe-server";
+import { validateForRedemption, redeem } from "@/lib/gift-card-storage";
+import { notifyOrderPaid } from "@/lib/order-notifications";
+import { enqueuePrintJob } from "@/lib/print-queue";
 import type { Order, OrderFulfillment, CartLine } from "@/types/order";
 
 export const runtime = "nodejs";
@@ -22,6 +25,7 @@ const requestSchema = z.object({
   locale: z.enum(["en", "es"]),
   lines: z.array(cartLineSchema).min(1, "cart_empty"),
   form: checkoutSchema,
+  giftCardCode: z.string().min(1).max(50).optional(),
 });
 
 export async function POST(req: Request) {
@@ -90,23 +94,63 @@ export async function POST(req: Request) {
     updatedAt: now,
   };
 
+  // --- Gift card (optional) ---
+  let giftCardId: string | undefined;
+  let giftCardCents = 0;
+  if (parsed.data.giftCardCode) {
+    const check = validateForRedemption(parsed.data.giftCardCode, totals.totalCents);
+    if (!check.ok) {
+      return NextResponse.json({ errors: { formErrors: ["gift_card_invalid"] } }, { status: 400 });
+    }
+    giftCardId = check.card.id;
+    giftCardCents = check.applicableCents;
+  }
+  const amountToCharge = totals.totalCents - giftCardCents;
+
+  order.giftCardId = giftCardId;
+  order.giftCardCents = giftCardCents || undefined;
+
+  // Full coverage: no Stripe charge. Redeem now, mark paid by gift card, fire side effects.
+  if (giftCardId && amountToCharge <= 0) {
+    order.paymentStatus = "paid";
+    order.paymentMethod = "gift-card";
+    order.paidAt = now;
+    try {
+      await saveOrder(order);
+      redeem(giftCardId, order.id, giftCardCents);
+    } catch (e) {
+      console.error("[intent] gift card full-coverage failed", e);
+      return NextResponse.json({ errors: { formErrors: ["gift_card_invalid"] } }, { status: 400 });
+    }
+    await notifyOrderPaid(order);
+    try {
+      await enqueuePrintJob(order);
+    } catch (e) {
+      console.error("[print] enqueue failed for order", order.id, e);
+    }
+    return NextResponse.json({ paid: true, orderId }, { status: 200 });
+  }
+
+  // Partial or no gift card: charge the remainder via Stripe (debit happens in the webhook).
   try {
     await saveOrder(order);
   } catch (e) {
     console.error("[stripe] saveOrder failed", e);
-    return NextResponse.json(
-      { errors: { formErrors: ["unknown_error"] } },
-      { status: 500 },
-    );
+    return NextResponse.json({ errors: { formErrors: ["unknown_error"] } }, { status: 500 });
   }
 
   try {
     const paymentIntent = await stripe.paymentIntents.create(
       {
-        amount: totals.totalCents,
+        amount: amountToCharge,
         currency: "usd",
         automatic_payment_methods: { enabled: true },
-        metadata: { orderId, locale, fulfillmentMethod: fulfillment.method },
+        metadata: {
+          orderId,
+          locale,
+          fulfillmentMethod: fulfillment.method,
+          ...(giftCardId ? { giftCardId, giftCardCents: String(giftCardCents) } : {}),
+        },
         receipt_email: form.contact.email,
       },
       { idempotencyKey: orderId },
@@ -119,10 +163,7 @@ export async function POST(req: Request) {
       );
     }
     await updateOrderPaymentIntent(orderId, paymentIntent.id);
-    return NextResponse.json(
-      { clientSecret: paymentIntent.client_secret, orderId },
-      { status: 200 },
-    );
+    return NextResponse.json({ clientSecret: paymentIntent.client_secret, orderId }, { status: 200 });
   } catch (e) {
     console.error("[stripe] paymentIntents.create failed", e);
     return NextResponse.json(
