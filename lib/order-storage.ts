@@ -50,7 +50,7 @@ function upsertSqlite(order: Order): void {
   db.prepare(
     `INSERT INTO orders (
        id, locale, source, customer_id, recipient_name, recipient_phone,
-       contact_email, contact_phone, fulfillment_method, address_json,
+       contact_name, contact_email, contact_phone, fulfillment_method, address_json,
        window_date, window_slot, card_message, lines_json,
        subtotal_cents, delivery_cents, tax_cents, total_cents,
        fulfillment_status, payment_status, payment_method, paid_at,
@@ -58,7 +58,7 @@ function upsertSqlite(order: Order): void {
        stripe_checkout_session_id, order_number, created_at, updated_at
      ) VALUES (
        @id, @locale, @source, @customer_id, @recipient_name, @recipient_phone,
-       @contact_email, @contact_phone, @fulfillment_method, @address_json,
+       @contact_name, @contact_email, @contact_phone, @fulfillment_method, @address_json,
        @window_date, @window_slot, @card_message, @lines_json,
        @subtotal_cents, @delivery_cents, @tax_cents, @total_cents,
        @fulfillment_status, @payment_status, @payment_method, @paid_at,
@@ -71,6 +71,7 @@ function upsertSqlite(order: Order): void {
        customer_id=excluded.customer_id,
        recipient_name=excluded.recipient_name,
        recipient_phone=excluded.recipient_phone,
+       contact_name=excluded.contact_name,
        contact_email=excluded.contact_email,
        contact_phone=excluded.contact_phone,
        fulfillment_method=excluded.fulfillment_method,

@@ -8,6 +8,7 @@ export type OrderRow = {
   customer_id: string | null;
   recipient_name: string;
   recipient_phone: string;
+  contact_name: string | null;
   contact_email: string | null;
   contact_phone: string;
   fulfillment_method: string;
@@ -42,6 +43,7 @@ export function orderToRow(o: Order): OrderRow {
     customer_id: o.customerId ?? null,
     recipient_name: f.recipient.name,
     recipient_phone: f.recipient.phone,
+    contact_name: o.contact.name ?? null,
     contact_email: o.contact.email ?? null,
     contact_phone: o.contact.phone,
     fulfillment_method: f.method,
@@ -100,6 +102,7 @@ export function rowToOrder(r: OrderRow): Order {
     lines: JSON.parse(r.lines_json),
     fulfillment,
     contact: {
+      name: r.contact_name ?? undefined,
       email: r.contact_email ?? undefined,
       phone: r.contact_phone,
     },

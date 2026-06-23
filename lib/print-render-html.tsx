@@ -144,7 +144,8 @@ function Worksheet({ order }: { order: Order }) {
         </div>
         <div className="ws-buyer">
           <strong>{t.buyer}</strong><br />
-          {order.contact.email}<br />
+          {order.contact.name ? <>{order.contact.name}<br /></> : null}
+          {order.contact.email ? <>{order.contact.email}<br /></> : null}
           {formatPhoneUS(order.contact.phone)}
         </div>
       </div>

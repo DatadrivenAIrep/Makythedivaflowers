@@ -13,7 +13,7 @@ const order: Order = {
   lines: [
     { kind: "catalog", productId: "p-arr-b1-01", variantId: "standard", addOnIds: ["candles"], qty: 1 },
   ],
-  contact: { email: "buyer@example.com", phone: "5165551234" },
+  contact: { name: "Carlos Ramírez", email: "buyer@example.com", phone: "5165551234" },
   totals: { subtotalCents: 19100, deliveryCents: 1500, taxCents: 1647, totalCents: 22247 },
   status: "pending",
   paymentStatus: "paid",

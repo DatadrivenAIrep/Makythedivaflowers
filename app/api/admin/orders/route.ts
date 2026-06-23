@@ -64,6 +64,7 @@ export async function POST(req: Request) {
     lines: input.lines as CartLine[],
     fulfillment,
     contact: {
+      name: input.customer.name && input.customer.name !== "" ? input.customer.name : undefined,
       email: input.customer.email && input.customer.email !== "" ? input.customer.email : undefined,
       phone: input.customer.phone,
     },

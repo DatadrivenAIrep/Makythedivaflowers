@@ -89,7 +89,7 @@ export type Order = {
   customerId?: string;
   lines: CartLine[];
   fulfillment: OrderFulfillment; // was: delivery
-  contact: { email?: string; phone: string };
+  contact: { name?: string; email?: string; phone: string };
   totals: OrderTotals;
   status: FulfillmentStatus;
   paymentStatus: PaymentStatus;

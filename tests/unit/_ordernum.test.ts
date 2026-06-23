@@ -19,7 +19,7 @@ function mkOrder(id: string): Order {
     source: "web",
     locale: "en",
     lines: [{ kind: "catalog", productId: "p", variantId: "v", addOnIds: [], qty: 1 }],
-    contact: { phone: "5165551234" },
+    contact: { name: "Buyer Name", phone: "5165551234" },
     totals: { subtotalCents: 1000, deliveryCents: 0, taxCents: 0, totalCents: 1000 },
     status: "pending",
     paymentStatus: "pending",
@@ -43,5 +43,6 @@ describe("sequential order number", () => {
     expect(b.orderNumber).toBe(1002);
     const got = await getOrder("do_a");
     expect(got?.orderNumber).toBe(1001);
+    expect(got?.contact.name).toBe("Buyer Name");
   });
 });
