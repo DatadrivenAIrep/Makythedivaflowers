@@ -4,6 +4,7 @@ import { stripe } from "@/lib/stripe-server";
 import { getOrderByPaymentIntent, updateOrderStatusByPaymentIntent, getOrderByCheckoutSessionId, updateOrderPaidByCheckoutSession } from "@/lib/order-storage";
 import { dispatchPaymentConfirmed } from "@/lib/order-dispatch";
 import { notifyOrderPaid } from "@/lib/order-notifications";
+import { redeem } from "@/lib/gift-card-storage";
 import { enqueuePrintJob } from "@/lib/print-queue";
 import { sendPurchaseToGA4 } from "@/lib/analytics-server";
 import { resolveCartLines } from "@/lib/cart-helpers";
@@ -56,6 +57,14 @@ export async function POST(req: Request) {
         const wasAlreadyPaid = (order?.status as string) === "paid" || order?.paymentStatus === "paid";
         await updateOrderStatusByPaymentIntent(pi.id, "paid");
         if (order && !wasAlreadyPaid) {
+          if (order.giftCardId && order.giftCardCents && order.giftCardCents > 0) {
+            try {
+              redeem(order.giftCardId, order.id, order.giftCardCents);
+            } catch (e) {
+              // Order is paid; balance is single-shop courtesy. Log + alert instead of failing the webhook.
+              console.error("[gift-card] redeem on payment success failed for order", order.id, e);
+            }
+          }
           await notifyOrderPaid(order);
           void sendPurchaseToGA4(orderToPurchasePayload(order));
           try {
