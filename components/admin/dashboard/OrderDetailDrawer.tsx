@@ -135,7 +135,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
           </div>
         </header>
 
-        {!editing && (data.balanceCents ?? 0) !== 0 && (
+        {!editing && (order.amountPaidCents ?? 0) > 0 && (data.balanceCents ?? 0) !== 0 && (
           <div className={`mb-3 flex items-center justify-between gap-2 rounded px-3 py-2 text-sm font-semibold ${
             (data.balanceCents ?? 0) > 0 ? "bg-amber-50 text-amber-800" : "bg-sky-50 text-sky-800"
           }`}>
