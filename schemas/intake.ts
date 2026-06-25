@@ -73,6 +73,7 @@ export const intakeSchema = z.object({
     email: z.string().email().optional().or(z.literal("")),
     messagingChannel: z.enum(["sms", "whatsapp", "email", "none"]).optional(),
     locale: z.enum(["en", "es"]).optional(),
+    buyerAddress: address.optional(),
   }),
   fulfillment: z.discriminatedUnion("method", [deliveryF, pickupF, inStoreF]),
   lines: z.array(z.discriminatedUnion("kind", [catalogLine, customLine])).min(1),

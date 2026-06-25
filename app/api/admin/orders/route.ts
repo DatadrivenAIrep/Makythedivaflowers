@@ -42,6 +42,7 @@ export async function POST(req: Request) {
     orderAt: now,
     messagingChannel: input.customer.messagingChannel,
     locale: input.customer.locale,
+    buyerAddress: input.customer.buyerAddress,
   });
 
   const fulfillment: OrderFulfillment = input.fulfillment;
