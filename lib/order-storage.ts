@@ -52,7 +52,7 @@ function upsertSqlite(order: Order): void {
        id, locale, source, customer_id, recipient_name, recipient_phone,
        contact_name, contact_email, contact_phone, fulfillment_method, address_json,
        window_date, window_slot, card_message, lines_json,
-       subtotal_cents, delivery_cents, tax_cents, total_cents,
+       subtotal_cents, delivery_cents, tax_cents, total_cents, amount_paid_cents,
        fulfillment_status, payment_status, payment_method, paid_at,
        stripe_payment_intent_id, taken_by, internal_notes,
        stripe_checkout_session_id, gift_card_id, gift_card_cents,
@@ -61,7 +61,7 @@ function upsertSqlite(order: Order): void {
        @id, @locale, @source, @customer_id, @recipient_name, @recipient_phone,
        @contact_name, @contact_email, @contact_phone, @fulfillment_method, @address_json,
        @window_date, @window_slot, @card_message, @lines_json,
-       @subtotal_cents, @delivery_cents, @tax_cents, @total_cents,
+       @subtotal_cents, @delivery_cents, @tax_cents, @total_cents, @amount_paid_cents,
        @fulfillment_status, @payment_status, @payment_method, @paid_at,
        @stripe_payment_intent_id, @taken_by, @internal_notes,
        @stripe_checkout_session_id, @gift_card_id, @gift_card_cents,
@@ -86,6 +86,7 @@ function upsertSqlite(order: Order): void {
        delivery_cents=excluded.delivery_cents,
        tax_cents=excluded.tax_cents,
        total_cents=excluded.total_cents,
+       amount_paid_cents=excluded.amount_paid_cents,
        fulfillment_status=excluded.fulfillment_status,
        payment_status=excluded.payment_status,
        payment_method=excluded.payment_method,
@@ -115,6 +116,18 @@ export async function saveOrder(order: Order): Promise<void> {
   upsertSqlite(order);
   const all = await readAll();
   all.push(order);
+  await writeAll(all);
+}
+
+// Full update of an existing order: upsert the SQLite row and REPLACE the JSON
+// mirror entry (never append — that is saveOrder's create-only behavior).
+export async function updateOrder(order: Order): Promise<void> {
+  ensureSchema();
+  upsertSqlite(order);
+  const all = await readAll();
+  const idx = all.findIndex((o) => o.id === order.id);
+  if (idx >= 0) all[idx] = order;
+  else all.push(order);
   await writeAll(all);
 }
 
@@ -171,7 +184,7 @@ export async function updateOrderStatusByPaymentIntent(
   let next: Order = { ...cur, updatedAt: now };
   if (status === "paid") {
     if (cur.paymentStatus === "paid") return;
-    next = { ...next, paymentStatus: "paid", paidAt: now };
+    next = { ...next, paymentStatus: "paid", paidAt: now, amountPaidCents: cur.totals.totalCents };
   } else {
     if (TERMINAL_FULFILLMENT.includes(cur.status) && cur.status !== status) return;
     if (cur.status === status) return;
@@ -211,7 +224,7 @@ export async function updateOrderPaidByCheckoutSession(sessionId: string): Promi
   const db = getDb();
   const now = new Date().toISOString();
   db.prepare(
-    `UPDATE orders SET payment_status = 'paid', paid_at = COALESCE(paid_at, ?), updated_at = ? WHERE stripe_checkout_session_id = ? AND payment_status != 'paid'`,
+    `UPDATE orders SET payment_status = 'paid', paid_at = COALESCE(paid_at, ?), amount_paid_cents = total_cents, updated_at = ? WHERE stripe_checkout_session_id = ? AND payment_status != 'paid'`,
   ).run(now, now, sessionId);
 }
 

@@ -70,3 +70,15 @@ export function checkPassword(input: string): boolean {
 
 export const SESSION_COOKIE = "intake_session";
 export const SESSION_TTL_SECONDS = DEFAULT_TTL_SECONDS;
+
+/** Reads the intake_session cookie from the raw request header (works in route
+ * handlers AND in unit tests that call handlers directly). */
+export function getSessionTokenFromRequest(req: Request): string {
+  const cookie = req.headers.get("cookie") ?? "";
+  const m = cookie.match(/(?:^|;\s*)intake_session=([^;]+)/);
+  return m ? decodeURIComponent(m[1]) : "";
+}
+
+export function requireAdmin(req: Request): boolean {
+  return verifySession(getSessionTokenFromRequest(req));
+}

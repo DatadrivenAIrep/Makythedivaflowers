@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { intakeSchema, type IntakeInput } from "@/schemas/intake";
-import { PRODUCTS } from "@/data/products";
-import { cartSubtotalCents } from "@/lib/cart-helpers";
-import { computeOrderTotals, computeDeliveryCentsForAddress } from "@/lib/totals";
+import { resolveOrderTotals } from "@/lib/totals";
 import { saveOrder, listOrders, type ListOrdersFilters } from "@/lib/order-storage";
 import { enqueuePrintJob } from "@/lib/print-queue";
 import { upsertOnOrder } from "@/lib/customer-storage";
@@ -14,22 +12,12 @@ import type { Order, OrderFulfillment, CartLine } from "@/types/order";
 export const runtime = "nodejs";
 
 function computeTotals(input: IntakeInput): Order["totals"] {
-  const subtotal = cartSubtotalCents(input.lines as CartLine[], PRODUCTS);
-  let delivery = 0;
-  if (input.fulfillment.method === "delivery") {
-    delivery =
-      computeDeliveryCentsForAddress({
-        zip: input.fulfillment.address.zip,
-        city: input.fulfillment.address.city,
-      }) ?? 0;
-  }
-  const computed = computeOrderTotals(subtotal, delivery);
-  return {
-    subtotalCents: input.totalsOverride?.subtotalCents ?? computed.subtotalCents,
-    deliveryCents: input.totalsOverride?.deliveryCents ?? computed.deliveryCents,
-    taxCents: input.totalsOverride?.taxCents ?? computed.taxCents,
-    totalCents: input.totalsOverride?.totalCents ?? computed.totalCents,
-  };
+  return resolveOrderTotals({
+    lines: input.lines as CartLine[],
+    fulfillmentMethod: input.fulfillment.method,
+    address: input.fulfillment.method === "delivery" ? input.fulfillment.address : undefined,
+    override: input.totalsOverride,
+  });
 }
 
 function newId(): string {
@@ -99,7 +87,20 @@ export async function POST(req: Request) {
     }
   }
 
+  // Freeze how much was collected at creation, so a later edit can surface a balance.
+  if (order.paymentStatus === "paid") {
+    order.amountPaidCents = order.totals.totalCents;
+  }
+
   await saveOrder(order);
+
+  {
+    const { recordOrderChange } = await import("@/lib/order-history");
+    await recordOrderChange({
+      orderId: order.id, actor: order.takenBy ?? "maky", kind: "created",
+      summary: `Orden creada · ${order.source}`,
+    });
+  }
 
   if (giftCardId && order.paymentStatus === "paid") {
     try {

@@ -3,6 +3,9 @@ import { getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import { rowToOrder, orderToRow, type OrderRow } from "@/lib/order-row";
 import type { Order, PaymentMethod, FulfillmentStatus } from "@/types/order";
+import { recordOrderChange } from "@/lib/order-history";
+
+function money(c: number): string { return `$${(c / 100).toFixed(2)}`; }
 
 const MANUAL_PAYMENT_METHODS: PaymentMethod[] = ["cash", "zelle", "card-terminal", "ach"];
 
@@ -31,10 +34,15 @@ export async function markPaidManual(
     paymentStatus: "paid",
     paymentMethod: args.method,
     paidAt: now,
+    amountPaidCents: cur.totals.totalCents,
     internalNotes,
     updatedAt: now,
   };
   upsert(next);
+  await recordOrderChange({
+    orderId, actor: "maky", kind: "payment",
+    summary: `Pagado en ${args.method} · ${money(cur.totals.totalCents)}`,
+  });
 
   // Mirror the Stripe webhook side-effects so customers get the same paid-order
   // confirmation regardless of whether payment landed via Stripe or manual.
@@ -63,13 +71,14 @@ function upsert(order: Order): void {
   const row = orderToRow(order);
   db.prepare(
     `UPDATE orders SET payment_status=@payment_status, payment_method=@payment_method,
-       paid_at=@paid_at, fulfillment_status=@fulfillment_status, internal_notes=@internal_notes,
-       updated_at=@updated_at WHERE id=@id`,
+       paid_at=@paid_at, amount_paid_cents=@amount_paid_cents, fulfillment_status=@fulfillment_status,
+       internal_notes=@internal_notes, updated_at=@updated_at WHERE id=@id`,
   ).run({
     id: row.id,
     payment_status: row.payment_status,
     payment_method: row.payment_method,
     paid_at: row.paid_at,
+    amount_paid_cents: row.amount_paid_cents,
     fulfillment_status: row.fulfillment_status,
     internal_notes: row.internal_notes,
     updated_at: row.updated_at,
@@ -98,6 +107,10 @@ export async function changeFulfillmentStatus(
   const now = new Date().toISOString();
   const next: Order = { ...cur, status, updatedAt: now };
   upsert(next);
+  await recordOrderChange({
+    orderId, actor: "maky", kind: "fulfillment",
+    summary: `Estado: ${cur.status} → ${status}`,
+  });
   return next;
 }
 
@@ -131,6 +144,10 @@ export async function cancelOrder(
     updatedAt: now,
   };
   upsert(next);
+  await recordOrderChange({
+    orderId, actor: "maky", kind: "cancel",
+    summary: `Cancelada${args.refund ? " + reembolso" : ""}${args.reason ? ` · ${args.reason}` : ""}`,
+  });
   return next;
 }
 
@@ -151,5 +168,23 @@ export async function appendInternalNote(
   const internalNotes = cur.internalNotes ? `${cur.internalNotes}\n${noteLine}` : noteLine;
   const next: Order = { ...cur, internalNotes, updatedAt: now };
   upsert(next);
+  await recordOrderChange({ orderId, actor: author, kind: "note", summary: "Nota agregada" });
+  return next;
+}
+
+// Records that the in-person difference was settled: sets amount_paid to the
+// current total so the balance reads zero. Does NOT move money in Stripe.
+export async function settleBalance(orderId: string, actor: string): Promise<Order> {
+  runMigrations();
+  const db = getDb();
+  const row = db.prepare("SELECT * FROM orders WHERE id = ?").get(orderId) as OrderRow | undefined;
+  if (!row) throw new Error(`order not found: ${orderId}`);
+  const cur = rowToOrder(row);
+  const now = new Date().toISOString();
+  const next: Order = { ...cur, amountPaidCents: cur.totals.totalCents, updatedAt: now };
+  upsert(next);
+  await recordOrderChange({
+    orderId, actor, kind: "payment", summary: `Saldo saldado · ${money(cur.totals.totalCents)}`,
+  });
   return next;
 }
