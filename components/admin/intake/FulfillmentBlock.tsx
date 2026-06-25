@@ -123,6 +123,17 @@ export default function FulfillmentBlock({ value, onChange }: Props) {
           </div>
         </div>
       )}
+
+      <div className="mt-4">
+        <label className="block text-[11px] uppercase tracking-widest text-mute-400 mb-2">{t("card_message_label")}</label>
+        <textarea
+          value={value.cardMessage}
+          onChange={(e) => onChange({ ...value, cardMessage: e.target.value })}
+          placeholder={t("card_message_placeholder")}
+          rows={3}
+          className="w-full p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white resize-none"
+        />
+      </div>
     </div>
   );
 }

@@ -224,18 +224,6 @@ export default function IntakeForm({ products }: { products: Product[] }) {
               onApplyAddress={(addr) => setFulfillment((f) => ({ ...f, address: addr, method: "delivery" }))}
             />
             <FulfillmentBlock value={fulfillment} onChange={setFulfillment} />
-            <div className="mb-5">
-              <label className="block text-[11px] uppercase tracking-widest text-mute-400 mb-2">
-                {t("card_message_label")}
-              </label>
-              <textarea
-                value={fulfillment.cardMessage}
-                onChange={(e) => setFulfillment({ ...fulfillment, cardMessage: e.target.value })}
-                placeholder={t("card_message_placeholder")}
-                rows={3}
-                className="w-full p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white resize-none"
-              />
-            </div>
           </section>
           <section className="p-7 bg-bone">
             <ProductPicker products={products} onAdd={addLine} />
