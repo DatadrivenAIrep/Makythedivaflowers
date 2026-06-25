@@ -184,7 +184,7 @@ export async function updateOrderStatusByPaymentIntent(
   let next: Order = { ...cur, updatedAt: now };
   if (status === "paid") {
     if (cur.paymentStatus === "paid") return;
-    next = { ...next, paymentStatus: "paid", paidAt: now };
+    next = { ...next, paymentStatus: "paid", paidAt: now, amountPaidCents: cur.totals.totalCents };
   } else {
     if (TERMINAL_FULFILLMENT.includes(cur.status) && cur.status !== status) return;
     if (cur.status === status) return;
@@ -224,7 +224,7 @@ export async function updateOrderPaidByCheckoutSession(sessionId: string): Promi
   const db = getDb();
   const now = new Date().toISOString();
   db.prepare(
-    `UPDATE orders SET payment_status = 'paid', paid_at = COALESCE(paid_at, ?), updated_at = ? WHERE stripe_checkout_session_id = ? AND payment_status != 'paid'`,
+    `UPDATE orders SET payment_status = 'paid', paid_at = COALESCE(paid_at, ?), amount_paid_cents = total_cents, updated_at = ? WHERE stripe_checkout_session_id = ? AND payment_status != 'paid'`,
   ).run(now, now, sessionId);
 }
 

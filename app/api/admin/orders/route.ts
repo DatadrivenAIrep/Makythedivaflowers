@@ -87,7 +87,20 @@ export async function POST(req: Request) {
     }
   }
 
+  // Freeze how much was collected at creation, so a later edit can surface a balance.
+  if (order.paymentStatus === "paid") {
+    order.amountPaidCents = order.totals.totalCents;
+  }
+
   await saveOrder(order);
+
+  {
+    const { recordOrderChange } = await import("@/lib/order-history");
+    await recordOrderChange({
+      orderId: order.id, actor: order.takenBy ?? "maky", kind: "created",
+      summary: `Orden creada · ${order.source}`,
+    });
+  }
 
   if (giftCardId && order.paymentStatus === "paid") {
     try {
