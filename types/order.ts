@@ -95,6 +95,7 @@ export type Order = {
   paymentStatus: PaymentStatus;
   paymentMethod?: PaymentMethod;
   paidAt?: string;
+  amountPaidCents?: number; // how much has actually been collected; balance = totalCents - this
   stripePaymentIntentId?: string;
   stripeCheckoutSessionId?: string;
   giftCardId?: string;
@@ -103,4 +104,24 @@ export type Order = {
   internalNotes?: string;
   createdAt: string;
   updatedAt: string;
+};
+
+export type OrderChangeKind =
+  | "created" | "edit" | "payment" | "fulfillment" | "cancel" | "note" | "reprint";
+
+export type FieldDiff = {
+  field: string; // machine key, e.g. "fulfillment.address.street1"
+  label: string; // Spanish UI label, e.g. "Dirección"
+  before: string | null;
+  after: string | null;
+};
+
+export type OrderChange = {
+  id: string;
+  orderId: string;
+  at: string; // ISO
+  actor: string;
+  kind: OrderChangeKind;
+  summary: string;
+  changes?: FieldDiff[]; // present for kind="edit"
 };

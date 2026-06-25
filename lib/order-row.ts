@@ -21,6 +21,7 @@ export type OrderRow = {
   delivery_cents: number;
   tax_cents: number;
   total_cents: number;
+  amount_paid_cents: number;
   fulfillment_status: string;
   payment_status: string;
   payment_method: string | null;
@@ -58,6 +59,7 @@ export function orderToRow(o: Order): OrderRow {
     delivery_cents: o.totals.deliveryCents,
     tax_cents: o.totals.taxCents,
     total_cents: o.totals.totalCents,
+    amount_paid_cents: o.amountPaidCents ?? 0,
     fulfillment_status: o.status,
     payment_status: o.paymentStatus,
     payment_method: o.paymentMethod ?? null,
@@ -120,6 +122,7 @@ export function rowToOrder(r: OrderRow): Order {
     paymentStatus: r.payment_status as Order["paymentStatus"],
     paymentMethod: (r.payment_method as Order["paymentMethod"]) ?? undefined,
     paidAt: r.paid_at ?? undefined,
+    amountPaidCents: r.amount_paid_cents ?? 0,
     stripePaymentIntentId: r.stripe_payment_intent_id ?? undefined,
     takenBy: r.taken_by ?? undefined,
     internalNotes: r.internal_notes ?? undefined,
