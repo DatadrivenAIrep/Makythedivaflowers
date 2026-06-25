@@ -21,6 +21,7 @@ const sample: Order = {
   totals: { subtotalCents: 17400, deliveryCents: 1500, taxCents: 1651, totalCents: 20551 },
   status: "pending",
   paymentStatus: "pending",
+  amountPaidCents: 0,
   createdAt: "2026-05-16T00:00:00.000Z",
   updatedAt: "2026-05-16T00:00:00.000Z",
 };

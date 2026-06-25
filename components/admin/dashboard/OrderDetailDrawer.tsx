@@ -3,11 +3,14 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import {
   WhatsappLogo, ArrowsClockwise, Check, CheckCircle,
-  Package, Truck, XCircle, X,
+  Package, Truck, XCircle, X, Pencil, Eye, Printer,
 } from "@phosphor-icons/react/dist/ssr";
 import { resolveLine } from "./product-lookup";
 import AdminButton from "./AdminButton";
-import type { Order } from "@/types/order";
+import OrderEditForm from "./OrderEditForm";
+import OrderHistoryList from "./OrderHistoryList";
+import type { Order, OrderChange } from "@/types/order";
+import type { OrderEditPatch } from "@/lib/order-edit";
 
 type Message = {
   id: string; channel: string; template: string; locale: string;
@@ -18,6 +21,8 @@ type DetailResp = {
   order: Order;
   customer: { id: string; name: string; phone: string; email?: string | null } | null;
   messages: Message[];
+  history?: OrderChange[];
+  balanceCents?: number;
 };
 
 type Props = {
@@ -43,6 +48,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
   const [cancelOpen, setCancelOpen] = useState(false);
   const [cancelReason, setCancelReason] = useState("");
   const [refundChecked, setRefundChecked] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -74,6 +80,27 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
     } finally { setBusy(false); }
   }
 
+  async function saveEdit(patch: OrderEditPatch) {
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}`, {
+        method: "PATCH", headers: { "content-type": "application/json" },
+        body: JSON.stringify(patch),
+      });
+      if (res.ok) {
+        const refreshed = await fetch(`/api/admin/orders/${orderId}`, { cache: "no-store" });
+        setData((await refreshed.json()) as DetailResp);
+        onChanged();
+        setEditing(false);
+      }
+    } finally { setBusy(false); }
+  }
+
+  async function reprint() {
+    if (!window.confirm("¿Re-imprimir esta orden?")) return;
+    await call("POST", `/api/admin/orders/${orderId}/reprint`);
+  }
+
   if (!data) {
     return (
       <div className="fixed inset-0 z-20 flex" onClick={onClose}>
@@ -94,11 +121,37 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
   return (
     <div className="fixed inset-0 z-20 flex" onClick={onClose}>
       <div className="ml-auto h-full w-full max-w-xl overflow-y-auto bg-bone p-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
-        <header className="mb-3 flex items-center justify-between">
+        <header className="mb-3 flex items-center justify-between gap-2">
           <h2 className="text-base font-semibold">{f.recipient.name} · #{order.id.slice(-6)}</h2>
-          <AdminButton variant="secondary" icon={X} onClick={onClose} aria-label="Cerrar">Cerrar</AdminButton>
+          <div className="flex flex-wrap items-center gap-2">
+            {!editing && (
+              <>
+                <AdminButton variant="secondary" icon={Pencil} disabled={busy} onClick={() => setEditing(true)}>Editar</AdminButton>
+                <AdminButton variant="secondary" icon={Eye} href={`/api/admin/orders/${order.id}/sheet`} target="_blank" rel="noreferrer">Vista previa</AdminButton>
+                <AdminButton variant="secondary" icon={Printer} disabled={busy} onClick={reprint}>Re-imprimir</AdminButton>
+              </>
+            )}
+            <AdminButton variant="secondary" icon={X} onClick={onClose} aria-label="Cerrar">Cerrar</AdminButton>
+          </div>
         </header>
 
+        {!editing && (data.balanceCents ?? 0) !== 0 && (
+          <div className={`mb-3 flex items-center justify-between gap-2 rounded px-3 py-2 text-sm font-semibold ${
+            (data.balanceCents ?? 0) > 0 ? "bg-amber-50 text-amber-800" : "bg-sky-50 text-sky-800"
+          }`}>
+            <span>{(data.balanceCents ?? 0) > 0 ? "Saldo pendiente" : "Saldo a favor"}: {money(Math.abs(data.balanceCents ?? 0))}</span>
+            <AdminButton variant="secondary" disabled={busy}
+              onClick={() => call("PATCH", `/api/admin/orders/${order.id}/payment`, { settleBalance: true })}>
+              Marcar saldado
+            </AdminButton>
+          </div>
+        )}
+
+        {editing && (
+          <OrderEditForm order={order} busy={busy} onCancel={() => setEditing(false)} onSave={saveEdit} />
+        )}
+
+        {!editing && (<>
         <section className="mb-3 rounded border border-ink/10 bg-bone p-3 text-sm">
           <div className="font-semibold">{customer?.name ?? f.recipient.name}</div>
           <div className="text-ink/70">
@@ -232,6 +285,11 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
           </div>
         </section>
 
+        <section className="mb-3 rounded border border-ink/10 bg-bone p-3 text-sm">
+          <div className="mb-2 text-xs uppercase tracking-wide text-ink/50">Historial</div>
+          <OrderHistoryList history={data.history ?? []} />
+        </section>
+
         <footer className="sticky bottom-0 -mx-4 -mb-4 border-t border-ink/10 bg-bone p-3">
           <div className="flex flex-wrap gap-2">
             {order.paymentStatus !== "paid" && (
@@ -297,6 +355,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
             </div>
           )}
         </footer>
+        </>)}
       </div>
     </div>
   );
