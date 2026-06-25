@@ -106,6 +106,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
           email: customer.email || undefined,
           messagingChannel: customer.messagingChannel,
           locale,
+          buyerAddress: customer.buyerAddress,
         },
         fulfillment: toOrderFulfillment(fulfillment),
         lines,
@@ -125,7 +126,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
       }
       const { orderId } = await res.json();
       router.replace(`/${locale}/admin/intake?ok=${encodeURIComponent(orderId)}`);
-      setCustomer({ name: "", phone: "", email: "", messagingChannel: "sms" });
+      setCustomer({ name: "", phone: "", email: "", messagingChannel: "sms", buyerAddress: undefined });
       setLines([]);
       setOverride({});
       setGiftCardCode("");
