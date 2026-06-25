@@ -3,7 +3,8 @@ import { useState } from "react";
 import type { Order, CartLine, OrderTotals } from "@/types/order";
 import FulfillmentBlock, { type FulfillmentState, toOrderFulfillment } from "@/components/admin/intake/FulfillmentBlock";
 import ProductPicker from "@/components/admin/intake/ProductPicker";
-import CartSummary from "@/components/admin/intake/CartSummary";
+import CartLines from "@/components/admin/intake/CartLines";
+import CartTotals from "@/components/admin/intake/CartTotals";
 import { PRODUCTS } from "@/data/products";
 import type { OrderEditPatch } from "@/lib/order-edit";
 
@@ -78,9 +79,9 @@ export default function OrderEditForm({
       <FulfillmentBlock value={fulfillment} onChange={setFulfillment} />
 
       <ProductPicker products={PRODUCTS} onAdd={addLine} />
-      <CartSummary
+      <CartLines lines={lines} onChangeLines={setLines} />
+      <CartTotals
         lines={lines}
-        onChangeLines={setLines}
         fulfillmentMethod={fulfillment.method}
         deliveryZip={fulfillment.address.zip}
         deliveryCity={fulfillment.address.city}

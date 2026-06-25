@@ -1,17 +1,27 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import type { Product } from "@/types/product";
 import type { CartLine, OrderTotals } from "@/types/order";
 import CustomerBlock, { type CustomerSnapshot } from "./CustomerBlock";
 import FulfillmentBlock, { type FulfillmentState } from "./FulfillmentBlock";
 import ProductPicker from "./ProductPicker";
-import CartSummary from "./CartSummary";
+import CartLines from "./CartLines";
+import CartTotals from "./CartTotals";
 import PaymentBlock, { type PaymentState } from "./PaymentBlock";
 import { toOrderFulfillment } from "./FulfillmentBlock";
 import { useRouter, useSearchParams } from "next/navigation";
 
 type Channel = "walk-in" | "phone" | "whatsapp" | "event";
+
+function SectionCard({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section className="rounded-xl border border-mute-200 bg-white p-5 mb-4">
+      <h2 className="font-display text-lg text-ink mb-4">{title}</h2>
+      {children}
+    </section>
+  );
+}
 
 export default function IntakeForm({ products }: { products: Product[] }) {
   const t = useTranslations("admin_intake");
@@ -217,32 +227,40 @@ export default function IntakeForm({ products }: { products: Product[] }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-[1.05fr_0.95fr]">
-          <section className="p-7 border-r border-mute-100">
-            <CustomerBlock
-              value={customer}
-              onChange={setCustomer}
-              onApplyAddress={(addr) => setFulfillment((f) => ({ ...f, address: addr, method: "delivery" }))}
-            />
-            <FulfillmentBlock value={fulfillment} onChange={setFulfillment} />
-          </section>
-          <section className="p-7 bg-bone">
-            <ProductPicker products={products} onAdd={addLine} />
-            <CartSummary
-              lines={lines}
-              onChangeLines={setLines}
-              fulfillmentMethod={fulfillment.method}
-              deliveryZip={fulfillment.address.zip}
-              deliveryCity={fulfillment.address.city}
-              override={override}
-              onOverride={setOverride}
-            />
-            <PaymentBlock value={payment} onChange={setPayment} />
-            <label className="block mt-4">
-              <span className="mb-1 block text-xs font-semibold">Gift card</span>
-              <input value={giftCardCode} onChange={(e) => setGiftCardCode(e.target.value)} placeholder="DIVA-XXXX-XXXX" className="w-full rounded-lg border border-ink/20 px-3 py-2 font-mono" />
-            </label>
-          </section>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-5 bg-bone">
+          <div>
+            <SectionCard title={t("section_customer")}>
+              <CustomerBlock
+                value={customer}
+                onChange={setCustomer}
+                onApplyAddress={(addr) => setFulfillment((f) => ({ ...f, address: addr, method: "delivery" }))}
+              />
+            </SectionCard>
+            <SectionCard title={t("section_fulfillment")}>
+              <FulfillmentBlock value={fulfillment} onChange={setFulfillment} />
+            </SectionCard>
+          </div>
+          <div>
+            <SectionCard title={t("section_products")}>
+              <ProductPicker products={products} onAdd={addLine} />
+              <div className="mt-4"><CartLines lines={lines} onChangeLines={setLines} /></div>
+            </SectionCard>
+            <SectionCard title={t("section_payment")}>
+              <CartTotals
+                lines={lines}
+                fulfillmentMethod={fulfillment.method}
+                deliveryZip={fulfillment.address.zip}
+                deliveryCity={fulfillment.address.city}
+                override={override}
+                onOverride={setOverride}
+              />
+              <div className="mt-4"><PaymentBlock value={payment} onChange={setPayment} /></div>
+              <label className="block mt-4">
+                <span className="mb-1 block text-xs font-semibold">{t("gift_card_label")}</span>
+                <input value={giftCardCode} onChange={(e) => setGiftCardCode(e.target.value)} placeholder="DIVA-XXXX-XXXX" className="w-full rounded-lg border border-ink/20 px-3 py-2 font-mono" />
+              </label>
+            </SectionCard>
+          </div>
         </div>
 
         <div className="px-7 py-4 border-t border-mute-100 bg-white">
