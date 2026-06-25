@@ -10,6 +10,7 @@ export type Customer = {
   phone: string;
   email?: string;
   lastAddress?: Address;
+  buyerAddress?: Address;
   orderCount: number;
   firstSeenAt: string;
   lastSeenAt: string;
@@ -23,6 +24,7 @@ type CustomerRow = {
   phone: string;
   email: string | null;
   last_address_json: string | null;
+  buyer_address_json: string | null;
   order_count: number;
   first_seen_at: string;
   last_seen_at: string;
@@ -41,6 +43,7 @@ function rowToCustomer(r: CustomerRow): Customer {
     phone: r.phone,
     email: r.email ?? undefined,
     lastAddress: r.last_address_json ? (JSON.parse(r.last_address_json) as Address) : undefined,
+    buyerAddress: r.buyer_address_json ? (JSON.parse(r.buyer_address_json) as Address) : undefined,
     orderCount: r.order_count,
     firstSeenAt: r.first_seen_at,
     lastSeenAt: r.last_seen_at,
@@ -66,6 +69,7 @@ export type UpsertInput = {
   phone: string;
   email?: string;
   address?: Address;
+  buyerAddress?: Address;
   orderAt: string;
   messagingChannel?: MessagingChannel;
   locale?: "en" | "es";
@@ -83,6 +87,7 @@ export function upsertOnOrder(input: UpsertInput): Customer {
       `UPDATE customers SET
          name = ?, email = COALESCE(?, email),
          last_address_json = COALESCE(?, last_address_json),
+         buyer_address_json = COALESCE(?, buyer_address_json),
          order_count = order_count + 1,
          last_seen_at = ?,
          messaging_channel = COALESCE(?, messaging_channel),
@@ -92,6 +97,7 @@ export function upsertOnOrder(input: UpsertInput): Customer {
       input.name,
       input.email ?? null,
       input.address ? JSON.stringify(input.address) : null,
+      input.buyerAddress ? JSON.stringify(input.buyerAddress) : null,
       input.orderAt,
       input.messagingChannel ?? null,
       input.locale ?? null,
@@ -105,16 +111,17 @@ export function upsertOnOrder(input: UpsertInput): Customer {
   const id = newId();
   db.prepare(
     `INSERT INTO customers (
-       id, name, phone, email, last_address_json,
+       id, name, phone, email, last_address_json, buyer_address_json,
        order_count, first_seen_at, last_seen_at,
        messaging_channel, locale
-     ) VALUES (?, ?, ?, ?, ?, 1, ?, ?, ?, ?)`,
+     ) VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?)`,
   ).run(
     id,
     input.name,
     phone,
     input.email ?? null,
     input.address ? JSON.stringify(input.address) : null,
+    input.buyerAddress ? JSON.stringify(input.buyerAddress) : null,
     input.orderAt,
     input.orderAt,
     input.messagingChannel ?? null,
