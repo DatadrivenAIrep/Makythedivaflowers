@@ -1,6 +1,8 @@
 // lib/totals.ts
-import type { OrderTotals } from "@/types/order";
+import type { CartLine, OrderTotals } from "@/types/order";
 import { findDeliveryZoneByZip, findDeliveryZoneByCity } from "@/lib/delivery-zones";
+import { cartSubtotalCents } from "@/lib/cart-helpers";
+import { PRODUCTS } from "@/data/products";
 
 // Used when the customer hasn't entered a ZIP yet. Display layer should pass
 // `deliveryPending` to render "—" instead of this number, but if it leaks
@@ -44,4 +46,30 @@ export function computeDeliveryCentsForAddress(address: {
   if (byZip) return byZip.priceCents;
   const byCity = findDeliveryZoneByCity(address.city);
   return byCity ? byCity.priceCents : null;
+}
+
+/**
+ * Single source of truth for turning lines + fulfillment into totals, with an
+ * optional manual override. Used by intake order creation and by editOrder so
+ * both price identically.
+ */
+export function resolveOrderTotals(input: {
+  lines: CartLine[];
+  fulfillmentMethod: "in-store" | "delivery" | "pickup";
+  address?: { zip: string; city: string };
+  override?: Partial<OrderTotals>;
+}): OrderTotals {
+  const subtotal = cartSubtotalCents(input.lines, PRODUCTS);
+  let delivery = 0;
+  if (input.fulfillmentMethod === "delivery" && input.address) {
+    delivery = computeDeliveryCentsForAddress(input.address) ?? 0;
+  }
+  const computed = computeOrderTotals(subtotal, delivery);
+  const o = input.override ?? {};
+  return {
+    subtotalCents: o.subtotalCents ?? computed.subtotalCents,
+    deliveryCents: o.deliveryCents ?? computed.deliveryCents,
+    taxCents: o.taxCents ?? computed.taxCents,
+    totalCents: o.totalCents ?? computed.totalCents,
+  };
 }

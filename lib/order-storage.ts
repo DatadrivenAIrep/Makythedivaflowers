@@ -119,6 +119,18 @@ export async function saveOrder(order: Order): Promise<void> {
   await writeAll(all);
 }
 
+// Full update of an existing order: upsert the SQLite row and REPLACE the JSON
+// mirror entry (never append — that is saveOrder's create-only behavior).
+export async function updateOrder(order: Order): Promise<void> {
+  ensureSchema();
+  upsertSqlite(order);
+  const all = await readAll();
+  const idx = all.findIndex((o) => o.id === order.id);
+  if (idx >= 0) all[idx] = order;
+  else all.push(order);
+  await writeAll(all);
+}
+
 export async function getOrder(id: string): Promise<Order | null> {
   ensureSchema();
   const row = getDb().prepare("SELECT * FROM orders WHERE id = ?").get(id) as OrderRow | undefined;

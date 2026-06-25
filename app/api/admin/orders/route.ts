@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { intakeSchema, type IntakeInput } from "@/schemas/intake";
-import { PRODUCTS } from "@/data/products";
-import { cartSubtotalCents } from "@/lib/cart-helpers";
-import { computeOrderTotals, computeDeliveryCentsForAddress } from "@/lib/totals";
+import { resolveOrderTotals } from "@/lib/totals";
 import { saveOrder, listOrders, type ListOrdersFilters } from "@/lib/order-storage";
 import { enqueuePrintJob } from "@/lib/print-queue";
 import { upsertOnOrder } from "@/lib/customer-storage";
@@ -14,22 +12,12 @@ import type { Order, OrderFulfillment, CartLine } from "@/types/order";
 export const runtime = "nodejs";
 
 function computeTotals(input: IntakeInput): Order["totals"] {
-  const subtotal = cartSubtotalCents(input.lines as CartLine[], PRODUCTS);
-  let delivery = 0;
-  if (input.fulfillment.method === "delivery") {
-    delivery =
-      computeDeliveryCentsForAddress({
-        zip: input.fulfillment.address.zip,
-        city: input.fulfillment.address.city,
-      }) ?? 0;
-  }
-  const computed = computeOrderTotals(subtotal, delivery);
-  return {
-    subtotalCents: input.totalsOverride?.subtotalCents ?? computed.subtotalCents,
-    deliveryCents: input.totalsOverride?.deliveryCents ?? computed.deliveryCents,
-    taxCents: input.totalsOverride?.taxCents ?? computed.taxCents,
-    totalCents: input.totalsOverride?.totalCents ?? computed.totalCents,
-  };
+  return resolveOrderTotals({
+    lines: input.lines as CartLine[],
+    fulfillmentMethod: input.fulfillment.method,
+    address: input.fulfillment.method === "delivery" ? input.fulfillment.address : undefined,
+    override: input.totalsOverride,
+  });
 }
 
 function newId(): string {
