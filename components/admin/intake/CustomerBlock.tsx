@@ -109,7 +109,7 @@ export default function CustomerBlock({ value, onChange, onApplyAddress }: Props
           placeholder={t("buyer_address_placeholder")}
           className="w-full p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white"
         />
-        <div className="mt-2 grid grid-cols-[1.4fr_0.6fr_0.7fr] gap-2">
+        <div className="mt-2 grid grid-cols-[1.4fr_0.6fr_0.7fr] gap-2 [&>input]:min-w-0">
           <input value={value.buyerAddress?.city ?? ""} onChange={(e) => onChange({ ...value, buyerAddress: { ...(value.buyerAddress ?? { street1: "", state: "NY", zip: "", country: "US" }), city: e.target.value } as Address })} placeholder={t("fulfillment_city_placeholder")} className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white" />
           <input value={value.buyerAddress?.state ?? "NY"} onChange={(e) => onChange({ ...value, buyerAddress: { ...(value.buyerAddress ?? { street1: "", city: "", zip: "", country: "US" }), state: e.target.value.toUpperCase().slice(0, 2) } as Address })} maxLength={2} className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white uppercase tracking-wider text-center" />
           <input value={value.buyerAddress?.zip ?? ""} onChange={(e) => onChange({ ...value, buyerAddress: { ...(value.buyerAddress ?? { street1: "", city: "", state: "NY", country: "US" }), zip: e.target.value.replace(/\D/g, "").slice(0, 5) } as Address })} inputMode="numeric" placeholder={t("fulfillment_zip_placeholder")} className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white tabular-nums text-center" />

@@ -76,7 +76,7 @@ export default function FulfillmentBlock({ value, onChange }: Props) {
                 autoComplete="address-line2"
                 className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white"
               />
-              <div className="grid grid-cols-[1.4fr_0.6fr_0.7fr] gap-2">
+              <div className="grid grid-cols-[1.4fr_0.6fr_0.7fr] gap-2 [&>input]:min-w-0">
                 <input
                   value={value.address.city}
                   onChange={(e) => onChange({ ...value, address: { ...value.address, city: e.target.value } })}
