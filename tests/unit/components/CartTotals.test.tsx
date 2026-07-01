@@ -35,4 +35,10 @@ describe("CartTotals", () => {
     expect(screen.getByRole("button", { name: /\$10\.00/ })).toBeInTheDocument();
     expect(screen.queryByText("totals_delivery_unresolved_hint")).not.toBeInTheDocument();
   });
+
+  it("cascades an overridden subtotal into the total (bug fix)", () => {
+    // subtotal override 10000 → tax Math.round(10000*0.08625)=862 (float) → total 10862 = $108.62
+    render(<CartTotals lines={lines} fulfillmentMethod="in-store" deliveryZip="" deliveryCity="" override={{ subtotalCents: 10000 }} onOverride={() => {}} />);
+    expect(screen.getByRole("button", { name: /\$108\.62/ })).toBeInTheDocument();
+  });
 });

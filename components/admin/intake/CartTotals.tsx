@@ -57,11 +57,21 @@ export default function CartTotals({ lines, fulfillmentMethod, deliveryZip, deli
     () => computeOrderTotals(cartSubtotalCents(lines, PRODUCTS), resolvedDelivery ?? 0),
     [lines, resolvedDelivery],
   );
-  const totals: OrderTotals = {
-    subtotalCents: override.subtotalCents ?? computed.subtotalCents,
-    deliveryCents: override.deliveryCents ?? computed.deliveryCents,
-    taxCents: override.taxCents ?? computed.taxCents,
-    totalCents: override.totalCents ?? computed.totalCents,
+  // Cascade: overriding subtotal/delivery flows into tax + total (matches the
+  // server's resolveOrderTotals). Only an explicit override on a field pins it.
+  const subtotalCents = override.subtotalCents ?? computed.subtotalCents;
+  const deliveryCents = override.deliveryCents ?? computed.deliveryCents;
+  const recomputed = computeOrderTotals(subtotalCents, deliveryCents);
+  const taxCents = override.taxCents ?? recomputed.taxCents;
+  const totalCents = override.totalCents ?? subtotalCents + deliveryCents + taxCents;
+  const totals: OrderTotals = { subtotalCents, deliveryCents, taxCents, totalCents };
+  // "natural[k]" = value each field would show without an override ON ITSELF, so
+  // the rouge/reset indicator only marks explicitly-overridden fields.
+  const natural: OrderTotals = {
+    subtotalCents: computed.subtotalCents,
+    deliveryCents: computed.deliveryCents,
+    taxCents: recomputed.taxCents,
+    totalCents: subtotalCents + deliveryCents + taxCents,
   };
   const set = (k: keyof OrderTotals) => (v: number) => onOverride({ ...override, [k]: v });
   const clear = (k: keyof OrderTotals) => () => { const n = { ...override }; delete n[k]; onOverride(n); };
@@ -69,7 +79,7 @@ export default function CartTotals({ lines, fulfillmentMethod, deliveryZip, deli
   const row = (label: string, k: keyof OrderTotals) => (
     <div className="flex justify-between items-center text-mute-600 py-1">
       <span>{label}</span>
-      <EditableAmount cents={totals[k]} computed={computed[k]} onSet={set(k)} onClear={clear(k)} />
+      <EditableAmount cents={totals[k]} computed={natural[k]} onSet={set(k)} onClear={clear(k)} />
     </div>
   );
 
@@ -91,7 +101,7 @@ export default function CartTotals({ lines, fulfillmentMethod, deliveryZip, deli
       {row(t("totals_tax"), "taxCents")}
       <div className="flex justify-between items-center border-t border-mute-100 mt-2 pt-2.5 font-display text-base">
         <span>{t("totals_total")}</span>
-        <EditableAmount cents={totals.totalCents} computed={computed.totalCents} onSet={set("totalCents")} onClear={clear("totalCents")} />
+        <EditableAmount cents={totals.totalCents} computed={natural.totalCents} onSet={set("totalCents")} onClear={clear("totalCents")} />
       </div>
     </div>
   );

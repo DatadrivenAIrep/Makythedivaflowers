@@ -31,4 +31,27 @@ describe("resolveOrderTotals", () => {
     });
     expect(t.totalCents).toBe(9999);
   });
+
+  it("cascades: overriding the subtotal recomputes tax + total", () => {
+    const t = resolveOrderTotals({
+      lines: [customLine(5000, 1)],
+      fulfillmentMethod: "in-store",
+      override: { subtotalCents: 10000 },
+    });
+    expect(t.subtotalCents).toBe(10000);
+    expect(t.taxCents).toBe(Math.round(10000 * 0.08625));
+    expect(t.totalCents).toBe(10000 + t.taxCents);
+  });
+
+  it("cascades: overriding delivery recomputes tax + total", () => {
+    const t = resolveOrderTotals({
+      lines: [customLine(5000, 1)],
+      fulfillmentMethod: "delivery",
+      address: { zip: "11507", city: "Albertson" },
+      override: { deliveryCents: 2000 },
+    });
+    expect(t.deliveryCents).toBe(2000);
+    expect(t.taxCents).toBe(Math.round((t.subtotalCents + 2000) * 0.08625));
+    expect(t.totalCents).toBe(t.subtotalCents + 2000 + t.taxCents);
+  });
 });

@@ -66,10 +66,12 @@ export function resolveOrderTotals(input: {
   }
   const computed = computeOrderTotals(subtotal, delivery);
   const o = input.override ?? {};
-  return {
-    subtotalCents: o.subtotalCents ?? computed.subtotalCents,
-    deliveryCents: o.deliveryCents ?? computed.deliveryCents,
-    taxCents: o.taxCents ?? computed.taxCents,
-    totalCents: o.totalCents ?? computed.totalCents,
-  };
+  // Cascade: an overridden subtotal/delivery must flow into tax + total (unless
+  // those are themselves explicitly overridden). Only a total override pins it.
+  const subtotalCents = o.subtotalCents ?? computed.subtotalCents;
+  const deliveryCents = o.deliveryCents ?? computed.deliveryCents;
+  const recomputed = computeOrderTotals(subtotalCents, deliveryCents);
+  const taxCents = o.taxCents ?? recomputed.taxCents;
+  const totalCents = o.totalCents ?? subtotalCents + deliveryCents + taxCents;
+  return { subtotalCents, deliveryCents, taxCents, totalCents };
 }
