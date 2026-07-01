@@ -11,6 +11,7 @@ import CartTotals from "./CartTotals";
 import PaymentBlock, { type PaymentState } from "./PaymentBlock";
 import { toOrderFulfillment } from "./FulfillmentBlock";
 import { useRouter, useSearchParams } from "next/navigation";
+import { formatDateTime } from "@/lib/format-datetime";
 
 type Channel = "walk-in" | "phone" | "whatsapp" | "event";
 
@@ -223,7 +224,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
             ))}
           </div>
           <div className="text-mute-400 text-xs tabular-nums" suppressHydrationWarning>
-            {new Date().toLocaleString(locale === "es" ? "es-MX" : "en-US")}
+            {formatDateTime(new Date().toISOString(), locale)}
           </div>
         </div>
 

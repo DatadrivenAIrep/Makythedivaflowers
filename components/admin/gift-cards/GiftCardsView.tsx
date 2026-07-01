@@ -6,6 +6,7 @@ import { ArrowLeft, Plus } from "@phosphor-icons/react/dist/ssr";
 import type { GiftCardListItem, GiftCardStats } from "@/lib/gift-card-storage";
 import IssueGiftCardForm from "./IssueGiftCardForm";
 import GiftCardDetail from "./GiftCardDetail";
+import { formatDate } from "@/lib/format-datetime";
 
 function money(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
@@ -130,7 +131,7 @@ export default function GiftCardsView({
                     </td>
                     <td className="px-4 py-3 text-ink/70">
                       {c.expiresAt
-                        ? new Date(c.expiresAt).toLocaleDateString(locale === "es" ? "es-ES" : "en-US")
+                        ? formatDate(c.expiresAt, locale)
                         : "—"}
                     </td>
                     <td className="px-4 py-3 text-[10px] uppercase tracking-wide text-ink/45">
