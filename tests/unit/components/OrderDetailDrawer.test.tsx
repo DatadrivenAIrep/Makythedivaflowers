@@ -2,6 +2,11 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import OrderDetailDrawer from "@/components/admin/dashboard/OrderDetailDrawer";
 
+vi.mock("next-intl", () => ({
+  useTranslations: () => (k: string) => k,
+  useLocale: () => "es",
+}));
+
 const order = {
   id: "o1", source: "web", locale: "es",
   fulfillment: { method: "delivery", recipient: { name: "Maria Lopez", phone: "5165550100" },
@@ -51,10 +56,10 @@ it("shows fulfillment-advance actions for an unpaid phone order", async () => {
   render(<OrderDetailDrawer orderId="o2" onClose={() => {}} onChanged={() => {}} />);
   await waitFor(() => expect(screen.getAllByText(/Maria Lopez/).length).toBeGreaterThan(0));
   // payment-collection actions stay available for the unpaid order…
-  expect(screen.getByRole("button", { name: /Cash/ })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: /cash/ })).toBeInTheDocument();
   // …and fulfillment can be advanced even though it isn't paid yet.
-  expect(screen.getByRole("button", { name: /Preparar/ })).toBeInTheDocument();
-  expect(screen.getByRole("button", { name: /Entregada/ })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: /prepare/ })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: /^delivered$/ })).toBeInTheDocument();
 });
 
 it("shows fulfillment-advance actions for an unpaid walk-in order", async () => {
@@ -68,9 +73,9 @@ it("shows fulfillment-advance actions for an unpaid walk-in order", async () => 
   });
   render(<OrderDetailDrawer orderId="o3" onClose={() => {}} onChanged={() => {}} />);
   await waitFor(() => expect(screen.getAllByText(/Maria Lopez/).length).toBeGreaterThan(0));
-  expect(screen.getByRole("button", { name: /Cash/ })).toBeInTheDocument();
-  expect(screen.getByRole("button", { name: /Preparar/ })).toBeInTheDocument();
-  expect(screen.getByRole("button", { name: /Entregada/ })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: /cash/ })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: /prepare/ })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: /^delivered$/ })).toBeInTheDocument();
 });
 
 it("closes on Esc", async () => {

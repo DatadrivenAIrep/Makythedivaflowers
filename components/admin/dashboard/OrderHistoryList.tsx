@@ -1,11 +1,13 @@
 "use client";
+import { useTranslations, useLocale } from "next-intl";
+import { formatDateTime } from "@/lib/format-datetime";
 import type { OrderChange } from "@/types/order";
 
-function fmtTs(ts: string) { return new Date(ts).toLocaleString("es-US"); }
-
 export default function OrderHistoryList({ history }: { history: OrderChange[] }) {
+  const t = useTranslations("admin_orders");
+  const locale = useLocale();
   if (history.length === 0) {
-    return <div className="text-ink/50">Sin cambios todavía.</div>;
+    return <div className="text-ink/50">{t("no_changes")}</div>;
   }
   const ordered = [...history].reverse(); // newest first
   return (
@@ -13,7 +15,7 @@ export default function OrderHistoryList({ history }: { history: OrderChange[] }
       {ordered.map((c) => (
         <li key={c.id} className="text-xs">
           <div>
-            <span className="text-ink/60">{fmtTs(c.at)}</span>{" · "}
+            <span className="text-ink/60">{formatDateTime(c.at, locale)}</span>{" · "}
             <span className="font-semibold">{c.actor}</span>{" · "}
             <span>{c.summary}</span>
           </div>

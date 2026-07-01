@@ -1,7 +1,12 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import OrderHistoryList from "@/components/admin/dashboard/OrderHistoryList";
 import type { OrderChange } from "@/types/order";
+
+vi.mock("next-intl", () => ({
+  useTranslations: () => (k: string) => k,
+  useLocale: () => "es",
+}));
 
 const history: OrderChange[] = [
   { id: "1", orderId: "o", at: "2026-06-01T10:00:00Z", actor: "maky", kind: "created", summary: "Orden creada · walk-in" },
@@ -20,6 +25,6 @@ describe("OrderHistoryList", () => {
 
   it("renders an empty state", () => {
     render(<OrderHistoryList history={[]} />);
-    expect(screen.getByText(/Sin cambios/)).toBeInTheDocument();
+    expect(screen.getByText(/no_changes/)).toBeInTheDocument();
   });
 });

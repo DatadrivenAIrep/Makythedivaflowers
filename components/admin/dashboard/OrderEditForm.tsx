@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import type { Order, CartLine, OrderTotals } from "@/types/order";
 import FulfillmentBlock, { type FulfillmentState, toOrderFulfillment } from "@/components/admin/intake/FulfillmentBlock";
 import ProductPicker from "@/components/admin/intake/ProductPicker";
@@ -29,6 +30,7 @@ export default function OrderEditForm({
   onCancel: () => void;
   onSave: (patch: OrderEditPatch) => void;
 }) {
+  const t = useTranslations("admin_orders");
   const [contact, setContact] = useState({
     name: order.contact.name ?? "", email: order.contact.email ?? "", phone: order.contact.phone,
   });
@@ -68,12 +70,12 @@ export default function OrderEditForm({
   return (
     <div className="space-y-4">
       <section className="rounded border border-ink/10 p-3 text-sm">
-        <div className="mb-2 text-xs uppercase tracking-wide text-ink/50">Contacto</div>
+        <div className="mb-2 text-xs uppercase tracking-wide text-ink/50">{t("contact")}</div>
         <div className="grid grid-cols-2 gap-2">
-          <input value={contact.phone} onChange={(e) => setContact({ ...contact, phone: e.target.value })} placeholder="Teléfono" className="rounded border border-ink/15 px-2 py-1" />
-          <input value={contact.name} onChange={(e) => setContact({ ...contact, name: e.target.value })} placeholder="Nombre" className="rounded border border-ink/15 px-2 py-1" />
+          <input value={contact.phone} onChange={(e) => setContact({ ...contact, phone: e.target.value })} placeholder={t("phone")} className="rounded border border-ink/15 px-2 py-1" />
+          <input value={contact.name} onChange={(e) => setContact({ ...contact, name: e.target.value })} placeholder={t("name")} className="rounded border border-ink/15 px-2 py-1" />
         </div>
-        <input value={contact.email} onChange={(e) => setContact({ ...contact, email: e.target.value })} placeholder="Email" className="mt-2 w-full rounded border border-ink/15 px-2 py-1" />
+        <input value={contact.email} onChange={(e) => setContact({ ...contact, email: e.target.value })} placeholder={t("email")} className="mt-2 w-full rounded border border-ink/15 px-2 py-1" />
       </section>
 
       <FulfillmentBlock value={fulfillment} onChange={setFulfillment} />
@@ -92,10 +94,10 @@ export default function OrderEditForm({
       <div className="flex gap-2">
         <button type="button" disabled={busy || lines.length === 0} onClick={submit}
           className="rounded-full bg-ink px-5 py-2 text-bone disabled:opacity-40">
-          {busy ? "Guardando…" : "Guardar cambios"}
+          {busy ? t("saving") : t("save_changes")}
         </button>
         <button type="button" disabled={busy} onClick={onCancel}
-          className="rounded-full border border-ink/20 px-4 py-2">Cancelar</button>
+          className="rounded-full border border-ink/20 px-4 py-2">{t("cancel")}</button>
       </div>
     </div>
   );
