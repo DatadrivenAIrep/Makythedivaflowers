@@ -2,12 +2,17 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import LedgerFilters from "@/components/admin/dashboard/LedgerFilters";
 
+vi.mock("next-intl", () => ({
+  useTranslations: () => (k: string) => k,
+  useLocale: () => "es",
+}));
+
 it("emits q on text input change after debounce", () => {
   vi.useFakeTimers();
   try {
     const onChange = vi.fn();
     render(<LedgerFilters value={{}} onChange={onChange} />);
-    fireEvent.change(screen.getByPlaceholderText(/Buscar/i), { target: { value: "Maria" } });
+    fireEvent.change(screen.getByPlaceholderText("search_placeholder"), { target: { value: "Maria" } });
     expect(onChange).not.toHaveBeenCalled();
     act(() => { vi.advanceTimersByTime(350); });
     expect(onChange).toHaveBeenCalledWith({ q: "Maria" });
@@ -28,14 +33,14 @@ it("toggles a date-range chip", () => {
 it("toggles a paymentStatus chip", () => {
   const onChange = vi.fn();
   render(<LedgerFilters value={{}} onChange={onChange} />);
-  fireEvent.click(screen.getByRole("button", { name: /^Pagado$/ }));
+  fireEvent.click(screen.getByRole("button", { name: "payment_status.paid" }));
   expect(onChange).toHaveBeenCalledWith({ paymentStatus: ["paid"] });
 });
 
 it("renders active filter chips that are removable", () => {
   const onChange = vi.fn();
   render(<LedgerFilters value={{ paymentStatus: ["paid"], q: "Maria" }} onChange={onChange} />);
-  expect(screen.getByText(/Pago: Pagado/)).toBeInTheDocument();
-  fireEvent.click(screen.getByLabelText(/Quitar Pago/i));
+  expect(screen.getByText(/payment: payment_status\.paid/)).toBeInTheDocument();
+  fireEvent.click(screen.getByLabelText("remove_filter"));
   expect(onChange).toHaveBeenCalledWith({ q: "Maria", paymentStatus: undefined });
 });

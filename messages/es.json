@@ -1197,6 +1197,28 @@
     "save_changes": "Guardar cambios",
     "cancel": "Cancelar"
   },
+  "admin_ledger": {
+    "date": "Fecha",
+    "date_today": "Hoy",
+    "payment": "Pago",
+    "fulfillment": "Cumplimiento",
+    "source": "Fuente",
+    "delivery": "Entrega",
+    "search_placeholder": "Buscar por nombre, teléfono, email, ID o mensaje de tarjeta",
+    "empty": "Sin órdenes que coincidan.",
+    "clear_filters": "Limpiar filtros",
+    "showing": "Mostrando {shown} de ~{total}",
+    "load_more": "Cargar 50 más",
+    "more": "más",
+    "remove_filter": "Quitar {label}",
+    "source_web": "Web",
+    "source_walk_in": "Walk-in",
+    "source_phone": "Teléfono",
+    "source_whatsapp": "WhatsApp",
+    "source_event": "Evento",
+    "method_delivery": "Delivery",
+    "method_pickup": "Pickup"
+  },
   "admin_dashboard": {
     "nav_bandeja": "Bandeja",
     "nav_run_sheet": "Entregas hoy",

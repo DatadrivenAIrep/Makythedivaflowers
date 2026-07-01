@@ -1,18 +1,22 @@
 "use client";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations, useLocale } from "next-intl";
 import DashboardShell from "./DashboardShell";
 import LedgerFilters, { type LedgerFilterValue } from "./LedgerFilters";
 import OrderDetailDrawer from "./OrderDetailDrawer";
 import { resolveLine } from "./product-lookup";
 import AdminButton from "./AdminButton";
+import { formatDate } from "@/lib/format-datetime";
 import type { Order } from "@/types/order";
 
-function ledgerItemSummary(order: Order): string {
+type Translator = (key: string) => string;
+
+function ledgerItemSummary(order: Order, t: Translator): string {
   if (order.lines.length === 0) return "—";
   const first = resolveLine(order.lines[0]);
   const variantLabel = first.variantLabel ? ` · ${first.variantLabel}` : "";
-  const suffix = order.lines.length > 1 ? ` + ${order.lines.length - 1} más` : "";
+  const suffix = order.lines.length > 1 ? ` + ${order.lines.length - 1} ${t("more")}` : "";
   return first.name + variantLabel + suffix;
 }
 
@@ -46,20 +50,20 @@ function valueToParams(v: LedgerFilterValue): URLSearchParams {
 }
 
 function money(c: number) { return `$${(c / 100).toFixed(2)}`; }
-function dateStr(s: string) { return new Date(s).toLocaleDateString("es-US"); }
 
 const PAY_BADGE: Record<string, string> = {
   paid: "bg-emerald-100 text-emerald-700",
   pending: "bg-amber-100 text-amber-700",
   refunded: "bg-stone-200 text-stone-700",
 };
-const FUL_LABEL: Record<string, string> = {
-  pending: "Pendiente", preparing: "Preparando",
-  "out-for-delivery": "En camino", delivered: "Entregada",
-  failed: "Fallida", canceled: "Cancelada",
-};
 
-function LedgerRow({ order, onOpen }: { order: Order; onOpen: (id: string) => void }) {
+function LedgerRow({ order, onOpen, t, to, locale }: {
+  order: Order;
+  onOpen: (id: string) => void;
+  t: Translator;
+  to: Translator;
+  locale: string;
+}) {
   return (
     <li
       onClick={() => onOpen(order.id)}
@@ -71,19 +75,22 @@ function LedgerRow({ order, onOpen }: { order: Order; onOpen: (id: string) => vo
         <span className="text-xs text-ink/40">#{order.id.slice(-6)}</span>
         <span className="ml-auto font-semibold">{money(order.totals.totalCents)}</span>
       </div>
-      <div className="mt-0.5 text-xs text-ink/60">{ledgerItemSummary(order)}</div>
+      <div className="mt-0.5 text-xs text-ink/60">{ledgerItemSummary(order, t)}</div>
       <div className="mt-1 flex items-center gap-2 text-xs text-ink/60">
         <span className={`rounded px-1.5 py-0.5 text-[10px] ${PAY_BADGE[order.paymentStatus] ?? ""}`}>
-          {order.paymentStatus === "paid" ? "Pagado" : order.paymentStatus === "pending" ? "Pendiente" : "Reembolsado"}
+          {to(`payment_status.${order.paymentStatus}`)}
         </span>
-        <span>· {FUL_LABEL[order.status] ?? order.status}</span>
-        <span>· {dateStr(order.createdAt)}</span>
+        <span>· {to(`fulfillment_status.${order.status}`)}</span>
+        <span>· {formatDate(order.createdAt, locale)}</span>
       </div>
     </li>
   );
 }
 
 export default function LedgerView({ locale }: { locale: string }) {
+  const t = useTranslations("admin_ledger");
+  const to = useTranslations("admin_orders");
+  const activeLocale = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
   const value = useMemo(() => paramsToValue(searchParams), [searchParams]);
@@ -124,21 +131,21 @@ export default function LedgerView({ locale }: { locale: string }) {
       <section>
         {orders.length === 0 && !loading ? (
           <p className="rounded border border-ink/10 bg-bone p-4 text-sm text-ink/60">
-            Sin órdenes que coincidan.{" "}
-            <button onClick={() => onChange({})} className="underline">Limpiar filtros</button>
+            {t("empty")}{" "}
+            <button onClick={() => onChange({})} className="underline">{t("clear_filters")}</button>
           </p>
         ) : (
           <ul className="space-y-2">
             {orders.map((o) => (
-              <LedgerRow key={o.id} order={o} onOpen={setDrawerOrderId} />
+              <LedgerRow key={o.id} order={o} onOpen={setDrawerOrderId} t={t} to={to} locale={activeLocale} />
             ))}
           </ul>
         )}
         <footer className="mt-4 flex items-center justify-center gap-3 text-xs text-ink/60">
-          <span>Mostrando {orders.length} de ~{approxTotal}</span>
+          <span>{t("showing", { shown: orders.length, total: approxTotal })}</span>
           {nextCursor && (
             <AdminButton variant="secondary" onClick={() => fetchPage(nextCursor)} disabled={loading}>
-              Cargar 50 más
+              {t("load_more")}
             </AdminButton>
           )}
         </footer>
