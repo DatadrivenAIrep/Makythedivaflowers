@@ -68,8 +68,9 @@ const payment = z.discriminatedUnion("status", [
 export const intakeSchema = z.object({
   source: z.enum(["walk-in", "phone", "whatsapp", "event"]),
   customer: z.object({
-    phone,
-    name: z.string().min(2).max(80),
+    // Optional here; required for every method except pickup via the superRefine below.
+    phone: z.string().transform((s) => s.replace(/\D/g, "")).optional(),
+    name: z.string().max(80).optional(),
     email: z.string().email().optional().or(z.literal("")),
     messagingChannel: z.enum(["sms", "whatsapp", "email", "none"]).optional(),
     locale: z.enum(["en", "es"]).optional(),
@@ -88,6 +89,18 @@ export const intakeSchema = z.object({
   internalNotes: z.string().max(400).optional(),
   giftCardCode: z.string().min(1).max(50).optional(),
   payment,
-});
+})
+  .superRefine((data, ctx) => {
+    // Buyer (customer) info is optional for pickup — the recipient identifies the
+    // order. For every other method, name + phone are required.
+    if (data.fulfillment.method !== "pickup") {
+      if ((data.customer.phone ?? "").length < 10) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["customer", "phone"], message: "phone_too_short" });
+      }
+      if ((data.customer.name ?? "").trim().length < 2) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["customer", "name"], message: "name_too_short" });
+      }
+    }
+  });
 
 export type IntakeInput = z.infer<typeof intakeSchema>;

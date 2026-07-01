@@ -33,9 +33,17 @@ export async function POST(req: Request) {
   const input = parsed.data;
   const now = new Date().toISOString();
 
+  // Buyer info is optional for pickup — fall back to the recipient (who picks up)
+  // so the order/customer record always has a name + phone.
+  const recipient = input.fulfillment.recipient;
+  const contactName =
+    input.customer.name && input.customer.name.trim() ? input.customer.name : recipient.name;
+  const contactPhone =
+    input.customer.phone && input.customer.phone.length >= 10 ? input.customer.phone : recipient.phone;
+
   const customer = upsertOnOrder({
-    name: input.customer.name,
-    phone: input.customer.phone,
+    name: contactName,
+    phone: contactPhone,
     email: input.customer.email && input.customer.email !== "" ? input.customer.email : undefined,
     address:
       input.fulfillment.method === "delivery" ? input.fulfillment.address : undefined,
@@ -54,9 +62,9 @@ export async function POST(req: Request) {
     lines: input.lines as CartLine[],
     fulfillment,
     contact: {
-      name: input.customer.name && input.customer.name !== "" ? input.customer.name : undefined,
+      name: contactName,
       email: input.customer.email && input.customer.email !== "" ? input.customer.email : undefined,
-      phone: input.customer.phone,
+      phone: contactPhone,
     },
     totals: computeTotals(input),
     status: "pending",

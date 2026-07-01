@@ -270,7 +270,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
             </button>
             <button
               type="button"
-              disabled={submitting || lines.length === 0 || customer.name.length === 0 || customer.phone.replace(/\D/g, "").length < 10}
+              disabled={submitting || lines.length === 0 || (fulfillment.method !== "pickup" && (customer.name.length === 0 || customer.phone.replace(/\D/g, "").length < 10))}
               onClick={onSubmit}
               className="px-7 py-3.5 rounded-full bg-ink text-bone font-display disabled:opacity-40"
             >
