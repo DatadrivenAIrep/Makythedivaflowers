@@ -1122,5 +1122,10 @@
     "detail_void": "Void",
     "detail_voided": "Voided",
     "empty": "No gift cards issued yet"
+  },
+  "admin_orders": {
+    "fulfillment_status": { "pending": "Received", "preparing": "Preparing", "out-for-delivery": "Out for delivery", "delivered": "Delivered", "failed": "Failed", "canceled": "Canceled" },
+    "payment_status": { "paid": "Paid", "pending": "Pending", "refunded": "Refunded" },
+    "slot": { "morning": "Morning", "midday": "Midday", "afternoon": "Afternoon", "evening": "Evening" }
   }
 }

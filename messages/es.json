@@ -1124,5 +1124,10 @@
     "detail_void": "Anular",
     "detail_voided": "Anulada",
     "empty": "Aún no has emitido gift cards"
+  },
+  "admin_orders": {
+    "fulfillment_status": { "pending": "Recibida", "preparing": "Preparando", "out-for-delivery": "En camino", "delivered": "Entregada", "failed": "Fallida", "canceled": "Cancelada" },
+    "payment_status": { "paid": "Pagado", "pending": "Pendiente", "refunded": "Reembolsado" },
+    "slot": { "morning": "Mañana", "midday": "Mediodía", "afternoon": "Tarde", "evening": "Noche" }
   }
 }
