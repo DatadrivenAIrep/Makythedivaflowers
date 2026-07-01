@@ -1129,5 +1129,14 @@
     "fulfillment_status": { "pending": "Recibida", "preparing": "Preparando", "out-for-delivery": "En camino", "delivered": "Entregada", "failed": "Fallida", "canceled": "Cancelada" },
     "payment_status": { "paid": "Pagado", "pending": "Pendiente", "refunded": "Reembolsado" },
     "slot": { "morning": "Mañana", "midday": "Mediodía", "afternoon": "Tarde", "evening": "Noche" }
+  },
+  "admin_dashboard": {
+    "nav_bandeja": "Bandeja",
+    "nav_run_sheet": "Entregas hoy",
+    "nav_ledger": "Libro de órdenes",
+    "nav_gift_cards": "Gift Cards",
+    "nav_new_order": "Nueva orden",
+    "last_updated": "Actualizado",
+    "refresh": "Actualizar"
   }
 }

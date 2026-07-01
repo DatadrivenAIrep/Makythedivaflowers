@@ -3,6 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowsClockwise, Plus, GearSix } from "@phosphor-icons/react/dist/ssr";
+import { useTranslations } from "next-intl";
+import { LocaleSwitcher } from "@/components/nav/LocaleSwitcher";
+import type { Locale } from "@/types/locale";
 
 type Props = {
   locale: string;
@@ -13,6 +16,7 @@ type Props = {
 
 export default function DashboardShell({ locale, children, lastUpdated, onRefresh }: Props) {
   const pathname = usePathname();
+  const t = useTranslations("admin_dashboard");
   const isLedger = pathname.endsWith("/ledger");
   const isRunSheet = pathname.endsWith("/run-sheet");
   const isSettings = pathname.endsWith("/settings");
@@ -31,35 +35,36 @@ export default function DashboardShell({ locale, children, lastUpdated, onRefres
             <Link
               href={base}
               className={`flex min-h-11 items-center rounded-lg px-3 ${isBandeja ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
-            >Bandeja</Link>
+            >{t("nav_bandeja")}</Link>
             <Link
               href={`${base}/run-sheet`}
               className={`flex min-h-11 items-center rounded-lg px-3 ${isRunSheet ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
-            >Entregas hoy</Link>
+            >{t("nav_run_sheet")}</Link>
             <Link
               href={`${base}/ledger`}
               className={`flex min-h-11 items-center rounded-lg px-3 ${isLedger ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
-            >Libro de órdenes</Link>
+            >{t("nav_ledger")}</Link>
             <Link
               href={`/${locale}/admin/gift-cards`}
               className={`flex min-h-11 items-center rounded-lg px-3 ${isGiftCards ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >
-              Gift Cards
+              {t("nav_gift_cards")}
             </Link>
             <Link
               href={`/${locale}/admin/intake`}
               className="flex min-h-11 items-center gap-1 rounded-lg px-3 hover:bg-ink/5"
-            ><Plus size={16} weight="bold" /> Nueva orden</Link>
+            ><Plus size={16} weight="bold" /> {t("nav_new_order")}</Link>
           </nav>
           <Link
               href={`/${locale}/admin/settings`}
               className={`flex min-h-11 items-center gap-1 rounded-lg px-3 ${isSettings ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             ><GearSix size={16} weight="bold" /></Link>
           <div className="ml-auto flex items-center gap-3 text-xs text-ink/60">
-            {lastUpdated && <span>Actualizado: {lastUpdated}</span>}
+            <LocaleSwitcher current={locale as Locale} />
+            {lastUpdated && <span>{t("last_updated")}: {lastUpdated}</span>}
             {onRefresh && (
               <button onClick={onRefresh} className="flex min-h-11 items-center gap-1 rounded-lg border border-ink/20 px-3 hover:bg-ink/5">
-                <ArrowsClockwise size={16} weight="bold" /> Actualizar
+                <ArrowsClockwise size={16} weight="bold" /> {t("refresh")}
               </button>
             )}
           </div>
