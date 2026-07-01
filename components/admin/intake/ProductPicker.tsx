@@ -21,13 +21,11 @@ export default function ProductPicker({ products, onAdd }: Props) {
     designerNotes: "",
   });
 
-  const filtered = products
-    .filter((p) => {
-      if (!query.trim()) return true;
-      const q = query.toLowerCase();
-      return p.title.en.toLowerCase().includes(q) || p.title.es.toLowerCase().includes(q);
-    })
-    .slice(0, 9);
+  const filtered = products.filter((p) => {
+    if (!query.trim()) return true;
+    const q = query.toLowerCase();
+    return p.title.en.toLowerCase().includes(q) || p.title.es.toLowerCase().includes(q);
+  });
 
   function addCustom() {
     if (!custom.title.trim() || custom.priceCents <= 0) return;
@@ -92,7 +90,7 @@ export default function ProductPicker({ products, onAdd }: Props) {
         </div>
       )}
 
-      <div className="grid grid-cols-3 gap-2.5 mb-4">
+      <div className="grid grid-cols-3 gap-2.5 mb-4 max-h-[400px] overflow-y-auto pr-1">
         {filtered.map((p) => {
           const variant = p.variants[0];
           const img = p.images[0];
