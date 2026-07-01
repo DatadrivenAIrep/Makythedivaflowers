@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import { Truck, CheckCircle, Phone, NoteBlank } from "@phosphor-icons/react/dist/ssr";
+import { useTranslations } from "next-intl";
 import DashboardShell from "./DashboardShell";
 import OrderDetailDrawer from "./OrderDetailDrawer";
 import AdminButton from "./AdminButton";
@@ -10,14 +11,6 @@ import type { Order } from "@/types/order";
 type RunSheetResp = { date: string; orders: Order[] };
 
 const SLOT_ORDER = ["morning", "midday", "afternoon", "evening"] as const;
-type Slot = (typeof SLOT_ORDER)[number];
-const SLOT_LABEL: Record<Slot, string> = {
-  morning: "Mañana", midday: "Mediodía", afternoon: "Tarde", evening: "Noche",
-};
-const FUL_LABEL: Record<string, string> = {
-  pending: "Pendiente", preparing: "Preparando",
-  "out-for-delivery": "En camino", delivered: "Entregada",
-};
 
 function todayISO(): string { return new Date().toISOString().slice(0, 10); }
 function money(c: number) { return `$${(c / 100).toFixed(2)}`; }
@@ -36,6 +29,8 @@ function addonsLine(o: Order): string[] {
 }
 
 export default function RunSheetView({ locale }: { locale: string }) {
+  const t = useTranslations("admin_dashboard");
+  const to = useTranslations("admin_orders");
   const [date, setDate] = useState(todayISO());
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
@@ -76,21 +71,21 @@ export default function RunSheetView({ locale }: { locale: string }) {
           onChange={(e) => setDate(e.target.value)}
           className="rounded border border-ink/15 bg-bone px-2 py-1 text-sm"
         />
-        <AdminButton variant="secondary" onClick={() => setDate(todayISO())}>Hoy</AdminButton>
+        <AdminButton variant="secondary" onClick={() => setDate(todayISO())}>{t("today_button")}</AdminButton>
         <span className="ml-auto text-sm text-ink/60">
-          {orders.length} entregas · {delivered} completadas
+          {orders.length} {t("deliveries_count")} · {delivered} {t("completed_count")}
         </span>
       </div>
 
-      {loading && orders.length === 0 && <p className="text-sm text-ink/50">Cargando…</p>}
+      {loading && orders.length === 0 && <p className="text-sm text-ink/50">{t("loading")}</p>}
       {!loading && orders.length === 0 && (
-        <p className="rounded border border-ink/10 bg-bone p-4 text-sm text-ink/60">Sin entregas para esta fecha.</p>
+        <p className="rounded border border-ink/10 bg-bone p-4 text-sm text-ink/60">{t("no_deliveries")}</p>
       )}
 
       {grouped.map((group) => (
         <section key={group.slot} className="mb-6">
           <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-ink/60">
-            {SLOT_LABEL[group.slot]} · {group.orders.length}
+            {to("slot." + group.slot)} · {group.orders.length}
           </h2>
           <ul className="space-y-2">
             {group.orders.map((o) => {
@@ -107,9 +102,9 @@ export default function RunSheetView({ locale }: { locale: string }) {
                         <span className="font-semibold">{f.recipient.name}</span>
                         <span className="text-xs text-ink/40">#{o.id.slice(-6)}</span>
                         <span className={`rounded px-1.5 py-0.5 text-[10px] ${o.paymentStatus === "paid" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
-                          {o.paymentStatus === "paid" ? "Pagado" : "Cobrar"}
+                          {o.paymentStatus === "paid" ? to("payment_status.paid") : t("collect")}
                         </span>
-                        <span className="ml-auto text-xs text-ink/60">{FUL_LABEL[o.status] ?? o.status} · {money(o.totals.totalCents)}</span>
+                        <span className="ml-auto text-xs text-ink/60">{to("fulfillment_status." + o.status)} · {money(o.totals.totalCents)}</span>
                       </div>
                       <div className="mt-1">
                         <a href={addrLink} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="text-ink/80 underline">
@@ -129,10 +124,10 @@ export default function RunSheetView({ locale }: { locale: string }) {
                   <div className="mt-2 flex flex-wrap gap-2 border-t border-ink/5 pt-2">
                     <AdminButton variant="secondary" icon={Phone} href={`tel:${f.recipient.phone}`} onClick={(e) => e.stopPropagation()}>{f.recipient.phone}</AdminButton>
                     {o.status !== "delivered" && o.status !== "out-for-delivery" && (
-                      <AdminButton variant="secondary" icon={Truck} onClick={() => advance(o.id, "out-for-delivery")}>En camino</AdminButton>
+                      <AdminButton variant="secondary" icon={Truck} onClick={() => advance(o.id, "out-for-delivery")}>{t("action_en_route")}</AdminButton>
                     )}
                     {o.status !== "delivered" && (
-                      <AdminButton variant="primary" icon={CheckCircle} onClick={() => advance(o.id, "delivered")}>Entregada</AdminButton>
+                      <AdminButton variant="primary" icon={CheckCircle} onClick={() => advance(o.id, "delivered")}>{t("action_delivered")}</AdminButton>
                     )}
                   </div>
                 </li>

@@ -2,6 +2,11 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import PendingCard from "@/components/admin/dashboard/PendingCard";
 
+vi.mock("next-intl", () => ({
+  useTranslations: () => (k: string) => k,
+  useLocale: () => "es",
+}));
+
 const baseOrder = {
   id: "do_xyz", source: "walk-in", locale: "es",
   fulfillment: { method: "delivery", recipient: { name: "Maria Lopez", phone: "5165550100" },
@@ -23,15 +28,15 @@ it("renders WEB badge + customer + total", () => {
 it("shows correct buttons for intake_unpaid_stale", () => {
   render(<PendingCard order={baseOrder as never} reason="intake_unpaid_stale" onAction={() => {}} onOpen={() => {}} />);
   expect(screen.getByRole("button", { name: /WhatsApp/i })).toBeInTheDocument();
-  expect(screen.getByRole("button", { name: /Reenviar link/i })).toBeInTheDocument();
-  expect(screen.getByRole("button", { name: /Marcar pagado/i })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: /action_resend_link/i })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: /action_mark_paid/i })).toBeInTheDocument();
 });
 
 it("shows correct buttons for delivery_today_undispatched", () => {
   render(<PendingCard order={baseOrder as never} reason="delivery_today_undispatched" onAction={() => {}} onOpen={() => {}} />);
-  expect(screen.getByRole("button", { name: /Preparar/i })).toBeInTheDocument();
-  expect(screen.getByRole("button", { name: /En camino/i })).toBeInTheDocument();
-  expect(screen.getByRole("button", { name: /Entregada/i })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: /action_prepare/i })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: /action_en_route/i })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: /action_delivered/i })).toBeInTheDocument();
 });
 
 it("calls onOpen when clicking the card body", () => {
@@ -44,6 +49,6 @@ it("calls onOpen when clicking the card body", () => {
 it("calls onAction with the action id when clicking a button", () => {
   const onAction = vi.fn();
   render(<PendingCard order={baseOrder as never} reason="intake_unpaid_stale" onAction={onAction} onOpen={() => {}} />);
-  fireEvent.click(screen.getByRole("button", { name: /Marcar pagado/i }));
+  fireEvent.click(screen.getByRole("button", { name: /action_mark_paid/i }));
   expect(onAction).toHaveBeenCalledWith("do_xyz", "mark_paid");
 });

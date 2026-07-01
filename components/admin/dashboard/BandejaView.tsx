@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useRef, useState } from "react";
 import { WarningCircle, CheckCircle } from "@phosphor-icons/react/dist/ssr";
+import { useTranslations } from "next-intl";
 import DashboardShell from "./DashboardShell";
 import OrderDetailDrawer from "./OrderDetailDrawer";
 import PendingCard, { type PendingReason, type PendingActionId } from "./PendingCard";
@@ -20,6 +21,7 @@ function timeOf(ts: string): string {
 }
 
 export default function BandejaView({ locale }: { locale: string }) {
+  const t = useTranslations("admin_dashboard");
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioUnlockedRef = useRef(false);
   const [drawerOrderId, setDrawerOrderId] = useState<string | null>(null);
@@ -108,17 +110,17 @@ export default function BandejaView({ locale }: { locale: string }) {
         {error && (
           <div className="mb-4 flex items-center gap-2 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
             <WarningCircle size={18} weight="fill" />
-            <span>Sin conexión — mostrando datos anteriores.</span>
-            <AdminButton variant="danger" className="ml-auto" onClick={() => { void refresh(); }}>Reintentar</AdminButton>
+            <span>{t("offline_notice")}</span>
+            <AdminButton variant="danger" className="ml-auto" onClick={() => { void refresh(); }}>{t("retry")}</AdminButton>
           </div>
         )}
         <section className="mb-6">
           <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-ink/60">
-            Pendientes · {queue.length}
+            {t("pending")} · {queue.length}
           </h2>
           {queue.length === 0 ? (
             <p className="flex items-center gap-1.5 rounded-lg border border-ink/10 bg-bone p-4 text-sm text-ink/60">
-              <CheckCircle size={18} weight="fill" className="text-success" /> Todo al día
+              <CheckCircle size={18} weight="fill" className="text-success" /> {t("all_caught_up")}
             </p>
           ) : (
             <ul className="space-y-2">
@@ -138,7 +140,7 @@ export default function BandejaView({ locale }: { locale: string }) {
 
         <section>
           <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-ink/60">
-            Feed · {feed.length} eventos
+            {t("feed")} · {feed.length} {t("events")}
           </h2>
           <ul className="divide-y divide-ink/5 rounded border border-ink/10 bg-bone">
             {feed.map((e, i) => (
@@ -150,7 +152,7 @@ export default function BandejaView({ locale }: { locale: string }) {
                 <span className="text-ink/60">{timeOf(e.at)}</span> — {e.label}
               </li>
             ))}
-            {feed.length === 0 && <li className="px-3 py-2 text-sm text-ink/50">Sin actividad reciente.</li>}
+            {feed.length === 0 && <li className="px-3 py-2 text-sm text-ink/50">{t("no_recent_activity")}</li>}
           </ul>
         </section>
 

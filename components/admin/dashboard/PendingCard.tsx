@@ -5,9 +5,12 @@ import {
   WhatsappLogo, ArrowsClockwise, Check, CheckCircle,
   Package, Truck, ArrowRight, Phone,
 } from "@phosphor-icons/react/dist/ssr";
+import { useTranslations } from "next-intl";
 import { resolveLine, firstThumb } from "./product-lookup";
 import AdminButton from "./AdminButton";
 import type { Order } from "@/types/order";
+
+type Translator = (key: string) => string;
 
 export type PendingReason =
   | "delivery_today_unpaid" | "pickup_today_unpaid"
@@ -44,18 +47,18 @@ function money(cents: number): string {
   return `$${(cents / 100).toFixed(2)}`;
 }
 
-function recipientText(o: Order): string {
+function recipientText(o: Order, t: Translator): string {
   if (o.fulfillment.method === "delivery") return `${o.fulfillment.address.city} ${o.fulfillment.address.zip}`;
-  if (o.fulfillment.method === "pickup") return "Pickup en tienda";
-  return "En tienda";
+  if (o.fulfillment.method === "pickup") return t("pickup_in_store");
+  return t("in_store");
 }
 
-function whenText(o: Order): string {
-  if (o.fulfillment.method === "in-store") return "Ahora";
+function whenText(o: Order, t: Translator, to: Translator): string {
+  if (o.fulfillment.method === "in-store") return t("now");
   const today = new Date().toISOString().slice(0, 10);
   const d = o.fulfillment.window.date;
-  const prefix = d === today ? "HOY" : d;
-  return `${prefix} · ${o.fulfillment.window.slot}`;
+  const prefix = d === today ? t("today") : d;
+  return `${prefix} · ${to("slot." + o.fulfillment.window.slot)}`;
 }
 
 type ActionDef = {
@@ -63,34 +66,36 @@ type ActionDef = {
   variant: "primary" | "secondary";
 };
 
-function actionsFor(reason: PendingReason): ActionDef[] {
+function actionsFor(reason: PendingReason, t: Translator): ActionDef[] {
   switch (reason) {
     case "delivery_today_unpaid":
     case "pickup_today_unpaid":
     case "intake_unpaid_stale":
       return [
         { id: "whatsapp", label: "WhatsApp", icon: WhatsappLogo, variant: "secondary" },
-        { id: "resend_link", label: "Reenviar link", icon: ArrowsClockwise, variant: "secondary" },
-        { id: "mark_paid", label: "Marcar pagado", icon: Check, variant: "primary" },
+        { id: "resend_link", label: t("action_resend_link"), icon: ArrowsClockwise, variant: "secondary" },
+        { id: "mark_paid", label: t("action_mark_paid"), icon: Check, variant: "primary" },
       ];
     case "delivery_today_undispatched":
       return [
-        { id: "advance_preparing", label: "Preparar", icon: Package, variant: "secondary" },
-        { id: "advance_out", label: "En camino", icon: Truck, variant: "secondary" },
-        { id: "advance_delivered", label: "Entregada", icon: CheckCircle, variant: "primary" },
+        { id: "advance_preparing", label: t("action_prepare"), icon: Package, variant: "secondary" },
+        { id: "advance_out", label: t("action_en_route"), icon: Truck, variant: "secondary" },
+        { id: "advance_delivered", label: t("action_delivered"), icon: CheckCircle, variant: "primary" },
       ];
     case "web_unacknowledged":
-      return [{ id: "open", label: "Abrir detalle", icon: ArrowRight, variant: "primary" }];
+      return [{ id: "open", label: t("action_open_detail"), icon: ArrowRight, variant: "primary" }];
   }
 }
 
 export default function PendingCard({ order, reason, onOpen, onAction }: Props) {
+  const t = useTranslations("admin_dashboard");
+  const to = useTranslations("admin_orders");
   const badge = SOURCE_BADGE[order.source] ?? { label: order.source.toUpperCase(), cls: "bg-stone-100 text-stone-700" };
-  const actions = actionsFor(reason);
+  const actions = actionsFor(reason, t);
   const thumb = firstThumb(order);
   const recipientPhone = order.fulfillment.recipient.phone;
   const first = order.lines.length > 0 ? resolveLine(order.lines[0]) : null;
-  const itemName = first ? first.name + (order.lines.length > 1 ? ` + ${order.lines.length - 1} más` : "") : "—";
+  const itemName = first ? first.name + (order.lines.length > 1 ? ` + ${order.lines.length - 1} ${t("more")}` : "") : "—";
   const itemVariant = first?.variantLabel ?? null;
   const itemAddOns = first?.addOnLabels ?? [];
   return (
@@ -121,7 +126,7 @@ export default function PendingCard({ order, reason, onOpen, onAction }: Props) 
               <p className="mt-0.5 text-xs text-emerald-700">+ {itemAddOns.join(", ")}</p>
             )}
             <p className="mt-1 text-xs text-ink/60">
-              {order.paymentStatus === "paid" ? "● Pagado" : "● Pago pendiente"} · → {whenText(order)} · {recipientText(order)}
+              {order.paymentStatus === "paid" ? t("paid_dot") : t("payment_pending_dot")} · → {whenText(order, t, to)} · {recipientText(order, t)}
             </p>
             {recipientPhone && (
               <p className="mt-0.5 flex items-center gap-1 text-xs text-ink/60">
