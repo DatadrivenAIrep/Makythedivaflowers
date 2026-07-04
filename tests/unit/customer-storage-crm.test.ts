@@ -2,6 +2,10 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { closeDb, getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import { listOrdersByCustomer } from "@/lib/order-storage";
+import {
+  getCustomerById, updateCustomer, normalizeTag,
+  addTag, removeTag, listTagsFor, listAllTags,
+} from "@/lib/customer-storage";
 
 // Fixed "now" for deterministic segment math. All storage functions accept
 // `now` as a parameter; seeds are placed relative to this instant.
@@ -49,5 +53,67 @@ describe("listOrdersByCustomer", () => {
   it("returns empty array for a customer with no orders", () => {
     seedCustomer("c1", "Ana", "5551");
     expect(listOrdersByCustomer("c1")).toEqual([]);
+  });
+});
+
+describe("getCustomerById / updateCustomer", () => {
+  it("returns null for unknown id", () => {
+    expect(getCustomerById("nope")).toBeNull();
+  });
+
+  it("gets a customer with notes mapped onto the object", () => {
+    seedCustomer("c1", "Ana", "5551");
+    getDb().prepare("UPDATE customers SET notes = 'sin lilies' WHERE id = 'c1'").run();
+    const c = getCustomerById("c1");
+    expect(c?.name).toBe("Ana");
+    expect(c?.notes).toBe("sin lilies");
+  });
+
+  it("updates notes and contact fields; empty email clears it", () => {
+    seedCustomer("c1", "Ana", "5551", { email: "ana@x.com" });
+    const updated = updateCustomer("c1", {
+      notes: "prefiere tonos pastel",
+      name: "Ana María",
+      email: "",
+      messagingChannel: "whatsapp",
+      locale: "en",
+    });
+    expect(updated).toMatchObject({
+      name: "Ana María",
+      notes: "prefiere tonos pastel",
+      messagingChannel: "whatsapp",
+      locale: "en",
+    });
+    expect(updated?.email).toBeUndefined();
+  });
+
+  it("update on unknown id returns null", () => {
+    expect(updateCustomer("nope", { notes: "x" })).toBeNull();
+  });
+});
+
+describe("tags", () => {
+  it("normalizeTag trims, collapses spaces, lowercases, caps at 24 chars", () => {
+    expect(normalizeTag("  Boda   Junio ")).toBe("boda junio");
+    expect(normalizeTag("A".repeat(40))).toBe("a".repeat(24));
+    expect(normalizeTag("   ")).toBeNull();
+  });
+
+  it("addTag is idempotent and returns the sorted tag list", () => {
+    seedCustomer("c1", "Ana", "5551");
+    expect(addTag("c1", "vip")).toEqual(["vip"]);
+    expect(addTag("c1", "vip")).toEqual(["vip"]);
+    expect(addTag("c1", "boda")).toEqual(["boda", "vip"]);
+  });
+
+  it("removeTag removes and listAllTags de-duplicates across customers", () => {
+    seedCustomer("c1", "Ana", "5551");
+    seedCustomer("c2", "Bea", "5552");
+    addTag("c1", "boda");
+    addTag("c2", "boda");
+    addTag("c2", "funeral");
+    expect(listAllTags()).toEqual(["boda", "funeral"]);
+    expect(removeTag("c2", "funeral")).toEqual(["boda"]);
+    expect(listTagsFor("c2")).toEqual(["boda"]);
   });
 });

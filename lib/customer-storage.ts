@@ -16,6 +16,7 @@ export type Customer = {
   lastSeenAt: string;
   messagingChannel?: MessagingChannel;
   locale?: "en" | "es";
+  notes?: string;
 };
 
 type CustomerRow = {
@@ -30,6 +31,7 @@ type CustomerRow = {
   last_seen_at: string;
   messaging_channel: string | null;
   locale: string | null;
+  notes: string | null;
 };
 
 function normalizePhone(p: string): string {
@@ -49,6 +51,7 @@ function rowToCustomer(r: CustomerRow): Customer {
     lastSeenAt: r.last_seen_at,
     messagingChannel: (r.messaging_channel as MessagingChannel | null) ?? undefined,
     locale: (r.locale as "en" | "es" | null) ?? undefined,
+    notes: r.notes ?? undefined,
   };
 }
 
@@ -129,4 +132,79 @@ export function upsertOnOrder(input: UpsertInput): Customer {
   );
   const fresh = db.prepare("SELECT * FROM customers WHERE id = ?").get(id) as CustomerRow;
   return rowToCustomer(fresh);
+}
+
+export function getCustomerById(id: string): Customer | null {
+  runMigrations();
+  const row = getDb().prepare("SELECT * FROM customers WHERE id = ?").get(id) as
+    | CustomerRow
+    | undefined;
+  return row ? rowToCustomer(row) : null;
+}
+
+export type CustomerPatch = {
+  notes?: string;
+  name?: string;
+  email?: string; // "" clears the stored email
+  messagingChannel?: MessagingChannel;
+  locale?: "en" | "es";
+};
+
+export function updateCustomer(id: string, patch: CustomerPatch): Customer | null {
+  runMigrations();
+  const db = getDb();
+  const sets: string[] = [];
+  const params: unknown[] = [];
+  if (patch.notes !== undefined) { sets.push("notes = ?"); params.push(patch.notes || null); }
+  if (patch.name !== undefined) { sets.push("name = ?"); params.push(patch.name); }
+  if (patch.email !== undefined) { sets.push("email = ?"); params.push(patch.email || null); }
+  if (patch.messagingChannel !== undefined) {
+    sets.push("messaging_channel = ?");
+    params.push(patch.messagingChannel);
+  }
+  if (patch.locale !== undefined) { sets.push("locale = ?"); params.push(patch.locale); }
+  if (sets.length) {
+    db.prepare(`UPDATE customers SET ${sets.join(", ")} WHERE id = ?`).run(...params, id);
+  }
+  return getCustomerById(id);
+}
+
+export const TAG_MAX_LENGTH = 24;
+
+/** trim + collapse inner whitespace + lowercase + cap length; null when empty. */
+export function normalizeTag(raw: string): string | null {
+  const t = raw.trim().replace(/\s+/g, " ").toLowerCase().slice(0, TAG_MAX_LENGTH).trim();
+  return t.length ? t : null;
+}
+
+export function listTagsFor(customerId: string): string[] {
+  runMigrations();
+  const rows = getDb()
+    .prepare("SELECT tag FROM customer_tags WHERE customer_id = ? ORDER BY tag")
+    .all(customerId) as Array<{ tag: string }>;
+  return rows.map((r) => r.tag);
+}
+
+export function addTag(customerId: string, tag: string): string[] {
+  runMigrations();
+  getDb()
+    .prepare("INSERT OR IGNORE INTO customer_tags (customer_id, tag) VALUES (?, ?)")
+    .run(customerId, tag);
+  return listTagsFor(customerId);
+}
+
+export function removeTag(customerId: string, tag: string): string[] {
+  runMigrations();
+  getDb()
+    .prepare("DELETE FROM customer_tags WHERE customer_id = ? AND tag = ?")
+    .run(customerId, tag);
+  return listTagsFor(customerId);
+}
+
+export function listAllTags(): string[] {
+  runMigrations();
+  const rows = getDb()
+    .prepare("SELECT DISTINCT tag FROM customer_tags ORDER BY tag")
+    .all() as Array<{ tag: string }>;
+  return rows.map((r) => r.tag);
 }
