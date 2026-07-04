@@ -486,6 +486,8 @@
     "rating_chip": "{rating} ★ · {count} reseñas",
     "hero_whatsapp": "Escríbenos por WhatsApp",
     "hero_whatsapp_msg": "Hola Maky, quiero preguntar sobre flores para un evento.",
+    "service_name": "Flores para eventos",
+    "service_desc": "Diseño floral corporativo y recurrente para restaurantes, oficinas, galerías y eventos privados en Long Island.",
     "cases": {
       "eyebrow": "Con quién trabajamos",
       "title": "Diseñado para cada espacio.",
@@ -590,6 +592,8 @@
     "rating_chip": "{rating} ★ · {count} reseñas",
     "hero_whatsapp": "Escríbenos por WhatsApp",
     "hero_whatsapp_msg": "Hola Maky, quiero consultar sobre flores para mi boda.",
+    "service_name": "Flores para bodas",
+    "service_desc": "Flores de boda de servicio completo en Long Island — arcos, mesas, ramos e instalaciones, hechos a mano por Diva Flowers.",
     "form_eyebrow": "Cotizar",
     "form_title": "Construyamos algo hermoso.",
     "process": {

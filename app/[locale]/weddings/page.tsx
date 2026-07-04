@@ -2,6 +2,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { WeddingFaqLD } from "@/components/seo/WeddingFaqLD";
+import { ServiceLD } from "@/components/seo/ServiceLD";
 import { WeddingsHero } from "@/components/weddings/WeddingsHero";
 import { ProcessStrip } from "@/components/weddings/ProcessStrip";
 import { WeddingStories } from "@/components/weddings/WeddingStories";
@@ -31,9 +32,15 @@ export default async function WeddingsPage({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "weddings.testimonials" });
   const tn = await getTranslations({ locale, namespace: "weddings.next_steps" });
+  const tw = await getTranslations({ locale, namespace: "weddings" });
   return (
     <>
       <WeddingFaqLD locale={locale} />
+      <ServiceLD
+        name={tw("service_name")}
+        description={tw("service_desc")}
+        serviceType="Wedding Florals"
+      />
       <WeddingsHero locale={locale} />
       <ProcessStrip />
       <PricingIntent locale={locale} />

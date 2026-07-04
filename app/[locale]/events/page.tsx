@@ -1,6 +1,7 @@
 // app/[locale]/events/page.tsx
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { ServiceLD } from "@/components/seo/ServiceLD";
 import { EventsHero } from "@/components/events/EventsHero";
 import { UseCaseGrid } from "@/components/events/UseCaseGrid";
 import { ProcessStrip } from "@/components/weddings/ProcessStrip";
@@ -24,8 +25,14 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
   const { locale } = await params;
   const tt = await getTranslations({ locale, namespace: "events.testimonials" });
   const tn = await getTranslations({ locale, namespace: "events.next_steps" });
+  const te = await getTranslations({ locale, namespace: "events" });
   return (
     <main>
+      <ServiceLD
+        name={te("service_name")}
+        description={te("service_desc")}
+        serviceType="Event Florals"
+      />
       <EventsHero locale={locale} />
       <UseCaseGrid locale={locale} />
       <Testimonials
