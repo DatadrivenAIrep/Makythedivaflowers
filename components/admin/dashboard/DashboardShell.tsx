@@ -21,7 +21,8 @@ export default function DashboardShell({ locale, children, lastUpdated, onRefres
   const isRunSheet = pathname.endsWith("/run-sheet");
   const isSettings = pathname.endsWith("/settings");
   const isGiftCards = pathname.includes("/admin/gift-cards");
-  const isBandeja = !isLedger && !isRunSheet && !isSettings && !isGiftCards;
+  const isCustomers = pathname.includes("/admin/customers");
+  const isBandeja = !isLedger && !isRunSheet && !isSettings && !isGiftCards && !isCustomers;
   const base = `/${locale}/admin/dashboard`;
 
   return (
@@ -49,6 +50,12 @@ export default function DashboardShell({ locale, children, lastUpdated, onRefres
               className={`flex min-h-11 items-center rounded-lg px-3 ${isGiftCards ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >
               {t("nav_gift_cards")}
+            </Link>
+            <Link
+              href={`/${locale}/admin/customers`}
+              className={`flex min-h-11 items-center rounded-lg px-3 ${isCustomers ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
+            >
+              {t("nav_customers")}
             </Link>
             <Link
               href={`/${locale}/admin/intake`}
