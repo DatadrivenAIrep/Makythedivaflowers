@@ -338,3 +338,13 @@ export async function listOrders(filters: ListOrdersFilters): Promise<ListOrders
 
   return { orders: page.map(rowToOrder), nextCursor, approxTotal };
 }
+
+export function listOrdersByCustomer(customerId: string): Order[] {
+  ensureSchema();
+  const rows = getDb()
+    .prepare(
+      "SELECT * FROM orders WHERE customer_id = ? ORDER BY created_at DESC, id DESC",
+    )
+    .all(customerId) as OrderRow[];
+  return rows.map(rowToOrder);
+}
