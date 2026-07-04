@@ -479,6 +479,8 @@
     "hero_sub": "Desde arreglos semanales en oficinas hasta instalaciones para días de prensa — diseñamos y entregamos a tiempo.",
     "hero_cta": "Obtener cotización",
     "rating_chip": "{rating} ★ · {count} reseñas",
+    "hero_whatsapp": "Escríbenos por WhatsApp",
+    "hero_whatsapp_msg": "Hola Maky, quiero preguntar sobre flores para un evento.",
     "cases": {
       "eyebrow": "Con quién trabajamos",
       "title": "Diseñado para cada espacio.",
@@ -580,6 +582,8 @@
     "hero_sub": "Desde ceremonias íntimas hasta recepciones grandiosas — diseñamos e instalamos cada tallo.",
     "hero_cta": "Empezar a planear",
     "rating_chip": "{rating} ★ · {count} reseñas",
+    "hero_whatsapp": "Escríbenos por WhatsApp",
+    "hero_whatsapp_msg": "Hola Maky, quiero consultar sobre flores para mi boda.",
     "form_eyebrow": "Cotizar",
     "form_title": "Construyamos algo hermoso.",
     "process": {

@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { MagneticButton } from "@/components/motion/MagneticButton";
+import { WhatsAppCta } from "@/components/inquiry/WhatsAppCta";
 import { RatingChip } from "@/components/social/RatingChip";
 import { REVIEWS_AGGREGATE } from "@/data/reviews";
 import type { Locale } from "@/types/locale";
@@ -30,6 +31,7 @@ export async function EventsHero({ locale }: { locale: Locale }) {
             <MagneticButton href={`/${locale}/events#inquire`} ariaLabel={t("hero_cta")}>
               {t("hero_cta")}
             </MagneticButton>
+            <WhatsAppCta label={t("hero_whatsapp")} message={t("hero_whatsapp_msg")} />
           </div>
           <RatingChip
             label={t("rating_chip", {
