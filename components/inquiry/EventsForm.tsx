@@ -9,6 +9,7 @@ import { FormShell } from "@/components/ui/form/shell/FormShell";
 import { EditorialPanel } from "@/components/ui/form/shell/EditorialPanel";
 import { FormSuccess } from "@/components/ui/form/shell/FormSuccess";
 import { FormField } from "@/components/ui/form/FormField";
+import { Disclosure } from "@/components/ui/form/Disclosure";
 import { TextInput } from "@/components/ui/form/TextInput";
 import { TextArea } from "@/components/ui/form/TextArea";
 import { RadioChips } from "@/components/ui/form/RadioChips";
@@ -97,7 +98,7 @@ export function EventsForm({ locale }: { locale: Locale }) {
             </FormField>
           </div>
 
-          <FormField label={t("phone")} htmlFor="e-phone" error={errors.contact?.phone?.message}>
+          <FormField label={t("phone")} htmlFor="e-phone" required error={errors.contact?.phone?.message}>
             <TextInput id="e-phone" type="tel" inputMode="tel" {...form.register("contact.phone")} />
           </FormField>
 
@@ -116,19 +117,21 @@ export function EventsForm({ locale }: { locale: Locale }) {
             />
           </FormField>
 
-          <FormField label={t("budget")} htmlFor="e-budget" error={errors.budgetBand?.message}>
-            <RadioChips
-              aria-labelledby="e-budget-label"
-              name="budgetBand"
-              items={budgetItems}
-              value={watchedBudget}
-              onChange={(v) => form.setValue("budgetBand", v as typeof BUDGETS[number])}
-            />
-          </FormField>
-
           <FormField label={t("brief")} htmlFor="e-brief" required error={errors.vibe?.message}>
             <TextArea id="e-brief" rows={5} aria-invalid={!!errors.vibe || undefined} {...form.register("vibe")} />
           </FormField>
+
+          <Disclosure summary={t("more_details")}>
+            <FormField label={t("budget")} htmlFor="e-budget" error={errors.budgetBand?.message}>
+              <RadioChips
+                aria-labelledby="e-budget-label"
+                name="budgetBand"
+                items={budgetItems}
+                value={watchedBudget}
+                onChange={(v) => form.setValue("budgetBand", v as typeof BUDGETS[number])}
+              />
+            </FormField>
+          </Disclosure>
 
           {errorMsg && (
             <p role="alert" className="font-mono text-[11px] text-error">

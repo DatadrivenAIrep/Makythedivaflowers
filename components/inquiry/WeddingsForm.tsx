@@ -9,6 +9,7 @@ import { FormShell } from "@/components/ui/form/shell/FormShell";
 import { PhotoPanel } from "@/components/ui/form/shell/PhotoPanel";
 import { FormSuccess } from "@/components/ui/form/shell/FormSuccess";
 import { FormField } from "@/components/ui/form/FormField";
+import { Disclosure } from "@/components/ui/form/Disclosure";
 import { TextInput } from "@/components/ui/form/TextInput";
 import { TextArea } from "@/components/ui/form/TextArea";
 import { DateInput } from "@/components/ui/form/DateInput";
@@ -95,47 +96,49 @@ export function WeddingsForm({ locale }: { locale: Locale }) {
             </FormField>
           </div>
 
-          <FormField label={t("phone")} htmlFor="w-phone" error={errors.contact?.phone?.message}>
+          <FormField label={t("phone")} htmlFor="w-phone" required error={errors.contact?.phone?.message}>
             <TextInput id="w-phone" type="tel" inputMode="tel" aria-invalid={!!errors.contact?.phone || undefined} {...form.register("contact.phone")} />
-          </FormField>
-
-          <div className="grid sm:grid-cols-2 gap-5">
-            <FormField label={t("date")} htmlFor="w-date">
-              <DateInput id="w-date" {...form.register("date")} />
-            </FormField>
-            <FormField label={t("venue")} htmlFor="w-venue">
-              <TextInput id="w-venue" placeholder="Glen Cove Mansion" {...form.register("venue")} />
-            </FormField>
-          </div>
-
-          <FormField label={t("guests")} htmlFor="w-guests" error={errors.guests?.message}>
-            <TextInput
-              id="w-guests"
-              type="number"
-              inputMode="numeric"
-              min={1}
-              max={2000}
-              aria-invalid={!!errors.guests || undefined}
-              {...form.register("guests")}
-            />
-          </FormField>
-
-          <FormField label={t("budget")} htmlFor="w-budget">
-            <RadioChips
-              name="budgetBand"
-              items={budgetItems}
-              value={watchedBudget}
-              onChange={(v) => form.setValue("budgetBand", v as typeof BUDGETS[number])}
-            />
           </FormField>
 
           <FormField label={t("vibe")} htmlFor="w-vibe" required error={errors.vibe?.message}>
             <TextArea id="w-vibe" rows={5} aria-invalid={!!errors.vibe || undefined} {...form.register("vibe")} />
           </FormField>
 
-          <FormField label={t("source")} htmlFor="w-source" error={errors.source?.message}>
-            <TextInput id="w-source" {...form.register("source")} />
-          </FormField>
+          <Disclosure summary={t("more_details")}>
+            <div className="grid sm:grid-cols-2 gap-5">
+              <FormField label={t("date")} htmlFor="w-date">
+                <DateInput id="w-date" {...form.register("date")} />
+              </FormField>
+              <FormField label={t("venue")} htmlFor="w-venue">
+                <TextInput id="w-venue" placeholder="Glen Cove Mansion" {...form.register("venue")} />
+              </FormField>
+            </div>
+
+            <FormField label={t("guests")} htmlFor="w-guests" error={errors.guests?.message}>
+              <TextInput
+                id="w-guests"
+                type="number"
+                inputMode="numeric"
+                min={1}
+                max={2000}
+                aria-invalid={!!errors.guests || undefined}
+                {...form.register("guests")}
+              />
+            </FormField>
+
+            <FormField label={t("budget")} htmlFor="w-budget">
+              <RadioChips
+                name="budgetBand"
+                items={budgetItems}
+                value={watchedBudget}
+                onChange={(v) => form.setValue("budgetBand", v as typeof BUDGETS[number])}
+              />
+            </FormField>
+
+            <FormField label={t("source")} htmlFor="w-source" error={errors.source?.message}>
+              <TextInput id="w-source" {...form.register("source")} />
+            </FormField>
+          </Disclosure>
 
           {errorMsg && (
             <p role="alert" className="font-mono text-[11px] text-error">{t(`errors.${errorMsg}`)}</p>
