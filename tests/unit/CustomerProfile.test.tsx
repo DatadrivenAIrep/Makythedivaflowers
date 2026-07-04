@@ -37,6 +37,8 @@ const profile: CustomerProfileData = {
     daysSinceLastOrder: 4, segment: "recurring", isVip: false, isAtRisk: false, isRecurring: true,
   },
   tags: ["boda"],
+  dates: [],
+  preferences: { favorite_flower: [], favorite_color: [], dislike: [] },
   orders: [order],
 };
 

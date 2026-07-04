@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { closeDb, getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import { addTag } from "@/lib/customer-storage";
+import { addImportantDate, addPreference } from "@/lib/customer-dates-storage";
 import { GET, PATCH } from "@/app/api/admin/customers/[id]/route";
 
 const DAY = 86_400_000;
@@ -48,6 +49,18 @@ describe("GET /api/admin/customers/[id]", () => {
   it("404s on unknown id", async () => {
     const res = await GET(new Request("http://x"), ctx("nope"));
     expect(res.status).toBe(404);
+  });
+
+  it("includes dates and preferences in the profile", async () => {
+    seed();
+    addImportantDate("c1", { kind: "birthday", label: "esposa", month: 3, day: 15 });
+    addPreference("c1", "dislike", "lirios");
+    const res = await GET(new Request("http://x"), ctx("c1"));
+    const body = await res.json();
+    expect(body.dates).toHaveLength(1);
+    expect(body.dates[0].kind).toBe("birthday");
+    expect(body.preferences.dislike).toEqual(["lirios"]);
+    expect(body.preferences.favorite_flower).toEqual([]);
   });
 });
 
