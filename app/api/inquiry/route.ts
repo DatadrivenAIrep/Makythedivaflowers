@@ -35,5 +35,31 @@ export async function POST(req: Request) {
   await saveInquiry(record);
   await notifyInquiry(record); // best-effort; never throws
   console.log(`[inquiry] ${parsed.data.type} from ${parsed.data.contact.email}`);
+  if (parsed.data.type === "wedding" || parsed.data.type === "event") {
+    try {
+      const { createInquiry } = await import("@/lib/inquiry-storage-db");
+      const c = parsed.data.contact;
+      createInquiry({
+        id: record.id,
+        type: parsed.data.type,
+        contactName: c.name,
+        contactEmail: c.email,
+        contactPhone: c.phone,
+        budgetBand: parsed.data.budgetBand,
+        eventDate: "date" in parsed.data ? parsed.data.date || undefined : undefined,
+        venue: "venue" in parsed.data ? parsed.data.venue || undefined : undefined,
+        guests: "guests" in parsed.data ? parsed.data.guests : undefined,
+        company: "company" in parsed.data ? parsed.data.company : undefined,
+        frequency: "frequency" in parsed.data ? parsed.data.frequency : undefined,
+        vibe: parsed.data.vibe,
+        sourceChannel: "web",
+        locale: parsed.data.locale,
+        createdAt: record.createdAt,
+      });
+    } catch (e) {
+      // Best-effort: the public form must never fail because of the pipeline DB.
+      console.error(JSON.stringify({ event: "inquiry_sqlite_failed", id: record.id, error: String(e) }));
+    }
+  }
   return NextResponse.json({ ok: true, id }, { status: 200 });
 }
