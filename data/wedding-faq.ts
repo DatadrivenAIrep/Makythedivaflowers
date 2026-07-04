@@ -14,7 +14,10 @@ export const weddingFAQ: FAQ[] = [
   {
     id: "minimum",
     q: { en: "Is there a minimum spend?", es: "¿Hay un mínimo de inversión?" },
-    a: { en: "Full-service wedding installations start at $5,000. Bouquets and personal florals only (no installations) start at $1,500.", es: "Las instalaciones completas comienzan en $5,000. Ramos y florales personales (sin instalación) comienzan en $1,500." },
+    a: {
+      en: "We work to a studio minimum that we share during your consultation, scaled to your guest count and the scope of your day.",
+      es: "Trabajamos con un mínimo de estudio que compartimos durante tu consulta, ajustado a tu número de invitados y al alcance de tu día.",
+    },
   },
   {
     id: "site-visit",
