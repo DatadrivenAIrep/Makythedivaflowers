@@ -478,6 +478,7 @@
     "hero_title": "Flores que trabajan tan duro como tú.",
     "hero_sub": "Desde arreglos semanales en oficinas hasta instalaciones para días de prensa — diseñamos y entregamos a tiempo.",
     "hero_cta": "Obtener cotización",
+    "rating_chip": "{rating} ★ · {count} reseñas",
     "cases": {
       "eyebrow": "Con quién trabajamos",
       "title": "Diseñado para cada espacio.",
@@ -525,6 +526,10 @@
         "title": "Instalación",
         "body": "Llegamos, colocamos todo y retiramos los arreglos usados — tú manejas tu negocio mientras nosotros manejamos las flores."
       }
+    },
+    "testimonials": {
+      "eyebrow": "En sus palabras",
+      "title": "Lo que dicen los clientes."
     },
     "form": {
       "shell": {

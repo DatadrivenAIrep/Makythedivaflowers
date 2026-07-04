@@ -478,6 +478,7 @@
     "hero_title": "Flowers that work as hard as you do.",
     "hero_sub": "From weekly office arrangements to press-day installations — we design and deliver, on schedule.",
     "hero_cta": "Get a quote",
+    "rating_chip": "{rating} ★ · {count} reviews",
     "cases": {
       "eyebrow": "Who we work with",
       "title": "Built for every setting.",
@@ -525,6 +526,10 @@
         "title": "Install",
         "body": "We arrive, set everything, and remove spent arrangements — you handle your business while we handle the flowers."
       }
+    },
+    "testimonials": {
+      "eyebrow": "In their words",
+      "title": "What clients say."
     },
     "form": {
       "shell": {
