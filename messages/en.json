@@ -531,6 +531,12 @@
       "eyebrow": "In their words",
       "title": "What clients say."
     },
+    "next_steps": {
+      "title": "What happens next",
+      "step1": "You send this form with your dates and space.",
+      "step2": "We reply by email or WhatsApp within one business day.",
+      "step3": "We send a tailored proposal for your cadence."
+    },
     "form": {
       "shell": {
         "eyebrow": "Events & Brand",
@@ -630,6 +636,12 @@
     "testimonials": {
       "eyebrow": "In their words",
       "title": "Couples on Diva."
+    },
+    "next_steps": {
+      "title": "What happens next",
+      "step1": "You send this form — no obligation, no pressure.",
+      "step2": "We reply by email or WhatsApp within one business day.",
+      "step3": "We set up a consultation and start shaping your day."
     },
     "form": {
       "shell": {

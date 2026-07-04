@@ -5,6 +5,7 @@ import { EventsHero } from "@/components/events/EventsHero";
 import { UseCaseGrid } from "@/components/events/UseCaseGrid";
 import { ProcessStrip } from "@/components/weddings/ProcessStrip";
 import { EventsForm } from "@/components/inquiry/EventsForm";
+import { WhatHappensNext } from "@/components/inquiry/WhatHappensNext";
 import { Testimonials } from "@/components/social/Testimonials";
 import { generalReviews } from "@/data/review-helpers";
 import type { Locale } from "@/types/locale";
@@ -22,6 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
 export default async function EventsPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
   const tt = await getTranslations({ locale, namespace: "events.testimonials" });
+  const tn = await getTranslations({ locale, namespace: "events.next_steps" });
   return (
     <main>
       <EventsHero locale={locale} />
@@ -34,6 +36,10 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
       />
       <ProcessStrip namespace="events.process" />
       <section id="inquire" className="py-24">
+        <WhatHappensNext
+          title={tn("title")}
+          steps={[tn("step1"), tn("step2"), tn("step3")]}
+        />
         <EventsForm locale={locale} />
       </section>
     </main>

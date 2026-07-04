@@ -531,6 +531,12 @@
       "eyebrow": "En sus palabras",
       "title": "Lo que dicen los clientes."
     },
+    "next_steps": {
+      "title": "Qué pasa cuando escribes",
+      "step1": "Envías este formulario con tus fechas y tu espacio.",
+      "step2": "Te respondemos por email o WhatsApp en un día hábil.",
+      "step3": "Te enviamos una propuesta a la medida de tu cadencia."
+    },
     "form": {
       "shell": {
         "eyebrow": "Eventos y Marca",
@@ -630,6 +636,12 @@
     "testimonials": {
       "eyebrow": "En sus palabras",
       "title": "Novias sobre Diva."
+    },
+    "next_steps": {
+      "title": "Qué pasa cuando escribes",
+      "step1": "Envías este formulario — sin compromiso, sin presión.",
+      "step2": "Te respondemos por email o WhatsApp en un día hábil.",
+      "step3": "Agendamos una consulta y empezamos a dar forma a tu día."
     },
     "form": {
       "shell": {
