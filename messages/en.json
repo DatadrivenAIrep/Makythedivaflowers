@@ -1264,6 +1264,7 @@
     "nav_gift_cards": "Gift Cards",
     "nav_customers": "Customers",
     "nav_occasions": "Occasions",
+    "nav_metrics": "Metrics",
     "nav_new_order": "New order",
     "last_updated": "Updated",
     "refresh": "Refresh",
@@ -1379,5 +1380,29 @@
     "occasions_next_7": "Next 7 days",
     "occasions_next_30": "Next 30 days",
     "no_occasions": "No occasions in this range."
+  },
+  "admin_metrics": {
+    "title": "Metrics",
+    "range_30d": "Last 30 days",
+    "range_90d": "Last 90 days",
+    "range_ytd": "This year",
+    "range_all": "All time",
+    "kpi_revenue": "Collected revenue",
+    "kpi_outstanding": "Outstanding balance",
+    "kpi_orders": "Orders",
+    "kpi_aov": "Average order",
+    "kpi_repeat_rate": "Repeat customers",
+    "trend_title": "Revenue (12 months)",
+    "top_products_title": "Top products",
+    "by_zone_title": "Revenue by zone",
+    "col_product": "Product",
+    "col_qty": "Quantity",
+    "col_zone": "Zone",
+    "col_orders": "Orders",
+    "col_revenue": "Revenue",
+    "custom_products": "Custom pieces",
+    "unknown_zone": "No zone",
+    "not_available": "—",
+    "empty": "No data in this range."
   }
 }
