@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { findDeliveryZoneByZip, findDeliveryZoneByCity, isValidZip } from "@/lib/delivery-zones";
+import { findDeliveryZoneByZip, findDeliveryZoneByCity, isValidZip, deliveryZoneRank } from "@/lib/delivery-zones";
+import { deliveryZones } from "@/data/delivery-zones";
 
 describe("isValidZip", () => {
   it("accepts 5-digit numeric strings", () => {
@@ -97,5 +98,24 @@ describe("findDeliveryZoneByCity", () => {
   it("returns null for empty input", () => {
     expect(findDeliveryZoneByCity("")).toBeNull();
     expect(findDeliveryZoneByCity("   ")).toBeNull();
+  });
+});
+
+describe("deliveryZoneRank", () => {
+  it("ranks nearer zones below farther zones (lower index = sorts first)", () => {
+    // Albertson is index 0, Great Neck index 3 in the curated list
+    expect(deliveryZoneRank("11507")).toBeLessThan(deliveryZoneRank("11020"));
+  });
+
+  it("returns the exact curated index for a known zip", () => {
+    expect(deliveryZoneRank("11507")).toBe(0); // albertson
+    expect(deliveryZoneRank("11576")).toBe(1); // roslyn
+  });
+
+  it("ranks an unmatched or invalid zip last (== deliveryZones.length)", () => {
+    expect(deliveryZoneRank("90210")).toBe(deliveryZones.length); // out of area
+    expect(deliveryZoneRank("nope")).toBe(deliveryZones.length);  // invalid
+    // a farther zone still sorts before an unmatched zip
+    expect(deliveryZoneRank("11020")).toBeLessThan(deliveryZoneRank("90210"));
   });
 });

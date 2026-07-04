@@ -1289,6 +1289,7 @@
     "action_prepare": "Preparar",
     "action_en_route": "En camino",
     "action_delivered": "Entregada",
+    "action_directions": "Cómo llegar",
     "action_open_detail": "Abrir detalle",
     "loading": "Cargando…",
     "no_deliveries": "Sin entregas para esta fecha.",
