@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { findDeliveryZoneByZip, findDeliveryZoneByCity, isValidZip, deliveryZoneRank } from "@/lib/delivery-zones";
+import { deliveryZones } from "@/data/delivery-zones";
 
 describe("isValidZip", () => {
   it("accepts 5-digit numeric strings", () => {
@@ -99,8 +100,6 @@ describe("findDeliveryZoneByCity", () => {
     expect(findDeliveryZoneByCity("   ")).toBeNull();
   });
 });
-
-import { deliveryZones } from "@/data/delivery-zones";
 
 describe("deliveryZoneRank", () => {
   it("ranks nearer zones below farther zones (lower index = sorts first)", () => {
