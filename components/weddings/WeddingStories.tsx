@@ -34,6 +34,15 @@ export function WeddingStories({ locale }: { locale: Locale }) {
         ))}
       </div>
 
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-12">
+        <a
+          href="#inquire"
+          className="inline-flex w-fit items-center gap-2 rounded-full bg-ink px-6 py-3 font-sans text-sm tracking-tight text-bone transition-colors hover:bg-ink/90"
+        >
+          {t("cta")}
+        </a>
+      </div>
+
       <WeddingLightbox
         event={activeEvent}
         locale={locale}

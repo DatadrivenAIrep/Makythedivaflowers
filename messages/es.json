@@ -636,7 +636,8 @@
       "close": "Cerrar galería",
       "prev": "Foto anterior",
       "next": "Foto siguiente",
-      "go_to": "Ir a la foto"
+      "go_to": "Ir a la foto",
+      "cta": "¿Te imaginas aquí? Empieza a planear →"
     },
     "testimonials": {
       "eyebrow": "En sus palabras",

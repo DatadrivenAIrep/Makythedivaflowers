@@ -636,7 +636,8 @@
       "close": "Close gallery",
       "prev": "Previous photo",
       "next": "Next photo",
-      "go_to": "Go to photo"
+      "go_to": "Go to photo",
+      "cta": "See yourself here? Start planning →"
     },
     "testimonials": {
       "eyebrow": "In their words",
