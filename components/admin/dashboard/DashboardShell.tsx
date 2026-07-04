@@ -24,8 +24,9 @@ export default function DashboardShell({ locale, children, lastUpdated, onRefres
   const isCustomers = pathname.includes("/admin/customers");
   const isOccasions = pathname.includes("/admin/occasions");
   const isMetrics = pathname.includes("/admin/metrics");
+  const isPipeline = pathname.includes("/admin/pipeline");
   const isBandeja =
-    !isLedger && !isRunSheet && !isSettings && !isGiftCards && !isCustomers && !isOccasions && !isMetrics;
+    !isLedger && !isRunSheet && !isSettings && !isGiftCards && !isCustomers && !isOccasions && !isMetrics && !isPipeline;
   const base = `/${locale}/admin/dashboard`;
 
   return (
@@ -71,6 +72,12 @@ export default function DashboardShell({ locale, children, lastUpdated, onRefres
               className={`flex min-h-11 items-center rounded-lg px-3 ${isMetrics ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >
               {t("nav_metrics")}
+            </Link>
+            <Link
+              href={`/${locale}/admin/pipeline`}
+              className={`flex min-h-11 items-center rounded-lg px-3 ${isPipeline ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
+            >
+              {t("nav_pipeline")}
             </Link>
             <Link
               href={`/${locale}/admin/intake`}
