@@ -9,8 +9,11 @@ import type { Address } from "@/types/address";
 import type { Order } from "@/types/order";
 import OrderDetailDrawer from "@/components/admin/dashboard/OrderDetailDrawer";
 import SegmentBadge from "./SegmentBadge";
+import ImportantDates from "./ImportantDates";
+import PreferenceChips from "./PreferenceChips";
+import type { PreferencesMap } from "@/lib/customer-dates-storage";
 
-type Props = { locale: string; initial: CustomerProfileData };
+type Props = { locale: string; initial: CustomerProfileData; suggestions: PreferencesMap };
 
 function money(c: number) { return `$${(c / 100).toFixed(2)}`; }
 function addressText(a: Address): string {
@@ -20,7 +23,7 @@ function itemCount(o: Order): number {
   return o.lines.reduce((n, l) => n + l.qty, 0);
 }
 
-export default function CustomerProfile({ locale, initial }: Props) {
+export default function CustomerProfile({ locale, initial, suggestions }: Props) {
   const t = useTranslations("admin_customers");
   const [data, setData] = useState<CustomerProfileData>(initial);
   const [notesDraft, setNotesDraft] = useState(initial.customer.notes ?? "");
@@ -201,6 +204,9 @@ export default function CustomerProfile({ locale, initial }: Props) {
           </div>
         ))}
       </div>
+
+      <ImportantDates customerId={customer.id} initial={data.dates} locale={locale} />
+      <PreferenceChips customerId={customer.id} initial={data.preferences} suggestions={suggestions} />
 
       <section className="mb-3 rounded border border-ink/10 bg-bone p-3 text-sm">
         <div className="mb-1 text-xs uppercase tracking-wide text-ink/50">{t("addresses")}</div>

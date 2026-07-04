@@ -42,9 +42,11 @@ const profile: CustomerProfileData = {
   orders: [order],
 };
 
+const emptyPrefs = { favorite_flower: [], favorite_color: [], dislike: [] };
+
 describe("CustomerProfile", () => {
   it("renders header, metrics, notes, tags, and order history", () => {
-    wrap(<CustomerProfile locale="es" initial={profile} />);
+    wrap(<CustomerProfile locale="es" initial={profile} suggestions={emptyPrefs} />);
     expect(screen.getByText("Ana Flores")).toBeDefined();
     expect(screen.getByText("Recurrente")).toBeDefined();          // primary badge
     expect(screen.getByText("Ticket promedio")).toBeDefined();      // metrics row label
@@ -53,10 +55,13 @@ describe("CustomerProfile", () => {
     expect(screen.getByText("boda")).toBeDefined();                 // tag chip
     expect(screen.getByText("#1001")).toBeDefined();                // order row
     expect(screen.getByText("Historial de órdenes")).toBeDefined();
+    expect(screen.getByText("Fechas importantes")).toBeDefined();
+    expect(screen.getByText("Sin fechas guardadas.")).toBeDefined();
+    expect(screen.getByText("Preferencias")).toBeDefined();
   });
 
   it("quick action links to intake with the phone prefilled", () => {
-    wrap(<CustomerProfile locale="es" initial={profile} />);
+    wrap(<CustomerProfile locale="es" initial={profile} suggestions={emptyPrefs} />);
     const link = screen.getByRole("link", { name: "Nueva orden para este cliente" });
     expect(link.getAttribute("href")).toBe("/es/admin/intake?phone=5165550001");
   });
