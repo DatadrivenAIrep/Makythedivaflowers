@@ -72,8 +72,12 @@ export function metricsFromAggregate(
     : null;
   const isVip = agg.orderCount >= VIP_MIN_ORDERS || agg.ltvCents >= VIP_MIN_LTV_CENTS;
   const isRecurring = agg.orderCount >= RECURRING_MIN_ORDERS;
+  // At-risk compares lastOrderAt against the same ISO cutoff the SQL filter and
+  // header stat use (atRiskCutoffIso), so the badge, the "At risk" filter, and
+  // the at-risk count always agree — including the sub-day (90, 91) window that a
+  // floored day-count comparison (daysSinceLastOrder > AT_RISK_DAYS) would split.
   const isAtRisk =
-    isRecurring && daysSinceLastOrder !== null && daysSinceLastOrder > AT_RISK_DAYS;
+    isRecurring && lastOrderAt !== null && lastOrderAt < atRiskCutoffIso(now);
   const segment: Segment = isAtRisk ? "at_risk" : isVip ? "vip" : isRecurring ? "recurring" : "new";
   return {
     ltvCents: agg.ltvCents,

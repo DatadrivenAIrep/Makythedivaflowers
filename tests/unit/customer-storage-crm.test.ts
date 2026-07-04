@@ -215,3 +215,32 @@ describe("customerStats", () => {
     expect(stats).toEqual({ total: 0, newThisMonth: 0, repeatRatePct: 0, atRiskCount: 0 });
   });
 });
+
+describe("at-risk boundary agreement (badge ⇔ filter ⇔ stat)", () => {
+  // Regression: the SQL cutoff and the JS badge must agree in the sub-day
+  // (90, 91) window. A recurring customer whose most recent order is 90.5 days
+  // old must be at-risk on all three surfaces at once.
+  it("90.5-day recurring customer is at-risk on the row badge, the filter, and the stat", () => {
+    seedCustomer("edge", "Edge", "5559999");
+    seedOrder("e1", "edge", 90.5, 5000);
+    seedOrder("e2", "edge", 150, 5000);
+
+    const row = listCustomers({}, NOW).customers.find((c) => c.id === "edge")!;
+    expect(row.metrics.isAtRisk).toBe(true);
+    expect(row.metrics.segment).toBe("at_risk");
+
+    expect(listCustomers({ segment: "at_risk" }, NOW).customers.map((c) => c.id)).toEqual(["edge"]);
+    expect(customerStats(NOW).atRiskCount).toBe(1);
+  });
+
+  it("exactly 90.0-day recurring customer is NOT at-risk on any surface", () => {
+    seedCustomer("edge", "Edge", "5559999");
+    seedOrder("e1", "edge", 90, 5000);
+    seedOrder("e2", "edge", 150, 5000);
+
+    const row = listCustomers({}, NOW).customers.find((c) => c.id === "edge")!;
+    expect(row.metrics.isAtRisk).toBe(false);
+    expect(listCustomers({ segment: "at_risk" }, NOW).customers).toEqual([]);
+    expect(customerStats(NOW).atRiskCount).toBe(0);
+  });
+});

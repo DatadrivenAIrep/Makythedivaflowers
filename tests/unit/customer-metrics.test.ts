@@ -88,6 +88,15 @@ describe("computeMetrics", () => {
     expect(m.segment).toBe("recurring");
   });
 
+  it("sub-day window: 90.5 days IS at risk (matches the SQL cutoff, not the floored day count)", () => {
+    // Display still floors to 90, but at-risk compares against atRiskCutoffIso so
+    // it agrees with the SQL filter/stat in customer-storage for the (90, 91) window.
+    const m = computeMetrics([order(90.5, 5000), order(120, 5000)], NOW);
+    expect(m.daysSinceLastOrder).toBe(90);
+    expect(m.isAtRisk).toBe(true);
+    expect(m.segment).toBe("at_risk");
+  });
+
   it("single old order is NOT at risk (needs recurring)", () => {
     const m = computeMetrics([order(200, 5000)], NOW);
     expect(m.isAtRisk).toBe(false);
