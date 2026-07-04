@@ -35,3 +35,11 @@ export function findDeliveryZoneByCity(input: string): DeliveryZone | null {
   }
   return null;
 }
+
+// Rank an address zip by its position in the curated `deliveryZones` list
+// (roughly nearest-to-farthest from the shop). Used to order the Run Sheet
+// within a time slot. Unmatched or invalid zips rank last.
+export function deliveryZoneRank(zip: string): number {
+  const zone = findDeliveryZoneByZip(zip);
+  return zone ? deliveryZones.indexOf(zone) : deliveryZones.length;
+}
