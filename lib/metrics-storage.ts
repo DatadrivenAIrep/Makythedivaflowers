@@ -55,12 +55,11 @@ function parseZip(addressJson: string | null): string | null {
   }
 }
 
-/** Row type carries `id` for test sanity but pure functions ignore it. */
-export function fetchOrderRows(range: MetricsRange, now: Date): (OrderMetricRow & { id: string })[] {
+/** Fetch order rows on or after an explicit ISO lower bound (null = no bound). */
+export function fetchOrderRowsSince(lowerBound: string | null): (OrderMetricRow & { id: string })[] {
   runMigrations();
-  const lb = rangeLowerBound(range, now);
-  const where = lb ? "WHERE created_at >= ?" : "";
-  const params = lb ? [lb] : [];
+  const where = lowerBound ? "WHERE created_at >= ?" : "";
+  const params = lowerBound ? [lowerBound] : [];
   const rows = getDb()
     .prepare(
       `SELECT id, total_cents, amount_paid_cents, payment_status, fulfillment_status,
@@ -78,6 +77,16 @@ export function fetchOrderRows(range: MetricsRange, now: Date): (OrderMetricRow 
     linesJson: r.lines_json,
     addressZip: parseZip(r.address_json),
   }));
+}
+
+/** Row type carries `id` for test sanity but pure functions ignore it. */
+export function fetchOrderRows(range: MetricsRange, now: Date): (OrderMetricRow & { id: string })[] {
+  return fetchOrderRowsSince(rangeLowerBound(range, now));
+}
+
+/** First day (UTC) of the month 11 months back — start of the 12-month trend window. */
+function trendLowerBound(now: Date): string {
+  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 11, 1)).toISOString();
 }
 
 export type MetricsKpis = {
@@ -106,6 +115,9 @@ export function getMetrics(
   labels: MetricsLabels,
 ): MetricsPayload {
   const rows = fetchOrderRows(range, now);
+  // The 12-month trend is always the last 12 months, independent of the KPI
+  // range preset, so a narrow range (30d/90d) never zero-fills real history.
+  const trendRows = fetchOrderRowsSince(trendLowerBound(now));
   const nameById = new Map(PRODUCTS.map((p) => [p.id, p.title[locale]]));
   const resolveName = (id: string) => nameById.get(id) ?? id;
   const resolveZone = (zip: string) => {
@@ -122,7 +134,7 @@ export function getMetrics(
       aovCents: aovCents(rows),
       repeatRatePct: customerStats(now).repeatRatePct,
     },
-    monthly: monthlyRevenue(rows, now),
+    monthly: monthlyRevenue(trendRows, now),
     topProducts: topProducts(rows, resolveName, labels.customProducts),
     byZone: byZone(rows, resolveZone, labels.unknownZone),
   };

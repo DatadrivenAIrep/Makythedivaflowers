@@ -43,7 +43,7 @@ export default function MetricsView({ locale, initial }: Props) {
     { key: "kpi_revenue", value: money(k.revenueCents), sub: `${t("kpi_outstanding")}: ${money(k.outstandingCents)}` },
     { key: "kpi_orders", value: String(k.orderCount) },
     { key: "kpi_aov", value: money(k.aovCents) },
-    { key: "kpi_repeat_rate", value: `${k.repeatRatePct}%` },
+    { key: "kpi_repeat_rate", value: `${k.repeatRatePct}%`, sub: t("kpi_repeat_rate_note") },
   ];
 
   const productRows: RankRow[] = data.topProducts.map((p) => ({

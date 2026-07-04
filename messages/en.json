@@ -1392,6 +1392,7 @@
     "kpi_orders": "Orders",
     "kpi_aov": "Average order",
     "kpi_repeat_rate": "Repeat customers",
+    "kpi_repeat_rate_note": "All-time",
     "trend_title": "Revenue (12 months)",
     "top_products_title": "Top products",
     "by_zone_title": "Revenue by zone",

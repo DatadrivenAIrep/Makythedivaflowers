@@ -90,4 +90,17 @@ describe("getMetrics", () => {
     expect(es.byZone[0].label).toBe("Albertson");
     expect(es.topProducts[0].name).not.toBe("p-arr-m01"); // resolved to localized title
   });
+
+  it("trend spans a full 12 months regardless of the KPI range", () => {
+    // "fivemo" is ~5 months old (2026-02): outside the 90d KPI window but inside
+    // the 12-month trend. KPIs must exclude it; the trend must include it.
+    seedOrder({ id: "recent", daysAgo: 3, total: 6000, paid: 6000, zip: "11507" });
+    seedOrder({ id: "fivemo", daysAgo: 150, total: 9000, paid: 9000, zip: "11507" });
+
+    const m = getMetrics("90d", NOW, "es", LABELS);
+    expect(m.kpis.revenueCents).toBe(6000); // KPI range = 90d, excludes the Feb order
+    expect(m.monthly).toHaveLength(12);
+    expect(m.monthly.reduce((s, b) => s + b.cents, 0)).toBe(15000); // trend includes both
+    expect(m.monthly.find((b) => b.month === "2026-02")?.cents).toBe(9000);
+  });
 });

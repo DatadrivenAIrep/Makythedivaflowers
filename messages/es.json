@@ -1392,6 +1392,7 @@
     "kpi_orders": "Órdenes",
     "kpi_aov": "Ticket promedio",
     "kpi_repeat_rate": "Clientes que repiten",
+    "kpi_repeat_rate_note": "Todo el historial",
     "trend_title": "Ingresos (12 meses)",
     "top_products_title": "Productos más pedidos",
     "by_zone_title": "Ingresos por zona",
