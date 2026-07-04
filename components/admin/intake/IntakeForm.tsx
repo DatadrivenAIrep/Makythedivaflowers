@@ -47,6 +47,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const okOrderId = searchParams.get("ok");
+  const prefillPhone = searchParams.get("phone");
   const [banner, setBanner] = useState<{
     orderId: string;
     channel?: string;
@@ -73,6 +74,13 @@ export default function IntakeForm({ products }: { products: Product[] }) {
       })
       .catch(() => {});
   }, [okOrderId]);
+
+  useEffect(() => {
+    if (prefillPhone) {
+      setCustomer((c) => (c.phone ? c : { ...c, phone: prefillPhone }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function retrySend() {
     if (!banner) return;

@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
   WhatsappLogo, ArrowsClockwise, Check, CheckCircle,
@@ -151,7 +152,18 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
 
         {!editing && (<>
         <section className="mb-3 rounded border border-ink/10 bg-bone p-3 text-sm">
-          <div className="font-semibold">{customer?.name ?? f.recipient.name}</div>
+          <div className="font-semibold">
+            {customer ? (
+              <Link
+                href={`/${locale}/admin/customers/${customer.id}`}
+                className="underline decoration-ink/30 underline-offset-2 hover:decoration-ink"
+              >
+                {customer.name}
+              </Link>
+            ) : (
+              f.recipient.name
+            )}
+          </div>
           <div className="text-ink/70">
             <a href={`tel:${order.contact.phone}`} className="underline">{order.contact.phone}</a>
             {order.contact.email && <> · <a href={`mailto:${order.contact.email}`} className="underline">{order.contact.email}</a></>}
