@@ -58,4 +58,19 @@ describe("GET /api/order/[id]/status", () => {
     );
     expect(res.status).toBe(404);
   });
+
+  it("includes paymentStatus so the client detects payment before fulfillment advances", async () => {
+    const order = makeOrder("paid1", "pending");
+    order.paymentStatus = "paid";
+    await saveOrder(order);
+    const { GET } = await import("@/app/api/order/[id]/status/route");
+    const res = await GET(
+      new Request("http://localhost/api/order/paid1/status"),
+      { params: Promise.resolve({ id: "paid1" }) },
+    );
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json.status).toBe("pending");
+    expect(json.paymentStatus).toBe("paid");
+  });
 });

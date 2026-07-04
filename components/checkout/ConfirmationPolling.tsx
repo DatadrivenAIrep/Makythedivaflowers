@@ -1,18 +1,20 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useCartStore } from "@/lib/cart-store";
+import { isOrderPaid } from "@/lib/order-paid";
 import { Button } from "@/components/ui/Button";
 import type { Locale } from "@/types/locale";
-import type { OrderStatus } from "@/types/order";
+import type { FulfillmentStatus, PaymentStatus } from "@/types/order";
 
 const POLL_INTERVAL_MS = 2000;
 const POLL_TIMEOUT_MS = 15000;
 
 type Props = {
   orderId: string;
-  initialStatus: OrderStatus;
+  initialStatus: FulfillmentStatus;
   locale: Locale;
 };
 
@@ -23,19 +25,28 @@ type DisplayState =
   | { kind: "failed" }
   | { kind: "canceled" };
 
-function statusToDisplay(s: OrderStatus): DisplayState {
-  if (s === "paid" || s === "preparing" || s === "out-for-delivery" || s === "delivered") {
+// Payment is tracked in paymentStatus, NOT the fulfillment status: a web order
+// is charged (paymentStatus="paid") while its fulfillment status stays
+// "pending". Gate the confirmation on isOrderPaid so paid orders are recognized.
+function toDisplay(status: string, paymentStatus?: string): DisplayState {
+  if (
+    isOrderPaid({
+      status: status as FulfillmentStatus,
+      paymentStatus: (paymentStatus ?? "pending") as PaymentStatus,
+    })
+  ) {
     return { kind: "paid" };
   }
-  if (s === "failed") return { kind: "failed" };
-  if (s === "canceled") return { kind: "canceled" };
+  if (status === "failed") return { kind: "failed" };
+  if (status === "canceled") return { kind: "canceled" };
   return { kind: "processing" };
 }
 
 export function ConfirmationPolling({ orderId, initialStatus, locale }: Props) {
   const t = useTranslations("confirmation");
+  const router = useRouter();
   const clearCart = useCartStore((s) => s.clear);
-  const [display, setDisplay] = useState<DisplayState>(statusToDisplay(initialStatus));
+  const [display, setDisplay] = useState<DisplayState>(() => toDisplay(initialStatus));
 
   // Clear local cart whenever we land on a paid order (covers tab-close-after-pay edge case).
   useEffect(() => {
@@ -53,9 +64,14 @@ export function ConfirmationPolling({ orderId, initialStatus, locale }: Props) {
       try {
         const res = await fetch(`/api/order/${orderId}/status`, { cache: "no-store" });
         if (res.ok) {
-          const data = (await res.json()) as { status: OrderStatus };
-          const next = statusToDisplay(data.status);
+          const data = (await res.json()) as { status: string; paymentStatus?: string };
+          const next = toDisplay(data.status, data.paymentStatus);
           if (next.kind !== "processing") {
+            if (cancelled) return;
+            // Re-render the server page so the full paid confirmation renders and
+            // fires the `purchase` analytics/conversion event. Without this, a
+            // client-only flip would leave the conversion untracked.
+            if (next.kind === "paid") router.refresh();
             setDisplay(next);
             return;
           }
@@ -75,12 +91,11 @@ export function ConfirmationPolling({ orderId, initialStatus, locale }: Props) {
       cancelled = true;
       if (timer) clearTimeout(timer);
     };
-  }, [display.kind, orderId]);
+  }, [display.kind, orderId, router]);
 
   if (display.kind === "paid") {
     // Page-level component renders the full ConfirmationView for paid orders. This branch
-    // should rarely be hit — only if the user lands `pending` and the webhook flips them
-    // to paid mid-poll. Show a simple notice; reload restores the full view.
+    // is a brief interim while router.refresh() swaps in the server-rendered paid view.
     return (
       <div className="space-y-3">
         <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-success">

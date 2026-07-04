@@ -12,5 +12,8 @@ export async function GET(
   if (!order) {
     return NextResponse.json({ error: "not_found" }, { status: 404 });
   }
-  return NextResponse.json({ status: order.status });
+  // paymentStatus is the source of truth for "paid": a web order is charged
+  // (paymentStatus="paid") while its fulfillment status stays "pending", so the
+  // client needs both fields to know when to show the confirmation.
+  return NextResponse.json({ status: order.status, paymentStatus: order.paymentStatus });
 }

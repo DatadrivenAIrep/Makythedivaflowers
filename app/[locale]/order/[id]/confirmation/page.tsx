@@ -9,6 +9,7 @@ import { TrackEvent } from "@/components/analytics/TrackEvent";
 import { ClearCartOnMount } from "@/components/checkout/ClearCartOnMount";
 import { resolveCartLines } from "@/lib/cart-helpers";
 import { resolvedLineToAnalyticsItem, centsToDollars } from "@/lib/analytics-types";
+import { isOrderPaid } from "@/lib/order-paid";
 import { PRODUCTS } from "@/data/products";
 
 export const dynamic = "force-dynamic";
@@ -25,8 +26,6 @@ export async function generateMetadata({
   };
 }
 
-const PAID_STATUSES = new Set(["paid", "preparing", "out-for-delivery", "delivered"]);
-
 export default async function ConfirmationPage({
   params,
 }: { params: Promise<{ locale: Locale; id: string }> }) {
@@ -34,7 +33,9 @@ export default async function ConfirmationPage({
   const order = await getOrder(id);
   if (!order) notFound();
 
-  const isPaid = PAID_STATUSES.has(order.status);
+  // Gate on payment, not fulfillment: Stripe marks paymentStatus="paid" while
+  // the fulfillment status stays "pending". See isOrderPaid.
+  const isPaid = isOrderPaid(order);
 
   if (isPaid) {
     const resolved = resolveCartLines(order.lines, PRODUCTS);
