@@ -1,6 +1,7 @@
 // app/[locale]/weddings/page.tsx
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { WeddingFaqLD } from "@/components/seo/WeddingFaqLD";
 import { WeddingsHero } from "@/components/weddings/WeddingsHero";
 import { ProcessStrip } from "@/components/weddings/ProcessStrip";
 import { WeddingStories } from "@/components/weddings/WeddingStories";
@@ -32,6 +33,7 @@ export default async function WeddingsPage({
   const tn = await getTranslations({ locale, namespace: "weddings.next_steps" });
   return (
     <>
+      <WeddingFaqLD locale={locale} />
       <WeddingsHero locale={locale} />
       <ProcessStrip />
       <PricingIntent locale={locale} />
