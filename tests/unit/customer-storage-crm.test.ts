@@ -5,6 +5,7 @@ import { listOrdersByCustomer } from "@/lib/order-storage";
 import {
   getCustomerById, updateCustomer, normalizeTag,
   addTag, removeTag, listTagsFor, listAllTags,
+  listCustomers, customerStats,
 } from "@/lib/customer-storage";
 
 // Fixed "now" for deterministic segment math. All storage functions accept
@@ -115,5 +116,102 @@ describe("tags", () => {
     expect(listAllTags()).toEqual(["boda", "funeral"]);
     expect(removeTag("c2", "funeral")).toEqual(["boda"]);
     expect(listTagsFor("c2")).toEqual(["boda"]);
+  });
+});
+
+// Shared scenario:
+//  ana   → 6 recent paid orders of $60  → VIP (order count), ltv 36000
+//  bob   → 2 orders, last one 100 days ago → at-risk (and recurring)
+//  carla → 1 recent order → new
+//  dora  → no orders, first seen this month → new
+function seedScenario() {
+  seedCustomer("ana", "Ana", "5550001");
+  seedCustomer("bob", "Bob", "5550002", { email: "bob@x.com" });
+  seedCustomer("carla", "Carla", "5550003");
+  seedCustomer("dora", "Dora", "5550004", { firstSeen: "2026-07-02T00:00:00Z" });
+  [1, 2, 3, 4, 5, 6].forEach((d) => seedOrder(`a${d}`, "ana", d, 6000));
+  seedOrder("b1", "bob", 100, 8000);
+  seedOrder("b2", "bob", 150, 8000);
+  seedOrder("k1", "carla", 3, 4500);
+}
+
+describe("listCustomers", () => {
+  it("default sort is last_order desc; customers with no orders sort last", () => {
+    seedScenario();
+    const { customers } = listCustomers({}, NOW);
+    expect(customers.map((c) => c.id)).toEqual(["ana", "carla", "bob", "dora"]);
+  });
+
+  it("attaches metrics and tags to each row", () => {
+    seedScenario();
+    addTag("ana", "vip");
+    const { customers } = listCustomers({}, NOW);
+    const ana = customers.find((c) => c.id === "ana")!;
+    expect(ana.metrics.segment).toBe("vip");
+    expect(ana.metrics.ltvCents).toBe(36000);
+    expect(ana.metrics.orderCount).toBe(6);
+    expect(ana.tags).toEqual(["vip"]);
+    const dora = customers.find((c) => c.id === "dora")!;
+    expect(dora.metrics.segment).toBe("new");
+    expect(dora.metrics.ltvCents).toBe(0);
+  });
+
+  it("q matches name, phone, and email", () => {
+    seedScenario();
+    expect(listCustomers({ q: "car" }, NOW).customers.map((c) => c.id)).toEqual(["carla"]);
+    expect(listCustomers({ q: "5550002" }, NOW).customers.map((c) => c.id)).toEqual(["bob"]);
+    expect(listCustomers({ q: "bob@x" }, NOW).customers.map((c) => c.id)).toEqual(["bob"]);
+  });
+
+  it("segment filters mirror the boolean semantics", () => {
+    seedScenario();
+    const ids = (f: Parameters<typeof listCustomers>[0]) =>
+      listCustomers(f, NOW).customers.map((c) => c.id).sort();
+    expect(ids({ segment: "new" })).toEqual(["carla", "dora"]);
+    expect(ids({ segment: "recurring" })).toEqual(["ana", "bob"]);
+    expect(ids({ segment: "vip" })).toEqual(["ana"]);
+    expect(ids({ segment: "at_risk" })).toEqual(["bob"]);
+  });
+
+  it("tag filter matches exact tag", () => {
+    seedScenario();
+    addTag("bob", "boda");
+    expect(listCustomers({ tag: "boda" }, NOW).customers.map((c) => c.id)).toEqual(["bob"]);
+    expect(listCustomers({ tag: "nope" }, NOW).customers).toEqual([]);
+  });
+
+  it("sorts: ltv, orders, name", () => {
+    seedScenario();
+    expect(listCustomers({ sort: "ltv" }, NOW).customers[0].id).toBe("ana");
+    expect(listCustomers({ sort: "orders" }, NOW).customers[0].id).toBe("ana");
+    expect(listCustomers({ sort: "name" }, NOW).customers.map((c) => c.id)).toEqual([
+      "ana", "bob", "carla", "dora",
+    ]);
+  });
+
+  it("paginates with an opaque cursor", () => {
+    seedScenario();
+    const p1 = listCustomers({ sort: "name", limit: 3 }, NOW);
+    expect(p1.customers.map((c) => c.id)).toEqual(["ana", "bob", "carla"]);
+    expect(p1.nextCursor).toBeTruthy();
+    const p2 = listCustomers({ sort: "name", limit: 3, cursor: p1.nextCursor! }, NOW);
+    expect(p2.customers.map((c) => c.id)).toEqual(["dora"]);
+    expect(p2.nextCursor).toBeNull();
+  });
+});
+
+describe("customerStats", () => {
+  it("computes total, newThisMonth, repeatRatePct, atRiskCount", () => {
+    seedScenario();
+    const stats = customerStats(NOW);
+    expect(stats.total).toBe(4);
+    expect(stats.newThisMonth).toBe(1); // dora, first seen 2026-07-02
+    expect(stats.repeatRatePct).toBe(50); // ana + bob out of 4
+    expect(stats.atRiskCount).toBe(1); // bob
+  });
+
+  it("handles an empty database", () => {
+    const stats = customerStats(NOW);
+    expect(stats).toEqual({ total: 0, newThisMonth: 0, repeatRatePct: 0, atRiskCount: 0 });
   });
 });
