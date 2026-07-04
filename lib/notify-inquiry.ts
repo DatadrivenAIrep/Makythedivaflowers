@@ -9,22 +9,6 @@ function contactOf(record: InquiryRecord): { name: string; email: string; phone:
   return { name: c.name ?? "—", email: c.email ?? "—", phone: c.phone ?? "—" };
 }
 
-type ResendClient = { emails: { send: (opts: Record<string, unknown>) => Promise<unknown> } };
-
-/**
- * Instantiate the Resend client. `Resend` is a real ES class in production
- * (requires `new`), but some test doubles mock it as a plain factory
- * function, which throws if invoked with `new`. Try the standard `new`
- * form first and fall back to a direct call so both shapes work.
- */
-function createResendClient(apiKey: string): ResendClient {
-  try {
-    return new Resend(apiKey) as unknown as ResendClient;
-  } catch {
-    return (Resend as unknown as (key: string) => ResendClient)(apiKey);
-  }
-}
-
 /**
  * Best-effort email alert for a new inquiry. Never throws; no-ops when the
  * Resend key or destination address are not configured (local/dev, or a host
@@ -38,7 +22,7 @@ export async function notifyInquiry(record: InquiryRecord): Promise<void> {
 
   try {
     const { name, email, phone } = contactOf(record);
-    const resend = createResendClient(apiKey);
+    const resend = new Resend(apiKey);
     await resend.emails.send({
       from,
       to,

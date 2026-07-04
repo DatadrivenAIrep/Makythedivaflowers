@@ -4,9 +4,9 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 const sendMock = vi.fn();
 
 vi.mock("resend", () => ({
-  Resend: vi.fn().mockImplementation(() => ({
-    emails: { send: sendMock },
-  })),
+  Resend: class {
+    emails = { send: sendMock };
+  },
 }));
 
 const ORIGINAL_ENV = { ...process.env };
