@@ -1289,6 +1289,7 @@
     "action_prepare": "Prepare",
     "action_en_route": "On the way",
     "action_delivered": "Delivered",
+    "action_directions": "Directions",
     "action_open_detail": "Open detail",
     "loading": "Loading…",
     "no_deliveries": "No deliveries for this date.",
