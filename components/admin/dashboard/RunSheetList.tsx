@@ -45,6 +45,8 @@ export default function RunSheetList({ orders, locale, onOpen, onAdvance }: Prop
     slot,
     orders: orders
       .filter((o) => o.fulfillment.method === "delivery" && o.fulfillment.window.slot === slot)
+      // Relies on Array.prototype.sort being stable (ES2019+) so same-zone
+      // orders keep the API's original ordering.
       .sort((a, b) => deliveryZoneRank(deliveryZip(a)) - deliveryZoneRank(deliveryZip(b))),
   })).filter((g) => g.orders.length > 0);
 

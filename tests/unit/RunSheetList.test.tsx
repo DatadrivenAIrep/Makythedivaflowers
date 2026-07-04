@@ -61,4 +61,20 @@ describe("RunSheetList", () => {
     expect(href).toContain("https://www.google.com/maps/dir/?api=1&destination=");
     expect(href).toContain(encodeURIComponent("1 Main St, Elsewhere, NY 11507"));
   });
+
+  it("renders no zone chip when the zip matches no delivery zone", () => {
+    wrap(
+      <RunSheetList
+        orders={[deliveryOrder("x", "Reci Sin", "90210")]} // out of service area → no zone
+        locale="es"
+        onOpen={() => {}}
+        onAdvance={() => {}}
+      />,
+    );
+    // the card still renders, but no zone label chip is present
+    expect(screen.getByText("Reci Sin")).toBeDefined();
+    expect(
+      screen.queryByText(/^(Albertson|Roslyn|Manhasset|Great Neck|Port Washington)$/),
+    ).toBeNull();
+  });
 });
