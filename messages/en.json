@@ -568,6 +568,7 @@
     "hero_title": "Your wedding, in full bloom.",
     "hero_sub": "From intimate ceremonies to grand receptions — we design and install every stem.",
     "hero_cta": "Start planning",
+    "rating_chip": "{rating} ★ · {count} reviews",
     "form_eyebrow": "Inquire",
     "form_title": "Let's build something beautiful.",
     "process": {
@@ -620,6 +621,10 @@
       "prev": "Previous photo",
       "next": "Next photo",
       "go_to": "Go to photo"
+    },
+    "testimonials": {
+      "eyebrow": "In their words",
+      "title": "Couples on Diva."
     },
     "form": {
       "shell": {

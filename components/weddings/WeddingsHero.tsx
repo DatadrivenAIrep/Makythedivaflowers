@@ -2,6 +2,8 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { MagneticButton } from "@/components/motion/MagneticButton";
+import { RatingChip } from "@/components/social/RatingChip";
+import { REVIEWS_AGGREGATE } from "@/data/reviews";
 import type { Locale } from "@/types/locale";
 
 export async function WeddingsHero({ locale }: { locale: Locale }) {
@@ -24,9 +26,17 @@ export async function WeddingsHero({ locale }: { locale: Locale }) {
             {t("hero_title")}
           </h1>
           <p className="text-bone/85 text-lg max-w-[52ch]">{t("hero_sub")}</p>
-          <MagneticButton href={`/${locale}/weddings#inquire`} ariaLabel={t("hero_cta")}>
-            {t("hero_cta")}
-          </MagneticButton>
+          <div className="flex flex-wrap items-center gap-4">
+            <MagneticButton href={`/${locale}/weddings#inquire`} ariaLabel={t("hero_cta")}>
+              {t("hero_cta")}
+            </MagneticButton>
+          </div>
+          <RatingChip
+            label={t("rating_chip", {
+              rating: String(REVIEWS_AGGREGATE.rating),
+              count: REVIEWS_AGGREGATE.total,
+            })}
+          />
         </div>
       </div>
     </section>

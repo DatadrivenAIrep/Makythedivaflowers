@@ -568,6 +568,7 @@
     "hero_title": "Tu boda, en plena flor.",
     "hero_sub": "Desde ceremonias íntimas hasta recepciones grandiosas — diseñamos e instalamos cada tallo.",
     "hero_cta": "Empezar a planear",
+    "rating_chip": "{rating} ★ · {count} reseñas",
     "form_eyebrow": "Cotizar",
     "form_title": "Construyamos algo hermoso.",
     "process": {
@@ -620,6 +621,10 @@
       "prev": "Foto anterior",
       "next": "Foto siguiente",
       "go_to": "Ir a la foto"
+    },
+    "testimonials": {
+      "eyebrow": "En sus palabras",
+      "title": "Novias sobre Diva."
     },
     "form": {
       "shell": {

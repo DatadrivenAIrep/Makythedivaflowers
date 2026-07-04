@@ -7,6 +7,8 @@ import { WeddingStories } from "@/components/weddings/WeddingStories";
 import { WeddingsFAQ } from "@/components/weddings/WeddingsFAQ";
 import { PricingIntent } from "@/components/weddings/PricingIntent";
 import { WeddingsForm } from "@/components/inquiry/WeddingsForm";
+import { Testimonials } from "@/components/social/Testimonials";
+import { reviewsByOccasion } from "@/data/review-helpers";
 import type { Locale } from "@/types/locale";
 
 export async function generateMetadata({
@@ -25,12 +27,19 @@ export default async function WeddingsPage({
   params,
 }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "weddings.testimonials" });
   return (
     <>
       <WeddingsHero locale={locale} />
       <ProcessStrip />
       <PricingIntent locale={locale} />
       <WeddingStories locale={locale} />
+      <Testimonials
+        reviews={reviewsByOccasion("Boda")}
+        locale={locale}
+        eyebrow={t("eyebrow")}
+        title={t("title")}
+      />
       <WeddingsFAQ locale={locale} />
       <section id="inquire" className="py-24">
         <WeddingsForm locale={locale} />
