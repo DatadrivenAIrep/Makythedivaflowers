@@ -50,6 +50,15 @@ describe("PATCH /[id]", () => {
     expect((await PATCH(patch({ stage: "bogus" }), ctx("iq1"))).status).toBe(400);
     expect((await PATCH(patch({ stage: "contactado" }), ctx("nope"))).status).toBe(404);
   });
+  it("400s when lost and stage are sent together (contradictory)", async () => {
+    seed();
+    const res = await PATCH(patch({ lost: { reason: "x" }, stage: "propuesta" }), ctx("iq1"));
+    expect(res.status).toBe(400);
+    // the inquiry is untouched — still nuevo, no lost reason
+    const after = await (await GET(new Request("http://x"), ctx("iq1"))).json();
+    expect(after.inquiry.stage).toBe("nuevo");
+    expect(after.inquiry.lostReason).toBeUndefined();
+  });
 });
 
 describe("POST /[id]/ack", () => {

@@ -88,4 +88,15 @@ describe("mutations write history", () => {
     expect(changeStage("nope", "contactado", "maky", NOW)).toBeNull();
     expect(getInquiry("nope")).toBeNull();
   });
+
+  it("no-op notes/follow-up saves don't add history rows", () => {
+    createInquiry(base("iq1"), NOW);
+    updateNotes("iq1", "call friday", "maky", NOW);
+    setFollowUp("iq1", "2026-08-01", "maky", NOW);
+    const before = getInquiry("iq1")!.changes.length; // created + note + followup = 3
+    // Save again with identical values → no new history
+    updateNotes("iq1", "call friday", "maky", NOW);
+    setFollowUp("iq1", "2026-08-01", "maky", NOW);
+    expect(getInquiry("iq1")!.changes.length).toBe(before);
+  });
 });

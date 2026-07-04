@@ -27,4 +27,7 @@ export const inquiryPatchSchema = z
     followUpDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).or(z.literal("")).optional(),
     lost: z.object({ reason: z.string().max(200) }).optional(),
   })
-  .refine((v) => Object.keys(v).length > 0, { message: "empty_patch" });
+  .refine((v) => Object.keys(v).length > 0, { message: "empty_patch" })
+  // "lost" is terminal; combining it with a stage change is contradictory
+  // (would leave a lost_reason on a non-lost inquiry). Reject the ambiguous request.
+  .refine((v) => !(v.lost && v.stage), { message: "lost_and_stage" });

@@ -1,6 +1,6 @@
 "use client";
 import { useTranslations } from "next-intl";
-import { formatDate } from "@/lib/format-datetime";
+import { formatDateOnly } from "@/lib/format-datetime";
 import type { Inquiry } from "@/lib/inquiry-storage-db";
 
 type Props = { inquiry: Inquiry; locale: string; onOpen: (id: string) => void };
@@ -24,8 +24,8 @@ export default function InquiryCard({ inquiry, locale, onOpen }: Props) {
       </div>
       <div className="mt-1 flex flex-wrap gap-2 text-xs text-ink/60">
         {inquiry.budgetBand && <span>{t(`band_${inquiry.budgetBand}`)}</span>}
-        {inquiry.eventDate && <span>· {formatDate(inquiry.eventDate, locale)}</span>}
-        {inquiry.followUpDate && <span>· {t("follow_up")}: {formatDate(inquiry.followUpDate, locale)}</span>}
+        {inquiry.eventDate && <span>· {formatDateOnly(inquiry.eventDate, locale)}</span>}
+        {inquiry.followUpDate && <span>· {t("follow_up")}: {formatDateOnly(inquiry.followUpDate, locale)}</span>}
       </div>
     </button>
   );

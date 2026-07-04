@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Phone, WhatsappLogo, EnvelopeSimple, X } from "@phosphor-icons/react/dist/ssr";
-import { formatDate, formatDateTime } from "@/lib/format-datetime";
+import { formatDateOnly, formatDateTime } from "@/lib/format-datetime";
 import { ACTIVE_STAGES, type Stage } from "@/lib/pipeline";
 import type { InquiryDetail } from "@/lib/inquiry-storage-db";
 
@@ -60,7 +60,7 @@ export default function InquiryDrawer({ detail, locale, onClose, onChanged }: Pr
           </div>
           <div className="mt-2 grid grid-cols-2 gap-1 text-ink/70">
             {inquiry.budgetBand && <div>{t("form_budget")}: {t(`band_${inquiry.budgetBand}`)}</div>}
-            {inquiry.eventDate && <div>{t("event_date")}: {formatDate(inquiry.eventDate, locale)}</div>}
+            {inquiry.eventDate && <div>{t("event_date")}: {formatDateOnly(inquiry.eventDate, locale)}</div>}
             {inquiry.venue && <div>{t("venue")}: <span>{inquiry.venue}</span></div>}
             {inquiry.guests != null && <div>{t("guests")}: {inquiry.guests}</div>}
             {inquiry.company && <div>{t("company")}: {inquiry.company}</div>}

@@ -181,8 +181,11 @@ export function changeStage(id: string, stage: string, actor: string, now: Date 
 
 export function updateNotes(id: string, notes: string, actor: string, now: Date = new Date()): InquiryDetail | null {
   runMigrations();
-  if (!getRow(id)) return null;
-  getDb().prepare("UPDATE inquiries SET notes = ? WHERE id = ?").run(notes || null, id);
+  const row = getRow(id);
+  if (!row) return null;
+  const next = notes || null;
+  if (next === (row.notes ?? null)) return getInquiry(id); // no-op: don't touch or log
+  getDb().prepare("UPDATE inquiries SET notes = ? WHERE id = ?").run(next, id);
   touch(id, now);
   recordChange(id, actor, "note", "Notas actualizadas", now);
   return getInquiry(id);
@@ -190,10 +193,13 @@ export function updateNotes(id: string, notes: string, actor: string, now: Date 
 
 export function setFollowUp(id: string, date: string, actor: string, now: Date = new Date()): InquiryDetail | null {
   runMigrations();
-  if (!getRow(id)) return null;
-  getDb().prepare("UPDATE inquiries SET follow_up_date = ? WHERE id = ?").run(date || null, id);
+  const row = getRow(id);
+  if (!row) return null;
+  const next = date || null;
+  if (next === (row.follow_up_date ?? null)) return getInquiry(id); // no-op: don't touch or log
+  getDb().prepare("UPDATE inquiries SET follow_up_date = ? WHERE id = ?").run(next, id);
   touch(id, now);
-  recordChange(id, actor, "followup", date ? `Seguimiento: ${date}` : "Seguimiento quitado", now);
+  recordChange(id, actor, "followup", next ? `Seguimiento: ${next}` : "Seguimiento quitado", now);
   return getInquiry(id);
 }
 
