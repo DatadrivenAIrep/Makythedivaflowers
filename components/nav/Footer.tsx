@@ -100,6 +100,7 @@ export async function Footer({ locale }: { locale: Locale }) {
             <p>
               © {year} Diva Flowers · {t("rights")}
             </p>
+            <p className="text-bone/40">{t("produced_by")}</p>
           </div>
         </div>
       </div>
