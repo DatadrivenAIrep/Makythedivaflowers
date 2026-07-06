@@ -36,13 +36,13 @@ export async function BentoGrid({ locale }: { locale: Locale }) {
           <BentoPromoTile
             locale={locale}
             namespace="home.bento.weddings"
-            imageSrc="/images/wedding-stories-header.webp"
+            imageSrc="/weddings/boda-03/p01.webp"
             href={`/${locale}/weddings`}
           />
           <BentoPromoTile
             locale={locale}
             namespace="home.bento.events"
-            imageSrc="/events/evento-01/p01.webp"
+            imageSrc="/events/evento-02/p03.webp"
             href={`/${locale}/events`}
           />
         </div>
