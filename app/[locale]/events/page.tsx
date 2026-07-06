@@ -4,6 +4,8 @@ import { getTranslations } from "next-intl/server";
 import { ServiceLD } from "@/components/seo/ServiceLD";
 import { EventsHero } from "@/components/events/EventsHero";
 import { UseCaseGrid } from "@/components/events/UseCaseGrid";
+import { PortfolioGallery } from "@/components/portfolio/PortfolioGallery";
+import { eventProjects } from "@/data/event-projects";
 import { ProcessStrip } from "@/components/weddings/ProcessStrip";
 import { EventsForm } from "@/components/inquiry/EventsForm";
 import { WhatHappensNext } from "@/components/inquiry/WhatHappensNext";
@@ -35,6 +37,7 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
       />
       <EventsHero locale={locale} />
       <UseCaseGrid locale={locale} />
+      <PortfolioGallery events={eventProjects} namespace="events.portfolio" locale={locale} />
       <Testimonials
         reviews={generalReviews().slice(0, 3)}
         locale={locale}
