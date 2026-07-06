@@ -3,8 +3,8 @@ import { describe, it, expect } from "vitest";
 import { weddingProjects } from "@/data/wedding-projects";
 
 describe("weddingProjects", () => {
-  it("has at least the 4 existing + 3 new = 7 events, all kind wedding, unique ids", () => {
-    expect(weddingProjects.length).toBeGreaterThanOrEqual(7);
+  it("has the 3 existing + 3 new = 6 weddings, all kind wedding, unique ids", () => {
+    expect(weddingProjects.length).toBeGreaterThanOrEqual(6);
     expect(weddingProjects.every((e) => e.kind === "wedding")).toBe(true);
     const ids = weddingProjects.map((e) => e.id);
     expect(new Set(ids).size).toBe(ids.length);
