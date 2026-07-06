@@ -9,10 +9,9 @@ export async function EventsTeaser({ locale }: { locale: Locale }) {
     <section className="relative py-16">
       <div className="max-w-[1400px] mx-auto px-6">
         <div className="relative overflow-hidden rounded-[var(--radius-bento)] aspect-[16/9] md:aspect-[21/9]">
-          {/* Real Diva event (bridal shower). TODO: swap for a corporate-event photo when available. */}
           <img
             alt=""
-            src="/weddings/dani-bridal-shower-jun-2026/7247.webp"
+            src="/events/evento-01/p01.webp"
             className="absolute inset-0 size-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-ink/20 to-transparent" />
