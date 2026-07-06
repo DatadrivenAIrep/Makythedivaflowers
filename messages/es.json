@@ -651,7 +651,6 @@
     "stories": {
       "eyebrow": "Portafolio",
       "title": "Nuestro trabajo, boda por boda.",
-      "photo_count": "{count} fotos",
       "media_count": "{count} momentos",
       "open_label": "Ver galería",
       "close": "Cerrar galería",

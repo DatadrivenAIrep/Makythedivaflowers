@@ -651,7 +651,6 @@
     "stories": {
       "eyebrow": "Portfolio",
       "title": "Our work, wedding by wedding.",
-      "photo_count": "{count} photos",
       "media_count": "{count} moments",
       "open_label": "View gallery",
       "close": "Close gallery",

@@ -5,7 +5,8 @@ import { WeddingFaqLD } from "@/components/seo/WeddingFaqLD";
 import { ServiceLD } from "@/components/seo/ServiceLD";
 import { WeddingsHero } from "@/components/weddings/WeddingsHero";
 import { ProcessStrip } from "@/components/weddings/ProcessStrip";
-import { WeddingStories } from "@/components/weddings/WeddingStories";
+import { PortfolioGallery } from "@/components/portfolio/PortfolioGallery";
+import { weddingProjects } from "@/data/wedding-projects";
 import { WeddingsFAQ } from "@/components/weddings/WeddingsFAQ";
 import { PricingIntent } from "@/components/weddings/PricingIntent";
 import { WeddingsForm } from "@/components/inquiry/WeddingsForm";
@@ -44,7 +45,7 @@ export default async function WeddingsPage({
       <WeddingsHero locale={locale} />
       <ProcessStrip />
       <PricingIntent locale={locale} />
-      <WeddingStories locale={locale} />
+      <PortfolioGallery events={weddingProjects} namespace="weddings.stories" locale={locale} />
       <Testimonials
         reviews={reviewsByOccasion("Boda")}
         locale={locale}
