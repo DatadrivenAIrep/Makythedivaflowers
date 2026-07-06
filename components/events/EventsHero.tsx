@@ -12,7 +12,7 @@ export async function EventsHero({ locale }: { locale: Locale }) {
   return (
     <section className="relative min-h-[100dvh] flex items-end overflow-hidden">
       <Image
-        src="https://picsum.photos/seed/diva-events-hero/2400/3000"
+        src="/events/evento-02/p01.webp"
         alt={t("hero_alt")}
         fill
         priority
