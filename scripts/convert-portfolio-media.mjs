@@ -2,7 +2,7 @@
 // One-time converter: Downloads/<folder> -> public/<bucket>/<slug>/{pNN.webp, vNN.mp4, vNN.webp}
 // Usage: node scripts/convert-portfolio-media.mjs [INPUT_BASE_DIR]   (default: ~/Downloads)
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, readdirSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, mkdtempSync, rmSync } from "node:fs";
 import { join, extname } from "node:path";
 import { tmpdir } from "node:os";
 
@@ -41,9 +41,17 @@ function videoDuration(file) {
 
 function convertPhoto(src, outWebp) {
   if (existsSync(outWebp)) return;
-  const tmp = tmpPng();
-  run("sips", ["-s", "format", "png", "-Z", String(MAX_EDGE), src, "--out", tmp]);
-  run("cwebp", ["-q", "80", tmp, "-o", outWebp]);
+  // qlmanage (Quick Look / ImageIO) renders with EXIF orientation baked in.
+  // sips ignores EXIF orientation for many HEIC/JPEG files, producing rotated output.
+  const dir = mkdtempSync(join(tmpdir(), "pm_"));
+  try {
+    run("qlmanage", ["-t", "-s", String(MAX_EDGE), "-o", dir, src]);
+    const png = readdirSync(dir).find((f) => f.endsWith(".png"));
+    if (!png) throw new Error(`qlmanage produced no thumbnail for ${src}`);
+    run("cwebp", ["-q", "80", join(dir, png), "-o", outWebp]);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 }
 
 function convertVideo(src, outMp4, outPoster) {
