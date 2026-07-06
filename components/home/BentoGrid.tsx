@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { BentoCorsagesTile } from "./BentoCorsagesTile";
+import { BentoPromoTile } from "./BentoPromoTile";
 import { BentoSubscriptionsTile } from "./BentoSubscriptionsTile";
 import { BentoLiveStatusTile } from "./BentoLiveStatusTile";
 import { BentoPressTile } from "./BentoPressTile";
@@ -32,8 +32,19 @@ export async function BentoGrid({ locale }: { locale: Locale }) {
         className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-5"
         style={{ gridAutoRows: "minmax(140px, auto)" }}
       >
-        <div className="md:col-span-2 md:row-span-3">
-          <BentoCorsagesTile locale={locale} />
+        <div className="md:col-span-2 md:row-span-3 grid grid-rows-2 gap-4 md:gap-5">
+          <BentoPromoTile
+            locale={locale}
+            namespace="home.bento.weddings"
+            imageSrc="/images/wedding-stories-header.webp"
+            href={`/${locale}/weddings`}
+          />
+          <BentoPromoTile
+            locale={locale}
+            namespace="home.bento.events"
+            imageSrc="/events/evento-01/p01.webp"
+            href={`/${locale}/events`}
+          />
         </div>
         <div className="md:col-span-2 md:row-span-2">
           <BentoLiveStatusTile />

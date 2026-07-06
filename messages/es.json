@@ -192,6 +192,16 @@
         "title": "Para una noche inolvidable",
         "limited": "Temporada limitada",
         "cta": "Reservar"
+      },
+      "weddings": {
+        "eyebrow": "Bodas",
+        "title": "Instalaciones que se recuerdan.",
+        "cta": "Ver bodas"
+      },
+      "events": {
+        "eyebrow": "Eventos",
+        "title": "De la oficina a la celebración.",
+        "cta": "Ver eventos"
       }
     },
     "categories_title": "Encuentra tu flor.",

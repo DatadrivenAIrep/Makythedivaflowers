@@ -192,6 +192,16 @@
         "title": "For the night they remember",
         "limited": "Limited season",
         "cta": "Reserve"
+      },
+      "weddings": {
+        "eyebrow": "Weddings",
+        "title": "Installations they'll remember.",
+        "cta": "See weddings"
+      },
+      "events": {
+        "eyebrow": "Events",
+        "title": "From office to celebration.",
+        "cta": "See events"
       }
     },
     "categories_title": "Find your bloom.",
