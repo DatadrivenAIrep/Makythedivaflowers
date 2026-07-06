@@ -4,10 +4,11 @@ import type { Locale } from "@/types/locale";
 import { cn } from "@/lib/cn";
 
 /**
- * A generic image + title + CTA bento tile, used to promote a destination
- * (weddings, events). Copy comes from the given i18n `namespace`
- * ({ eyebrow, title, cta }); `href` is the destination and `imageSrc` a real
- * (non-AI) asset under /public.
+ * A photo-forward image + title + CTA bento tile, used to promote a destination
+ * (weddings, events). The photo fills the tile; the eyebrow/title/CTA sit over a
+ * soft bottom gradient so the image reads bright (not a dark box). Copy comes
+ * from the given i18n `namespace` ({ eyebrow, title, cta }); `href` is the
+ * destination and `imageSrc` a real (non-AI) asset under /public.
  */
 export async function BentoPromoTile({
   locale,
@@ -25,31 +26,32 @@ export async function BentoPromoTile({
   return (
     <div
       className={cn(
-        "relative bg-ink text-bone rounded-[var(--radius-bento)] overflow-hidden",
-        "min-h-[300px] h-full flex flex-col",
+        "group relative overflow-hidden rounded-[var(--radius-bento)]",
+        "min-h-[300px] h-full",
         "shadow-[var(--shadow-tile-rest)]",
       )}
     >
-      <div className="relative flex-1 min-h-[140px]">
-        {/* plain <img> so an ad-blocker that blocks /_next/image can't blank the
-            tile; assets are already optimized WebP. */}
-        <img
-          src={imageSrc}
-          alt=""
-          className="absolute inset-0 size-full object-cover"
-          loading="lazy"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/30 to-ink/10" />
-        <div className="absolute top-3 left-3">
-          <span className="rounded-full bg-ink/50 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-petal backdrop-blur-sm">
-            {t("eyebrow")}
-          </span>
-        </div>
+      {/* plain <img> so an ad-blocker that blocks /_next/image can't blank the
+          tile; assets are already optimized WebP. */}
+      <img
+        src={imageSrc}
+        alt=""
+        className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
+        loading="lazy"
+      />
+      {/* Gradient only at the bottom so the photo stays bright up top and the
+          text stays legible below. */}
+      <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent" />
+
+      <div className="absolute top-3 left-3">
+        <span className="rounded-full bg-ink/40 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-bone backdrop-blur-sm">
+          {t("eyebrow")}
+        </span>
       </div>
 
-      <div className="px-6 pt-4 pb-5 flex flex-col gap-3">
+      <div className="relative h-full flex flex-col justify-end p-6 gap-3 text-bone">
         <h3
-          className="font-display italic text-2xl md:text-3xl tracking-tighter leading-[0.9] text-bone"
+          className="font-display italic text-2xl md:text-3xl tracking-tighter leading-[0.9]"
           style={{ fontVariationSettings: "'WONK' 1, 'SOFT' 30, 'opsz' 144" }}
         >
           {t("title")}
