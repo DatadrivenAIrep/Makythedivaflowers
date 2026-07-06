@@ -37,6 +37,7 @@ export async function BentoPromoTile({
         src={imageSrc}
         alt=""
         className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
+        style={{ filter: "saturate(1.2) contrast(1.04)" }}
         loading="lazy"
       />
       {/* Gradient only at the bottom so the photo stays bright up top and the
