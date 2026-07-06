@@ -579,6 +579,17 @@
       "errors": {
         "unknown_error": "Something went wrong. Please try again or call us directly."
       }
+    },
+    "portfolio": {
+      "eyebrow": "Real weddings & events",
+      "title": "Moments we've made.",
+      "cta": "See yourself here? Plan yours →",
+      "media_count": "{count} moments",
+      "open_label": "View gallery",
+      "close": "Close",
+      "prev": "Previous",
+      "next": "Next",
+      "go_to": "Go to item"
     }
   },
   "weddings": {
@@ -641,6 +652,7 @@
       "eyebrow": "Portfolio",
       "title": "Our work, wedding by wedding.",
       "photo_count": "{count} photos",
+      "media_count": "{count} moments",
       "open_label": "View gallery",
       "close": "Close gallery",
       "prev": "Previous photo",
