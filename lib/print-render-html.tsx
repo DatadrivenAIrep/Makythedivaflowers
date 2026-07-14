@@ -12,7 +12,7 @@ async function loadRenderToStaticMarkup() {
 import type { Order } from "@/types/order";
 import { PRODUCTS } from "@/data/products";
 import { SITE } from "@/data/site";
-import { resolveCartLines } from "@/lib/cart-helpers";
+import { resolveCartLine } from "@/lib/cart-helpers";
 import { formatMoneyCents, formatPhoneUS, formatDeliveryWindow } from "@/lib/format";
 import { getPrintStyles, getCardBgDataUri, getLogoDataUri, getProductImageDataUri } from "@/lib/print-styles";
 
@@ -30,6 +30,7 @@ const T = {
     items: "Items",
     buyer: "Buyer",
     cardMessage: "Card message",
+    internalNotes: "Internal notes",
     subtotalRow: "Subt · Ship · Tax",
   },
   es: {
@@ -43,6 +44,7 @@ const T = {
     items: "Productos",
     buyer: "Comprador",
     cardMessage: "Mensaje de tarjeta",
+    internalNotes: "Notas internas",
     subtotalRow: "Subt · Env · Tax",
   },
 } as const;
@@ -51,11 +53,11 @@ function Worksheet({ order }: { order: Order }) {
   const locale: Locale = order.locale;
   const t = T[locale];
   const m = (cents: number) => formatMoneyCents(cents, locale);
-  const resolved = resolveCartLines(order.lines, PRODUCTS);
+  const notes = order.internalNotes?.trim();
 
   return (
     <section className="worksheet">
-      {/* Col 1 — meta + window */}
+      {/* Col 1 — meta + designer notes + window */}
       <div className="ws-col meta">
         <div>
           <div className="ws-brand">{t.eyebrow}</div>
@@ -65,6 +67,12 @@ function Worksheet({ order }: { order: Order }) {
             {order.stripePaymentIntentId ? <span style={{ opacity: 0.7 }}>Stripe {order.stripePaymentIntentId}</span> : null}
           </div>
         </div>
+        {notes ? (
+          <div className="ws-section notes">
+            <div className="ws-section-label">{t.internalNotes}</div>
+            <p className="ws-notes-body">{notes}</p>
+          </div>
+        ) : null}
         <div className="ws-window">
           <div className="lbl">{t.deliveryWindow}</div>
           <div className="val-time">{order.fulfillment.method !== "in-store" ? formatDeliveryWindow(order.fulfillment.window, locale) : ""}</div>
@@ -116,10 +124,28 @@ function Worksheet({ order }: { order: Order }) {
         <div className="ws-items">
           <table>
             <tbody>
-              {resolved.map((r) => {
+              {order.lines.map((line, i) => {
+                // Custom (off-catalog) arrangements carry the designer's build
+                // notes. resolveCartLine only handles catalog lines, so render
+                // custom lines directly — otherwise they'd vanish from the sheet.
+                if (line.kind === "custom") {
+                  const note = line.designerNotes?.trim();
+                  return (
+                    <tr key={`custom-${i}`}>
+                      <td className="qty">{line.qty}×</td>
+                      <td>
+                        {line.title}
+                        {note ? <div className="ws-designer-note">✎ {note}</div> : null}
+                      </td>
+                      <td className="price">{m(line.priceCents * line.qty)}</td>
+                    </tr>
+                  );
+                }
+                const r = resolveCartLine(line, PRODUCTS);
+                if (!r) return null;
                 const thumb = getProductImageDataUri(r.product.images[0]?.src);
                 return (
-                  <tr key={`${r.line.productId}-${r.line.variantId}`}>
+                  <tr key={`${line.productId}-${line.variantId}-${i}`}>
                     <td className="qty">{r.line.qty}×</td>
                     <td>
                       {thumb ? <img className="item-thumb" src={thumb} alt="" /> : null}

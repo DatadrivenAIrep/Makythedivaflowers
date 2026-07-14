@@ -155,6 +155,14 @@ export function getPrintStyles(): string {
     .ws-section-label { font-size: 7pt; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; color: var(--rouge); margin-bottom: 3pt; }
     .ws-section p { margin: 0; font-size: 9pt; line-height: 1.4; }
     .ws-section p strong { font-weight: 600; }
+
+    /* Internal / designer notes — an amber "sticky note" so the build
+       instructions stand out on the shop's working copy. Never printed on
+       the customer's tri-fold card (that lives in .card-row). */
+    .ws-section.notes { background: #FFF7E0; border-color: #E7C86B; }
+    .ws-notes-body { margin: 0; font-size: 8.5pt; line-height: 1.4; white-space: pre-wrap; color: var(--ink); }
+    /* Per-line designer note under a custom arrangement in the items table. */
+    .ws-designer-note { font-size: 8pt; font-style: italic; color: var(--rouge); padding-left: 8pt; margin-top: 2pt; line-height: 1.35; }
     .ws-msg-quote {
       font-family: var(--font-display);
       font-style: italic; font-size: 11pt; line-height: 1.4;
