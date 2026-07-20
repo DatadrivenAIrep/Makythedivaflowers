@@ -1,16 +1,16 @@
-process.env.SQLITE_FILE = ":memory:";
-process.env.ORDER_STORAGE_FILE = "/tmp/diva-board-test.json";
-
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { closeDb, getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
-import { getDb } from "@/lib/db";
 import { saveOrder, listOrdersForWindowDates } from "@/lib/order-storage";
 import { makeOrder } from "../factories/order";
 
 beforeEach(() => {
+  vi.stubEnv("SQLITE_FILE", ":memory:");
+  vi.stubEnv("ORDER_STORAGE_FILE", "/tmp/diva-board-test-" + process.pid + ".json");
   runMigrations();
   getDb().prepare("DELETE FROM orders").run();
 });
+afterEach(() => { closeDb(); vi.unstubAllEnvs(); });
 
 describe("listOrdersForWindowDates", () => {
   it("returns delivery/pickup orders for the given window dates, excluding canceled and in-store", async () => {
