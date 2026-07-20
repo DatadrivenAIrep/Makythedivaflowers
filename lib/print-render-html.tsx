@@ -57,7 +57,7 @@ function Worksheet({ order }: { order: Order }) {
 
   return (
     <section className="worksheet">
-      {/* Col 1 — meta + designer notes + window */}
+      {/* Col 1 — meta + delivery info + window */}
       <div className="ws-col meta">
         <div>
           <div className="ws-brand">{t.eyebrow}</div>
@@ -67,22 +67,6 @@ function Worksheet({ order }: { order: Order }) {
             {order.stripePaymentIntentId ? <span style={{ opacity: 0.7 }}>Stripe {order.stripePaymentIntentId}</span> : null}
           </div>
         </div>
-        {notes ? (
-          <div className="ws-section notes">
-            <div className="ws-section-label">{t.internalNotes}</div>
-            <p className="ws-notes-body">{notes}</p>
-          </div>
-        ) : null}
-        {order.fulfillment.method !== "in-store" ? (
-          <div className="ws-window">
-            <div className="lbl">{t.deliveryWindow}</div>
-            <div className="val-time">{formatDeliveryWindow(order.fulfillment.window, locale)}</div>
-          </div>
-        ) : null}
-      </div>
-
-      {/* Col 2 — recipient + message */}
-      <div className="ws-col">
         {order.fulfillment.method === "delivery" ? (
           <div className="ws-section accent">
             <span className="pill">{t.deliverTo}</span>
@@ -108,6 +92,22 @@ function Worksheet({ order }: { order: Order }) {
             <p>{formatPhoneUS(order.fulfillment.recipient.phone)}</p>
           </div>
         )}
+        {order.fulfillment.method !== "in-store" ? (
+          <div className="ws-window">
+            <div className="lbl">{t.deliveryWindow}</div>
+            <div className="val-time">{formatDeliveryWindow(order.fulfillment.window, locale)}</div>
+          </div>
+        ) : null}
+      </div>
+
+      {/* Col 2 — internal notes + card message */}
+      <div className="ws-col">
+        {notes ? (
+          <div className="ws-section notes">
+            <div className="ws-section-label">{t.internalNotes}</div>
+            <p className="ws-notes-body">{notes}</p>
+          </div>
+        ) : null}
         {order.fulfillment.cardMessage?.trim() ? (
           <div className="ws-section">
             <div className="ws-section-label">{t.cardMessage}</div>
