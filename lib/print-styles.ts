@@ -25,6 +25,7 @@ function imageDataUri(relPath: string, mime: string): string {
 let cached: string | null = null;
 let cachedBg: string | null = null;
 let cachedLogo: string | null = null;
+let cachedQr: string | null = null;
 
 export function getCardBgDataUri(): string {
   if (cachedBg !== null) return cachedBg;
@@ -36,6 +37,15 @@ export function getLogoDataUri(): string {
   if (cachedLogo !== null) return cachedLogo;
   cachedLogo = imageDataUri("public/print/logo.jpg", "image/jpeg");
   return cachedLogo;
+}
+
+// QR code on the tri-fold card cover. Static asset (the URL is fixed —
+// https://makythedivaflowers.com), pre-generated and inlined like the logo so
+// the agent's Chrome needs no network to render it.
+export function getQrWebsiteDataUri(): string {
+  if (cachedQr !== null) return cachedQr;
+  cachedQr = imageDataUri("public/print/qr-website.svg", "image/svg+xml");
+  return cachedQr;
 }
 
 // Product thumbnail for the work sheet. Reads the local file under public/ and
@@ -138,12 +148,6 @@ export function getPrintStyles(): string {
     }
     .ws-window .lbl { font-size: 7pt; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.65; }
     .ws-window .val-time { font-size: 13pt; font-weight: 600; margin-top: 1pt; }
-    .ws-window .total-row {
-      display: flex; justify-content: space-between;
-      margin-top: 5pt; padding-top: 5pt;
-      border-top: 1px solid rgba(250,246,240,0.18);
-    }
-    .ws-window .total-row .val { font-size: 13pt; font-weight: 600; }
 
     .ws-section { border: 1px solid var(--mute-200); border-radius: 4pt; padding: 0.1in 0.14in; background: #fff; }
     .ws-section.accent { background: var(--mute-100); border-color: var(--petal); }
@@ -179,6 +183,8 @@ export function getPrintStyles(): string {
     .ws-items td.price { text-align: right; font-variant-numeric: tabular-nums; width: 50pt; }
     .ws-items .addon { font-size: 8pt; color: var(--mute-600); padding-left: 8pt; }
     .ws-items tr.subtotal td { border-top: 1px solid var(--mute-200); padding-top: 4pt; font-size: 8pt; color: var(--mute-600); }
+    /* Grand total — relocated here from the delivery-window box. */
+    .ws-items tr.grand-total td { border-top: 1.5px solid var(--ink); padding-top: 5pt; font-size: 12pt; font-weight: 700; color: var(--ink); }
     .ws-buyer { margin-top: auto; padding-top: 5pt; border-top: 1px solid var(--mute-200); font-size: 8pt; color: var(--mute-600); line-height: 1.5; }
     .ws-buyer strong { color: var(--ink); font-size: 7pt; letter-spacing: 1.5px; text-transform: uppercase; }
 
@@ -199,6 +205,14 @@ export function getPrintStyles(): string {
       background: linear-gradient(180deg, transparent 45%, rgba(250,246,240,0.6) 100%);
       pointer-events: none;
     }
+    /* QR to the website — a white chip top-left so it scans reliably over the
+       rose photo (QR readability needs high contrast). */
+    .brand-cover .qr-chip {
+      position: absolute; top: 0.22in; left: 0.22in; z-index: 2;
+      background: #fff; border-radius: 4pt; padding: 4pt;
+      box-shadow: 0 1pt 4pt rgba(14,13,12,0.12); line-height: 0;
+    }
+    .brand-cover .qr-img { width: 0.8in; height: 0.8in; display: block; }
     .card-brand { position: relative; z-index: 2; }
     .card-brand .name {
       font-family: var(--font-display); font-size: 34pt; font-weight: 600;

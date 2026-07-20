@@ -14,7 +14,7 @@ import { PRODUCTS } from "@/data/products";
 import { SITE } from "@/data/site";
 import { resolveCartLine } from "@/lib/cart-helpers";
 import { formatMoneyCents, formatPhoneUS, formatDeliveryWindow } from "@/lib/format";
-import { getPrintStyles, getCardBgDataUri, getLogoDataUri, getProductImageDataUri } from "@/lib/print-styles";
+import { getPrintStyles, getCardBgDataUri, getLogoDataUri, getProductImageDataUri, getQrWebsiteDataUri } from "@/lib/print-styles";
 
 type Locale = "en" | "es";
 
@@ -57,7 +57,7 @@ function Worksheet({ order }: { order: Order }) {
 
   return (
     <section className="worksheet">
-      {/* Col 1 — meta + designer notes + window */}
+      {/* Col 1 — meta + delivery info + window */}
       <div className="ws-col meta">
         <div>
           <div className="ws-brand">{t.eyebrow}</div>
@@ -67,24 +67,6 @@ function Worksheet({ order }: { order: Order }) {
             {order.stripePaymentIntentId ? <span style={{ opacity: 0.7 }}>Stripe {order.stripePaymentIntentId}</span> : null}
           </div>
         </div>
-        {notes ? (
-          <div className="ws-section notes">
-            <div className="ws-section-label">{t.internalNotes}</div>
-            <p className="ws-notes-body">{notes}</p>
-          </div>
-        ) : null}
-        <div className="ws-window">
-          <div className="lbl">{t.deliveryWindow}</div>
-          <div className="val-time">{order.fulfillment.method !== "in-store" ? formatDeliveryWindow(order.fulfillment.window, locale) : ""}</div>
-          <div className="total-row">
-            <span className="lbl">{t.total}</span>
-            <span className="val">{m(order.totals.totalCents)}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Col 2 — recipient + message */}
-      <div className="ws-col">
         {order.fulfillment.method === "delivery" ? (
           <div className="ws-section accent">
             <span className="pill">{t.deliverTo}</span>
@@ -110,6 +92,22 @@ function Worksheet({ order }: { order: Order }) {
             <p>{formatPhoneUS(order.fulfillment.recipient.phone)}</p>
           </div>
         )}
+        {order.fulfillment.method !== "in-store" ? (
+          <div className="ws-window">
+            <div className="lbl">{t.deliveryWindow}</div>
+            <div className="val-time">{formatDeliveryWindow(order.fulfillment.window, locale)}</div>
+          </div>
+        ) : null}
+      </div>
+
+      {/* Col 2 — internal notes + card message */}
+      <div className="ws-col">
+        {notes ? (
+          <div className="ws-section notes">
+            <div className="ws-section-label">{t.internalNotes}</div>
+            <p className="ws-notes-body">{notes}</p>
+          </div>
+        ) : null}
         {order.fulfillment.cardMessage?.trim() ? (
           <div className="ws-section">
             <div className="ws-section-label">{t.cardMessage}</div>
@@ -165,6 +163,11 @@ function Worksheet({ order }: { order: Order }) {
                   {m(order.totals.subtotalCents)} · {m(order.totals.deliveryCents)} · {m(order.totals.taxCents)}
                 </td>
               </tr>
+              <tr className="grand-total">
+                <td></td>
+                <td>{t.total}</td>
+                <td className="price">{m(order.totals.totalCents)}</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -205,9 +208,12 @@ function CoverRecipient({ order }: { order: Order }) {
   );
 }
 
-function BrandCoverPanel({ order }: { order: Order }) {
+function BrandCoverPanel({ order, qrUri }: { order: Order; qrUri: string }) {
   return (
     <div className="card-panel brand-cover">
+      <div className="qr-chip">
+        <img className="qr-img" src={qrUri} alt="Escanea para visitar makythedivaflowers.com" />
+      </div>
       <div className="card-brand">
         <div className="name">maky</div>
         <div className="tag">the diva flowers</div>
@@ -271,22 +277,22 @@ function LogoPanel({ logoUri }: { logoUri: string }) {
   );
 }
 
-function CardRow({ order, logoUri }: { order: Order; logoUri: string }) {
-  // Card 1: brand cover + recipient · Card 2: logo · Card 3: message.
+function CardRow({ order, logoUri, qrUri }: { order: Order; logoUri: string; qrUri: string }) {
+  // Card 1: brand cover + recipient + QR · Card 2: logo · Card 3: message.
   return (
     <section className="card-row">
-      <BrandCoverPanel order={order} />
+      <BrandCoverPanel order={order} qrUri={qrUri} />
       <LogoPanel logoUri={logoUri} />
       <InsideMessagePanel message={order.fulfillment.cardMessage} />
     </section>
   );
 }
 
-function Sheet({ order, logoUri }: { order: Order; logoUri: string }) {
+function Sheet({ order, logoUri, qrUri }: { order: Order; logoUri: string; qrUri: string }) {
   return (
     <div className="sheet">
       <Worksheet order={order} />
-      <CardRow order={order} logoUri={logoUri} />
+      <CardRow order={order} logoUri={logoUri} qrUri={qrUri} />
     </div>
   );
 }
@@ -308,5 +314,6 @@ function htmlDocument(body: string, locale: Locale): string {
 export async function buildSheetHtml(order: Order): Promise<string> {
   const renderToStaticMarkup = await loadRenderToStaticMarkup();
   const logoUri = getLogoDataUri();
-  return htmlDocument(renderToStaticMarkup(<Sheet order={order} logoUri={logoUri} />), order.locale);
+  const qrUri = getQrWebsiteDataUri();
+  return htmlDocument(renderToStaticMarkup(<Sheet order={order} logoUri={logoUri} qrUri={qrUri} />), order.locale);
 }
