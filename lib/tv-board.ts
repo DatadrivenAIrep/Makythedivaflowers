@@ -5,6 +5,8 @@ import {
 } from "@/lib/tv-slots";
 import { firstThumb, lineSummaryName } from "@/components/admin/dashboard/product-lookup";
 import { deliveryZoneRank, findDeliveryZoneByZip } from "@/lib/delivery-zones";
+import { listOrdersForWindowDates } from "@/lib/order-storage";
+import { getRecentFeed } from "@/lib/order-feed";
 
 export type TvCard = {
   orderId: string;
@@ -122,4 +124,23 @@ export function computeBoard(orders: Order[], deps: ComputeDeps): TvBoardData {
   for (const o of tomorrowOrders) bySlot[o.fulfillment.window.slot] += 1;
 
   return { todo, enRuta, deliveredToday, tomorrow: { bySlot, total: tomorrowOrders.length } };
+}
+
+export type TvBoardResponse = TvBoardData & {
+  generatedAt: string;
+  shopDate: string;
+  paidEvents: { orderId: string; at: string; recipientName: string }[];
+};
+
+export async function buildTvBoard(now: Date = new Date()): Promise<TvBoardResponse> {
+  const tz = SHOP_TZ;
+  const today = shopDateStr(now, tz);
+  const tomorrow = addDaysStr(today, 1);
+  const orders = await listOrdersForWindowDates([today, tomorrow]);
+  const data = computeBoard(orders, { now, tz });
+  const { events } = await getRecentFeed(1); // last hour of feed events
+  const paidEvents = events
+    .filter((e) => e.kind === "paid")
+    .map((e) => ({ orderId: e.orderId, at: e.at, recipientName: e.recipientName }));
+  return { ...data, generatedAt: now.toISOString(), shopDate: today, paidEvents };
 }
