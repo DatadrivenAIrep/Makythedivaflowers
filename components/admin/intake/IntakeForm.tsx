@@ -127,7 +127,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
           locale,
           buyerAddress: customer.buyerAddress,
         },
-        fulfillment: toOrderFulfillment(fulfillment),
+        fulfillment: toOrderFulfillment(fulfillment, { name: customer.name, phone: customer.phone }),
         lines,
         totalsOverride: override,
         giftCardCode: giftCardCode || undefined,

@@ -138,9 +138,21 @@ export default function FulfillmentBlock({ value, onChange }: Props) {
   );
 }
 
-export function toOrderFulfillment(f: FulfillmentState): OrderFulfillment {
+export function toOrderFulfillment(
+  f: FulfillmentState,
+  buyer?: { name: string; phone: string },
+): OrderFulfillment {
   if (f.method === "in-store") {
-    return { method: "in-store", recipient: f.recipient, cardMessage: f.cardMessage || undefined };
+    // Walk-in "take it now": the person at the counter is both buyer and
+    // recipient, so the UI hides the recipient inputs for in-store. Fall back
+    // to the buyer's name/phone (which the submit button already requires) so
+    // the order carries a valid recipient — otherwise the intake schema rejects
+    // it and the order can never be created.
+    const recipient = {
+      name: f.recipient.name.trim() || buyer?.name?.trim() || "",
+      phone: f.recipient.phone.trim() || buyer?.phone?.trim() || "",
+    };
+    return { method: "in-store", recipient, cardMessage: f.cardMessage || undefined };
   }
   if (f.method === "pickup") {
     return { method: "pickup", recipient: f.recipient, window: f.window, cardMessage: f.cardMessage || undefined };
