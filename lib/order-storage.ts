@@ -348,3 +348,19 @@ export function listOrdersByCustomer(customerId: string): Order[] {
     .all(customerId) as OrderRow[];
   return rows.map(rowToOrder);
 }
+
+// Delivery/pickup orders whose scheduled window falls on one of the given dates
+// (in-store has no window and is excluded). Excludes canceled. For the TV board.
+export async function listOrdersForWindowDates(dates: string[]): Promise<Order[]> {
+  ensureSchema();
+  if (dates.length === 0) return [];
+  const placeholders = dates.map(() => "?").join(",");
+  const rows = getDb().prepare(
+    `SELECT * FROM orders
+     WHERE window_date IN (${placeholders})
+       AND fulfillment_method IN ('delivery','pickup')
+       AND fulfillment_status != 'canceled'
+     ORDER BY window_date ASC, created_at ASC`,
+  ).all(...dates) as OrderRow[];
+  return rows.map(rowToOrder);
+}
