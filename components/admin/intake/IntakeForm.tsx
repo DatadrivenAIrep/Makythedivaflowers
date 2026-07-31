@@ -10,6 +10,8 @@ import CartLines from "./CartLines";
 import CartTotals from "./CartTotals";
 import PaymentBlock, { type PaymentState } from "./PaymentBlock";
 import { toOrderFulfillment } from "./FulfillmentBlock";
+import DraftsDrawer from "./DraftsDrawer";
+import type { DraftPayload } from "@/types/draft";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatDateTime } from "@/lib/format-datetime";
 import {
@@ -95,6 +97,9 @@ export default function IntakeForm({ products }: { products: Product[] }) {
   const [payment, setPayment] = useState<PaymentState>(() => ({ ...INITIAL_PAYMENT }));
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [draftId, setDraftId] = useState<string | null>(null);
+  const [savingDraft, setSavingDraft] = useState(false);
+  const [draftsOpen, setDraftsOpen] = useState(false);
 
   function addLine(line: CartLine) {
     setLines((prev) => {
@@ -122,6 +127,76 @@ export default function IntakeForm({ products }: { products: Product[] }) {
     setOverride(init.override);
     setGiftCardCode(init.giftCardCode);
     setPayment(init.payment);
+    setDraftId(null);
+  }
+
+  function currentPayload(): DraftPayload {
+    return { version: 1, channel, customer, fulfillment, lines, override, giftCardCode, payment };
+  }
+
+  function draftLabel(): string {
+    return customer.name.trim() || fulfillment.recipient.name.trim() || "";
+  }
+
+  function draftItemCount(): number {
+    return lines.reduce((n, l) => n + l.qty, 0);
+  }
+
+  function draftTotalCents(): number {
+    if (typeof override.totalCents === "number") return override.totalCents;
+    return lines.reduce((sum, l) => {
+      if (l.kind === "custom") return sum + l.priceCents * l.qty;
+      const p = products.find((pr) => pr.id === l.productId);
+      const v = p?.variants.find((vr) => vr.id === l.variantId) ?? p?.variants[0];
+      return sum + (v?.priceCents ?? 0) * l.qty;
+    }, 0);
+  }
+
+  // Enabled once there is ANY meaningful content: buyer name/phone, a recipient, or a line.
+  const canSaveDraft =
+    customer.name.trim().length > 0 ||
+    customer.phone.trim().length > 0 ||
+    fulfillment.recipient.name.trim().length > 0 ||
+    lines.length > 0;
+
+  async function onSaveDraft() {
+    if (!canSaveDraft) return;
+    setSavingDraft(true);
+    try {
+      const body = {
+        payload: currentPayload(),
+        label: draftLabel(),
+        itemCount: draftItemCount(),
+        totalCents: draftTotalCents(),
+      };
+      const url = draftId
+        ? `/api/admin/orders/drafts/${encodeURIComponent(draftId)}`
+        : "/api/admin/orders/drafts";
+      const res = await fetch(url, {
+        method: draftId ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (res.ok) {
+        const data = await res.json().catch(() => ({}));
+        if (data?.id) setDraftId(data.id);
+        else if (data?.draft?.id) setDraftId(data.draft.id);
+      }
+    } finally {
+      setSavingDraft(false);
+    }
+  }
+
+  function onResumeDraft(payload: DraftPayload, id: string) {
+    setChannel(payload.channel ?? "walk-in");
+    setCustomer(payload.customer);
+    setFulfillment(payload.fulfillment);
+    setLines(payload.lines ?? []);
+    setOverride(payload.override ?? {});
+    setGiftCardCode(payload.giftCardCode ?? "");
+    setPayment(payload.payment ?? { status: "pending" });
+    setDraftId(id);
+    setDraftsOpen(false);
   }
 
   async function onSubmit() {
@@ -156,6 +231,9 @@ export default function IntakeForm({ products }: { products: Product[] }) {
       }
       const { orderId } = await res.json();
       router.replace(`/${locale}/admin/intake?ok=${encodeURIComponent(orderId)}`);
+      if (draftId) {
+        fetch(`/api/admin/orders/drafts/${encodeURIComponent(draftId)}`, { method: "DELETE" }).catch(() => {});
+      }
       resetForm();
     } finally {
       setSubmitting(false);
@@ -238,8 +316,17 @@ export default function IntakeForm({ products }: { products: Product[] }) {
               </button>
             ))}
           </div>
-          <div className="text-mute-400 text-xs tabular-nums" suppressHydrationWarning>
-            {formatDateTime(new Date().toISOString(), locale)}
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setDraftsOpen(true)}
+              className="px-3.5 py-1.5 rounded-full border border-mute-200 text-sm text-mute-600 hover:bg-ink/5"
+            >
+              {t("drafts_button")}
+            </button>
+            <div className="text-mute-400 text-xs tabular-nums" suppressHydrationWarning>
+              {formatDateTime(new Date().toISOString(), locale)}
+            </div>
           </div>
         </div>
 
@@ -284,18 +371,32 @@ export default function IntakeForm({ products }: { products: Product[] }) {
             <button type="button" onClick={resetForm} className="px-5 py-3 rounded-full border border-mute-200 text-mute-600">
               {t("action_discard")}
             </button>
-            <button
-              type="button"
-              disabled={submitting || lines.length === 0 || (fulfillment.method !== "pickup" && (customer.name.length === 0 || customer.phone.replace(/\D/g, "").length < 10))}
-              onClick={onSubmit}
-              className="px-7 py-3.5 rounded-full bg-ink text-bone font-display disabled:opacity-40"
-            >
-              {submitting ? t("action_saving") : t("action_save")}
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={onSaveDraft}
+                disabled={savingDraft || !canSaveDraft}
+                className="px-5 py-3 rounded-full border border-ink/30 text-ink disabled:opacity-40"
+              >
+                {savingDraft ? t("action_saving_draft") : t("action_save_draft")}
+              </button>
+              <button
+                type="button"
+                disabled={submitting || lines.length === 0 || (fulfillment.method !== "pickup" && (customer.name.length === 0 || customer.phone.replace(/\D/g, "").length < 10))}
+                onClick={onSubmit}
+                className="px-7 py-3.5 rounded-full bg-ink text-bone font-display disabled:opacity-40"
+              >
+                {submitting ? t("action_saving") : t("action_save")}
+              </button>
+            </div>
           </div>
           {error && <p className="text-error text-sm mt-2 break-all">{error}</p>}
         </div>
       </div>
+
+      {draftsOpen && (
+        <DraftsDrawer locale={locale} onResume={onResumeDraft} onClose={() => setDraftsOpen(false)} />
+      )}
     </main>
   );
 }
