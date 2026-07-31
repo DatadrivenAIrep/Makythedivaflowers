@@ -34,12 +34,13 @@ export async function POST(req: Request) {
   const now = new Date().toISOString();
 
   // Buyer info is optional for pickup — fall back to the recipient (who picks up)
-  // so the order/customer record always has a name + phone.
-  const recipient = input.fulfillment.recipient;
+  // so the order/customer record always has a name + phone. In-store ("Take it now")
+  // has no recipient input, so recipient may be absent there and the buyer is used.
+  const recipient = "recipient" in input.fulfillment ? input.fulfillment.recipient : undefined;
   const contactName =
-    input.customer.name && input.customer.name.trim() ? input.customer.name : recipient.name;
+    input.customer.name && input.customer.name.trim() ? input.customer.name : (recipient?.name ?? "");
   const contactPhone =
-    input.customer.phone && input.customer.phone.length >= 10 ? input.customer.phone : recipient.phone;
+    input.customer.phone && input.customer.phone.length >= 10 ? input.customer.phone : (recipient?.phone ?? "");
 
   const customer = upsertOnOrder({
     name: contactName,
@@ -53,7 +54,12 @@ export async function POST(req: Request) {
     buyerAddress: input.customer.buyerAddress,
   });
 
-  const fulfillment: OrderFulfillment = input.fulfillment;
+  // For in-store ("Take it now") the buyer takes the order, so the buyer is the
+  // recipient. Populate it from the resolved contact (buyer is required for in-store).
+  const fulfillment: OrderFulfillment =
+    input.fulfillment.method === "in-store"
+      ? { ...input.fulfillment, recipient: { name: contactName, phone: contactPhone } }
+      : input.fulfillment;
   const order: Order = {
     id: newId(),
     source: input.source,
