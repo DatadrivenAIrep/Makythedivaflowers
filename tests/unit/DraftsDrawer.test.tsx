@@ -81,6 +81,15 @@ describe("DraftsDrawer", () => {
     await waitFor(() => expect(screen.queryByText("Ana")).toBeNull());
   });
 
+  it("notifies the parent when a draft is deleted", async () => {
+    mockFetchSequence();
+    const onDeleted = vi.fn();
+    render(<DraftsDrawer locale="es" onResume={() => {}} onClose={() => {}} onDeleted={onDeleted} />);
+    await waitFor(() => expect(screen.getByText("Ana")).toBeDefined());
+    fireEvent.click(screen.getByRole("button", { name: "draft_delete" }));
+    await waitFor(() => expect(onDeleted).toHaveBeenCalledWith("dr_1"));
+  });
+
   it("shows an empty state when there are no drafts", async () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValue(
       new Response(JSON.stringify({ drafts: [] }), { status: 200 }),

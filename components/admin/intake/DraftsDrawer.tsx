@@ -9,9 +9,10 @@ type Props = {
   locale: string;
   onResume: (payload: DraftPayload, id: string) => void;
   onClose: () => void;
+  onDeleted?: (id: string) => void;
 };
 
-export default function DraftsDrawer({ locale, onResume, onClose }: Props) {
+export default function DraftsDrawer({ locale, onResume, onClose, onDeleted }: Props) {
   const t = useTranslations("admin_intake");
   const [drafts, setDrafts] = useState<OrderDraft[] | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -43,6 +44,7 @@ export default function DraftsDrawer({ locale, onResume, onClose }: Props) {
       const res = await fetch(`/api/admin/orders/drafts/${encodeURIComponent(id)}`, { method: "DELETE" });
       if (!res.ok) return;
       setDrafts((cur) => (cur ? cur.filter((d) => d.id !== id) : cur));
+      onDeleted?.(id);
     } catch {
       // network error — keep the row; the button re-enables via finally
     } finally {

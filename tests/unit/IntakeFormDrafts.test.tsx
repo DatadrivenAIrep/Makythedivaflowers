@@ -82,4 +82,42 @@ describe("IntakeForm drafts wiring", () => {
     );
     expect((screen.getByPlaceholderText("card_message_placeholder") as HTMLTextAreaElement).value).toBe("resumed msg");
   });
+
+  it("disables save-draft until there is content, enables once a recipient is typed", () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response("{}", { status: 200 }));
+    render(<IntakeForm products={[]} />);
+    expect((screen.getByRole("button", { name: "action_save_draft" }) as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.change(screen.getByPlaceholderText("fulfillment_recipient_name_placeholder"), { target: { value: "Lola" } });
+    expect((screen.getByRole("button", { name: "action_save_draft" }) as HTMLButtonElement).disabled).toBe(false);
+  });
+
+  it("reuses the draft id on a second save (PUT, no duplicate) and shows saved confirmation", async () => {
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockImplementation(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input); const method = init?.method;
+      if (url.endsWith("/api/admin/orders/drafts") && method === "POST") {
+        return new Response(JSON.stringify({ id: "dr_new", draft: { id: "dr_new" } }), { status: 201 });
+      }
+      if (url.includes("/api/admin/orders/drafts/dr_new") && method === "PUT") {
+        return new Response(JSON.stringify({ draft: { id: "dr_new" } }), { status: 200 });
+      }
+      return new Response("{}", { status: 200 });
+    });
+    render(<IntakeForm products={[]} />);
+    fireEvent.change(screen.getByPlaceholderText("fulfillment_recipient_name_placeholder"), { target: { value: "Lola" } });
+    fireEvent.click(screen.getByRole("button", { name: "action_save_draft" }));
+    await waitFor(() => expect(screen.getByText("draft_saved")).toBeDefined());
+    fireEvent.click(screen.getByRole("button", { name: "action_save_draft" }));
+    await waitFor(() => {
+      const put = fetchMock.mock.calls.find(([u, i]) => String(u).includes("/api/admin/orders/drafts/dr_new") && (i as RequestInit)?.method === "PUT");
+      expect(put).toBeTruthy();
+    });
+  });
+
+  it("shows an error when saving the draft fails", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response("{}", { status: 500 }));
+    render(<IntakeForm products={[]} />);
+    fireEvent.change(screen.getByPlaceholderText("fulfillment_recipient_name_placeholder"), { target: { value: "Lola" } });
+    fireEvent.click(screen.getByRole("button", { name: "action_save_draft" }));
+    await waitFor(() => expect(screen.getByText("draft_save_failed")).toBeDefined());
+  });
 });

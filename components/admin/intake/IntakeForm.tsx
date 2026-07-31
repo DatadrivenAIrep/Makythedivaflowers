@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, type ReactNode } from "react";
+import { useState, useEffect, useRef, type ReactNode } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import type { Product } from "@/types/product";
 import type { CartLine, OrderTotals } from "@/types/order";
@@ -100,6 +100,8 @@ export default function IntakeForm({ products }: { products: Product[] }) {
   const [draftId, setDraftId] = useState<string | null>(null);
   const [savingDraft, setSavingDraft] = useState(false);
   const [draftsOpen, setDraftsOpen] = useState(false);
+  const [draftSaveState, setDraftSaveState] = useState<"idle" | "saved" | "error">("idle");
+  const draftGenRef = useRef(0);
 
   function addLine(line: CartLine) {
     setLines((prev) => {
@@ -128,6 +130,8 @@ export default function IntakeForm({ products }: { products: Product[] }) {
     setGiftCardCode(init.giftCardCode);
     setPayment(init.payment);
     setDraftId(null);
+    draftGenRef.current++;
+    setDraftSaveState("idle");
   }
 
   function currentPayload(): DraftPayload {
@@ -161,7 +165,9 @@ export default function IntakeForm({ products }: { products: Product[] }) {
 
   async function onSaveDraft() {
     if (!canSaveDraft) return;
+    const gen = draftGenRef.current;
     setSavingDraft(true);
+    setDraftSaveState("idle");
     try {
       const body = {
         payload: currentPayload(),
@@ -177,24 +183,33 @@ export default function IntakeForm({ products }: { products: Product[] }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
+      if (draftGenRef.current !== gen) return; // superseded by resume/reset while in flight
       if (res.ok) {
         const data = await res.json().catch(() => ({}));
+        if (draftGenRef.current !== gen) return;
         if (data?.id) setDraftId(data.id);
         else if (data?.draft?.id) setDraftId(data.draft.id);
+        setDraftSaveState("saved");
+      } else {
+        setDraftSaveState("error");
       }
+    } catch {
+      if (draftGenRef.current === gen) setDraftSaveState("error");
     } finally {
       setSavingDraft(false);
     }
   }
 
   function onResumeDraft(payload: DraftPayload, id: string) {
+    draftGenRef.current++;
+    setDraftSaveState("idle");
     setChannel(payload.channel ?? "walk-in");
-    setCustomer(payload.customer);
-    setFulfillment(payload.fulfillment);
+    setCustomer(payload.customer ?? { ...INITIAL_CUSTOMER });
+    setFulfillment(payload.fulfillment ?? makeInitialFulfillment());
     setLines(payload.lines ?? []);
     setOverride(payload.override ?? {});
     setGiftCardCode(payload.giftCardCode ?? "");
-    setPayment(payload.payment ?? { status: "pending" });
+    setPayment(payload.payment ?? { ...INITIAL_PAYMENT });
     setDraftId(id);
     setDraftsOpen(false);
   }
@@ -372,6 +387,8 @@ export default function IntakeForm({ products }: { products: Product[] }) {
               {t("action_discard")}
             </button>
             <div className="flex items-center gap-3">
+              {draftSaveState === "saved" && <span className="text-xs text-mute-500">{t("draft_saved")}</span>}
+              {draftSaveState === "error" && <span className="text-xs text-error">{t("draft_save_failed")}</span>}
               <button
                 type="button"
                 onClick={onSaveDraft}
@@ -395,7 +412,17 @@ export default function IntakeForm({ products }: { products: Product[] }) {
       </div>
 
       {draftsOpen && (
-        <DraftsDrawer locale={locale} onResume={onResumeDraft} onClose={() => setDraftsOpen(false)} />
+        <DraftsDrawer
+          locale={locale}
+          onResume={onResumeDraft}
+          onClose={() => setDraftsOpen(false)}
+          onDeleted={(id) => {
+            if (id === draftId) {
+              setDraftId(null);
+              setDraftSaveState("idle");
+            }
+          }}
+        />
       )}
     </main>
   );
