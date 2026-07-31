@@ -120,4 +120,37 @@ describe("IntakeForm drafts wiring", () => {
     fireEvent.click(screen.getByRole("button", { name: "action_save_draft" }));
     await waitFor(() => expect(screen.getByText("draft_save_failed")).toBeDefined());
   });
+
+  it("recovers when the backing draft was deleted elsewhere (PUT 404 -> fresh POST)", async () => {
+    let created = 0;
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockImplementation(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input); const method = init?.method;
+      if (url.endsWith("/api/admin/orders/drafts") && method === "POST") {
+        created += 1;
+        const id = created === 1 ? "dr_old" : "dr_new";
+        return new Response(JSON.stringify({ id, draft: { id } }), { status: 201 });
+      }
+      if (url.includes("/api/admin/orders/drafts/dr_old") && method === "PUT") {
+        return new Response(JSON.stringify({ error: "not_found" }), { status: 404 });
+      }
+      if (url.includes("/api/admin/orders/drafts/dr_new") && method === "PUT") {
+        return new Response(JSON.stringify({ draft: { id: "dr_new" } }), { status: 200 });
+      }
+      return new Response("{}", { status: 200 });
+    });
+    render(<IntakeForm products={[]} />);
+    fireEvent.change(screen.getByPlaceholderText("fulfillment_recipient_name_placeholder"), { target: { value: "Lola" } });
+
+    // first save -> POST -> binds dr_old
+    fireEvent.click(screen.getByRole("button", { name: "action_save_draft" }));
+    await waitFor(() => expect(screen.getByText("draft_saved")).toBeDefined());
+
+    // second save -> PUT dr_old returns 404 -> should recover via a fresh POST (dr_new)
+    fireEvent.click(screen.getByRole("button", { name: "action_save_draft" }));
+    await waitFor(() => expect(created).toBe(2)); // a fresh draft was created after the 404
+    await waitFor(() => expect(screen.getByText("draft_saved")).toBeDefined());
+    expect(screen.queryByText("draft_save_failed")).toBeNull();
+    const put404 = fetchMock.mock.calls.find(([u, i]) => String(u).includes("/drafts/dr_old") && (i as RequestInit)?.method === "PUT");
+    expect(put404).toBeTruthy();
+  });
 });

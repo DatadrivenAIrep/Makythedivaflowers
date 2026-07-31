@@ -175,14 +175,17 @@ export default function IntakeForm({ products }: { products: Product[] }) {
         itemCount: draftItemCount(),
         totalCents: draftTotalCents(),
       };
-      const url = draftId
-        ? `/api/admin/orders/drafts/${encodeURIComponent(draftId)}`
-        : "/api/admin/orders/drafts";
-      const res = await fetch(url, {
-        method: draftId ? "PUT" : "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+      const headers = { "Content-Type": "application/json" };
+      let res = await fetch(
+        draftId ? `/api/admin/orders/drafts/${encodeURIComponent(draftId)}` : "/api/admin/orders/drafts",
+        { method: draftId ? "PUT" : "POST", headers, body: JSON.stringify(body) },
+      );
+      // The backing draft was deleted elsewhere — recover by creating a fresh one.
+      if (draftId && res.status === 404) {
+        if (draftGenRef.current !== gen) return;
+        setDraftId(null);
+        res = await fetch("/api/admin/orders/drafts", { method: "POST", headers, body: JSON.stringify(body) });
+      }
       if (draftGenRef.current !== gen) return; // superseded by resume/reset while in flight
       if (res.ok) {
         const data = await res.json().catch(() => ({}));
