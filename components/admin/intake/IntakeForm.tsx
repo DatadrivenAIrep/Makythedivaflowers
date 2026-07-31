@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, type ReactNode } from "react";
+import { useState, useEffect, useRef, type ReactNode } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import type { Product } from "@/types/product";
 import type { CartLine, OrderTotals } from "@/types/order";
@@ -10,10 +10,18 @@ import CartLines from "./CartLines";
 import CartTotals from "./CartTotals";
 import PaymentBlock, { type PaymentState } from "./PaymentBlock";
 import { toOrderFulfillment } from "./FulfillmentBlock";
+import DraftsDrawer from "./DraftsDrawer";
+import type { DraftPayload } from "@/types/draft";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatDateTime } from "@/lib/format-datetime";
-
-type Channel = "walk-in" | "phone" | "whatsapp" | "event";
+import {
+  makeInitialFulfillment,
+  makeInitialFormState,
+  INITIAL_CHANNEL,
+  INITIAL_CUSTOMER,
+  INITIAL_PAYMENT,
+  type Channel,
+} from "./intake-initial-state";
 
 function SectionCard({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -33,15 +41,9 @@ export default function IntakeForm({ products }: { products: Product[] }) {
     { id: "whatsapp", label: t("channel_whatsapp") },
     { id: "event", label: t("channel_event") },
   ];
-  const [channel, setChannel] = useState<Channel>("walk-in");
-  const [customer, setCustomer] = useState<CustomerSnapshot>({ name: "", phone: "", email: "", messagingChannel: "sms" });
-  const [fulfillment, setFulfillment] = useState<FulfillmentState>({
-    method: "delivery",
-    recipient: { name: "", phone: "" },
-    address: { street1: "", city: "", state: "NY", zip: "", country: "US" },
-    window: { date: new Date().toISOString().slice(0, 10), slot: "midday" },
-    cardMessage: "",
-  });
+  const [channel, setChannel] = useState<Channel>(INITIAL_CHANNEL);
+  const [customer, setCustomer] = useState<CustomerSnapshot>(() => ({ ...INITIAL_CUSTOMER }));
+  const [fulfillment, setFulfillment] = useState<FulfillmentState>(makeInitialFulfillment);
   const [lines, setLines] = useState<CartLine[]>([]);
   const [override, setOverride] = useState<Partial<OrderTotals>>({});
   const router = useRouter();
@@ -92,9 +94,14 @@ export default function IntakeForm({ products }: { products: Product[] }) {
   }
 
   const [giftCardCode, setGiftCardCode] = useState("");
-  const [payment, setPayment] = useState<PaymentState>({ status: "pending" });
+  const [payment, setPayment] = useState<PaymentState>(() => ({ ...INITIAL_PAYMENT }));
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [draftId, setDraftId] = useState<string | null>(null);
+  const [savingDraft, setSavingDraft] = useState(false);
+  const [draftsOpen, setDraftsOpen] = useState(false);
+  const [draftSaveState, setDraftSaveState] = useState<"idle" | "saved" | "error">("idle");
+  const draftGenRef = useRef(0);
 
   function addLine(line: CartLine) {
     setLines((prev) => {
@@ -111,6 +118,103 @@ export default function IntakeForm({ products }: { products: Product[] }) {
       }
       return [...prev, line];
     });
+  }
+
+  function resetForm() {
+    const init = makeInitialFormState();
+    setChannel(init.channel);
+    setCustomer(init.customer);
+    setFulfillment(init.fulfillment);
+    setLines(init.lines);
+    setOverride(init.override);
+    setGiftCardCode(init.giftCardCode);
+    setPayment(init.payment);
+    setDraftId(null);
+    draftGenRef.current++;
+    setDraftSaveState("idle");
+  }
+
+  function currentPayload(): DraftPayload {
+    return { version: 1, channel, customer, fulfillment, lines, override, giftCardCode, payment };
+  }
+
+  function draftLabel(): string {
+    return customer.name.trim() || fulfillment.recipient.name.trim() || "";
+  }
+
+  function draftItemCount(): number {
+    return lines.reduce((n, l) => n + l.qty, 0);
+  }
+
+  function draftTotalCents(): number {
+    if (typeof override.totalCents === "number") return override.totalCents;
+    return lines.reduce((sum, l) => {
+      if (l.kind === "custom") return sum + l.priceCents * l.qty;
+      const p = products.find((pr) => pr.id === l.productId);
+      const v = p?.variants.find((vr) => vr.id === l.variantId) ?? p?.variants[0];
+      return sum + (v?.priceCents ?? 0) * l.qty;
+    }, 0);
+  }
+
+  // Enabled once there is ANY meaningful content: buyer name/phone, a recipient, or a line.
+  const canSaveDraft =
+    customer.name.trim().length > 0 ||
+    customer.phone.trim().length > 0 ||
+    fulfillment.recipient.name.trim().length > 0 ||
+    lines.length > 0;
+
+  async function onSaveDraft() {
+    if (!canSaveDraft) return;
+    const gen = draftGenRef.current;
+    setSavingDraft(true);
+    setDraftSaveState("idle");
+    try {
+      const body = {
+        payload: currentPayload(),
+        label: draftLabel(),
+        itemCount: draftItemCount(),
+        totalCents: draftTotalCents(),
+      };
+      const headers = { "Content-Type": "application/json" };
+      let res = await fetch(
+        draftId ? `/api/admin/orders/drafts/${encodeURIComponent(draftId)}` : "/api/admin/orders/drafts",
+        { method: draftId ? "PUT" : "POST", headers, body: JSON.stringify(body) },
+      );
+      // The backing draft was deleted elsewhere — recover by creating a fresh one.
+      if (draftId && res.status === 404) {
+        if (draftGenRef.current !== gen) return;
+        setDraftId(null);
+        res = await fetch("/api/admin/orders/drafts", { method: "POST", headers, body: JSON.stringify(body) });
+      }
+      if (draftGenRef.current !== gen) return; // superseded by resume/reset while in flight
+      if (res.ok) {
+        const data = await res.json().catch(() => ({}));
+        if (draftGenRef.current !== gen) return;
+        if (data?.id) setDraftId(data.id);
+        else if (data?.draft?.id) setDraftId(data.draft.id);
+        setDraftSaveState("saved");
+      } else {
+        setDraftSaveState("error");
+      }
+    } catch {
+      if (draftGenRef.current === gen) setDraftSaveState("error");
+    } finally {
+      setSavingDraft(false);
+    }
+  }
+
+  function onResumeDraft(payload: DraftPayload, id: string) {
+    draftGenRef.current++;
+    setDraftSaveState("idle");
+    setChannel(payload.channel ?? "walk-in");
+    setCustomer(payload.customer ?? { ...INITIAL_CUSTOMER });
+    setFulfillment(payload.fulfillment ?? makeInitialFulfillment());
+    setLines(payload.lines ?? []);
+    setOverride(payload.override ?? {});
+    setGiftCardCode(payload.giftCardCode ?? "");
+    setPayment(payload.payment ?? { ...INITIAL_PAYMENT });
+    setDraftId(id);
+    setDraftsOpen(false);
   }
 
   async function onSubmit() {
@@ -145,11 +249,10 @@ export default function IntakeForm({ products }: { products: Product[] }) {
       }
       const { orderId } = await res.json();
       router.replace(`/${locale}/admin/intake?ok=${encodeURIComponent(orderId)}`);
-      setCustomer({ name: "", phone: "", email: "", messagingChannel: "sms", buyerAddress: undefined });
-      setLines([]);
-      setOverride({});
-      setGiftCardCode("");
-      setPayment({ status: "pending" });
+      if (draftId) {
+        fetch(`/api/admin/orders/drafts/${encodeURIComponent(draftId)}`, { method: "DELETE" }).catch(() => {});
+      }
+      resetForm();
     } finally {
       setSubmitting(false);
     }
@@ -231,8 +334,17 @@ export default function IntakeForm({ products }: { products: Product[] }) {
               </button>
             ))}
           </div>
-          <div className="text-mute-400 text-xs tabular-nums" suppressHydrationWarning>
-            {formatDateTime(new Date().toISOString(), locale)}
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setDraftsOpen(true)}
+              className="px-3.5 py-1.5 rounded-full border border-mute-200 text-sm text-mute-600 hover:bg-ink/5"
+            >
+              {t("drafts_button")}
+            </button>
+            <div className="text-mute-400 text-xs tabular-nums" suppressHydrationWarning>
+              {formatDateTime(new Date().toISOString(), locale)}
+            </div>
           </div>
         </div>
 
@@ -274,21 +386,47 @@ export default function IntakeForm({ products }: { products: Product[] }) {
 
         <div className="px-7 py-4 border-t border-mute-100 bg-white">
           <div className="flex items-center justify-between">
-            <button type="button" className="px-5 py-3 rounded-full border border-mute-200 text-mute-600">
+            <button type="button" onClick={resetForm} className="px-5 py-3 rounded-full border border-mute-200 text-mute-600">
               {t("action_discard")}
             </button>
-            <button
-              type="button"
-              disabled={submitting || lines.length === 0 || (fulfillment.method !== "pickup" && (customer.name.length === 0 || customer.phone.replace(/\D/g, "").length < 10))}
-              onClick={onSubmit}
-              className="px-7 py-3.5 rounded-full bg-ink text-bone font-display disabled:opacity-40"
-            >
-              {submitting ? t("action_saving") : t("action_save")}
-            </button>
+            <div className="flex items-center gap-3">
+              {draftSaveState === "saved" && <span className="text-xs text-mute-500">{t("draft_saved")}</span>}
+              {draftSaveState === "error" && <span className="text-xs text-error">{t("draft_save_failed")}</span>}
+              <button
+                type="button"
+                onClick={onSaveDraft}
+                disabled={savingDraft || !canSaveDraft}
+                className="px-5 py-3 rounded-full border border-ink/30 text-ink disabled:opacity-40"
+              >
+                {savingDraft ? t("action_saving_draft") : t("action_save_draft")}
+              </button>
+              <button
+                type="button"
+                disabled={submitting || lines.length === 0 || (fulfillment.method !== "pickup" && (customer.name.length === 0 || customer.phone.replace(/\D/g, "").length < 10))}
+                onClick={onSubmit}
+                className="px-7 py-3.5 rounded-full bg-ink text-bone font-display disabled:opacity-40"
+              >
+                {submitting ? t("action_saving") : t("action_save")}
+              </button>
+            </div>
           </div>
           {error && <p className="text-error text-sm mt-2 break-all">{error}</p>}
         </div>
       </div>
+
+      {draftsOpen && (
+        <DraftsDrawer
+          locale={locale}
+          onResume={onResumeDraft}
+          onClose={() => setDraftsOpen(false)}
+          onDeleted={(id) => {
+            if (id === draftId) {
+              setDraftId(null);
+              setDraftSaveState("idle");
+            }
+          }}
+        />
+      )}
     </main>
   );
 }
