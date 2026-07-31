@@ -38,7 +38,9 @@ const pickupF = z.object({
 });
 const inStoreF = z.object({
   method: z.literal("in-store"),
-  recipient,
+  // No recipient input for "Take it now": the buyer takes the order, so the buyer IS the
+  // recipient (populated server-side from the customer). Any recipient the client sends
+  // is ignored/stripped here — buyer name + phone are still required via the superRefine.
   cardMessage: z.string().max(200).optional(),
 });
 
