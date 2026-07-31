@@ -12,8 +12,14 @@ import PaymentBlock, { type PaymentState } from "./PaymentBlock";
 import { toOrderFulfillment } from "./FulfillmentBlock";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatDateTime } from "@/lib/format-datetime";
-
-type Channel = "walk-in" | "phone" | "whatsapp" | "event";
+import {
+  makeInitialFulfillment,
+  makeInitialFormState,
+  INITIAL_CHANNEL,
+  INITIAL_CUSTOMER,
+  INITIAL_PAYMENT,
+  type Channel,
+} from "./intake-initial-state";
 
 function SectionCard({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -33,15 +39,9 @@ export default function IntakeForm({ products }: { products: Product[] }) {
     { id: "whatsapp", label: t("channel_whatsapp") },
     { id: "event", label: t("channel_event") },
   ];
-  const [channel, setChannel] = useState<Channel>("walk-in");
-  const [customer, setCustomer] = useState<CustomerSnapshot>({ name: "", phone: "", email: "", messagingChannel: "sms" });
-  const [fulfillment, setFulfillment] = useState<FulfillmentState>({
-    method: "delivery",
-    recipient: { name: "", phone: "" },
-    address: { street1: "", city: "", state: "NY", zip: "", country: "US" },
-    window: { date: new Date().toISOString().slice(0, 10), slot: "midday" },
-    cardMessage: "",
-  });
+  const [channel, setChannel] = useState<Channel>(INITIAL_CHANNEL);
+  const [customer, setCustomer] = useState<CustomerSnapshot>(() => ({ ...INITIAL_CUSTOMER }));
+  const [fulfillment, setFulfillment] = useState<FulfillmentState>(makeInitialFulfillment);
   const [lines, setLines] = useState<CartLine[]>([]);
   const [override, setOverride] = useState<Partial<OrderTotals>>({});
   const router = useRouter();
@@ -92,7 +92,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
   }
 
   const [giftCardCode, setGiftCardCode] = useState("");
-  const [payment, setPayment] = useState<PaymentState>({ status: "pending" });
+  const [payment, setPayment] = useState<PaymentState>(() => ({ ...INITIAL_PAYMENT }));
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -111,6 +111,17 @@ export default function IntakeForm({ products }: { products: Product[] }) {
       }
       return [...prev, line];
     });
+  }
+
+  function resetForm() {
+    const init = makeInitialFormState();
+    setChannel(init.channel);
+    setCustomer(init.customer);
+    setFulfillment(init.fulfillment);
+    setLines(init.lines);
+    setOverride(init.override);
+    setGiftCardCode(init.giftCardCode);
+    setPayment(init.payment);
   }
 
   async function onSubmit() {
@@ -145,11 +156,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
       }
       const { orderId } = await res.json();
       router.replace(`/${locale}/admin/intake?ok=${encodeURIComponent(orderId)}`);
-      setCustomer({ name: "", phone: "", email: "", messagingChannel: "sms", buyerAddress: undefined });
-      setLines([]);
-      setOverride({});
-      setGiftCardCode("");
-      setPayment({ status: "pending" });
+      resetForm();
     } finally {
       setSubmitting(false);
     }
@@ -274,7 +281,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
 
         <div className="px-7 py-4 border-t border-mute-100 bg-white">
           <div className="flex items-center justify-between">
-            <button type="button" className="px-5 py-3 rounded-full border border-mute-200 text-mute-600">
+            <button type="button" onClick={resetForm} className="px-5 py-3 rounded-full border border-mute-200 text-mute-600">
               {t("action_discard")}
             </button>
             <button
