@@ -12,6 +12,7 @@ import { TikTokStrip } from "@/components/home/TikTokStrip";
 import { EditorialSplit } from "@/components/home/EditorialSplit";
 import { WeddingsTeaser } from "@/components/home/WeddingsTeaser";
 import { EventsTeaser } from "@/components/home/EventsTeaser";
+import { SympathyShowcase } from "@/components/home/SympathyShowcase";
 import { StudioVisit } from "@/components/home/StudioVisit";
 import { NewsletterField } from "@/components/home/NewsletterField";
 
@@ -47,6 +48,7 @@ export default async function Home({ params }: { params: Promise<{ locale: Local
       <KineticMarquee text={`${marquee}  ·  `} />
       <BentoGrid locale={locale} />
       <CategoryStrip locale={locale} />
+      <SympathyShowcase locale={locale} />
       <GoogleReviews locale={locale} />
       <TikTokStrip locale={locale} />
       <EditorialSplit locale={locale} />
