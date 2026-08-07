@@ -46,6 +46,70 @@ export const deliveryZones: DeliveryZone[] = [
     zips: ["11050"],
     priceCents: 1500,
   },
+  // ─── Central & North-Shore Nassau expansion (2026-08-07) ─────────────
+  // Added for wider Google Ads / delivery coverage. $15 band = closest-in
+  // towns; $18 band = north-shore. Kept as individual named zones so the
+  // staff intake city lookup and Run Sheet ordering keep working.
+  {
+    id: "floral-park",
+    label: { en: "Floral Park", es: "Floral Park" },
+    zips: ["11001"],
+    priceCents: 1500,
+  },
+  {
+    id: "elmont",
+    label: { en: "Elmont", es: "Elmont" },
+    zips: ["11003"],
+    priceCents: 1500,
+  },
+  {
+    id: "westbury",
+    label: { en: "Westbury", es: "Westbury" },
+    zips: ["11590"],
+    priceCents: 1500,
+  },
+  {
+    id: "carle-place",
+    label: { en: "Carle Place", es: "Carle Place" },
+    zips: ["11514"],
+    priceCents: 1500,
+  },
+  {
+    id: "williston-park",
+    label: { en: "Williston Park", es: "Williston Park" },
+    zips: ["11596"],
+    priceCents: 1500,
+  },
+  {
+    id: "old-westbury",
+    label: { en: "Old Westbury", es: "Old Westbury" },
+    zips: ["11568"],
+    priceCents: 1800,
+  },
+  {
+    id: "sea-cliff",
+    label: { en: "Sea Cliff", es: "Sea Cliff" },
+    zips: ["11579"],
+    priceCents: 1800,
+  },
+  {
+    id: "glen-head",
+    label: { en: "Glen Head", es: "Glen Head" },
+    zips: ["11545"],
+    priceCents: 1800,
+  },
+  {
+    id: "glenwood-landing",
+    label: { en: "Glenwood Landing", es: "Glenwood Landing" },
+    zips: ["11547"],
+    priceCents: 1800,
+  },
+  {
+    id: "greenvale",
+    label: { en: "Greenvale", es: "Greenvale" },
+    zips: ["11548"],
+    priceCents: 1800,
+  },
   {
     id: "further",
     label: { en: "Nassau / Queens / W. Suffolk", es: "Nassau / Queens / Oeste de Suffolk" },
