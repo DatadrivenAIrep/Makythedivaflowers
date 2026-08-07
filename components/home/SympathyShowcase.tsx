@@ -35,7 +35,7 @@ export function SympathyShowcase({ locale }: { locale: Locale }) {
             </p>
           </div>
           <Link
-            href={`/${locale}/sympathy`}
+            href={`/${locale}/sympathy#inquire`}
             className="inline-flex w-fit items-center whitespace-nowrap rounded-full border border-bone/40 px-5 py-3 font-sans text-sm tracking-tight transition-colors hover:border-bone"
           >
             {COPY.cta[locale]}
