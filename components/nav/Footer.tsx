@@ -94,6 +94,7 @@ export async function Footer({ locale }: { locale: Locale }) {
             <Link href={`/${locale}/contact`} className="hover:text-bone transition-colors">{tNav("contact")}</Link>
             <Link href={`/${locale}/legal/privacy`} className="hover:text-bone transition-colors">{t("legal.privacy")}</Link>
             <Link href={`/${locale}/legal/terms`} className="hover:text-bone transition-colors">{t("legal.terms")}</Link>
+            <Link href={`/${locale}/legal/returns`} className="hover:text-bone transition-colors">{t("legal.returns")}</Link>
             <PrivacyOptOutLink className="hover:text-bone transition-colors" />
           </div>
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-bone/50 text-xs font-mono">
