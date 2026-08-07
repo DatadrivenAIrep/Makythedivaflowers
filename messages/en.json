@@ -276,7 +276,8 @@
     "produced_by": "Produced by Datadriven",
     "legal": {
       "privacy": "Privacy",
-      "terms": "Terms"
+      "terms": "Terms",
+      "returns": "Returns"
     }
   },
   "a11y": {
@@ -359,6 +360,37 @@
         "heading": "Contact",
         "p1": "DRAFT: If you have questions about these Terms of Service, please contact us at studio@divaflowers.com or by mail at Diva Flowers, 1077 Willis Ave, Albertson, NY 11507.",
         "p2": "DRAFT: These Terms of Service are governed by the laws of the State of New York. Any disputes arising under these terms shall be resolved in the courts of Nassau County, New York. This document is a draft and must be reviewed and approved by a licensed attorney before use."
+      }
+    },
+    "returns": {
+      "page_title": "Returns & Refunds — Maky The Diva Flowers",
+      "page_description": "Our freshness guarantee, how to report an issue, substitutions, cancellations, and how to reach us.",
+      "title": "Returns & Refunds",
+      "updated": "Last updated August 2026",
+      "guarantee": {
+        "heading": "Our Freshness Guarantee",
+        "p1": "Every arrangement is hand-built the day it ships and inspected before it leaves our studio at {address}. Because flowers are perishable, we do not accept physical returns — but we stand behind every order. If your flowers arrive damaged, wilted, or materially different from what was ordered, we will replace the arrangement or issue a refund.",
+        "p2": "Refunds and replacements are reviewed case by case and are generally limited to situations where the product arrived in significantly damaged condition, or was materially different from what was ordered, due to our error."
+      },
+      "reporting": {
+        "heading": "Reporting a Problem",
+        "p1": "Please contact us within 24 hours of delivery and include a photo of the arrangement as it arrived. Photos help us resolve your case quickly and improve the flowers we source.",
+        "p2": "You can reach us by phone, text, or WhatsApp at {phone}, or by email at {email}. The fastest way to reach Maky is by text or WhatsApp."
+      },
+      "substitutions": {
+        "heading": "Substitutions",
+        "p1": "Flowers are a natural product and availability changes daily. When a specific stem, color, or container is unavailable, we may substitute it with one of equal or greater value while preserving the overall look, style, and color palette of the design you ordered.",
+        "p2": "For arrangements built around a single signature flower, we will contact you before making a significant substitution whenever time allows."
+      },
+      "cancellations": {
+        "heading": "Cancellations & Changes",
+        "p1": "You may cancel or change an order at no charge up until it has been arranged. Our same-day cutoff is 2:00 PM local time: orders placed before then are eligible for same-day delivery, and any changes must reach us before the cutoff to be applied that day.",
+        "p2": "Once an arrangement has been built and dispatched for delivery, it can no longer be cancelled, though our freshness guarantee above still applies."
+      },
+      "contact": {
+        "heading": "Contact Us",
+        "p1": "Maky The Diva Flowers · {address}. Call or text {phone}, message us on WhatsApp, or email {email}.",
+        "p2": "We deliver across Albertson, Roslyn, Manhasset, Great Neck, Port Washington, and the surrounding Long Island, Queens, and western Suffolk areas."
       }
     }
   },

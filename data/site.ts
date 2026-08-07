@@ -1,5 +1,6 @@
 export const SITE = {
   brand: "Diva Flowers",
+  merchantName: "Maky The Diva Flowers",
   url: "https://makythedivaflowers.com",
   founded: 2014,
   phone: "+1 (516) 484-3456",
