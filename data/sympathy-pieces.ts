@@ -63,6 +63,16 @@ export const SYMPATHY_PIECES: SympathyPiece[] = [
     image: "/sympathy/golden-grace.webp",
   },
   {
+    slug: "twilight-orchid",
+    title: { en: "Twilight Orchid", es: "Orquídea de Crepúsculo" },
+    form: "standing-spray",
+    blurb: {
+      en: "A tall standing spray in twilight tones — purple dendrobium orchids, lavender roses, and white hydrangea over lush aspidistra greens.",
+      es: "Tributo de pie en tonos de crepúsculo — orquídeas dendrobium moradas, rosas lavanda e hortensias blancas sobre follaje frondoso de aspidistra.",
+    },
+    image: "/sympathy/twilight-orchid.webp",
+  },
+  {
     slug: "personal-tribute",
     title: { en: "Personal Tribute", es: "Tributo Personalizado" },
     form: "easel-piece",
