@@ -48,12 +48,12 @@ export default async function Home({ params }: { params: Promise<{ locale: Local
       <KineticMarquee text={`${marquee}  ·  `} />
       <BentoGrid locale={locale} />
       <CategoryStrip locale={locale} />
+      <SympathyShowcase locale={locale} />
       <GoogleReviews locale={locale} />
       <TikTokStrip locale={locale} />
       <EditorialSplit locale={locale} />
       <WeddingsTeaser locale={locale} />
       <EventsTeaser locale={locale} />
-      <SympathyShowcase locale={locale} />
       <StudioVisit locale={locale} />
       <NewsletterField />
     </main>
