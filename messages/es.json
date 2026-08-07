@@ -276,7 +276,8 @@
     "produced_by": "Producida por Datadriven",
     "legal": {
       "privacy": "Privacidad",
-      "terms": "Términos"
+      "terms": "Términos",
+      "returns": "Devoluciones"
     }
   },
   "a11y": {
@@ -359,6 +360,37 @@
         "heading": "Contacto",
         "p1": "BORRADOR: Si tienes preguntas sobre estos Términos de Servicio, contáctanos en studio@divaflowers.com o por correo en Diva Flowers, 1077 Willis Ave, Albertson, NY 11507.",
         "p2": "BORRADOR: Estos Términos de Servicio se rigen por las leyes del Estado de Nueva York. Cualquier disputa que surja de estos términos se resolverá en los tribunales del Condado de Nassau, Nueva York. Este documento es un borrador y debe ser revisado y aprobado por un abogado con licencia antes de su uso."
+      }
+    },
+    "returns": {
+      "page_title": "Devoluciones y Reembolsos — Maky The Diva Flowers",
+      "page_description": "Nuestra garantía de frescura, cómo reportar un problema, sustituciones, cancelaciones y cómo contactarnos.",
+      "title": "Devoluciones y Reembolsos",
+      "updated": "Última actualización: agosto de 2026",
+      "guarantee": {
+        "heading": "Nuestra Garantía de Frescura",
+        "p1": "Cada arreglo se arma a mano el día que sale y se inspecciona antes de dejar nuestro estudio en {address}. Como las flores son perecederas, no aceptamos devoluciones físicas, pero respaldamos cada pedido. Si tus flores llegan dañadas, marchitas o notablemente distintas a lo ordenado, reemplazamos el arreglo o emitimos un reembolso.",
+        "p2": "Los reembolsos y reemplazos se revisan caso por caso y suelen limitarse a situaciones en que el producto llegó en condiciones significativamente dañadas, o fue materialmente distinto de lo ordenado, por un error nuestro."
+      },
+      "reporting": {
+        "heading": "Cómo Reportar un Problema",
+        "p1": "Contáctanos dentro de las 24 horas posteriores a la entrega e incluye una foto del arreglo tal como llegó. Las fotos nos ayudan a resolver tu caso con rapidez y a mejorar las flores que seleccionamos.",
+        "p2": "Puedes escribirnos por teléfono, texto o WhatsApp al {phone}, o por correo a {email}. La forma más rápida de contactar a Maky es por texto o WhatsApp."
+      },
+      "substitutions": {
+        "heading": "Sustituciones",
+        "p1": "Las flores son un producto natural y la disponibilidad cambia a diario. Cuando un tallo, color o contenedor específico no está disponible, podemos sustituirlo por otro de igual o mayor valor, conservando el aspecto, el estilo y la paleta de color del diseño que ordenaste.",
+        "p2": "Para arreglos construidos en torno a una flor principal, te contactaremos antes de hacer una sustitución importante siempre que el tiempo lo permita."
+      },
+      "cancellations": {
+        "heading": "Cancelaciones y Cambios",
+        "p1": "Puedes cancelar o cambiar un pedido sin costo hasta que haya sido armado. Nuestro corte para el mismo día es a las 2:00 PM hora local: los pedidos hechos antes de esa hora son elegibles para entrega el mismo día, y los cambios deben llegarnos antes del corte para aplicarse ese día.",
+        "p2": "Una vez que un arreglo ha sido armado y despachado para entrega, ya no puede cancelarse, aunque nuestra garantía de frescura anterior sigue vigente."
+      },
+      "contact": {
+        "heading": "Contáctanos",
+        "p1": "Maky The Diva Flowers · {address}. Llama o escribe al {phone}, contáctanos por WhatsApp, o envía un correo a {email}.",
+        "p2": "Entregamos en Albertson, Roslyn, Manhasset, Great Neck, Port Washington y las zonas aledañas de Long Island, Queens y el oeste de Suffolk."
       }
     }
   },
