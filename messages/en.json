@@ -277,7 +277,8 @@
     "legal": {
       "privacy": "Privacy",
       "terms": "Terms",
-      "returns": "Returns"
+      "returns": "Returns",
+      "shipping": "Delivery"
     }
   },
   "a11y": {
@@ -391,6 +392,30 @@
         "heading": "Contact Us",
         "p1": "Maky The Diva Flowers · {address}. Call or text {phone}, message us on WhatsApp, or email {email}.",
         "p2": "We deliver across Albertson, Roslyn, Manhasset, Great Neck, Port Washington, and the surrounding Long Island, Queens, and western Suffolk areas."
+      }
+    },
+    "shipping": {
+      "page_title": "Delivery & Shipping — Maky The Diva Flowers",
+      "page_description": "Our same-day local delivery areas and flat rates across Long Island, Queens, and western Suffolk.",
+      "title": "Delivery & Shipping",
+      "updated": "Last updated August 2026",
+      "areas": {
+        "heading": "Delivery Areas & Rates",
+        "intro": "We hand-deliver every order ourselves across Long Island and nearby Queens and western Suffolk. Delivery is a flat fee by area:"
+      },
+      "sameday": {
+        "heading": "Same-Day Delivery",
+        "p1": "Order by {cutoff} local time and we build and deliver your flowers the same day within our delivery area. Orders placed after the cutoff go out on the next delivery day.",
+        "p2": "We deliver seven days a week. If no one is home, we leave the arrangement in a safe, shaded spot and text the recipient or buyer so the flowers are never left in the sun."
+      },
+      "outofarea": {
+        "heading": "Outside Our Delivery Area",
+        "p1": "Delivering somewhere not listed above? Text or call us at {phone} — we often reach more of Nassau, Queens, and western Suffolk than the list shows, and we'll quote the delivery fee before you order."
+      },
+      "contact": {
+        "heading": "Questions About a Delivery",
+        "p1": "Call or text {phone}, message us on WhatsApp, or email {email}. The fastest way to reach Maky is by text or WhatsApp.",
+        "p2": "Maky The Diva Flowers · {address}."
       }
     }
   },

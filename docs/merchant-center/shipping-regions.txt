@@ -1,0 +1,152 @@
+MAKY THE DIVA FLOWERS — Google Merchant Center shipping regions
+Source of truth: data/delivery-zones.ts (same rates as website checkout).
+Set up under: Settings › Shipping and returns › Regions + Shipping services (country: US).
+
+================================================================
+PER-REGION (create a Region with these ZIPs, then assign the rate)
+================================================================
+
+REGION: Albertson
+MERCHANT CENTER RATE: $10
+ZIPs (1):
+11507
+
+REGION: Roslyn
+MERCHANT CENTER RATE: $15
+ZIPs (2):
+11576, 11577
+
+REGION: Manhasset
+MERCHANT CENTER RATE: $18
+ZIPs (1):
+11030
+
+REGION: Great Neck
+MERCHANT CENTER RATE: $25
+ZIPs (4):
+11020, 11021, 11023, 11024
+
+REGION: Port Washington
+MERCHANT CENTER RATE: $15
+ZIPs (1):
+11050
+
+REGION: Floral Park
+MERCHANT CENTER RATE: $15
+ZIPs (1):
+11001
+
+REGION: Elmont
+MERCHANT CENTER RATE: $15
+ZIPs (1):
+11003
+
+REGION: Westbury
+MERCHANT CENTER RATE: $15
+ZIPs (1):
+11590
+
+REGION: Carle Place
+MERCHANT CENTER RATE: $15
+ZIPs (1):
+11514
+
+REGION: Williston Park
+MERCHANT CENTER RATE: $15
+ZIPs (1):
+11596
+
+REGION: Old Westbury
+MERCHANT CENTER RATE: $18
+ZIPs (1):
+11568
+
+REGION: Sea Cliff
+MERCHANT CENTER RATE: $18
+ZIPs (1):
+11579
+
+REGION: Glen Head
+MERCHANT CENTER RATE: $18
+ZIPs (1):
+11545
+
+REGION: Glenwood Landing
+MERCHANT CENTER RATE: $18
+ZIPs (1):
+11547
+
+REGION: Greenvale
+MERCHANT CENTER RATE: $18
+ZIPs (1):
+11548
+
+REGION: Nassau / Queens / W. Suffolk
+MERCHANT CENTER RATE: $30   (checkout $25–$30; use the max)
+ZIPs (41):
+11010, 11040, 11501, 11530, 11542, 11550, 11552, 11557, 11558, 11561, 11565, 11572, 11580, 11598, 11354, 11355, 11356, 11357, 11358, 11361, 11364, 11365, 11366, 11375, 11385, 11411, 11412, 11422, 11427, 11428, 11429, 11704, 11717, 11722, 11729, 11738, 11740, 11743, 11746, 11747, 11754
+
+================================================================
+FLAT CSV  (zip,region,merchant_center_rate_usd)
+================================================================
+zip,region,rate_usd
+11507,Albertson,10
+11576,Roslyn,15
+11577,Roslyn,15
+11030,Manhasset,18
+11020,Great Neck,25
+11021,Great Neck,25
+11023,Great Neck,25
+11024,Great Neck,25
+11050,Port Washington,15
+11001,Floral Park,15
+11003,Elmont,15
+11590,Westbury,15
+11514,Carle Place,15
+11596,Williston Park,15
+11568,Old Westbury,18
+11579,Sea Cliff,18
+11545,Glen Head,18
+11547,Glenwood Landing,18
+11548,Greenvale,18
+11010,Nassau / Queens / W. Suffolk,30
+11040,Nassau / Queens / W. Suffolk,30
+11501,Nassau / Queens / W. Suffolk,30
+11530,Nassau / Queens / W. Suffolk,30
+11542,Nassau / Queens / W. Suffolk,30
+11550,Nassau / Queens / W. Suffolk,30
+11552,Nassau / Queens / W. Suffolk,30
+11557,Nassau / Queens / W. Suffolk,30
+11558,Nassau / Queens / W. Suffolk,30
+11561,Nassau / Queens / W. Suffolk,30
+11565,Nassau / Queens / W. Suffolk,30
+11572,Nassau / Queens / W. Suffolk,30
+11580,Nassau / Queens / W. Suffolk,30
+11598,Nassau / Queens / W. Suffolk,30
+11354,Nassau / Queens / W. Suffolk,30
+11355,Nassau / Queens / W. Suffolk,30
+11356,Nassau / Queens / W. Suffolk,30
+11357,Nassau / Queens / W. Suffolk,30
+11358,Nassau / Queens / W. Suffolk,30
+11361,Nassau / Queens / W. Suffolk,30
+11364,Nassau / Queens / W. Suffolk,30
+11365,Nassau / Queens / W. Suffolk,30
+11366,Nassau / Queens / W. Suffolk,30
+11375,Nassau / Queens / W. Suffolk,30
+11385,Nassau / Queens / W. Suffolk,30
+11411,Nassau / Queens / W. Suffolk,30
+11412,Nassau / Queens / W. Suffolk,30
+11422,Nassau / Queens / W. Suffolk,30
+11427,Nassau / Queens / W. Suffolk,30
+11428,Nassau / Queens / W. Suffolk,30
+11429,Nassau / Queens / W. Suffolk,30
+11704,Nassau / Queens / W. Suffolk,30
+11717,Nassau / Queens / W. Suffolk,30
+11722,Nassau / Queens / W. Suffolk,30
+11729,Nassau / Queens / W. Suffolk,30
+11738,Nassau / Queens / W. Suffolk,30
+11740,Nassau / Queens / W. Suffolk,30
+11743,Nassau / Queens / W. Suffolk,30
+11746,Nassau / Queens / W. Suffolk,30
+11747,Nassau / Queens / W. Suffolk,30
+11754,Nassau / Queens / W. Suffolk,30
