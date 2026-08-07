@@ -93,6 +93,16 @@ export const SYMPATHY_PIECES: SympathyPiece[] = [
     image: "/sympathy/tender-heart.webp",
   },
   {
+    slug: "sunflower-tribute",
+    title: { en: "Sunflower Tribute", es: "Tributo de Girasoles" },
+    form: "standing-spray",
+    blurb: {
+      en: "A warm standing spray of sunflowers, orange roses, and white hydrangea with red carnations and baby's breath — bright remembrance.",
+      es: "Tributo de pie cálido con girasoles, rosas naranjas e hortensias blancas, con claveles rojos y nube — recuerdo luminoso.",
+    },
+    image: "/sympathy/sunflower-tribute.webp",
+  },
+  {
     slug: "white-repose",
     title: { en: "White Repose", es: "Reposo Blanco" },
     form: "casket-spray",
@@ -161,6 +171,16 @@ export const SYMPATHY_PIECES: SympathyPiece[] = [
       es: "Corazón abierto en rosas lavanda, orquídeas moradas y amaranto colgante — sereno, lleno, sostenido.",
     },
     image: "/sympathy/lavender-heart-wreath.jpg",
+  },
+  {
+    slug: "blue-remembrance",
+    title: { en: "Blue Remembrance", es: "Recuerdo Azul" },
+    form: "standing-spray",
+    blurb: {
+      en: "A tall standing spray of white hydrangea and orange roses accented with blue thistle, delphinium, and bells of Ireland, finished with a blue-and-white ribbon.",
+      es: "Tributo de pie de hortensias blancas y rosas naranjas con acentos de cardo azul, delphinium y campanas de Irlanda, rematado con cinta azul y blanca.",
+    },
+    image: "/sympathy/blue-remembrance.webp",
   },
   {
     slug: "eternal-white",

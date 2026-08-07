@@ -29,6 +29,8 @@ const MANIFEST = [
   { src: "IMG_9859.HEIC", slug: "cross-of-peace" },
   { src: "IMG_20190520_134258_419.JPG", slug: "eternal-white" },
   { src: "IMG_2678.heic", slug: "twilight-orchid" },
+  { src: "IMG_2704.HEIC", slug: "sunflower-tribute" },
+  { src: "IMG_2700.HEIC", slug: "blue-remembrance" },
   { src: "IMG_3098.JPG", slug: "circle-of-warmth", crop: { left: 0.03, top: 0.06, width: 0.94, height: 0.8 } },
   // IMG_9504 (elegant funeral-home setting) over IMG_7860 (shop-cooler background);
   // crop centers the red heart, trimming the neighboring spray at left.
