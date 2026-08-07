@@ -21,7 +21,7 @@ export function MothersDayProductSchema({
     name: p.title[locale],
     description: p.blurb[locale],
     image: `${SITE.url}${p.images[0]?.src ?? ""}`,
-    brand: { "@type": "Brand", name: SITE.brand },
+    brand: { "@type": "Brand", name: SITE.merchantName },
     offers: {
       "@type": "Offer",
       price: (startingPriceCents(p) / 100).toFixed(2),
