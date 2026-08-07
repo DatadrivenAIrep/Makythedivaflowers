@@ -277,7 +277,8 @@
     "legal": {
       "privacy": "Privacidad",
       "terms": "Términos",
-      "returns": "Devoluciones"
+      "returns": "Devoluciones",
+      "shipping": "Entrega"
     }
   },
   "a11y": {
@@ -391,6 +392,30 @@
         "heading": "Contáctanos",
         "p1": "Maky The Diva Flowers · {address}. Llama o escribe al {phone}, contáctanos por WhatsApp, o envía un correo a {email}.",
         "p2": "Entregamos en Albertson, Roslyn, Manhasset, Great Neck, Port Washington y las zonas aledañas de Long Island, Queens y el oeste de Suffolk."
+      }
+    },
+    "shipping": {
+      "page_title": "Entrega y Envíos — Maky The Diva Flowers",
+      "page_description": "Nuestras zonas y tarifas fijas de entrega el mismo día en Long Island, Queens y el oeste de Suffolk.",
+      "title": "Entrega y Envíos",
+      "updated": "Última actualización: agosto de 2026",
+      "areas": {
+        "heading": "Zonas y Tarifas de Entrega",
+        "intro": "Entregamos cada pedido nosotros mismos en Long Island y zonas cercanas de Queens y el oeste de Suffolk. La entrega es una tarifa fija por zona:"
+      },
+      "sameday": {
+        "heading": "Entrega el Mismo Día",
+        "p1": "Ordena antes de las {cutoff} (hora local) y armamos y entregamos tus flores el mismo día dentro de nuestra zona. Los pedidos después del corte salen el siguiente día de entrega.",
+        "p2": "Entregamos los siete días de la semana. Si no hay nadie en casa, dejamos el arreglo en un lugar seguro y a la sombra y avisamos por texto al destinatario o al comprador para que las flores nunca queden al sol."
+      },
+      "outofarea": {
+        "heading": "Fuera de Nuestra Zona de Entrega",
+        "p1": "¿Entrega en un lugar que no aparece arriba? Escríbenos o llámanos al {phone}: solemos llegar a más de Nassau, Queens y el oeste de Suffolk de lo que muestra la lista, y te cotizamos la tarifa antes de que ordenes."
+      },
+      "contact": {
+        "heading": "Preguntas Sobre una Entrega",
+        "p1": "Llama o escribe al {phone}, contáctanos por WhatsApp, o envía un correo a {email}. La forma más rápida de contactar a Maky es por texto o WhatsApp.",
+        "p2": "Maky The Diva Flowers · {address}."
       }
     }
   },
