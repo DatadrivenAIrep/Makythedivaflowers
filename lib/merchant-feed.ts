@@ -67,7 +67,7 @@ export function buildItemXml(p: Product, origin: string): string {
 
 export function buildMerchantFeed(products: Product[], origin: string): string {
   const items = products
-    .filter((p) => p.active && p.images.length > 0)
+    .filter((p) => p.active && !p.giftExtra && p.images.length > 0)
     .map((p) => buildItemXml(p, origin))
     .join("\n");
   return [

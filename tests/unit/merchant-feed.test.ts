@@ -40,6 +40,11 @@ describe("buildMerchantFeed", () => {
     expect(feed).not.toContain("<g:id>b</g:id>");
   });
 
+  it("excludes gift-extra add-ons even when active and imaged", () => {
+    const feed = buildMerchantFeed([fx({ id: "addon", giftExtra: true })], ORIGIN);
+    expect(feed).not.toContain("<g:id>addon</g:id>");
+  });
+
   it("emits required attributes with the Standard (lowest) price", () => {
     const feed = buildMerchantFeed([fx({})], ORIGIN);
     expect(feed).toContain("<g:price>191.00 USD</g:price>");
