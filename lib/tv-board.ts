@@ -7,6 +7,7 @@ import { firstThumb, lineSummaryName } from "@/components/admin/dashboard/produc
 import { deliveryZoneRank, findDeliveryZoneByZip } from "@/lib/delivery-zones";
 import { listOrdersForWindowDates } from "@/lib/order-storage";
 import { getRecentFeed } from "@/lib/order-feed";
+import { getAttention, type AttentionSnapshot } from "@/lib/attention";
 
 export type TvCard = {
   orderId: string;
@@ -130,6 +131,7 @@ export type TvBoardResponse = TvBoardData & {
   generatedAt: string;
   shopDate: string;
   paidEvents: { orderId: string; at: string; recipientName: string }[];
+  attention: AttentionSnapshot;
 };
 
 export async function buildTvBoard(now: Date = new Date()): Promise<TvBoardResponse> {
@@ -142,5 +144,6 @@ export async function buildTvBoard(now: Date = new Date()): Promise<TvBoardRespo
   const paidEvents = events
     .filter((e) => e.kind === "paid")
     .map((e) => ({ orderId: e.orderId, at: e.at, recipientName: e.recipientName }));
-  return { ...data, generatedAt: now.toISOString(), shopDate: today, paidEvents };
+  const attention = await getAttention();
+  return { ...data, generatedAt: now.toISOString(), shopDate: today, paidEvents, attention };
 }
