@@ -4,6 +4,8 @@ import { contactSchema } from "@/schemas/contact";
 import { saveInquiry } from "@/lib/inquiry-storage";
 import { rateLimit, ipFromRequest } from "@/lib/rate-limit";
 
+export const runtime = "nodejs";
+
 export async function POST(req: Request) {
   const ip = ipFromRequest(req);
   const rl = rateLimit(`contact:${ip}`, { max: 5, windowMs: 60_000 });
@@ -24,6 +26,24 @@ export async function POST(req: Request) {
     ip,
     locale: parsed.data.locale,
   });
+  // Also enter the pipeline DB so it can be tracked/acknowledged in the radar.
+  // Best-effort: the public form must never fail because of the pipeline DB.
+  try {
+    const { createInquiry } = await import("@/lib/inquiry-storage-db");
+    createInquiry({
+      id,
+      type: "contact",
+      contactName: parsed.data.name,
+      contactEmail: parsed.data.email,
+      contactPhone: "", // the contact form has no phone field
+      notes: `${parsed.data.subject}\n\n${parsed.data.body}`,
+      sourceChannel: "web",
+      locale: parsed.data.locale,
+      createdAt: new Date().toISOString(),
+    });
+  } catch (e) {
+    console.error(JSON.stringify({ event: "contact_sqlite_failed", id, error: String(e) }));
+  }
   console.log(`[contact] from ${parsed.data.email}`);
   return NextResponse.json({ ok: true, id }, { status: 200 });
 }
