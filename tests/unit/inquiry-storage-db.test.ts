@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { closeDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import {
-  createInquiry, listInquiries, getInquiry, changeStage,
+  createInquiry, listInquiries, listUnacknowledged, getInquiry, changeStage,
   updateNotes, setFollowUp, markLost, acknowledge,
 } from "@/lib/inquiry-storage-db";
 
@@ -99,4 +99,20 @@ describe("mutations write history", () => {
     setFollowUp("iq1", "2026-08-01", "maky", NOW);
     expect(getInquiry("iq1")!.changes.length).toBe(before);
   });
+});
+
+it("listInquiries filters by type", () => {
+  createInquiry({ id: "w1", type: "wedding", contactName: "Ana", contactEmail: "a@x.com", contactPhone: "1", sourceChannel: "web" });
+  createInquiry({ id: "c1", type: "contact", contactName: "Luis", contactEmail: "l@x.com", contactPhone: "", sourceChannel: "web" });
+  expect(listInquiries({ types: ["wedding", "event"] }).map((i) => i.id)).toEqual(["w1"]);
+  expect(listInquiries().map((i) => i.id).sort()).toEqual(["c1", "w1"]);
+});
+
+it("listUnacknowledged returns only unacked rows of the given types", () => {
+  createInquiry({ id: "w1", type: "wedding", contactName: "Ana", contactEmail: "a@x.com", contactPhone: "1", sourceChannel: "web" });
+  createInquiry({ id: "w2", type: "wedding", contactName: "Bea", contactEmail: "b@x.com", contactPhone: "1", sourceChannel: "web" });
+  createInquiry({ id: "c1", type: "contact", contactName: "Luis", contactEmail: "l@x.com", contactPhone: "", sourceChannel: "web" });
+  acknowledge("w2");
+  expect(listUnacknowledged(["wedding", "event"]).map((i) => i.id)).toEqual(["w1"]);
+  expect(listUnacknowledged(["contact"]).map((i) => i.id)).toEqual(["c1"]);
 });

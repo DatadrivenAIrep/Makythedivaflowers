@@ -1,7 +1,7 @@
 // Pure, DB-free pipeline logic: stage ordering, grouping, and estimated value.
 // No server-only import — client components import these values/types directly.
 
-export type InquiryType = "wedding" | "event";
+export type InquiryType = "wedding" | "event" | "contact";
 export type Stage =
   | "nuevo" | "contactado" | "propuesta" | "reservado" | "completado" | "perdido";
 export type BudgetBand = "5-10k" | "10-25k" | "25k+" | "open";

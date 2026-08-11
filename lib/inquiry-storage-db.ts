@@ -141,9 +141,33 @@ export function createInquiry(input: CreateInquiryInput, now: Date = new Date(),
   return rowToInquiry(getRow(id)!);
 }
 
-export function listInquiries(): Inquiry[] {
+export function listInquiries(opts: { types?: InquiryType[] } = {}): Inquiry[] {
   runMigrations();
-  const rows = getDb().prepare("SELECT * FROM inquiries ORDER BY created_at DESC").all() as Row[];
+  const db = getDb();
+  if (opts.types && opts.types.length > 0) {
+    const placeholders = opts.types.map(() => "?").join(", ");
+    const rows = db
+      .prepare(`SELECT * FROM inquiries WHERE type IN (${placeholders}) ORDER BY created_at DESC`)
+      .all(...opts.types) as Row[];
+    return rows.map(rowToInquiry);
+  }
+  const rows = db.prepare("SELECT * FROM inquiries ORDER BY created_at DESC").all() as Row[];
+  return rows.map(rowToInquiry);
+}
+
+export function listUnacknowledged(types: InquiryType[]): Inquiry[] {
+  runMigrations();
+  if (types.length === 0) return [];
+  const placeholders = types.map(() => "?").join(", ");
+  const rows = getDb()
+    .prepare(
+      `SELECT * FROM inquiries
+         WHERE acknowledged_at IS NULL
+           AND type IN (${placeholders})
+           AND stage NOT IN ('perdido', 'completado')
+         ORDER BY created_at DESC`,
+    )
+    .all(...types) as Row[];
   return rows.map(rowToInquiry);
 }
 
