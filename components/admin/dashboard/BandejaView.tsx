@@ -1,19 +1,14 @@
 "use client";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { WarningCircle, CheckCircle } from "@phosphor-icons/react/dist/ssr";
 import { useTranslations } from "next-intl";
 import DashboardShell from "./DashboardShell";
 import OrderDetailDrawer from "./OrderDetailDrawer";
 import PendingCard, { type PendingReason, type PendingActionId } from "./PendingCard";
 import AdminButton from "./AdminButton";
+import AttentionDrawer from "./AttentionDrawer";
 import { useDashboardPolling } from "./useDashboardPolling";
 import type { Order } from "@/types/order";
-
-function isIpadLike(): boolean {
-  if (typeof navigator === "undefined") return false;
-  const ua = navigator.userAgent;
-  return /iPad|iPhone|Macintosh.*Touch/i.test(ua) && "ontouchend" in document;
-}
 
 function timeOf(ts: string): string {
   const d = new Date(ts);
@@ -25,9 +20,23 @@ export default function BandejaView({ locale }: { locale: string }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioUnlockedRef = useRef(false);
   const [drawerOrderId, setDrawerOrderId] = useState<string | null>(null);
+  const [attnId, setAttnId] = useState<string | null>(null);
+  const [muted, setMuted] = useState(false);
+  const mutedRef = useRef(false);
+  mutedRef.current = muted;
+
+  useEffect(() => { setMuted(localStorage.getItem("diva_dashboard_muted") === "1"); }, []);
+
+  function toggleMute() {
+    setMuted((m) => {
+      const next = !m;
+      localStorage.setItem("diva_dashboard_muted", next ? "1" : "0");
+      return next;
+    });
+  }
 
   function playChime() {
-    if (!isIpadLike()) return; // sound only on iPad
+    if (mutedRef.current) return;
     const a = audioRef.current;
     if (!a) return;
     a.currentTime = 0;
@@ -45,12 +54,13 @@ export default function BandejaView({ locale }: { locale: string }) {
     }, 500);
   }
 
-  const onNewOrder = useCallback((ids: string[]) => {
+  const onNewItem = useCallback((ids: string[]) => {
     playChime();
     flashTitle(ids.length);
   }, []);
 
-  const { queue, feed, lastUpdated, error, refresh } = useDashboardPolling({ onNewOrder });
+  const { queue, feed, attention, lastUpdated, error, refresh } = useDashboardPolling({ onNewItem });
+  const newRequests = (attention?.items ?? []).filter((item) => item.kind !== "order");
 
   function unlockAudio() {
     if (audioUnlockedRef.current) return;
@@ -115,6 +125,39 @@ export default function BandejaView({ locale }: { locale: string }) {
           </div>
         )}
         <section className="mb-6">
+          <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-ink/60">
+            {t("new_requests")} · {newRequests.length}
+            <button
+              type="button"
+              onClick={toggleMute}
+              title={muted ? t("unmute") : t("mute")}
+              className="ml-auto text-base"
+            >
+              {muted ? "🔇" : "🔔"}
+            </button>
+          </h2>
+          {newRequests.length === 0 ? (
+            <p className="rounded-lg border border-ink/10 bg-bone p-4 text-sm text-ink/60">
+              {t("no_new_requests")}
+            </p>
+          ) : (
+            <ul className="space-y-2">
+              {newRequests.map((item) => (
+                <li key={item.id}>
+                  <button
+                    type="button"
+                    onClick={() => setAttnId(item.id)}
+                    className="w-full rounded-lg border border-ink/10 bg-white p-3 text-left text-sm hover:bg-ink/5"
+                  >
+                    {item.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <section className="mb-6">
           <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-ink/60">
             {t("pending")} · {queue.length}
           </h2>
@@ -162,6 +205,9 @@ export default function BandejaView({ locale }: { locale: string }) {
             onClose={() => setDrawerOrderId(null)}
             onChanged={() => { void refresh(); }}
           />
+        )}
+        {attnId && (
+          <AttentionDrawer id={attnId} onClose={() => { setAttnId(null); void refresh(); }} />
         )}
       </DashboardShell>
     </div>
