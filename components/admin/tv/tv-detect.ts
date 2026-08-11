@@ -7,6 +7,13 @@ export function newPaidIds(events: PaidEvent[], seen: Set<string>): string[] {
   return out;
 }
 
+/** Ids not present in `seen`. Pure. */
+export function newIds(ids: string[], seen: Set<string>): string[] {
+  const out: string[] = [];
+  for (const id of ids) if (!seen.has(id)) out.push(id);
+  return out;
+}
+
 /** Split items into fixed-size pages; always returns at least one (possibly empty) page. */
 export function paginate<T>(items: T[], pageSize: number): T[][] {
   if (pageSize <= 0) return [items];

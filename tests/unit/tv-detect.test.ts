@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { newPaidIds, paginate } from "@/components/admin/tv/tv-detect";
+import { newPaidIds, paginate, newIds } from "@/components/admin/tv/tv-detect";
 
 describe("tv-detect", () => {
   it("newPaidIds returns ids not already seen", () => {
@@ -9,6 +9,11 @@ describe("tv-detect", () => {
     ];
     expect(newPaidIds(events, new Set(["a"]))).toEqual(["b"]);
     expect(newPaidIds(events, new Set(["a", "b"]))).toEqual([]);
+  });
+
+  it("newIds returns ids not already seen", () => {
+    expect(newIds(["a", "b", "c"], new Set(["a"]))).toEqual(["b", "c"]);
+    expect(newIds(["a"], new Set(["a"]))).toEqual([]);
   });
 
   it("paginate splits into fixed-size pages", () => {
