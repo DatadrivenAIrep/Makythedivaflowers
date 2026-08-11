@@ -25,9 +25,11 @@ git checkout -b feat/attention-radar
 
 (If using `superpowers:using-git-worktrees`, create the worktree instead; the plan's relative paths are unchanged.)
 
-## Known constraint — deliberate, not a bug to fix here
+## Auth note — CORRECTED after browser verification
 
-The dashboard's sibling endpoints `/api/admin/orders/queue` and `/api/admin/orders/feed` are **not** guarded by `requireAdmin` (there is no `middleware.ts`; only `tv/board` calls `requireAdmin`). This is the pre-existing "admin auth gap." The new `/api/admin/attention` endpoint **mirrors its siblings (unguarded)** for consistency and test simplicity. Do **not** add auth to it in this plan — hardening the whole `/api/admin/*` surface is a separate follow-up. It is called out so the choice is explicit.
+**Original (incorrect) assumption:** the plan first claimed the dashboard's `queue`/`feed` endpoints were unguarded and that the new endpoint should mirror that "gap." That was wrong.
+
+**Reality:** admin auth is enforced at the edge by **`proxy.ts`** — Next 16's rename of `middleware.ts` (the breaking change AGENTS.md warns about; a grep for `middleware.ts` misses it). Its matcher covers `"/api/admin/:path*"` and returns `{ "error": "unauthorized" }` (401) for any request lacking a valid `intake_session` cookie, with `/api/admin/session` the only public exception. So **every** `/api/admin/*` route — `queue`, `feed`, `tv/board`, and the new `attention` — is already protected; the per-route `requireAdmin` in `tv/board` is redundant belt-and-suspenders. The new `/api/admin/attention` route therefore needs **no** per-route guard, and there is **no** auth gap for it. Verified live: hitting `/api/admin/attention` and `/api/admin/orders/queue` without a cookie both return the 401.
 
 ## File Structure
 
