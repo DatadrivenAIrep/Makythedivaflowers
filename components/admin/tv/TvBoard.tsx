@@ -36,20 +36,29 @@ export default function TvBoard() {
   const { enabled, enable, chime } = useTvSound();
   const [flash, setFlash] = useState<Set<string>>(new Set());
   const [page, setPage] = useState(0);
+  const [toast, setToast] = useState<string | null>(null);
   const pageJumpRef = useRef<string | null>(null);
 
-  const { data, error } = useTvPolling(POLL_INTERVAL_MS, (ids) => {
-    if (enabled) chime();
-    setFlash((prev) => {
-      const next = new Set(prev);
-      ids.forEach((id) => next.add(id));
-      return next;
-    });
-    ids.forEach((id) => setTimeout(() => {
-      setFlash((prev) => { const n = new Set(prev); n.delete(id); return n; });
-    }, NEW_FLASH_MS));
-    pageJumpRef.current = ids[0] ?? null;
-  });
+  const { data, error } = useTvPolling(
+    POLL_INTERVAL_MS,
+    (ids) => {
+      if (enabled) chime();
+      setFlash((prev) => {
+        const next = new Set(prev);
+        ids.forEach((id) => next.add(id));
+        return next;
+      });
+      ids.forEach((id) => setTimeout(() => {
+        setFlash((prev) => { const n = new Set(prev); n.delete(id); return n; });
+      }, NEW_FLASH_MS));
+      pageJumpRef.current = ids[0] ?? null;
+    },
+    (items) => {
+      if (enabled) chime();
+      setToast(`Nueva solicitud · ${items[0]?.label ?? ""}`);
+      window.setTimeout(() => setToast(null), 6000);
+    },
+  );
 
   const todo = data?.todo ?? [];
   const pages = useMemo(() => paginate(todo, PAGE_SIZE), [todo]);
@@ -88,6 +97,7 @@ export default function TvBoard() {
           <Counter n={todo.length} label="Por hacer" color="var(--color-rouge)" />
           <Counter n={data?.enRuta.length ?? 0} label="En ruta" color="var(--color-rouge-glow)" />
           <Counter n={data?.deliveredToday ?? 0} label="Entregadas" color="var(--color-success)" />
+          <Counter n={data?.attention.counts.total ?? 0} label="Sin atender" color="var(--color-warn)" />
           <div className="text-right">
             <div className="text-3xl font-bold tabular-nums">{clock}</div>
             <div className="text-xs text-mute-400 capitalize">{dateStr}</div>
@@ -149,6 +159,13 @@ export default function TvBoard() {
           </span>
         ))}
       </footer>
+
+      {/* New-request toast */}
+      {toast && (
+        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-40 rounded-full bg-ink px-6 py-3 text-lg font-semibold text-bone shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]">
+          🔔 {toast}
+        </div>
+      )}
 
       {/* Sound gate */}
       {!enabled && (
