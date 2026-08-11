@@ -26,3 +26,13 @@ it("acks on open and renders the contact", async () => {
   const calls = (fetch as unknown as { mock: { calls: unknown[][] } }).mock.calls.map((c) => String(c[0]));
   expect(calls.some((u) => u.endsWith("/api/admin/inquiries/c1/ack"))).toBe(true);
 });
+
+it("shows an error instead of hanging when the item can no longer be loaded (404)", async () => {
+  vi.stubGlobal("fetch", vi.fn((url: string) =>
+    String(url).endsWith("/ack")
+      ? Promise.resolve(new Response(null, { status: 200 }))
+      : Promise.resolve(new Response(null, { status: 404 })),
+  ));
+  render(<AttentionDrawer id="gone" onClose={() => {}} />);
+  await waitFor(() => expect(screen.getByText(/No se pudo cargar/)).toBeDefined());
+});

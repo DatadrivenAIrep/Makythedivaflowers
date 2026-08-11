@@ -6,13 +6,20 @@ const TYPE_LABEL: Record<string, string> = { contact: "Contacto", wedding: "Boda
 
 export default function AttentionDrawer({ id, onClose }: { id: string; onClose: () => void }) {
   const [detail, setDetail] = useState<InquiryDetail | null>(null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      await fetch(`/api/admin/inquiries/${id}/ack`, { method: "POST" });
-      const res = await fetch(`/api/admin/inquiries/${id}`, { cache: "no-store" });
-      if (!cancelled && res.ok) setDetail((await res.json()) as InquiryDetail);
+      try {
+        await fetch(`/api/admin/inquiries/${id}/ack`, { method: "POST" });
+        const res = await fetch(`/api/admin/inquiries/${id}`, { cache: "no-store" });
+        if (cancelled) return;
+        if (res.ok) setDetail((await res.json()) as InquiryDetail);
+        else setFailed(true);
+      } catch {
+        if (!cancelled) setFailed(true);
+      }
     })();
     return () => { cancelled = true; };
   }, [id]);
@@ -25,7 +32,9 @@ export default function AttentionDrawer({ id, onClose }: { id: string; onClose: 
         onClick={(e) => e.stopPropagation()}
       >
         <button onClick={onClose} className="mb-4 text-sm text-ink/60">✕ Cerrar</button>
-        {!i ? (
+        {failed ? (
+          <p className="text-ink/60">No se pudo cargar. Puede que ya se haya atendido.</p>
+        ) : !i ? (
           <p className="text-ink/60">Cargando…</p>
         ) : (
           <div className="space-y-3">

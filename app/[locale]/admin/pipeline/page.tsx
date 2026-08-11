@@ -11,7 +11,9 @@ export default async function AdminPipelinePage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const inquiries = listInquiries();
+  // Wedding/event only — contact-type inquiries live in the same table but must
+  // stay out of the sales kanban (mirrors the /api/admin/inquiries filter).
+  const inquiries = listInquiries({ types: ["wedding", "event"] });
   const initial = {
     inquiries,
     stats: { counts: stageCounts(inquiries), openValueCents: openPipelineValueCents(inquiries) },

@@ -97,7 +97,7 @@ export default function TvBoard() {
           <Counter n={todo.length} label="Por hacer" color="var(--color-rouge)" />
           <Counter n={data?.enRuta.length ?? 0} label="En ruta" color="var(--color-rouge-glow)" />
           <Counter n={data?.deliveredToday ?? 0} label="Entregadas" color="var(--color-success)" />
-          <Counter n={data?.attention.counts.total ?? 0} label="Sin atender" color="var(--color-warn)" />
+          <Counter n={data?.attention?.counts.total ?? 0} label="Sin atender" color="var(--color-warn)" />
           <div className="text-right">
             <div className="text-3xl font-bold tabular-nums">{clock}</div>
             <div className="text-xs text-mute-400 capitalize">{dateStr}</div>
