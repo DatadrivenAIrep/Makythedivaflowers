@@ -6,7 +6,7 @@ import { manualInquirySchema } from "@/schemas/inquiry-admin";
 export const runtime = "nodejs";
 
 export async function GET(_req: Request): Promise<Response> {
-  const inquiries = listInquiries();
+  const inquiries = listInquiries({ types: ["wedding", "event"] });
   return NextResponse.json({
     inquiries,
     stats: { counts: stageCounts(inquiries), openValueCents: openPipelineValueCents(inquiries) },

@@ -23,6 +23,15 @@ it("GET returns inquiries + stats (counts + open value)", async () => {
   expect(body.stats.openValueCents).toBe(3500000); // 1,000,000 + 2,500,000
 });
 
+it("GET excludes contact-type inquiries from the pipeline", async () => {
+  createInquiry({ id: "iqc", type: "contact", contactName: "Zoe", contactEmail: "z@x.com", contactPhone: "", sourceChannel: "web" });
+  createInquiry({ id: "iqw", type: "wedding", contactName: "Ana", contactEmail: "a@x.com", contactPhone: "1", budgetBand: "10-25k", sourceChannel: "web" });
+  const res = await GET(new Request("http://x/api/admin/inquiries"));
+  const body = await res.json();
+  expect(body.inquiries.map((i: { id: string }) => i.id)).toEqual(["iqw"]);
+  expect(body.stats.counts.nuevo).toBe(1);
+});
+
 it("POST creates a manual lead at stage nuevo", async () => {
   const res = await POST(new Request("http://x", {
     method: "POST",
