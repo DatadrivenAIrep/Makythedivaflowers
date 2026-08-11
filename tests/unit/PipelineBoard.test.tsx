@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
+import { act } from "@testing-library/react";
 import { render, screen } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import esMessages from "@/messages/es.json";
@@ -36,5 +37,16 @@ describe("PipelineBoard", () => {
     expect(screen.getByText("Lead b")).toBeDefined();
     expect(screen.getByText("Nuevo lead")).toBeDefined(); // add button
     expect(screen.getByText("$20,000.00")).toBeDefined(); // open value
+  });
+
+  afterEach(() => { vi.unstubAllGlobals(); vi.useRealTimers(); });
+
+  it("auto-refreshes inquiries after the polling interval", async () => {
+    vi.useFakeTimers();
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify(initial), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+    wrap(<PipelineBoard locale="es" initial={initial} />);
+    await act(async () => { await vi.advanceTimersByTimeAsync(20_000); });
+    expect(fetchMock).toHaveBeenCalledWith("/api/admin/inquiries", { cache: "no-store" });
   });
 });

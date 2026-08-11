@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Plus } from "@phosphor-icons/react/dist/ssr";
 import { ACTIVE_STAGES, groupByStage, type Stage } from "@/lib/pipeline";
@@ -35,6 +35,21 @@ export default function PipelineBoard({ locale, initial }: Props) {
       setError(true);
     }
   }
+
+  const refreshRef = useRef(refresh);
+  refreshRef.current = refresh;
+  useEffect(() => {
+    let timer: ReturnType<typeof setInterval> | null = null;
+    const start = () => { if (!timer) timer = setInterval(() => void refreshRef.current(), 20_000); };
+    const stop = () => { if (timer) { clearInterval(timer); timer = null; } };
+    const onVis = () => {
+      if (document.visibilityState === "visible") { void refreshRef.current(); start(); }
+      else stop();
+    };
+    if (document.visibilityState === "visible") start();
+    document.addEventListener("visibilitychange", onVis);
+    return () => { stop(); document.removeEventListener("visibilitychange", onVis); };
+  }, []);
 
   async function open(id: string) {
     try {
