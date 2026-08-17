@@ -8,6 +8,53 @@ const img = (slug: string, n: number, alt: { en: string; es: string }, aspect: "
 });
 
 export const PRODUCTS: Product[] = [
+  // ─── Signature statement piece ───────────────────────────
+  {
+    id: "p-arr-ie01",
+    slug: "ivory-and-emerald",
+    title: { en: "Ivory & Emerald", es: "Marfil y Esmeralda" },
+    category: "arrangements",
+    blurb: {
+      en: "Our grandest white-and-green statement — cascading phalaenopsis orchids, green cymbidium, and calla lilies, built by hand into a piece that quiets the whole room.",
+      es: "Nuestra pieza blanca y verde más imponente — orquídeas phalaenopsis en cascada, cymbidium verde y callas, armadas a mano en un arreglo que silencia la sala entera.",
+    },
+    description: {
+      en: "A one-of-a-kind showpiece, built stem by stem the morning it ships: cascading white phalaenopsis orchids, green cymbidium, calla lilies, garden and spray roses, and white-and-green hydrangea, gathered with bells of Ireland in a hand-painted ceramic urn. This is the arrangement for the head table, the gallery entrance, the moment that deserves more than a bouquet — the kind of flowers that say the occasion mattered before anyone reads the card. Made to order on Long Island; reserve at least 24 hours ahead so we can source every orchid at its peak. Shown as pictured.",
+      es: "Una pieza central irrepetible, armada tallo por tallo la mañana del envío: orquídeas phalaenopsis blancas en cascada, cymbidium verde, callas, rosas de jardín y mini-rosas, y hortensias blancas y verdes, reunidas con bells of Ireland en un jarrón de cerámica pintado a mano. Es el arreglo para la mesa principal, la entrada del salón, el momento que merece más que un ramo — de esas flores que dicen que la ocasión importaba antes de que alguien lea la tarjeta. Hecho por encargo en Long Island; reserva con al menos 24 horas para conseguir cada orquídea en su punto. Tal cual la foto.",
+    },
+    images: [
+      {
+        src: "/products/ivory-and-emerald.jpg",
+        alt: {
+          en: "Grand white and green arrangement of orchids, calla lilies, roses and hydrangea in a hand-painted ceramic urn",
+          es: "Gran arreglo blanco y verde de orquídeas, callas, rosas y hortensias en jarrón de cerámica pintado a mano",
+        },
+        aspect: "4/5",
+      },
+    ],
+    variants: [
+      {
+        id: "as-shown",
+        label: { en: "As shown", es: "Tal cual la foto" },
+        priceCents: 108000,
+        subtitle: { en: "Grand scale · made to order", es: "Gran escala · por encargo" },
+      },
+    ],
+    tags: ["new", "staff-pick"],
+    occasions: ["congrats", "anniversary", "sympathy"],
+    colorFamily: ["white", "green"],
+    active: true,
+    seo: {
+      title: {
+        en: "Ivory & Emerald — Grand White & Green Arrangement | Diva Flowers",
+        es: "Marfil y Esmeralda — Gran Arreglo Blanco y Verde | Diva Flowers",
+      },
+      description: {
+        en: "A grand one-of-a-kind arrangement of white orchids, calla lilies, and green cymbidium in a hand-painted urn. Statement piece for celebrations and tributes on Long Island.",
+        es: "Gran arreglo irrepetible de orquídeas blancas, callas y cymbidium verde en jarrón pintado a mano. Pieza central para celebraciones y homenajes en Long Island.",
+      },
+    },
+  },
   // ─── Maky catalog import — pilot (8) ─────────────────────
   {
     id: "p-arr-m01",

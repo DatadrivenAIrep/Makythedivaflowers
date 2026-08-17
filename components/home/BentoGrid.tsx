@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { BentoPromoTile } from "./BentoPromoTile";
+import { BentoSignatureTile } from "./BentoSignatureTile";
 import { BentoSubscriptionsTile } from "./BentoSubscriptionsTile";
 import { BentoLiveStatusTile } from "./BentoLiveStatusTile";
 import { BentoPressTile } from "./BentoPressTile";
@@ -39,11 +40,17 @@ export async function BentoGrid({ locale }: { locale: Locale }) {
             imageSrc="/weddings/boda-03/p01.webp"
             href={`/${locale}/weddings`}
           />
-          <BentoPromoTile
+          <BentoSignatureTile
             locale={locale}
-            namespace="home.bento.events"
-            imageSrc="/events/evento-02/p03.webp"
-            href={`/${locale}/events`}
+            namespace="home.bento.signature"
+            imageSrc="/products/ivory-and-emerald-tile.webp"
+            imageAlt={
+              locale === "es"
+                ? "Gran arreglo blanco y verde de orquídeas, callas y hortensias"
+                : "Grand white and green arrangement of orchids, calla lilies and hydrangea"
+            }
+            slug="ivory-and-emerald"
+            priceUSD={1080}
           />
         </div>
         <div className="md:col-span-2 md:row-span-2">
