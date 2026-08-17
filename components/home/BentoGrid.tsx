@@ -2,7 +2,6 @@ import { getTranslations } from "next-intl/server";
 import { BentoPromoTile } from "./BentoPromoTile";
 import { BentoSignatureTile } from "./BentoSignatureTile";
 import { BentoSubscriptionsTile } from "./BentoSubscriptionsTile";
-import { BentoLiveStatusTile } from "./BentoLiveStatusTile";
 import { BentoPressTile } from "./BentoPressTile";
 import { BentoStudioClock } from "./BentoStudioClock";
 import type { Locale } from "@/types/locale";
@@ -33,17 +32,12 @@ export async function BentoGrid({ locale }: { locale: Locale }) {
         className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-5"
         style={{ gridAutoRows: "minmax(140px, auto)" }}
       >
-        <div className="md:col-span-2 md:row-span-3 grid grid-rows-2 gap-4 md:gap-5">
-          <BentoPromoTile
-            locale={locale}
-            namespace="home.bento.weddings"
-            imageSrc="/weddings/boda-03/p01.webp"
-            href={`/${locale}/weddings`}
-          />
+        {/* Left: hero signature arrangement — fills the full column height */}
+        <div className="md:col-span-2 md:row-span-3">
           <BentoSignatureTile
             locale={locale}
             namespace="home.bento.signature"
-            imageSrc="/products/ivory-and-emerald-tile.webp"
+            imageSrc="/products/ivory-and-emerald.jpg"
             imageAlt={
               locale === "es"
                 ? "Gran arreglo blanco y verde de orquídeas, callas y hortensias"
@@ -53,8 +47,14 @@ export async function BentoGrid({ locale }: { locale: Locale }) {
             priceUSD={1080}
           />
         </div>
+        {/* Right top: weddings (moved here, replaces the live-status tile) */}
         <div className="md:col-span-2 md:row-span-2">
-          <BentoLiveStatusTile />
+          <BentoPromoTile
+            locale={locale}
+            namespace="home.bento.weddings"
+            imageSrc="/weddings/boda-03/p01.webp"
+            href={`/${locale}/weddings`}
+          />
         </div>
         <div className="md:col-span-1">
           <BentoSubscriptionsTile locale={locale} />
