@@ -24,7 +24,7 @@ export async function BentoSignatureTile({
   imageSrc: string;
   imageAlt: string;
   slug: string;
-  priceUSD: number;
+  priceUSD?: number;
 }) {
   const t = await getTranslations(namespace);
 
@@ -57,7 +57,7 @@ export async function BentoSignatureTile({
 
       <div className="absolute top-4 right-4">
         <span className="rounded-full bg-bone/90 px-3.5 py-1.5 font-mono text-[12px] md:text-sm tracking-[0.02em] text-ink backdrop-blur-sm">
-          ${priceUSD.toLocaleString("en-US")}
+          {priceUSD != null ? `$${priceUSD.toLocaleString("en-US")}` : t("quote")}
         </span>
       </div>
 

@@ -32,9 +32,14 @@ describe("buildProductJsonLd", () => {
 
   it("sets lowPrice to the Standard (lowest) variant", () => {
     const data = buildProductJsonLd(fx(), "en", ORIGIN);
-    expect(data.offers.lowPrice).toBe("79.00");
-    expect(data.offers.priceCurrency).toBe("USD");
-    expect(data.offers.itemCondition).toBe("https://schema.org/NewCondition");
+    expect(data.offers?.lowPrice).toBe("79.00");
+    expect(data.offers?.priceCurrency).toBe("USD");
+    expect(data.offers?.itemCondition).toBe("https://schema.org/NewCondition");
+  });
+
+  it("omits the offer entirely for quote-only products", () => {
+    const data = buildProductJsonLd(fx({ quoteOnly: true }), "en", ORIGIN);
+    expect(data.offers).toBeUndefined();
   });
 
   it("emits absolute image URLs", () => {
@@ -50,6 +55,6 @@ describe("buildProductJsonLd", () => {
 
   it("marks inactive products out of stock", () => {
     const data = buildProductJsonLd(fx({ active: false }), "en", ORIGIN);
-    expect(data.offers.availability).toBe("https://schema.org/OutOfStock");
+    expect(data.offers?.availability).toBe("https://schema.org/OutOfStock");
   });
 });

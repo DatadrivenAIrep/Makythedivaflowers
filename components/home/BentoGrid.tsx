@@ -44,7 +44,6 @@ export async function BentoGrid({ locale }: { locale: Locale }) {
                 : "Grand white and green arrangement of orchids, calla lilies and hydrangea"
             }
             slug="ivory-and-emerald"
-            priceUSD={1080}
           />
         </div>
         {/* Right top: weddings (moved here, replaces the live-status tile) */}

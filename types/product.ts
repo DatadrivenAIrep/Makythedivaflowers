@@ -55,6 +55,12 @@ export type Product = {
   title: Localized;
   category: ProductCategory;
   giftExtra?: boolean;
+  /**
+   * Showcased but NOT directly purchasable: the PDP shows a "request a quote"
+   * CTA instead of add-to-cart, price is hidden on every surface, the item is
+   * excluded from the Google feed, and it can never reach checkout.
+   */
+  quoteOnly?: boolean;
   blurb: Localized;
   description: Localized;
   images: ProductImage[];

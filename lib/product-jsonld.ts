@@ -11,17 +11,22 @@ export function buildProductJsonLd(product: Product, locale: Locale, origin: str
     description: product.description[locale],
     image: product.images.map((i) => `${origin}${i.src}`),
     brand: { "@type": "Brand", name: SITE.merchantName },
-    offers: {
-      "@type": "AggregateOffer",
-      priceCurrency: "USD",
-      lowPrice: (startingPriceCents(product) / 100).toFixed(2),
-      offerCount: product.variants.length,
-      availability: product.active
-        ? "https://schema.org/InStock"
-        : "https://schema.org/OutOfStock",
-      itemCondition: "https://schema.org/NewCondition",
-      url: `${origin}/${locale}/product/${product.slug}`,
-    },
+    // Quote-only pieces have no public price — omit the Offer entirely
+    // (JSON.stringify drops `undefined`) so we never emit a $0 / InStock offer
+    // that Google would flag as invalid.
+    offers: product.quoteOnly
+      ? undefined
+      : {
+          "@type": "AggregateOffer",
+          priceCurrency: "USD",
+          lowPrice: (startingPriceCents(product) / 100).toFixed(2),
+          offerCount: product.variants.length,
+          availability: product.active
+            ? "https://schema.org/InStock"
+            : "https://schema.org/OutOfStock",
+          itemCondition: "https://schema.org/NewCondition",
+          url: `${origin}/${locale}/product/${product.slug}`,
+        },
     hasMerchantReturnPolicy: {
       "@type": "MerchantReturnPolicy",
       applicableCountry: "US",

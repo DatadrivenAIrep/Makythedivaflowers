@@ -67,8 +67,14 @@ function ProductCardImpl({ product, locale, reduceMotion, priority, campaign }: 
           </h3>
         </div>
         <p className="shrink-0 font-mono text-sm text-ink">
-          <span className="text-mute-500 mr-1">{startingFrom}</span>
-          {fromPrice}
+          {product.quoteOnly ? (
+            <span className="text-rouge">{locale === "es" ? "Cotizar" : "Get a quote"}</span>
+          ) : (
+            <>
+              <span className="text-mute-500 mr-1">{startingFrom}</span>
+              {fromPrice}
+            </>
+          )}
         </p>
       </div>
     </Link>

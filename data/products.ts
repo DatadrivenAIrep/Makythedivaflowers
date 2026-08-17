@@ -44,6 +44,7 @@ export const PRODUCTS: Product[] = [
     occasions: ["congrats", "anniversary", "sympathy"],
     colorFamily: ["white", "green"],
     active: true,
+    quoteOnly: true,
     seo: {
       title: {
         en: "Ivory & Emerald — Grand White & Green Arrangement | Diva Flowers",

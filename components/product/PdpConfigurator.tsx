@@ -9,6 +9,7 @@ import { DeliveryDatePicker } from "./DeliveryDatePicker";
 import { CardMessage } from "./CardMessage";
 import { SubscriptionCadence as CadencePicker } from "./SubscriptionCadence";
 import { AddToBag } from "./AddToBag";
+import { RequestQuote } from "./RequestQuote";
 
 type Props = {
   product: Product;
@@ -40,6 +41,21 @@ function PdpConfiguratorImpl({ product, locale, cutoff, motionMode, campaign }: 
       product.addOns?.filter((a) => addOnIds.includes(a.id)).reduce((s, a) => s + a.priceCents, 0) ?? 0;
     return v + adds;
   }, [product, variantId, addOnIds]);
+
+  // Quote-only pieces are showcased, not sold from the cart: skip size/date/
+  // card-message/add-to-bag and offer a "request a quote" CTA instead.
+  if (product.quoteOnly) {
+    return (
+      <div className="mt-8 flex flex-col gap-4">
+        <RequestQuote locale={locale} />
+        <p className="max-w-md text-[13px] leading-relaxed text-ink/60">
+          {locale === "es"
+            ? "Pieza a la medida — te enviamos precio y disponibilidad por WhatsApp o texto."
+            : "Made-to-order piece — we'll send price and availability by WhatsApp or text."}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="mt-8 flex flex-col gap-6">

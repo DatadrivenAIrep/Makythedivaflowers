@@ -1,5 +1,6 @@
 export type SubjectKey =
   | "pdp_named"
+  | "pdp_quote"
   | "pdp_generic"
   | "shop_all"
   | "shop_category"
@@ -13,6 +14,7 @@ export type SubjectKey =
 
 export type ContactOverride =
   | { kind: "pdp"; productName: string }
+  | { kind: "pdp_quote"; productName: string }
   | { kind: "shop"; category: string }
   | null;
 
@@ -33,6 +35,9 @@ export function getSubjectKey(input: {
 
   if (override && override.kind === "pdp") {
     return { key: "pdp_named", vars: { product: override.productName } };
+  }
+  if (override && override.kind === "pdp_quote") {
+    return { key: "pdp_quote", vars: { product: override.productName } };
   }
   if (override && override.kind === "shop") {
     return { key: "shop_category", vars: { category: override.category } };

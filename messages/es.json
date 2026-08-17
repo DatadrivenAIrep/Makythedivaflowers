@@ -206,7 +206,8 @@
       "signature": {
         "eyebrow": "Nuevo · Pieza insignia",
         "title": "Marfil y Esmeralda",
-        "cta": "Ver la pieza"
+        "cta": "Ver la pieza",
+        "quote": "Cotizar"
       }
     },
     "categories_title": "Encuentra tu flor.",
@@ -784,6 +785,7 @@
     "subjects": {
       "pdp_generic": "tengo una pregunta sobre un producto que estoy viendo.",
       "pdp_named": "tengo una pregunta sobre {product}.",
+      "pdp_quote": "quiero cotizar {product}.",
       "shop_all": "estoy viendo tu tienda y tengo una pregunta.",
       "shop_category": "estoy viendo tu colección de {category} y tengo una pregunta.",
       "weddings": "me gustaría consultar sobre flores para una boda.",

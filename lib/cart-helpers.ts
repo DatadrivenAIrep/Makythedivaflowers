@@ -17,6 +17,10 @@ export function resolveCartLine(
   if (line.kind !== "catalog") return null;
   const product = products.find((p) => p.id === line.productId);
   if (!product) return null;
+  // Quote-only pieces are not purchasable — never resolve them into a cart line
+  // (keeps them out of totals, the cart UI, and checkout even if one is somehow
+  // present in a stale/tampered cart).
+  if (product.quoteOnly) return null;
   const variant = product.variants.find((v) => v.id === line.variantId);
   if (!variant) return null;
   const addOns = (product.addOns ?? []).filter((a) => line.addOnIds.includes(a.id));

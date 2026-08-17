@@ -1,7 +1,13 @@
 "use client";
 import { useSetContactSubject } from "@/components/contact/ContactContextProvider";
 
-export function PdpContactSubject({ productName }: { productName: string }) {
-  useSetContactSubject({ kind: "pdp", productName });
+export function PdpContactSubject({
+  productName,
+  quote,
+}: {
+  productName: string;
+  quote?: boolean;
+}) {
+  useSetContactSubject({ kind: quote ? "pdp_quote" : "pdp", productName });
   return null;
 }

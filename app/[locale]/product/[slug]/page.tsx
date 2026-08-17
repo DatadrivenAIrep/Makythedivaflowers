@@ -94,7 +94,7 @@ export default async function ProductPage({
         };
         return <TrackEvent kind="view_item" item={item} />;
       })()}
-      <PdpContactSubject productName={product.title[locale]} />
+      <PdpContactSubject productName={product.title[locale]} quote={product.quoteOnly} />
       <PdpStructuredData product={product} locale={locale} origin={origin} />
       <BreadcrumbListLD
         items={[

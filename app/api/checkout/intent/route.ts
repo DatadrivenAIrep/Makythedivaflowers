@@ -36,10 +36,15 @@ export async function POST(req: Request) {
   }
   const { locale, lines, form } = parsed.data;
 
-  // Web checkout never receives custom lines — stamp kind explicitly to satisfy the new union type.
-  const backfilledLines: CartLine[] = lines.map((l) => ({ kind: "catalog" as const, ...l }));
-
   const effectiveProducts = applyPriceOverrides(PRODUCTS, getAllPriceOverrides());
+
+  // Web checkout never receives custom lines — stamp kind explicitly to satisfy the new union type.
+  // Drop any quote-only product: it is showcased, not purchasable, so it must never
+  // ride along in a mixed cart at $0 (a quote-only-only cart then falls through to cart_empty).
+  const backfilledLines: CartLine[] = lines
+    .map((l) => ({ kind: "catalog" as const, ...l }))
+    .filter((l) => !effectiveProducts.find((p) => p.id === l.productId)?.quoteOnly);
+
   const subtotal = cartSubtotalCents(backfilledLines, effectiveProducts);
   if (subtotal <= 0) {
     return NextResponse.json(

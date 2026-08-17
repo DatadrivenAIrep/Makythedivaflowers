@@ -21,7 +21,7 @@ export function TextMakyModal() {
   const { key, vars } = getSubjectKey({ pathname, override });
   const greeting = t("greeting");
   const subject = t(`subjects.${key}`, vars ?? {});
-  const productUrl = key === "pdp_named" ? `${SITE.url}${pathname}` : null;
+  const productUrl = key === "pdp_named" || key === "pdp_quote" ? `${SITE.url}${pathname}` : null;
   const message = productUrl
     ? `${greeting}${subject} ${productUrl}`
     : `${greeting}${subject}`;
