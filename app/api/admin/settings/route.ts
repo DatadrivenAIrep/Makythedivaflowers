@@ -1,27 +1,72 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getSetting, setSetting, deleteSetting, SETTING_GOOGLE_PLACES_KEY } from "@/lib/settings-storage";
+import {
+  getSetting,
+  setSetting,
+  deleteSetting,
+  SETTING_GOOGLE_PLACES_KEY,
+  SETTING_TWILIO_ACCOUNT_SID,
+  SETTING_TWILIO_AUTH_TOKEN,
+  SETTING_TWILIO_PHONE_NUMBER,
+  SETTING_TWILIO_SMS_ENABLED,
+  SETTING_TWILIO_DRY_RUN,
+} from "@/lib/settings-storage";
+import {
+  twilioAccountSid,
+  twilioAuthToken,
+  twilioPhoneNumber,
+  twilioSmsEnabled,
+  twilioDryRun,
+} from "@/lib/twilio-config";
 
 export const runtime = "nodejs";
 
-// The only key exposed through this route — guards against free-form key injection.
-const ALLOWED_KEYS = [SETTING_GOOGLE_PLACES_KEY] as const;
-type AllowedKey = (typeof ALLOWED_KEYS)[number];
+// The only keys exposed through this route — guards against free-form injection.
+const ALLOWED_KEYS = [
+  SETTING_GOOGLE_PLACES_KEY,
+  SETTING_TWILIO_ACCOUNT_SID,
+  SETTING_TWILIO_AUTH_TOKEN,
+  SETTING_TWILIO_PHONE_NUMBER,
+  SETTING_TWILIO_SMS_ENABLED,
+  SETTING_TWILIO_DRY_RUN,
+] as const;
 
-const putSchema = z.object({
-  key: z.enum(ALLOWED_KEYS),
-  value: z.string(),
-});
+const putSchema = z
+  .object({ key: z.enum(ALLOWED_KEYS), value: z.string() })
+  .superRefine((data, ctx) => {
+    const v = data.value.trim();
+    if (v === "") return; // empty clears the setting — always allowed
+    if (data.key === SETTING_TWILIO_ACCOUNT_SID && !/^AC[a-zA-Z0-9]{32}$/.test(v)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "invalid_sid", path: ["value"] });
+    }
+    if (data.key === SETTING_TWILIO_PHONE_NUMBER && !/^\+\d{11,15}$/.test(v)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "invalid_phone", path: ["value"] });
+    }
+    if (
+      (data.key === SETTING_TWILIO_SMS_ENABLED || data.key === SETTING_TWILIO_DRY_RUN) &&
+      v !== "true" &&
+      v !== "false"
+    ) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "invalid_flag", path: ["value"] });
+    }
+  });
+
+function mask(v: string | undefined): string | null {
+  return v ? `...${v.slice(-4)}` : null;
+}
 
 export async function GET() {
-  const result: Record<string, string | null> = {};
-  for (const key of ALLOWED_KEYS) {
-    const raw = getSetting(key);
-    // Mask the API key: show last 4 chars only so the UI can confirm it's set
-    // without exposing the full secret.
-    result[key] = raw ? `...${raw.slice(-4)}` : null;
-  }
-  return NextResponse.json(result);
+  // Google key is setting-only (no env fallback), kept as-is. Twilio values are
+  // resolved (setting ?? env) so the dashboard reflects the effective config.
+  const google = getSetting(SETTING_GOOGLE_PLACES_KEY);
+  return NextResponse.json({
+    [SETTING_GOOGLE_PLACES_KEY]: mask(google ?? undefined),
+    [SETTING_TWILIO_ACCOUNT_SID]: mask(twilioAccountSid()),
+    [SETTING_TWILIO_AUTH_TOKEN]: mask(twilioAuthToken()),
+    [SETTING_TWILIO_PHONE_NUMBER]: twilioPhoneNumber() ?? null,
+    [SETTING_TWILIO_SMS_ENABLED]: String(twilioSmsEnabled()),
+    [SETTING_TWILIO_DRY_RUN]: String(twilioDryRun()),
+  });
 }
 
 export async function PUT(req: Request) {
@@ -30,11 +75,12 @@ export async function PUT(req: Request) {
   if (!parsed.success) {
     return NextResponse.json({ errors: parsed.error.flatten() }, { status: 400 });
   }
-  const { key, value } = parsed.data;
-  if (value.trim() === "") {
+  const { key } = parsed.data;
+  const value = parsed.data.value.trim();
+  if (value === "") {
     deleteSetting(key);
   } else {
-    setSetting(key, value.trim());
+    setSetting(key, value);
   }
   return NextResponse.json({ ok: true });
 }
