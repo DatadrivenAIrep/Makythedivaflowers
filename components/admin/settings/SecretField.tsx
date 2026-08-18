@@ -51,6 +51,17 @@ export default function SecretField({
     }
   }
 
+  async function remove() {
+    setStatus("saving");
+    try {
+      await onDelete();
+      setStatus("idle");
+    } catch {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 3000);
+    }
+  }
+
   return (
     <div>
       <label className="font-medium text-sm text-ink block mb-1">{label}</label>
@@ -71,7 +82,7 @@ export default function SecretField({
             </span>
             <button
               type="button"
-              onClick={onDelete}
+              onClick={remove}
               className="ml-auto text-mute-500 hover:text-rouge text-xs underline"
             >
               {labels.delete}
