@@ -8,7 +8,7 @@ import {
 
 export const runtime = "nodejs";
 
-const SEGMENTS = new Set<string>(["new", "recurring", "vip", "at_risk"]);
+const SEGMENTS = new Set<string>(["new", "recurring", "vip", "at_risk", "lapsed"]);
 const SORTS = new Set<string>(["last_order", "ltv", "orders", "name"]);
 
 export async function GET(req: Request): Promise<Response> {

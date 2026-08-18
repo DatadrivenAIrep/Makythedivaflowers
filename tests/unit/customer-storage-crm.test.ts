@@ -212,7 +212,13 @@ describe("customerStats", () => {
 
   it("handles an empty database", () => {
     const stats = customerStats(NOW);
-    expect(stats).toEqual({ total: 0, newThisMonth: 0, repeatRatePct: 0, atRiskCount: 0 });
+    expect(stats).toEqual({
+      total: 0,
+      newThisMonth: 0,
+      repeatRatePct: 0,
+      atRiskCount: 0,
+      lapsedCount: 0,
+    });
   });
 });
 

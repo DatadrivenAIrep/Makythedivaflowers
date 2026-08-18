@@ -38,7 +38,7 @@ const initial: CustomerListResult = {
       },
     },
   ],
-  stats: { total: 2, newThisMonth: 1, repeatRatePct: 100, atRiskCount: 1 },
+  stats: { total: 2, newThisMonth: 1, repeatRatePct: 100, atRiskCount: 1, lapsedCount: 0 },
   nextCursor: null,
 };
 

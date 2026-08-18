@@ -218,7 +218,7 @@ export function listAllTags(): string[] {
 }
 
 export type CustomerSort = "last_order" | "ltv" | "orders" | "name";
-export type CustomerSegmentFilter = "new" | "recurring" | "vip" | "at_risk";
+export type CustomerSegmentFilter = "new" | "recurring" | "vip" | "at_risk" | "lapsed";
 
 export type CustomerListFilters = {
   q?: string;
@@ -236,6 +236,7 @@ export type CustomerListStats = {
   newThisMonth: number;
   repeatRatePct: number;
   atRiskCount: number;
+  lapsedCount: number;
 };
 
 export type CustomerListResult = {
@@ -309,6 +310,10 @@ export function listCustomers(
       break;
     case "at_risk":
       where.push(`(COALESCE(a.o_count, 0) >= ${RECURRING_MIN_ORDERS} AND a.last_order_at < ?)`);
+      params.push(atRiskCutoffIso(now));
+      break;
+    case "lapsed":
+      where.push(`(COALESCE(a.o_count, 0) = 1 AND a.last_order_at < ?)`);
       params.push(atRiskCutoffIso(now));
       break;
   }
@@ -389,17 +394,24 @@ export function customerStats(now: Date = new Date()): CustomerListStats {
       n: number;
     }
   ).n;
+  const cutoff = atRiskCutoffIso(now);
   const row = db
     .prepare(
       `SELECT SUM(CASE WHEN o_count >= ${RECURRING_MIN_ORDERS} THEN 1 ELSE 0 END) AS repeat_n,
-              SUM(CASE WHEN o_count >= ${RECURRING_MIN_ORDERS} AND last_order_at < ? THEN 1 ELSE 0 END) AS at_risk_n
+              SUM(CASE WHEN o_count >= ${RECURRING_MIN_ORDERS} AND last_order_at < ? THEN 1 ELSE 0 END) AS at_risk_n,
+              SUM(CASE WHEN o_count = 1 AND last_order_at < ? THEN 1 ELSE 0 END) AS lapsed_n
        FROM (SELECT COALESCE(a.o_count, 0) AS o_count, a.last_order_at ${AGG_JOIN})`,
     )
-    .get(atRiskCutoffIso(now)) as { repeat_n: number | null; at_risk_n: number | null };
+    .get(cutoff, cutoff) as {
+      repeat_n: number | null;
+      at_risk_n: number | null;
+      lapsed_n: number | null;
+    };
   return {
     total,
     newThisMonth,
     repeatRatePct: total > 0 ? Math.round(((row.repeat_n ?? 0) / total) * 100) : 0,
     atRiskCount: row.at_risk_n ?? 0,
+    lapsedCount: row.lapsed_n ?? 0,
   };
 }
