@@ -42,7 +42,7 @@ type CustomerRow = {
   notes: string | null;
 };
 
-function normalizePhone(p: string): string {
+export function normalizePhone(p: string): string {
   return p.replace(/\D/g, "");
 }
 

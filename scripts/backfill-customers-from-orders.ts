@@ -16,7 +16,7 @@
  */
 import { getDb } from "../lib/db";
 import { runMigrations } from "../lib/db-migrate";
-import { upsertOnOrder } from "../lib/customer-storage";
+import { upsertOnOrder, normalizePhone } from "../lib/customer-storage";
 
 type PendingRow = {
   id: string;
@@ -67,13 +67,15 @@ export function backfillCustomers(opts: { commit: boolean }): BackfillReport {
   const seenThisRun = new Set<string>();
 
   for (const row of rows) {
-    const normalized = row.contact_phone.replace(/\D/g, "");
+    const normalized = normalizePhone(row.contact_phone);
     const isNew = !knownPhones.has(normalized) && !seenThisRun.has(normalized);
-    if (isNew) report.customersCreated += 1;
-    else report.ordersMerged += 1;
-    seenThisRun.add(normalized);
 
-    if (!opts.commit) continue;
+    if (!opts.commit) {
+      // Dry run: report what WOULD happen, write nothing.
+      if (isNew) report.customersCreated += 1; else report.ordersMerged += 1;
+      seenThisRun.add(normalized);
+      continue;
+    }
 
     try {
       const customer = upsertOnOrder({
@@ -83,9 +85,16 @@ export function backfillCustomers(opts: { commit: boolean }): BackfillReport {
         orderAt: row.paid_at ?? row.created_at,
         locale: row.locale === "es" ? "es" : "en",
       });
+      // Not wrapped in a transaction with the upsert: node:sqlite + upsertOnOrder's
+      // own migration txn make nesting unsafe. If this UPDATE fails after the
+      // upsert, the order stays unlinked and a re-run re-upserts it (rare; may
+      // inflate order_count by 1).
       db.prepare("UPDATE orders SET customer_id = ? WHERE id = ?").run(customer.id, row.id);
+      // Count only after both writes succeed.
+      if (isNew) report.customersCreated += 1; else report.ordersMerged += 1;
+      seenThisRun.add(normalized);
     } catch (e) {
-      // One malformed row must not strand the run halfway.
+      // One malformed row must not strand the run, and must not be counted as success.
       report.failures.push({
         orderId: row.id,
         error: e instanceof Error ? e.message : String(e),
