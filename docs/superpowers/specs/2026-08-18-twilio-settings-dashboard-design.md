@@ -104,14 +104,19 @@ Extend the existing route (already admin-guarded by `proxy.ts` for
 
 - **Allow-list** grows from `[google_places_api_key]` to include the five Twilio
   keys, so the PUT still rejects free-form key injection.
-- **GET masking, per key type:**
-  - `twilio_account_sid`, `twilio_auth_token` → masked `...last4` (like the
-    Google key), or `null` when unset.
-  - `twilio_phone_number` → returned **in full** (not a secret; the owner must be
-    able to read it back to confirm).
-  - `twilio_sms_enabled`, `twilio_dry_run` → returned as the literal `"true"` /
-    `"false"` (or `null` when unset, meaning "inherits env") so the UI can render
-    the real toggle state.
+- **GET returns the EFFECTIVE (resolved) config** — each value read through
+  `twilio-config` (setting `??` env), not the raw setting — so the dashboard
+  always reflects what SMS is actually using. On prod day-one (env set, settings
+  table empty) this correctly shows the fields as configured rather than "not
+  set". Per key type:
+  - `twilio_account_sid`, `twilio_auth_token` → masked `...last4` of the resolved
+    value (like the Google key), or `null` when neither setting nor env has it.
+  - `twilio_phone_number` → resolved value **in full** (not a secret; the owner
+    must be able to read it back to confirm), or `null`.
+  - `twilio_sms_enabled`, `twilio_dry_run` → the resolved boolean as `"true"` /
+    `"false"` (never `null`), so the toggles and the live/test banner always show
+    the true effective state.
+  - The Google key stays setting-only masked (it has no env fallback), unchanged.
 - **PUT validation** (new — today the route accepts any string):
   - `twilio_account_sid`: must start with `AC` and be 34 chars, or empty (clear).
   - `twilio_phone_number`: must match `+`digits, 11–15 digits (E.164), or empty.
@@ -176,13 +181,13 @@ the owner's working language; copy above shows the intended ES tone.
 
 ```
 Owner opens /admin/settings
-  → GET /api/admin/settings
-      google_places_api_key: "...ab12" | null
-      twilio_account_sid:    "...cd34" | null   (masked)
-      twilio_auth_token:     "...ef56" | null   (masked)
-      twilio_phone_number:   "+15165551234" | null  (full)
-      twilio_sms_enabled:    "true" | "false" | null
-      twilio_dry_run:        "true" | "false" | null
+  → GET /api/admin/settings   (values RESOLVED as setting ?? env)
+      google_places_api_key: "...ab12" | null              (setting-only, masked)
+      twilio_account_sid:    "...cd34" | null               (resolved, masked)
+      twilio_auth_token:     "...ef56" | null               (resolved, masked)
+      twilio_phone_number:   "+15165551234" | null          (resolved, full)
+      twilio_sms_enabled:    "true" | "false"               (resolved, never null)
+      twilio_dry_run:        "true" | "false"               (resolved, never null)
 
 Owner edits a field / toggles a switch
   → PUT /api/admin/settings { key, value }  (validated, allow-listed)
