@@ -4,6 +4,7 @@ import { stripe } from "@/lib/stripe-server";
 import { getOrderByPaymentIntent, updateOrderStatusByPaymentIntent, getOrderByCheckoutSessionId, updateOrderPaidByCheckoutSession } from "@/lib/order-storage";
 import { dispatchPaymentConfirmed } from "@/lib/order-dispatch";
 import { notifyOrderPaid } from "@/lib/order-notifications";
+import { onWebOrderPaid } from "@/lib/on-web-order-paid";
 import { redeem } from "@/lib/gift-card-storage";
 import { enqueuePrintJob } from "@/lib/print-queue";
 import { sendPurchaseToGA4 } from "@/lib/analytics-server";
@@ -73,6 +74,9 @@ export async function POST(req: Request) {
             console.error("[print] enqueue failed for order", order.id, e);
             // Do not propagate: payment is recorded; print can be re-issued manually.
           }
+          // CRM + customer SMS. Reads the order back itself, so it sees the paid
+          // row written by updateOrderStatusByPaymentIntent above. Never throws.
+          await onWebOrderPaid(order.id);
         }
         break;
       }
