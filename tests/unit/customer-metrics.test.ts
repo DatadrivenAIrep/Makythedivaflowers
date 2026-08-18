@@ -97,10 +97,42 @@ describe("computeMetrics", () => {
     expect(m.segment).toBe("at_risk");
   });
 
-  it("single old order is NOT at risk (needs recurring)", () => {
+  it("single old order is NOT at risk (needs recurring), it's lapsed instead", () => {
     const m = computeMetrics([order(200, 5000)], NOW);
     expect(m.isAtRisk).toBe(false);
+    expect(m.segment).toBe("lapsed");
+  });
+
+  it("one order older than the cutoff → lapsed", () => {
+    const m = computeMetrics([order(91, 5000)], NOW);
+    expect(m.isLapsed).toBe(true);
+    expect(m.isAtRisk).toBe(false);
+    expect(m.segment).toBe("lapsed");
+  });
+
+  it("one recent order → new, not lapsed", () => {
+    const m = computeMetrics([order(10, 5000)], NOW);
+    expect(m.isLapsed).toBe(false);
     expect(m.segment).toBe("new");
+  });
+
+  it("two old orders stay at_risk and are never lapsed", () => {
+    const m = computeMetrics([order(91, 5000), order(120, 5000)], NOW);
+    expect(m.isLapsed).toBe(false);
+    expect(m.isAtRisk).toBe(true);
+    expect(m.segment).toBe("at_risk");
+  });
+
+  it("one big old order is badged vip by precedence but still flagged lapsed", () => {
+    const m = computeMetrics([order(91, 60000)], NOW);
+    expect(m.isVip).toBe(true);
+    expect(m.isLapsed).toBe(true);
+    expect(m.segment).toBe("vip");
+  });
+
+  it("a customer with no orders is not lapsed", () => {
+    const m = computeMetrics([], NOW);
+    expect(m.isLapsed).toBe(false);
   });
 });
 

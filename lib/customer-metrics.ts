@@ -7,7 +7,7 @@ export const VIP_MIN_LTV_CENTS = 50_000; // $500 actually collected
 export const AT_RISK_DAYS = 90;
 export const RECURRING_MIN_ORDERS = 2;
 
-export type Segment = "new" | "recurring" | "vip" | "at_risk";
+export type Segment = "new" | "recurring" | "vip" | "at_risk" | "lapsed";
 
 export type MetricsOrder = {
   totalCents: number;
@@ -37,6 +37,7 @@ export type CustomerMetrics = {
   isVip: boolean;
   isAtRisk: boolean;
   isRecurring: boolean;
+  isLapsed: boolean;
 };
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -72,13 +73,25 @@ export function metricsFromAggregate(
     : null;
   const isVip = agg.orderCount >= VIP_MIN_ORDERS || agg.ltvCents >= VIP_MIN_LTV_CENTS;
   const isRecurring = agg.orderCount >= RECURRING_MIN_ORDERS;
+  const cutoff = atRiskCutoffIso(now);
   // At-risk compares lastOrderAt against the same ISO cutoff the SQL filter and
-  // header stat use (atRiskCutoffIso), so the badge, the "At risk" filter, and
-  // the at-risk count always agree — including the sub-day (90, 91) window that a
-  // floored day-count comparison (daysSinceLastOrder > AT_RISK_DAYS) would split.
-  const isAtRisk =
-    isRecurring && lastOrderAt !== null && lastOrderAt < atRiskCutoffIso(now);
-  const segment: Segment = isAtRisk ? "at_risk" : isVip ? "vip" : isRecurring ? "recurring" : "new";
+  // header stat use, so the badge, the "At risk" filter, and the at-risk count
+  // always agree — including the sub-day (90, 91) window that a floored day-count
+  // comparison (daysSinceLastOrder > AT_RISK_DAYS) would split.
+  const isAtRisk = isRecurring && lastOrderAt !== null && lastOrderAt < cutoff;
+  // Lapsed is the other half of that story: bought exactly once, long ago, never
+  // came back. Kept separate from at_risk because it is a different audience and
+  // deserves a different message.
+  const isLapsed = agg.orderCount === 1 && lastOrderAt !== null && lastOrderAt < cutoff;
+  const segment: Segment = isAtRisk
+    ? "at_risk"
+    : isVip
+      ? "vip"
+      : isRecurring
+        ? "recurring"
+        : isLapsed
+          ? "lapsed"
+          : "new";
   return {
     ltvCents: agg.ltvCents,
     orderCount: agg.orderCount,
@@ -91,6 +104,7 @@ export function metricsFromAggregate(
     isVip,
     isAtRisk,
     isRecurring,
+    isLapsed,
   };
 }
 

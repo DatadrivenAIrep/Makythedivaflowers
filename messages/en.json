@@ -1430,6 +1430,7 @@
     "badge_recurring": "Returning",
     "badge_vip": "VIP",
     "badge_at_risk": "At risk",
+    "badge_lapsed": "Lapsed",
     "empty": "No customers match.",
     "load_more": "Load more",
     "never": "Never",

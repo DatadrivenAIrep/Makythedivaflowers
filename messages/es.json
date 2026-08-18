@@ -1430,6 +1430,7 @@
     "badge_recurring": "Recurrente",
     "badge_vip": "VIP",
     "badge_at_risk": "En riesgo",
+    "badge_lapsed": "Sin volver",
     "empty": "No hay clientes que coincidan.",
     "load_more": "Cargar más",
     "never": "Nunca",
