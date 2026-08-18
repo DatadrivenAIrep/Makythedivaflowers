@@ -2301,6 +2301,82 @@ export const PRODUCTS: Product[] = [
       },
     },
   },
+  {
+    id: "p-pla-orc-01",
+    slug: "phalaenopsis-orchid",
+    title: { en: "Phalaenopsis Orchid", es: "Orquídea Phalaenopsis" },
+    category: "plants",
+    blurb: {
+      en: "A living orchid that blooms for two to three months, not two to three days.",
+      es: "Una orquídea viva que florece dos o tres meses, no dos o tres días.",
+    },
+    description: {
+      en: "A phalaenopsis in a white ceramic pot, moss-topped, chosen from what's blooming best that morning. Cut flowers give you a week; this gives you eight to twelve weeks of bloom, and then it comes back next year if you let it. Choose one stem or two — the double is the one people notice from the doorway. Colors rotate with what's in: white, soft pink, fuchsia. Order before 2:00 pm for same-day delivery on Long Island. Care card included, and honestly the whole card comes down to: water once a week, never leave it sitting in a saucer.",
+      es: "Una phalaenopsis en maceta de cerámica blanca, con musgo, elegida entre las que mejor están floreciendo esa mañana. Las flores cortadas te dan una semana; esta te da de ocho a doce semanas de floración, y vuelve el año siguiente si la dejas. Elige un tallo o dos — la doble es la que se nota desde la puerta. Los colores rotan según lo que haya: blanca, rosa suave, fucsia. Pide antes de las 2:00 pm para entrega el mismo día en Long Island. Incluye tarjeta de cuidado, y la tarjeta entera se resume en: riega una vez por semana y nunca la dejes parada en el plato.",
+    },
+    images: [
+      {
+        src: "/products/phalaenopsis-white-single.webp",
+        alt: {
+          en: "White phalaenopsis orchid, single stem, in a square white ceramic pot",
+          es: "Orquídea phalaenopsis blanca de un tallo en maceta cuadrada de cerámica blanca",
+        },
+        aspect: "4/5",
+      },
+      {
+        src: "/products/phalaenopsis-pink-single.webp",
+        alt: {
+          en: "Soft pink phalaenopsis orchid, single stem, in a fluted white pot",
+          es: "Orquídea phalaenopsis rosa suave de un tallo en maceta blanca acanalada",
+        },
+        aspect: "4/5",
+      },
+      {
+        src: "/products/phalaenopsis-pink-double.webp",
+        alt: {
+          en: "Soft pink phalaenopsis orchid with two stems in a square white ceramic pot",
+          es: "Orquídea phalaenopsis rosa suave de dos tallos en maceta cuadrada de cerámica blanca",
+        },
+        aspect: "4/5",
+      },
+      {
+        src: "/products/phalaenopsis-fuchsia-double.webp",
+        alt: {
+          en: "Fuchsia phalaenopsis orchid with two stems in a white cylinder pot",
+          es: "Orquídea phalaenopsis fucsia de dos tallos en maceta cilíndrica blanca",
+        },
+        aspect: "4/5",
+      },
+    ],
+    variants: [
+      {
+        id: "single",
+        label: { en: "One stem", es: "Un tallo" },
+        priceCents: 6500,
+        subtitle: { en: "About 18–24 inches tall", es: "Unas 18–24 pulgadas de alto" },
+      },
+      {
+        id: "double",
+        label: { en: "Two stems", es: "Dos tallos" },
+        priceCents: 8500,
+        subtitle: { en: "Twice the blooms, same care", es: "El doble de flores, el mismo cuidado" },
+      },
+    ],
+    tags: ["same-day", "new", "staff-pick"],
+    occasions: ["just-because", "congrats", "birthday", "get-well"],
+    colorFamily: ["white", "pink"],
+    active: true,
+    seo: {
+      title: {
+        en: "Phalaenopsis Orchid — Same-Day Delivery on Long Island | Diva Flowers",
+        es: "Orquídea Phalaenopsis — Entrega el Mismo Día en Long Island | Diva Flowers",
+      },
+      description: {
+        en: "A live phalaenopsis orchid in a white ceramic pot, $65 single stem or $85 double. Blooms for two to three months. Same-day delivery on Long Island.",
+        es: "Orquídea phalaenopsis viva en maceta de cerámica blanca, $65 de un tallo u $85 de dos. Florece dos o tres meses. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
   // ─── New catalog imports — Batch 3 (29) ─────────────────
   {
     id: "p-arr-b3-01",
