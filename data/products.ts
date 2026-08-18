@@ -785,7 +785,11 @@ export const PRODUCTS: Product[] = [
     tags: ["new", "staff-pick"],
     occasions: ["just-because", "congrats", "birthday"],
     colorFamily: ["pastel"],
-    active: true,
+    // Retired 2026-08-18: the copy claims a Cattleya orchid but the photo is a
+    // tropical arrangement and the prices were never real. Superseded by
+    // `phalaenopsis-orchid`. Kept inactive rather than deleted so historical
+    // orders that reference this id still resolve.
+    active: false,
     seo: {
       title: { en: "Cattleya Orchid — Diva Flowers", es: "Orquídea Cattleya — Diva Flowers" },
       description: {
@@ -2292,7 +2296,10 @@ export const PRODUCTS: Product[] = [
     tags: ["new", "staff-pick"],
     occasions: ["romance", "anniversary", "congrats", "just-because"],
     colorFamily: ["white", "pastel"],
-    active: true,
+    // Retired 2026-08-18: the copy claims a double-stem phalaenopsis but the
+    // photo is a mixed rose arrangement and the prices were never real.
+    // Superseded by `phalaenopsis-orchid`.
+    active: false,
     seo: {
       title: { en: "Opal Orchid — Diva Flowers", es: "Orquídea Ópalo — Diva Flowers" },
       description: {

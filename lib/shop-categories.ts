@@ -6,7 +6,7 @@ export const CATS = [
   { slug: "bouquets", img: "/products/dozen-roses-bouquet.jpg" },
   { slug: "roses", img: "/products/hundred-roses-vase.png" },
   { slug: "exotic", img: "/products/paradise-found.jpg" },
-  { slug: "plants", img: "/products/opal-orchid.jpg" },
+  { slug: "plants", img: "/products/phalaenopsis-white-single.webp" },
   { slug: "gifts", img: "/products/daydream-parcel.jpg" },
   { slug: "subscriptions", img: "/products/timeless-romance.jpg" },
 ] as const;
@@ -33,7 +33,6 @@ export function isRoseProduct(p: Product): boolean {
 }
 
 const EXOTIC_SLUGS = new Set([
-  "cattleya-orchid",
   "lush-horizons",
   "jungle-whirl",
   "paradise-found",
@@ -42,6 +41,9 @@ const EXOTIC_SLUGS = new Set([
   "tropical-paradise",
   "rainforest-rhapsody",
 ]);
+
+// Exposed for tests: asserts that retired products don't linger in this set.
+export const EXOTIC_SLUGS_FOR_TEST: ReadonlySet<string> = EXOTIC_SLUGS;
 
 export function isExoticProduct(p: Product): boolean {
   if (!p.active || p.giftExtra) return false;

@@ -2,6 +2,8 @@ import { describe, it, expect } from "vitest";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { PRODUCTS } from "@/data/products";
+import { buildMerchantFeed } from "@/lib/merchant-feed";
+import { CATS, EXOTIC_SLUGS_FOR_TEST } from "@/lib/shop-categories";
 
 const orchid = () => PRODUCTS.find((p) => p.slug === "phalaenopsis-orchid");
 
@@ -37,5 +39,36 @@ describe("phalaenopsis-orchid", () => {
     for (const img of orchid()!.images) {
       expect(existsSync(join(process.cwd(), "public", img.src))).toBe(true);
     }
+  });
+});
+
+describe("mislabeled orchid entries are retired", () => {
+  for (const slug of ["cattleya-orchid", "opal-orchid"]) {
+    it(`${slug} is inactive`, () => {
+      const p = PRODUCTS.find((x) => x.slug === slug);
+      expect(p, `${slug} should still exist in the catalog`).toBeDefined();
+      expect(p!.active).toBe(false);
+    });
+  }
+
+  it("neither appears in the Google Merchant feed", () => {
+    const feed = buildMerchantFeed(PRODUCTS, "https://makythedivaflowers.com");
+    expect(feed).not.toContain("cattleya-orchid");
+    expect(feed).not.toContain("opal-orchid");
+  });
+
+  it("the real orchid does appear in the feed", () => {
+    const feed = buildMerchantFeed(PRODUCTS, "https://makythedivaflowers.com");
+    expect(feed).toContain("phalaenopsis-orchid");
+  });
+
+  it("cattleya-orchid is no longer listed as an exotic", () => {
+    expect(EXOTIC_SLUGS_FOR_TEST.has("cattleya-orchid")).toBe(false);
+  });
+
+  it("the plants category tile uses a real orchid photo", () => {
+    const plants = CATS.find((c) => c.slug === "plants")!;
+    expect(plants.img).toBe("/products/phalaenopsis-white-single.webp");
+    expect(existsSync(join(process.cwd(), "public", plants.img))).toBe(true);
   });
 });
