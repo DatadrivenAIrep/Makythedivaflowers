@@ -19,6 +19,7 @@ export default function TwilioSettings() {
   const [cfg, setCfg] = useState<Config | null>(null);
   const [phoneInput, setPhoneInput] = useState("");
   const [phoneErr, setPhoneErr] = useState(false);
+  const [toggleErr, setToggleErr] = useState(false);
   const [test, setTest] = useState<{ state: "idle" | "sending" | "ok" | "error"; msg?: string }>({
     state: "idle",
   });
@@ -52,6 +53,15 @@ export default function TwilioSettings() {
     setPhoneErr(false);
     await saveKey("twilio_phone_number", phoneInput.trim());
     setPhoneInput("");
+  }
+
+  async function onToggle(key: string, next: boolean) {
+    setToggleErr(false);
+    try {
+      await saveKey(key, next ? "true" : "false");
+    } catch {
+      setToggleErr(true);
+    }
   }
 
   async function sendTest() {
@@ -193,7 +203,7 @@ export default function TwilioSettings() {
             <input
               type="checkbox"
               checked={smsLive}
-              onChange={(e) => void saveKey("twilio_sms_enabled", e.target.checked ? "true" : "false")}
+              onChange={(e) => void onToggle("twilio_sms_enabled", e.target.checked)}
               className="h-5 w-5 shrink-0 accent-rouge"
             />
           </label>
@@ -214,10 +224,12 @@ export default function TwilioSettings() {
           <input
             type="checkbox"
             checked={dryRun}
-            onChange={(e) => void saveKey("twilio_dry_run", e.target.checked ? "true" : "false")}
+            onChange={(e) => void onToggle("twilio_dry_run", e.target.checked)}
             className="h-5 w-5 shrink-0 accent-rouge"
           />
         </label>
+
+        {toggleErr && <p className="text-xs text-rouge">{t("twilio_error")}</p>}
 
         {/* Test send */}
         <div className="border-t border-mute-100 pt-5">
