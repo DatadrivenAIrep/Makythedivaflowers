@@ -100,6 +100,8 @@ it("counts lapsed customers in the header stats", async () => {
 it("a lapsed customer badged vip by precedence still matches the lapsed filter", async () => {
   seedCustomer("eve", "Eve", "5550005");
   seedOrder("e1", "eve", 120, 60000); // one order, 120 days, $600 → vip badge, lapsed flag
+  seedCustomer("fay", "Fay", "5550006");
+  [1, 2, 3, 4, 5].forEach((d) => seedOrder(`f${d}`, "fay", d, 12000)); // 5 recent orders → vip badge, NOT lapsed
 
   const res = await GET(new Request("http://x/api/admin/customers?segment=lapsed"));
   const body = await res.json();
