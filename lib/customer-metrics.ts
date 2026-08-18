@@ -33,7 +33,7 @@ export type CustomerMetrics = {
   firstOrderAt: string | null;
   lastOrderAt: string | null;
   daysSinceLastOrder: number | null;
-  segment: Segment; // primary badge (precedence: at_risk > vip > recurring > new)
+  segment: Segment; // primary badge (precedence: at_risk > vip > recurring > lapsed > new)
   isVip: boolean;
   isAtRisk: boolean;
   isRecurring: boolean;
@@ -42,7 +42,7 @@ export type CustomerMetrics = {
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-/** ISO cutoff for SQL at-risk predicates: last_order_at < cutoff ⇔ daysSince > AT_RISK_DAYS. */
+/** ISO cutoff for SQL at-risk predicates (and the isLapsed flag): last_order_at < cutoff ⇔ daysSince > AT_RISK_DAYS. */
 export function atRiskCutoffIso(now: Date): string {
   return new Date(now.getTime() - AT_RISK_DAYS * DAY_MS).toISOString();
 }

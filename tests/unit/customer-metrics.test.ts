@@ -110,6 +110,12 @@ describe("computeMetrics", () => {
     expect(m.segment).toBe("lapsed");
   });
 
+  it("a single order exactly at the cutoff is not yet lapsed", () => {
+    const m = computeMetrics([order(AT_RISK_DAYS, 5000)], NOW);
+    expect(m.isLapsed).toBe(false);
+    expect(m.segment).toBe("new");
+  });
+
   it("one recent order → new, not lapsed", () => {
     const m = computeMetrics([order(10, 5000)], NOW);
     expect(m.isLapsed).toBe(false);
