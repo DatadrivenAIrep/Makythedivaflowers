@@ -1281,7 +1281,7 @@ if (process.argv[1] && process.argv[1].includes("backfill-customers-from-orders"
 }
 ```
 
-Note the address is deliberately not backfilled: `orders.address_json` holds the *recipient's* delivery address, and on a web order the buyer is often not the recipient. Guessing wrong would put a stranger's address on the customer record.
+Note the backfill *does* store the delivery address (for delivery orders), mirroring the live hook (`lib/on-web-order-paid.ts`) and the intake path: `customer.lastAddress`/`last_address_json` is "last delivery address" by convention, not the buyer's home, so writing it here is consistent with how every other path populates it and keeps backfilled customers at parity with organically created ones.
 
 - [ ] **Step 5: Add the npm script**
 

@@ -10,6 +10,7 @@ import { stripe } from "@/lib/stripe-server";
 import { validateForRedemption, redeem } from "@/lib/gift-card-storage";
 import { notifyOrderPaid } from "@/lib/order-notifications";
 import { enqueuePrintJob } from "@/lib/print-queue";
+import { onWebOrderPaid } from "@/lib/on-web-order-paid";
 import type { Order, OrderFulfillment, CartLine } from "@/types/order";
 
 export const runtime = "nodejs";
@@ -133,6 +134,7 @@ export async function POST(req: Request) {
     } catch (e) {
       console.error("[print] enqueue failed for order", order.id, e);
     }
+    await onWebOrderPaid(order.id);
     return NextResponse.json({ paid: true, orderId }, { status: 200 });
   }
 

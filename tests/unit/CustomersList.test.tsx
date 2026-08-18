@@ -23,6 +23,7 @@ const initial: CustomerListResult = {
         ltvCents: 36000, orderCount: 6, paidOrderCount: 6, aovCents: 6000,
         firstOrderAt: "2026-01-01T00:00:00Z", lastOrderAt: "2026-07-01T00:00:00Z",
         daysSinceLastOrder: 3, segment: "vip", isVip: true, isAtRisk: false, isRecurring: true,
+        isLapsed: false,
       },
     },
     {
@@ -33,10 +34,11 @@ const initial: CustomerListResult = {
         ltvCents: 16000, orderCount: 2, paidOrderCount: 2, aovCents: 8000,
         firstOrderAt: "2026-01-01T00:00:00Z", lastOrderAt: "2026-03-01T00:00:00Z",
         daysSinceLastOrder: 125, segment: "at_risk", isVip: false, isAtRisk: true, isRecurring: true,
+        isLapsed: false,
       },
     },
   ],
-  stats: { total: 2, newThisMonth: 1, repeatRatePct: 100, atRiskCount: 1 },
+  stats: { total: 2, newThisMonth: 1, repeatRatePct: 100, atRiskCount: 1, lapsedCount: 3 },
   nextCursor: null,
 };
 
@@ -58,5 +60,12 @@ describe("CustomersList", () => {
     wrap(<CustomersList locale="es" initial={initial} allTags={[]} />);
     const link = screen.getByRole("link", { name: /Ana Flores/ });
     expect(link.getAttribute("href")).toBe("/es/admin/customers/ana");
+  });
+
+  it("renders the lapsed chip and the lapsed stat", () => {
+    wrap(<CustomersList locale="es" initial={initial} allTags={["boda"]} />);
+    // Chip and stat card share the Spanish label, so both nodes must be present.
+    expect(screen.getAllByText("Sin volver").length).toBe(2);
+    expect(screen.getByText("3")).toBeDefined(); // lapsedCount
   });
 });

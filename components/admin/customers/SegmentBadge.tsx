@@ -7,6 +7,7 @@ const STYLES: Record<Segment, string> = {
   recurring: "bg-emerald-50 text-emerald-800",
   vip: "bg-amber-50 text-amber-800",
   at_risk: "bg-rose-50 text-rose-800",
+  lapsed: "bg-stone-100 text-stone-700",
 };
 
 export default function SegmentBadge({ segment }: { segment: Segment }) {

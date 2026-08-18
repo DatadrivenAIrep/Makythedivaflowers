@@ -35,6 +35,7 @@ const profile: CustomerProfileData = {
     ltvCents: 12000, orderCount: 2, paidOrderCount: 2, aovCents: 6000,
     firstOrderAt: "2026-05-01T10:00:00Z", lastOrderAt: "2026-06-30T10:00:00Z",
     daysSinceLastOrder: 4, segment: "recurring", isVip: false, isAtRisk: false, isRecurring: true,
+    isLapsed: false,
   },
   tags: ["boda"],
   dates: [],

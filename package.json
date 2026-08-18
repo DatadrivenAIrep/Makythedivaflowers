@@ -11,7 +11,8 @@
     "test:ui": "NODE_OPTIONS='--experimental-sqlite' vitest --ui",
     "e2e": "playwright test",
     "e2e:ui": "playwright test --ui",
-    "migrate:orders": "NODE_OPTIONS='--experimental-sqlite' tsx scripts/migrate-orders-json-to-sqlite.ts"
+    "migrate:orders": "NODE_OPTIONS='--experimental-sqlite' tsx scripts/migrate-orders-json-to-sqlite.ts",
+    "backfill:customers": "NODE_OPTIONS='--experimental-sqlite' tsx --tsconfig scripts/tsconfig.json scripts/backfill-customers-from-orders.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.92.0",

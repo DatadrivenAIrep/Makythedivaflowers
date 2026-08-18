@@ -20,6 +20,7 @@ const SEGMENTS: Array<{ id: CustomerSegmentFilter | "all"; key: string }> = [
   { id: "recurring", key: "seg_recurring" },
   { id: "vip", key: "seg_vip" },
   { id: "at_risk", key: "seg_at_risk" },
+  { id: "lapsed", key: "seg_lapsed" },
 ];
 
 const SORTS: Array<{ id: CustomerSort; key: string }> = [
@@ -85,6 +86,7 @@ export default function CustomersList({ locale, initial, allTags }: Props) {
     { key: "stat_new_month", value: String(s.newThisMonth) },
     { key: "stat_repeat_rate", value: `${s.repeatRatePct}%` },
     { key: "stat_at_risk", value: String(s.atRiskCount) },
+    { key: "stat_lapsed", value: String(s.lapsedCount) },
   ];
 
   return (
@@ -93,7 +95,7 @@ export default function CustomersList({ locale, initial, allTags }: Props) {
         <h1 className="text-lg font-semibold">{t("title")}</h1>
       </div>
 
-      <div className="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <div className="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-5">
         {stats.map((st) => (
           <div key={st.key} className="rounded border border-ink/10 bg-bone p-3">
             <div className="text-xs uppercase tracking-wide text-ink/50">{t(st.key)}</div>

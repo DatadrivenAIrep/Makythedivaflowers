@@ -28,6 +28,11 @@ vi.mock("@/lib/order-dispatch", () => ({
   dispatchPaymentConfirmed: dispatchPaymentConfirmedMock,
 }));
 
+const onWebOrderPaidMock = vi.fn();
+vi.mock("@/lib/on-web-order-paid", () => ({
+  onWebOrderPaid: onWebOrderPaidMock,
+}));
+
 const TEST_FILE = path.join(os.tmpdir(), `diva-test-orders-webhook-${process.pid}.json`);
 
 beforeEach(async () => {
@@ -38,6 +43,7 @@ beforeEach(async () => {
   notifyOrderPaidMock.mockReset();
   enqueuePrintJobMock.mockReset();
   dispatchPaymentConfirmedMock.mockReset();
+  onWebOrderPaidMock.mockReset();
   vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_dummy");
   vi.stubEnv("STRIPE_WEBHOOK_SECRET", "whsec_dummy");
 });
@@ -202,6 +208,30 @@ describe("POST /api/stripe/webhook", () => {
     const res = await POST(makeReq("{}"));
     expect(res.status).toBe(200);
     expect(notifyOrderPaidMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("runs the paid-web-order hook once on payment_intent.succeeded", async () => {
+    await saveOrder(makeOrder("o_hook", "pi_hook"));
+    constructEvent.mockReturnValue({
+      type: "payment_intent.succeeded",
+      data: { object: { id: "pi_hook" } },
+    });
+    const { POST } = await import("@/app/api/stripe/webhook/route");
+    const res = await POST(makeReq("{}"));
+    expect(res.status).toBe(200);
+    expect(onWebOrderPaidMock).toHaveBeenCalledTimes(1);
+    expect(onWebOrderPaidMock).toHaveBeenCalledWith("o_hook");
+  });
+
+  it("does not run the hook again for an order that was already paid", async () => {
+    await saveOrder(makeOrder("o_twice", "pi_twice", "paid"));
+    constructEvent.mockReturnValue({
+      type: "payment_intent.succeeded",
+      data: { object: { id: "pi_twice" } },
+    });
+    const { POST } = await import("@/app/api/stripe/webhook/route");
+    await POST(makeReq("{}"));
+    expect(onWebOrderPaidMock).not.toHaveBeenCalled();
   });
 });
 

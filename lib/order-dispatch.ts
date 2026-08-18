@@ -69,6 +69,7 @@ export async function dispatchOrderReceived(order: Order, link?: string): Promis
       window: windowLabel(order, locale),
       link,
       shop_phone: shopPhoneFromSite(),
+      order_number: order.orderNumber != null ? String(order.orderNumber) : undefined,
     },
     to: { phone: order.contact.phone, email: order.contact.email },
   });
@@ -92,6 +93,7 @@ export async function dispatchPaymentConfirmed(order: Order): Promise<void> {
       total: totalLabel(order.totals.totalCents),
       window: windowLabel(order, locale),
       shop_phone: shopPhoneFromSite(),
+      order_number: order.orderNumber != null ? String(order.orderNumber) : undefined,
     },
     to: { phone: order.contact.phone, email: order.contact.email },
   });

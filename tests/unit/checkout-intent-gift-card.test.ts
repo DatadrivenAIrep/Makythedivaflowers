@@ -9,6 +9,11 @@ vi.mock("@/lib/stripe-server", () => ({ stripe: { paymentIntents: { create: piCr
 vi.mock("@/lib/order-notifications", () => ({ notifyOrderPaid: vi.fn(async () => {}) }));
 vi.mock("@/lib/print-queue", () => ({ enqueuePrintJob: vi.fn(async () => {}) }));
 
+const onWebOrderPaidMock = vi.fn();
+vi.mock("@/lib/on-web-order-paid", () => ({
+  onWebOrderPaid: onWebOrderPaidMock,
+}));
+
 beforeEach(() => {
   vi.stubEnv("SQLITE_FILE", ":memory:");
   vi.stubEnv("ORDER_STORAGE_FILE", "/tmp/diva-test-intent-gc-" + process.pid + ".json");
@@ -30,7 +35,7 @@ function body(code: string) {
       delivery: {
         method: "pickup",
         recipient: { name: "María", phone: "5165550100" },
-        window: { date: "2026-07-01", slot: "midday" },
+        window: { date: "2099-07-01", slot: "midday" },
         cardMessage: "",
       },
     },
@@ -73,5 +78,20 @@ describe("intent route with gift card", () => {
   it("rejects an invalid code with 400", async () => {
     const res = await callIntent(body("DIVA-0000-0000"));
     expect(res.status).toBe(400);
+  });
+
+  it("runs the paid-web-order hook when a gift card covers the whole total", async () => {
+    const card = issueGiftCard({ initialCents: 100000, recipientEmail: "a@b.com" });
+    const res = await callIntent(body(card.code));
+    const data = await res.json();
+    expect(data.paid).toBe(true);
+    expect(onWebOrderPaidMock).toHaveBeenCalledTimes(1);
+    expect(onWebOrderPaidMock).toHaveBeenCalledWith(data.orderId);
+  });
+
+  it("leaves the hook to the webhook when Stripe still has to charge the remainder", async () => {
+    const card = issueGiftCard({ initialCents: 500, recipientEmail: "a@b.com" });
+    await callIntent(body(card.code));
+    expect(onWebOrderPaidMock).not.toHaveBeenCalled();
   });
 });
