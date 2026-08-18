@@ -1,20 +1,22 @@
 import "server-only";
 import twilio, { type Twilio } from "twilio";
+import { twilioAccountSid, twilioAuthToken, twilioPhoneNumber } from "@/lib/twilio-config";
 
-let cachedClient: Twilio | null = null;
+let cached: { sid: string; token: string; client: Twilio } | null = null;
 
 export function getTwilioClient(): Twilio | null {
-  if (cachedClient) return cachedClient;
-  const sid = process.env.TWILIO_ACCOUNT_SID;
-  const token = process.env.TWILIO_AUTH_TOKEN;
+  const sid = twilioAccountSid();
+  const token = twilioAuthToken();
   if (!sid || !token) return null;
-  cachedClient = twilio(sid, token);
-  return cachedClient;
+  if (cached && cached.sid === sid && cached.token === token) return cached.client;
+  const client = twilio(sid, token);
+  cached = { sid, token, client };
+  return client;
 }
 
 // Test hook only — vitest stubEnv changes envs but the singleton can leak.
 export function __resetTwilioClient(): void {
-  cachedClient = null;
+  cached = null;
 }
 
 export function e164(phone: string): string {
@@ -31,7 +33,7 @@ export function e164(phone: string): string {
 export async function sendSms(to: string, body: string): Promise<{ sid: string }> {
   const c = getTwilioClient();
   if (!c) throw new Error("twilio_not_configured");
-  const from = process.env.TWILIO_PHONE_NUMBER;
+  const from = twilioPhoneNumber();
   if (!from) throw new Error("twilio_from_missing");
   const msg = await c.messages.create({ to: e164(to), from, body });
   return { sid: msg.sid };

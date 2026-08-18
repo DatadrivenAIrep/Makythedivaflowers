@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { sendMessage } from "@/lib/messaging";
 import { recentMessagesForOrder } from "@/lib/message-storage";
 import { closeDb } from "@/lib/db";
+import { setSetting } from "@/lib/settings-storage";
 
 beforeEach(() => {
   vi.stubEnv("SQLITE_FILE", ":memory:");
@@ -65,5 +66,24 @@ describe("sendMessage", () => {
     });
     expect(res.status).toBe("skipped");
     expect(res.error).toBe("use_existing_email_pipeline");
+  });
+
+  it("a 'false' twilio_sms_enabled setting overrides a 'true' env", async () => {
+    vi.stubEnv("TWILIO_SMS_ENABLED", "true");
+    setSetting("twilio_sms_enabled", "false");
+    const res = await sendMessage(baseReq);
+    expect(res.status).toBe("skipped");
+    expect(res.error).toBe("sms_disabled");
+  });
+
+  it("a 'false' twilio_dry_run setting overrides a 'true' env (attempts a real send)", async () => {
+    // SMS enabled, env dry-run true, but the setting forces dry-run off.
+    vi.stubEnv("TWILIO_SMS_ENABLED", "true");
+    vi.stubEnv("TWILIO_DRY_RUN", "true");
+    setSetting("twilio_dry_run", "false");
+    // No real Twilio creds configured, so a real attempt fails at send —
+    // proving it did NOT take the dry-run path (which would return "sent").
+    const res = await sendMessage(baseReq);
+    expect(res.status).toBe("failed");
   });
 });

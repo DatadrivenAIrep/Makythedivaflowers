@@ -2,6 +2,7 @@ import "server-only";
 import { renderSmsBody, whatsappContentSid, whatsappContentVars, type TemplateVars } from "@/lib/messaging-templates";
 import { insertMessage, updateMessage, type MessageChannel, type MessageTemplate } from "@/lib/message-storage";
 import { sendSms, sendWhatsApp } from "@/lib/twilio-server";
+import { twilioSmsEnabled, twilioDryRun } from "@/lib/twilio-config";
 
 export type SendMessageRequest = {
   orderId: string;
@@ -40,7 +41,7 @@ export async function sendMessage(req: SendMessageRequest): Promise<SendMessageR
     return { id, status: "skipped", error: "use_existing_email_pipeline" };
   }
 
-  if (req.channel === "sms" && process.env.TWILIO_SMS_ENABLED !== "true") {
+  if (req.channel === "sms" && !twilioSmsEnabled()) {
     updateMessage(id, { status: "skipped", error: "sms_disabled" });
     return { id, status: "skipped", error: "sms_disabled" };
   }
@@ -62,7 +63,7 @@ export async function sendMessage(req: SendMessageRequest): Promise<SendMessageR
   }
 
   // Dry-run path — log + audit, no network call.
-  if (process.env.TWILIO_DRY_RUN === "true") {
+  if (twilioDryRun()) {
     const body = renderSmsBody(req.template, req.locale, req.vars);
     console.log(JSON.stringify({
       event: "messaging_dry_run",
