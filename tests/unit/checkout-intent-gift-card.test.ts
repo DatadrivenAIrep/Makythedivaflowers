@@ -35,7 +35,7 @@ function body(code: string) {
       delivery: {
         method: "pickup",
         recipient: { name: "María", phone: "5165550100" },
-        window: { date: "2026-07-01", slot: "midday" },
+        window: { date: "2099-07-01", slot: "midday" },
         cardMessage: "",
       },
     },
