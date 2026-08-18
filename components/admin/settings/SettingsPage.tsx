@@ -4,6 +4,7 @@ import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import { GearSix, Tag } from "@phosphor-icons/react/dist/ssr";
 import SecretField from "./SecretField";
+import TwilioSettings from "./TwilioSettings";
 
 export default function SettingsPage() {
   const t = useTranslations("admin_settings");
@@ -98,6 +99,8 @@ export default function SettingsPage() {
           </details>
         </div>
       </section>
+
+      <TwilioSettings />
     </main>
   );
 }
