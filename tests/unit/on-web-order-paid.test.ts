@@ -83,6 +83,14 @@ describe("onWebOrderPaid", () => {
     );
   });
 
+  it("passes email as undefined when the buyer left it blank", async () => {
+    getOrderMock.mockResolvedValue({ ...ORDER, contact: { ...ORDER.contact, email: "" } });
+    await onWebOrderPaid("do_1");
+    expect(upsertOnOrderMock).toHaveBeenCalledWith(
+      expect.objectContaining({ email: undefined }),
+    );
+  });
+
   it("writes the customer id back onto the order", async () => {
     await onWebOrderPaid("do_1");
     expect(updateOrderMock).toHaveBeenCalledWith(
@@ -106,6 +114,9 @@ describe("onWebOrderPaid", () => {
   it("swallows a messaging failure so the webhook still returns 200", async () => {
     dispatchPaymentConfirmedMock.mockRejectedValue(new Error("twilio exploded"));
     await expect(onWebOrderPaid("do_1")).resolves.toBeUndefined();
+    expect(updateOrderMock).toHaveBeenCalledWith(
+      expect.objectContaining({ id: "do_1", customerId: "cus_1" }),
+    );
   });
 
   it("swallows a CRM failure too", async () => {
