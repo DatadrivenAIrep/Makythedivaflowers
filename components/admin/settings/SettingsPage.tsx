@@ -77,11 +77,12 @@ export default function SettingsPage() {
               setCurrentMasked(d.google_places_api_key ?? null);
             }}
             onDelete={async () => {
-              await fetch("/api/admin/settings", {
+              const res = await fetch("/api/admin/settings", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ key: "google_places_api_key", value: "" }),
               });
+              if (!res.ok) throw new Error("delete_failed");
               setCurrentMasked(null);
             }}
           />

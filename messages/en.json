@@ -1128,6 +1128,8 @@
     "twilio_banner_live": "LIVE — real SMS are being sent",
     "twilio_banner_sim": "TEST MODE — no real SMS are sent",
     "twilio_banner_off": "SMS off — nothing is sent",
+    "twilio_banner_incomplete": "Missing credentials — nothing can be sent",
+    "twilio_env_source": "set on the server",
     "twilio_test_button": "Send test SMS",
     "twilio_test_sending": "Sending...",
     "twilio_test_sent": "Sent to 516 851 2815",

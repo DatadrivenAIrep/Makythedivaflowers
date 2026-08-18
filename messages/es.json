@@ -1128,6 +1128,8 @@
     "twilio_banner_live": "EN VIVO — se envían SMS reales",
     "twilio_banner_sim": "MODO PRUEBA — no se envían SMS reales",
     "twilio_banner_off": "SMS apagado — no se envía nada",
+    "twilio_banner_incomplete": "Faltan credenciales — no se puede enviar",
+    "twilio_env_source": "definido en el servidor",
     "twilio_test_button": "Enviar SMS de prueba",
     "twilio_test_sending": "Enviando...",
     "twilio_test_sent": "Enviado a 516 851 2815",

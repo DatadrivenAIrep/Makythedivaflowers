@@ -10,6 +10,8 @@ type Config = {
   twilio_phone_number: string | null;
   twilio_sms_enabled: string;
   twilio_dry_run: string;
+  twilio_account_sid_is_setting: boolean;
+  twilio_auth_token_is_setting: boolean;
 };
 
 const PHONE_RE = /^\+\d{11,15}$/;
@@ -51,8 +53,12 @@ export default function TwilioSettings() {
       return;
     }
     setPhoneErr(false);
-    await saveKey("twilio_phone_number", phoneInput.trim());
-    setPhoneInput("");
+    try {
+      await saveKey("twilio_phone_number", phoneInput.trim());
+      setPhoneInput("");
+    } catch {
+      setToggleErr(true); // reuse the existing generic error line below the toggles
+    }
   }
 
   async function onToggle(key: string, next: boolean) {
@@ -81,6 +87,8 @@ export default function TwilioSettings() {
 
   const smsLive = cfg.twilio_sms_enabled === "true";
   const dryRun = cfg.twilio_dry_run === "true";
+  const credsComplete = !!cfg.twilio_account_sid && !!cfg.twilio_auth_token && !!cfg.twilio_phone_number;
+  const credsIncomplete = smsLive && !credsComplete;
 
   const secretLabels: SecretFieldLabels = {
     current: t("twilio_current"),
@@ -90,14 +98,19 @@ export default function TwilioSettings() {
     saved: t("twilio_saved"),
     error: t("twilio_error"),
     delete: t("twilio_delete"),
+    envSource: t("twilio_env_source"),
   };
 
-  const bannerClass = !smsLive
+  const bannerClass = credsIncomplete
+    ? "bg-amber-50 text-amber-800"
+    : !smsLive
     ? "bg-mute-100 text-mute-600"
     : dryRun
     ? "bg-amber-50 text-amber-800"
     : "bg-green-50 text-green-800";
-  const bannerText = !smsLive
+  const bannerText = credsIncomplete
+    ? t("twilio_banner_incomplete")
+    : !smsLive
     ? t("twilio_banner_off")
     : dryRun
     ? t("twilio_banner_sim")
@@ -123,7 +136,7 @@ export default function TwilioSettings() {
 
         {/* Effective state banner — always visible */}
         <div className={`flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-xl ${bannerClass}`}>
-          {smsLive && !dryRun ? (
+          {credsIncomplete || (smsLive && !dryRun) ? (
             <WarningCircle size={16} weight="fill" className="shrink-0" />
           ) : (
             <CheckCircle size={16} weight="fill" className="shrink-0" />
@@ -137,6 +150,7 @@ export default function TwilioSettings() {
           placeholder={t("twilio_sid_placeholder")}
           currentMasked={cfg.twilio_account_sid}
           labels={secretLabels}
+          canDelete={cfg.twilio_account_sid_is_setting}
           onSave={(v) => saveKey("twilio_account_sid", v)}
           onDelete={() => saveKey("twilio_account_sid", "")}
         />
@@ -147,6 +161,7 @@ export default function TwilioSettings() {
           placeholder={t("twilio_token_placeholder")}
           currentMasked={cfg.twilio_auth_token}
           labels={secretLabels}
+          canDelete={cfg.twilio_auth_token_is_setting}
           onSave={(v) => saveKey("twilio_auth_token", v)}
           onDelete={() => saveKey("twilio_auth_token", "")}
         />

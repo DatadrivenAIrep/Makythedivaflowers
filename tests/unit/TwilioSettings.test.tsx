@@ -20,6 +20,8 @@ function stubConfig(over: Record<string, unknown> = {}) {
     twilio_phone_number: null,
     twilio_sms_enabled: "false",
     twilio_dry_run: "false",
+    twilio_account_sid_is_setting: false,
+    twilio_auth_token_is_setting: false,
     ...over,
   };
   vi.stubGlobal(
@@ -38,15 +40,21 @@ function stubConfig(over: Record<string, unknown> = {}) {
 
 afterEach(() => vi.unstubAllGlobals());
 
+const FULL_CREDS = {
+  twilio_account_sid: "...2345",
+  twilio_auth_token: "...6789",
+  twilio_phone_number: "+15165551234",
+};
+
 describe("TwilioSettings", () => {
   it("shows the SIMULACIÓN banner when dry-run is on and SMS is live", async () => {
-    stubConfig({ twilio_sms_enabled: "true", twilio_dry_run: "true" });
+    stubConfig({ twilio_sms_enabled: "true", twilio_dry_run: "true", ...FULL_CREDS });
     wrap(<TwilioSettings />);
     expect(await screen.findByText(/MODO PRUEBA/)).toBeDefined();
   });
 
   it("shows the EN VIVO banner when SMS is live and dry-run is off", async () => {
-    stubConfig({ twilio_sms_enabled: "true", twilio_dry_run: "false" });
+    stubConfig({ twilio_sms_enabled: "true", twilio_dry_run: "false", ...FULL_CREDS });
     wrap(<TwilioSettings />);
     expect(await screen.findByText(/EN VIVO/)).toBeDefined();
   });
@@ -65,5 +73,26 @@ describe("TwilioSettings", () => {
     // fetch was called with the test endpoint at least once
     const calls = (globalThis.fetch as unknown as { mock: { calls: unknown[][] } }).mock.calls;
     expect(calls.some((c) => String(c[0]).includes("/twilio-test"))).toBe(true);
+  });
+
+  it("shows the missing-credentials banner when SMS is live but a credential is missing", async () => {
+    stubConfig({
+      twilio_sms_enabled: "true",
+      twilio_dry_run: "false",
+      twilio_account_sid: "...2345" /* token/phone still null */,
+    });
+    wrap(<TwilioSettings />);
+    expect(await screen.findByText(/Faltan credenciales/)).toBeDefined();
+  });
+
+  it("hides the Quitar button and shows the env-source note when the value comes from env, not a setting", async () => {
+    stubConfig({
+      twilio_account_sid: "...2345",
+      twilio_account_sid_is_setting: false,
+    });
+    wrap(<TwilioSettings />);
+    await screen.findByText("...2345");
+    expect(screen.queryByText("Quitar")).toBeNull();
+    expect(await screen.findByText("definido en el servidor")).toBeDefined();
   });
 });

@@ -10,6 +10,7 @@ export type SecretFieldLabels = {
   saved: string;
   error: string;
   delete: string;
+  envSource?: string;
 };
 
 type Props = {
@@ -20,6 +21,10 @@ type Props = {
   currentMasked: string | null | undefined;
   minLength?: number;
   labels: SecretFieldLabels;
+  /** Whether the "Quitar" (delete) action is available. Defaults to true. Set to
+   * false when the current value is resolved from server env, not a stored
+   * setting — there's nothing for this UI to delete. */
+  canDelete?: boolean;
   onSave: (value: string) => Promise<void>;
   onDelete: () => Promise<void>;
 };
@@ -31,6 +36,7 @@ export default function SecretField({
   currentMasked,
   minLength = 10,
   labels,
+  canDelete = true,
   onSave,
   onDelete,
 }: Props) {
@@ -80,13 +86,17 @@ export default function SecretField({
             <span>
               {labels.current} <code className="font-mono">{currentMasked}</code>
             </span>
-            <button
-              type="button"
-              onClick={remove}
-              className="ml-auto text-mute-500 hover:text-rouge text-xs underline"
-            >
-              {labels.delete}
-            </button>
+            {canDelete ? (
+              <button
+                type="button"
+                onClick={remove}
+                className="ml-auto text-mute-500 hover:text-rouge text-xs underline"
+              >
+                {labels.delete}
+              </button>
+            ) : (
+              <span className="ml-auto text-xs text-mute-400">{labels.envSource ?? ""}</span>
+            )}
           </>
         ) : (
           <>

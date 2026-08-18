@@ -66,6 +66,8 @@ export async function GET() {
     [SETTING_TWILIO_PHONE_NUMBER]: twilioPhoneNumber() ?? null,
     [SETTING_TWILIO_SMS_ENABLED]: String(twilioSmsEnabled()),
     [SETTING_TWILIO_DRY_RUN]: String(twilioDryRun()),
+    twilio_account_sid_is_setting: !!getSetting(SETTING_TWILIO_ACCOUNT_SID),
+    twilio_auth_token_is_setting: !!getSetting(SETTING_TWILIO_AUTH_TOKEN),
   });
 }
 

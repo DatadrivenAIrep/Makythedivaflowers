@@ -10,13 +10,13 @@ export const runtime = "nodejs";
 // sendMessage — a test that only simulates proves nothing. Guarded by proxy.ts
 // (all /api/admin/* is admin-only).
 export async function POST() {
-  if (!getTwilioClient()) {
-    return NextResponse.json({ ok: false, error: "no_credentials" });
-  }
-  if (!twilioSmsEnabled()) {
-    return NextResponse.json({ ok: false, error: "sms_disabled" });
-  }
   try {
+    if (!getTwilioClient()) {
+      return NextResponse.json({ ok: false, error: "no_credentials" });
+    }
+    if (!twilioSmsEnabled()) {
+      return NextResponse.json({ ok: false, error: "sms_disabled" });
+    }
     await sendSms(SITE.mobile.e164, "Diva Flowers — prueba de configuración ✓");
     return NextResponse.json({ ok: true });
   } catch (e) {

@@ -47,4 +47,12 @@ describe("twilio test-send endpoint", () => {
     const body = await (await POST()).json();
     expect(body).toEqual({ ok: false, error: "21610 unregistered" });
   });
+
+  it("catches a synchronous throw from getTwilioClient and reports it instead of crashing", async () => {
+    getTwilioClientMock.mockImplementation(() => {
+      throw new Error("accountSid must start with AC");
+    });
+    const body = await (await POST()).json();
+    expect(body).toEqual({ ok: false, error: "accountSid must start with AC" });
+  });
 });
