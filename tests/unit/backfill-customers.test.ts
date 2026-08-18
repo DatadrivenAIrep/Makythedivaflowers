@@ -35,6 +35,20 @@ function seedOrder(
     .run(id, customerId, phone, phone, paidCents, paidCents, paidCents, paymentStatus, at, at);
 }
 
+function seedDeliveryOrder(id: string, phone: string, daysAgo: number, addressJson: string) {
+  const at = new Date(Date.now() - daysAgo * DAY).toISOString();
+  getDb()
+    .prepare(
+      `INSERT INTO orders (id, locale, source, customer_id, recipient_name, recipient_phone,
+         contact_name, contact_email, contact_phone, fulfillment_method, address_json, lines_json,
+         subtotal_cents, delivery_cents, tax_cents, total_cents, amount_paid_cents,
+         fulfillment_status, payment_status, created_at, updated_at)
+       VALUES (?, 'en', 'web', NULL, 'R', ?, 'Buyer Name', 'b@x.com', ?, 'delivery', ?, '[]',
+         5000, 0, 0, 5000, 5000, 'pending', 'paid', ?, ?)`,
+    )
+    .run(id, phone, phone, addressJson, at, at);
+}
+
 describe("backfillCustomers", () => {
   it("groups orders sharing a phone into one customer with the right first/last seen", () => {
     seedOrder("o1", "5165550100", 200, 5000);
@@ -102,6 +116,18 @@ describe("backfillCustomers", () => {
     const order = getDb().prepare("SELECT customer_id FROM orders WHERE id = 'o1'").get() as
       { customer_id: string | null };
     expect(order.customer_id).toBeNull();
+  });
+
+  it("backfills the delivery address onto the customer, matching the live hook", () => {
+    const address = { street1: "1 Main St", city: "Baldwin", state: "NY", zip: "11510", country: "US" };
+    seedDeliveryOrder("o1", "5165550100", 10, JSON.stringify(address));
+
+    backfillCustomers({ commit: true });
+
+    const row = getDb().prepare("SELECT last_address_json FROM customers").get() as
+      { last_address_json: string | null };
+    expect(row.last_address_json).not.toBeNull();
+    expect(JSON.parse(row.last_address_json as string)).toEqual(address);
   });
 
   it("never sends a message", async () => {

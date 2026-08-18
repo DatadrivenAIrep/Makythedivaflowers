@@ -17,6 +17,7 @@
 import { getDb } from "../lib/db";
 import { runMigrations } from "../lib/db-migrate";
 import { upsertOnOrder, normalizePhone } from "../lib/customer-storage";
+import type { Address } from "../types/address";
 
 type PendingRow = {
   id: string;
@@ -27,6 +28,8 @@ type PendingRow = {
   locale: string;
   paid_at: string | null;
   created_at: string;
+  address_json: string | null;
+  fulfillment_method: string;
 };
 
 export type BackfillReport = {
@@ -45,7 +48,7 @@ export function backfillCustomers(opts: { commit: boolean }): BackfillReport {
   const rows = db
     .prepare(
       `SELECT id, contact_name, recipient_name, contact_phone, contact_email,
-              locale, paid_at, created_at
+              locale, paid_at, created_at, address_json, fulfillment_method
          FROM orders
         WHERE payment_status = 'paid'
           AND customer_id IS NULL
@@ -82,6 +85,13 @@ export function backfillCustomers(opts: { commit: boolean }): BackfillReport {
         name: (row.contact_name?.trim() || row.recipient_name.trim()),
         phone: row.contact_phone,
         email: row.contact_email || undefined,
+        // Mirrors the live hook (lib/on-web-order-paid.ts): last_address_json is
+        // "last delivery address" by convention, updated only for delivery
+        // orders. Oldest-first processing means the newest delivery order's
+        // address wins, via upsertOnOrder's COALESCE.
+        address: row.fulfillment_method === "delivery" && row.address_json
+          ? (JSON.parse(row.address_json) as Address)
+          : undefined,
         orderAt: row.paid_at ?? row.created_at,
         locale: row.locale === "es" ? "es" : "en",
       });
