@@ -14,6 +14,7 @@
   "nav": {
     "shop": "Tienda",
     "sympathy": "Pésame",
+    "orchids": "Orquídeas",
     "subscriptions": "Suscripciones",
     "weddings": "Bodas",
     "events": "Eventos",
@@ -816,6 +817,34 @@
     "how_step3_body": "Efectivo, Zelle o link de Stripe.",
     "cta_title": "¿Listo para reservar?",
     "cta_button": "Escribirle a Maky"
+  },
+  "orchids": {
+    "page_title": "Orquídeas — Diva Flowers",
+    "meta_description": "Orquídeas phalaenopsis vivas en cerámica blanca, $65 de un tallo u $85 de dos. Florecen dos o tres meses. Entrega el mismo día en Long Island.",
+    "hero_eyebrow": "Orquídeas",
+    "hero_title": "Florece tres meses. No tres días.",
+    "hero_sub": "Phalaenopsis vivas en cerámica blanca, desde $65. Pide antes de las 2 pm y llega hoy.",
+    "hero_cta": "Ver las dos medidas",
+    "why_eyebrow": "Por qué una orquídea",
+    "why_title": "La cuenta que nadie hace en el mostrador.",
+    "why_cut_label": "Un ramo de $75",
+    "why_cut_value": "5–7 días",
+    "why_orchid_label": "Esta orquídea, $65",
+    "why_orchid_value": "8–12 semanas",
+    "why_body": "Y cuando cae la última flor, la planta sigue viva. Corta la vara arriba del segundo nudo y la mayoría vuelve a sacar vara al año siguiente. No estás comprando una semana de flores — estás comprando una planta que además está florecida.",
+    "sizes_eyebrow": "Dos medidas",
+    "sizes_title": "Un tallo, o dos.",
+    "sizes_cta": "Pedir esta",
+    "colors_eyebrow": "Colores",
+    "colors_title": "Blanca, rosa suave, fucsia.",
+    "colors_body": "El color rota según lo que esté floreciendo mejor. Dinos tu preferencia al pedir y la buscamos — si no la tenemos, te llamamos antes de cambiarla.",
+    "care_eyebrow": "Cuidado",
+    "care_title": "Cuatro cosas. Esa es la lista completa.",
+    "cta_eyebrow": "Entrega",
+    "cta_title": "Pide antes de las 2 pm y llega hoy.",
+    "cta_body": "Entrega el mismo día en todo Long Island. Cada orquídea sale con su tarjeta de cuidado.",
+    "cta_button": "Pedir una orquídea",
+    "cta_call": "Llamar a la tienda"
   },
   "prom": {
     "hero": {

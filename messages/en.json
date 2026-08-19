@@ -14,6 +14,7 @@
   "nav": {
     "shop": "Shop",
     "sympathy": "Sympathy",
+    "orchids": "Orchids",
     "subscriptions": "Subscriptions",
     "weddings": "Weddings",
     "events": "Events",
@@ -816,6 +817,34 @@
     "how_step3_body": "Cash, Zelle, or Stripe link.",
     "cta_title": "Ready to reserve?",
     "cta_button": "Message Maky"
+  },
+  "orchids": {
+    "page_title": "Orchids — Diva Flowers",
+    "meta_description": "Live phalaenopsis orchids in white ceramic, $65 single stem or $85 double. They bloom for two to three months. Same-day delivery on Long Island.",
+    "hero_eyebrow": "Orchids",
+    "hero_title": "Blooms for three months. Not three days.",
+    "hero_sub": "Live phalaenopsis in white ceramic, from $65. Order before 2 pm and it arrives today.",
+    "hero_cta": "See the two sizes",
+    "why_eyebrow": "Why an orchid",
+    "why_title": "The math nobody does at the counter.",
+    "why_cut_label": "A $75 bouquet",
+    "why_cut_value": "5–7 days",
+    "why_orchid_label": "This orchid, $65",
+    "why_orchid_value": "8–12 weeks",
+    "why_body": "And when the last flower drops, the plant is still alive. Cut the spike above the second node and most of them spike again the following year. You are not buying a week of flowers — you are buying a plant that happens to be flowering.",
+    "sizes_eyebrow": "Two sizes",
+    "sizes_title": "One stem, or two.",
+    "sizes_cta": "Order this one",
+    "colors_eyebrow": "Colors",
+    "colors_title": "White, soft pink, fuchsia.",
+    "colors_body": "Color rotates with what is blooming best. Tell us a preference when you order and we will match it if we have it — if we don't, we will call you before we substitute.",
+    "care_eyebrow": "Care",
+    "care_title": "Four things. That's the whole list.",
+    "cta_eyebrow": "Delivery",
+    "cta_title": "Order before 2 pm, it arrives today.",
+    "cta_body": "Same-day delivery across Long Island. Every orchid leaves the shop with a care card.",
+    "cta_button": "Order an orchid",
+    "cta_call": "Call the shop"
   },
   "prom": {
     "hero": {
