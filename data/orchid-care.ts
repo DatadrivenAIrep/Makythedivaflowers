@@ -12,7 +12,7 @@ export const ORCHID_CARE: readonly OrchidCareStep[] = [
     title: { en: "Water once a week", es: "Riega una vez por semana" },
     body: {
       en: "Three ice-cube-sized splashes of room-temperature water at the roots, or run it under the tap for fifteen seconds and let it drain all the way through. Once a week. That's it.",
-      es: "Tres chorritos de agua a temperatura ambiente en las raíces, o pásala por el grifo quince segundos y deja que escurra por completo. Una vez por semana. Ya.",
+      es: "Tres chorritos de agua a temperatura ambiente en las raíces —del tamaño de un cubito de hielo cada uno—, o pásala por el grifo quince segundos y deja que escurra por completo. Una vez por semana. Ya.",
     },
   },
   {
