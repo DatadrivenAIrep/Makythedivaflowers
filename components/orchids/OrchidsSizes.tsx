@@ -28,15 +28,19 @@ export async function OrchidsSizes({ locale }: { locale: Locale }) {
         </h2>
 
         <ul className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2">
-          {product.variants.map((v) => (
+          {product.variants.map((v) => {
+            const photoSrc = PHOTO_BY_VARIANT[v.id];
+            const image =
+              product.images.find((img) => img.src === photoSrc) ?? product.images[0];
+            return (
             <li
               key={v.id}
               className="overflow-hidden rounded-[var(--radius-bento)] bg-petal"
             >
               <div className="relative aspect-[4/5] overflow-hidden">
                 <img
-                  src={PHOTO_BY_VARIANT[v.id] ?? product.images[0].src}
-                  alt={product.images[0].alt[locale]}
+                  src={image.src}
+                  alt={image.alt[locale]}
                   className="absolute inset-0 size-full object-cover"
                   loading="lazy"
                 />
@@ -63,7 +67,8 @@ export async function OrchidsSizes({ locale }: { locale: Locale }) {
                 </Link>
               </div>
             </li>
-          ))}
+            );
+          })}
         </ul>
       </div>
     </section>

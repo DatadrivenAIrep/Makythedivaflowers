@@ -65,4 +65,12 @@ describe("OrchidsSizes", () => {
       "/products/phalaenopsis-pink-double.webp",
     ]);
   });
+
+  it("each photo's alt text matches what it actually shows, not a stale default", async () => {
+    const { container } = await renderSizes("en");
+    const alts = [...container.querySelectorAll("img")].map((i) => i.getAttribute("alt"));
+    expect(alts[0]).toMatch(/single stem/i);
+    expect(alts[1]).toMatch(/two stems/i);
+    expect(alts[0]).not.toEqual(alts[1]);
+  });
 });
