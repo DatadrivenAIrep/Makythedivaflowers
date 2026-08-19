@@ -1,3 +1,4 @@
+// components/orchids/OrchidsColors.tsx
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/locale";
 import { PRODUCTS } from "@/data/products";

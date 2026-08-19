@@ -1,3 +1,4 @@
+// components/orchids/OrchidsCare.tsx
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/locale";
 import { ORCHID_CARE } from "@/data/orchid-care";
