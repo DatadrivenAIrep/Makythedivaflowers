@@ -1,7 +1,7 @@
 // components/cart/CartDrawer.tsx
 "use client";
 import { useEffect, useMemo, useRef } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion, useDragControls } from "framer-motion";
 import { X } from "@phosphor-icons/react/dist/ssr";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -13,7 +13,8 @@ import { CartEmpty } from "@/components/cart/CartEmpty";
 import { CartSummary } from "@/components/cart/CartSummary";
 import { PRODUCTS } from "@/data/products";
 import type { Locale } from "@/types/locale";
-import { springs } from "@/lib/motion-config";
+import { SPRING } from "@/lib/motion";
+import { cn } from "@/lib/cn";
 import { CutoffPill } from "@/components/conversion/CutoffPill";
 import { GiftAssuranceBar } from "@/components/conversion/GiftAssuranceBar";
 import { CartUpsellStrip } from "@/components/conversion/CartUpsellStrip";
@@ -30,6 +31,7 @@ export function CartDrawer({ locale }: { locale: Locale }) {
   const close = useUIStore((s) => s.closeDrawer);
   const reduce = useReducedMotion();
   const ref = useRef<HTMLElement | null>(null);
+  const dragControls = useDragControls();
 
   const resolved = useMemo(() => resolveCartLines(lines, PRODUCTS), [lines]);
   const subtotal = useMemo(() => cartSubtotalCents(lines, PRODUCTS), [lines]);
@@ -70,13 +72,30 @@ export function CartDrawer({ locale }: { locale: Locale }) {
             role="dialog"
             aria-modal="true"
             aria-label={t("title")}
-            className="fixed right-0 top-0 z-50 h-[100dvh] w-full max-w-[440px] bg-bone/85 backdrop-blur-xl border-l border-ink/10 shadow-[0_8px_60px_-16px_rgba(184,52,94,0.18)] flex flex-col outline-none"
+            className="fixed right-0 top-0 z-50 h-[100dvh] w-full max-w-[440px] flex flex-col outline-none [background:var(--material-bg-strong)] [backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] [-webkit-backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] border-l border-[var(--border)] [box-shadow:inset_1px_0_0_var(--material-edge),var(--shadow-diffusion)]"
             initial={reduce ? { opacity: 0 } : { x: "100%" }}
             animate={reduce ? { opacity: 1 } : { x: 0 }}
             exit={reduce ? { opacity: 0 } : { x: "100%" }}
-            transition={reduce ? { duration: 0 } : springs.snappy}
+            transition={reduce ? { duration: 0 } : SPRING.drawer}
+            drag={reduce ? false : "x"}
+            dragControls={dragControls}
+            dragListener={false}
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={{ left: 0, right: 0.5 }}
+            onDragEnd={(_e, info) => {
+              if (info.offset.x > 120 || info.velocity.x > 500) close();
+            }}
           >
-            <header className="flex items-center justify-between px-5 py-4 border-b border-ink/10">
+            <header
+              onPointerDown={(e) => {
+                if (!reduce) dragControls.start(e);
+              }}
+              style={{ touchAction: "pan-y" }}
+              className={cn(
+                "flex items-center justify-between px-5 py-4 border-b border-ink/10",
+                "cursor-grab active:cursor-grabbing",
+              )}
+            >
               <div className="flex items-center gap-3">
                 <p className="font-display text-xl text-ink">{t("title")}</p>
                 <CutoffPill cutoff={SITE.cutoff24} locale={locale} />

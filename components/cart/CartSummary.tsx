@@ -14,7 +14,7 @@ type Props = {
 export function CartSummary({ subtotalCents, locale, onCheckout }: Props) {
   const t = useTranslations("cart");
   return (
-    <div className="border-t border-ink/10 px-5 py-5 flex flex-col gap-4 bg-bone/80 backdrop-blur-md">
+    <div className="border-t border-ink/10 px-5 py-5 flex flex-col gap-4 [background:var(--material-bg)] [backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] [-webkit-backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))]">
       <div className="flex items-baseline justify-between">
         <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60">
           {t("subtotal")}
