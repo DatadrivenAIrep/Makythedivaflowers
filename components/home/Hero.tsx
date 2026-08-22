@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { ArchSVG } from "@/components/brand/ArchSVG";
+import { Grain } from "@/components/brand/Grain";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { HeroReveal } from "@/components/home/HeroReveal";
 import { PulseDot } from "@/components/home/PulseDot";
@@ -38,6 +39,9 @@ export async function Hero({ locale }: { locale: Locale }) {
           }}
         />
       </div>
+
+      {/* Grain — hero-scoped, subtler than the old page-level overlay */}
+      <Grain className="absolute z-[5] opacity-[0.03]" />
 
       {/* 2. Eyebrow pill — top-left */}
       <div className="absolute top-20 left-4 lg:top-28 lg:left-8 z-20">

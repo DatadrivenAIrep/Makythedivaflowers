@@ -1,11 +1,15 @@
 import { cn } from "@/lib/cn";
 
-export function Grain({ className }: { className?: string }) {
+export function Grain({
+  className = "fixed z-[60] opacity-[0.04]",
+}: {
+  className?: string;
+}) {
   return (
     <div
       aria-hidden
       className={cn(
-        "pointer-events-none fixed inset-0 z-[60] mix-blend-multiply opacity-[0.04]",
+        "pointer-events-none inset-0 mix-blend-multiply",
         className,
       )}
       style={{
