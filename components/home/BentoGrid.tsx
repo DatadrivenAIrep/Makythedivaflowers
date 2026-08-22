@@ -11,7 +11,7 @@ export async function BentoGrid({ locale }: { locale: Locale }) {
 
   return (
     <section className="max-w-[1400px] mx-auto px-6 py-24 md:py-32">
-      <div className="flex items-end justify-between mb-10 md:mb-14">
+      <div className="flex items-end justify-start mb-10 md:mb-14">
         <div className="flex flex-col gap-3">
           <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-mute-500">
             {t("console_eyebrow")}
@@ -19,12 +19,6 @@ export async function BentoGrid({ locale }: { locale: Locale }) {
           <h2 className="font-display text-4xl md:text-6xl tracking-tighter leading-[0.95]">
             {t("console_title")}
           </h2>
-        </div>
-        <div className="hidden md:flex items-center gap-3">
-          <span className="size-1.5 rounded-full bg-rouge" />
-          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-mute-500">
-            SYSTEM ACTIVE
-          </span>
         </div>
       </div>
 
