@@ -65,6 +65,9 @@ html, body {
     --material-bg: var(--color-bone);
     --material-bg-strong: var(--color-bone);
     --material-blur: 0px;
+    --material-bg-dark: var(--color-charcoal);
+    --material-edge: transparent;
+    --material-edge-dark: transparent;
   }
 }
 
@@ -73,6 +76,9 @@ html, body {
     --border: rgb(14 13 12 / 0.55);
     --material-bg: var(--color-bone);
     --material-blur: 0px;
+    --material-bg-dark: var(--color-charcoal);
+    --material-edge: transparent;
+    --material-edge-dark: transparent;
   }
 }
 

@@ -47,6 +47,7 @@ export function HeroMedia({ src, poster }: { src: string; poster: string }) {
           role="presentation"
           alt=""
           src={poster}
+          fetchPriority="high"
           className="absolute inset-0 h-full w-full object-cover"
         />
       ) : (
