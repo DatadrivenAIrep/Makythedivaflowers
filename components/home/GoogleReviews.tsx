@@ -10,7 +10,7 @@ export async function GoogleReviews({ locale }: { locale: Locale }) {
   return (
     <section className="pt-24 pb-0 md:pt-32 md:pb-0" aria-label={t("aria.section")}>
       <div className="max-w-[1400px] mx-auto px-6">
-        <GoogleReviewsContent locale={locale} />
+        {await GoogleReviewsContent({ locale })}
       </div>
     </section>
   );

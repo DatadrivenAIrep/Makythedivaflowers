@@ -12,7 +12,7 @@ export async function TikTokStrip({ locale }: { locale: Locale }) {
   return (
     <section className="bg-petal text-ink">
       <div className="mx-auto max-w-[var(--container-max)] px-6 py-20 md:py-28">
-        <TikTokContent locale={locale} />
+        {await TikTokContent({ locale })}
       </div>
     </section>
   );

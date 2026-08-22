@@ -8,8 +8,8 @@ export async function SocialProof({ locale }: { locale: Locale }) {
   return (
     <section aria-label={tSP("aria")} className="mx-auto max-w-[var(--container-max)] px-6 py-24 md:py-28">
       <div className="grid gap-10 md:gap-14">
-        <GoogleReviewsContent locale={locale} />
-        <TikTokContent locale={locale} />
+        {await GoogleReviewsContent({ locale })}
+        {await TikTokContent({ locale })}
       </div>
     </section>
   );
