@@ -7,10 +7,20 @@ import { GoogleReviewsClient } from "./GoogleReviewsClient";
 export async function GoogleReviews({ locale }: { locale: Locale }) {
   const t = await getTranslations("home.reviews");
 
+  return (
+    <section className="pt-24 pb-0 md:pt-32 md:pb-0" aria-label={t("aria.section")}>
+      <GoogleReviewsContent locale={locale} />
+    </section>
+  );
+}
+
+export async function GoogleReviewsContent({ locale }: { locale: Locale }) {
+  const t = await getTranslations("home.reviews");
+
   const jsonLd = buildReviewsJsonLd(REVIEWS, REVIEWS_AGGREGATE, SITE.brand);
 
   return (
-    <section className="pt-24 pb-0 md:pt-32 md:pb-0" aria-label={t("aria.section")}>
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd }}
@@ -85,6 +95,6 @@ export async function GoogleReviews({ locale }: { locale: Locale }) {
 
         </div>
       </div>
-    </section>
+    </>
   );
 }
