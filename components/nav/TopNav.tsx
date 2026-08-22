@@ -29,10 +29,12 @@ export function TopNav({
     <motion.header
       initial={false}
       className={cn(
-        "fixed top-0 inset-x-0 z-40 transition-all duration-300",
+        "fixed top-0 inset-x-0 z-40 transition-[background,box-shadow] duration-300",
+        "[background:var(--material-bg)] [backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))]",
+        "[-webkit-backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))]",
         condensed
-          ? "bg-bone/90 backdrop-blur-md border-b border-ink/[0.06]"
-          : "bg-bone border-b border-transparent",
+          ? "[background:var(--material-bg-strong)] [box-shadow:inset_0_1px_0_var(--material-edge),0_10px_30px_-24px_rgb(14_13_12/0.5)]"
+          : "[box-shadow:inset_0_1px_0_var(--material-edge)]",
       )}
       transition={reduceMotion ? { duration: 0 } : undefined}
     >
