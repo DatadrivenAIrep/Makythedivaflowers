@@ -6,11 +6,9 @@ import { Hero } from "@/components/home/Hero";
 import { KineticMarquee } from "@/components/brand/KineticMarquee";
 import { BentoGrid } from "@/components/home/BentoGrid";
 import { CategoryStrip } from "@/components/home/CategoryStrip";
-import { GoogleReviews } from "@/components/home/GoogleReviews";
-import { TikTokStrip } from "@/components/home/TikTokStrip";
+import { SocialProof } from "@/components/home/SocialProof";
 import { EditorialSplit } from "@/components/home/EditorialSplit";
-import { WeddingsTeaser } from "@/components/home/WeddingsTeaser";
-import { EventsTeaser } from "@/components/home/EventsTeaser";
+import { Verticals } from "@/components/home/Verticals";
 import { SympathyShowcase } from "@/components/home/SympathyShowcase";
 import { StudioVisit } from "@/components/home/StudioVisit";
 import { NewsletterField } from "@/components/home/NewsletterField";
@@ -44,14 +42,12 @@ export default async function Home({ params }: { params: Promise<{ locale: Local
     <main className="bg-bone text-ink">
       <Hero locale={locale} />
       <KineticMarquee text={`${marquee}  ·  `} />
-      <BentoGrid locale={locale} />
       <CategoryStrip locale={locale} />
+      <BentoGrid locale={locale} />
+      <SocialProof locale={locale} />
       <SympathyShowcase locale={locale} />
-      <GoogleReviews locale={locale} />
-      <TikTokStrip locale={locale} />
+      <Verticals locale={locale} />
       <EditorialSplit locale={locale} />
-      <WeddingsTeaser locale={locale} />
-      <EventsTeaser locale={locale} />
       <StudioVisit locale={locale} />
       <NewsletterField />
     </main>
