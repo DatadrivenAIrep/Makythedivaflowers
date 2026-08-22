@@ -3,6 +3,7 @@ import { ArchSVG } from "@/components/brand/ArchSVG";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { HeroReveal } from "@/components/home/HeroReveal";
 import { PulseDot } from "@/components/home/PulseDot";
+import { HeroMedia } from "@/components/home/HeroMedia";
 import type { Locale } from "@/types/locale";
 
 export async function Hero({ locale }: { locale: Locale }) {
@@ -21,21 +22,11 @@ export async function Hero({ locale }: { locale: Locale }) {
             "linear-gradient(160deg, #1A1816 0%, #0E0D0C 55%, #2a0d1a 100%)",
         }}
       >
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          poster="/hero/divavideo-poster.jpg"
-          className="absolute inset-0 h-full w-full object-cover"
-        >
-          <source src="/hero/divavideo.mp4" type="video/mp4" />
-        </video>
-        {/* Legibility overlay — darker at bottom where CTAs live */}
+        <HeroMedia src="/hero/divavideo.mp4" poster="/hero/divavideo-poster.jpg" />
+        {/* Legibility overlay — lighter overall, still anchored dark at the bottom for the CTAs */}
         <div
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-b from-charcoal/40 via-charcoal/30 to-charcoal/75"
+          className="absolute inset-0 bg-gradient-to-b from-charcoal/20 via-charcoal/15 to-charcoal/65"
         />
         {/* Brand accent — radial rouge wash from top-right */}
         <div
@@ -71,14 +62,17 @@ export async function Hero({ locale }: { locale: Locale }) {
         <HeroReveal>
           <div className="pb-2">
             <h1
-              className="font-display text-[clamp(4rem,10vw,10rem)] tracking-tighter leading-[0.88] text-bone"
-              style={{ fontVariationSettings: "'WONK' 1, 'SOFT' 0, 'opsz' 144" }}
+              className="font-display text-[clamp(4rem,10vw,10rem)] leading-[0.88] text-bone"
+              style={{
+                letterSpacing: "var(--text-display-tracking)",
+                fontOpticalSizing: "auto",
+              }}
             >
-              <span style={{ fontStyle: "italic" }}>
+              <span style={{ fontStyle: "italic", fontVariationSettings: "'WONK' 0.4, 'SOFT' 0" }}>
                 {heroLine1},
               </span>
               <br />
-              <span>{heroLine2}</span>
+              <span style={{ fontVariationSettings: "'WONK' 0, 'SOFT' 0" }}>{heroLine2}</span>
             </h1>
           </div>
           <div>
@@ -107,7 +101,7 @@ export async function Hero({ locale }: { locale: Locale }) {
       </div>
 
       {/* 4. Bottom bar */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 border-t border-petal/10 backdrop-blur-md bg-charcoal/30">
+      <div className="absolute bottom-0 left-0 right-0 z-20 [background:var(--material-bg-dark)] [backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] [-webkit-backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] [box-shadow:inset_0_1px_0_var(--material-edge-dark)]">
         <div className="hidden lg:grid grid-cols-3 items-center py-5 px-8 gap-6">
           <div className="flex items-center">
             <MagneticButton
