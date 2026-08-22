@@ -11,15 +11,21 @@ export function HeroMedia({ src, poster }: { src: string; poster: string }) {
   // framer-motion's useReducedMotion caches its matchMedia read process-wide
   // on first use, so it can miss a preference set after that (e.g. a change
   // fired after another component mounted first). Read matchMedia directly
-  // too, on mount, as a defensive backstop — belt and suspenders.
+  // too, and keep listening for "change" so a live OS toggle while the hero
+  // is already mounted switches video <-> poster without a remount.
   const [reduceMQ, setReduceMQ] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const c = (navigator as unknown as { connection?: { saveData?: boolean } }).connection;
     if (c?.saveData) setSaveData(true);
-    if (typeof window !== "undefined" && window.matchMedia) {
-      setReduceMQ(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+    if (window.matchMedia) {
+      const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+      setReduceMQ(mql.matches);
+      const onChange = () => setReduceMQ(mql.matches);
+      mql.addEventListener("change", onChange);
+      return () => mql.removeEventListener("change", onChange);
     }
   }, []);
 
