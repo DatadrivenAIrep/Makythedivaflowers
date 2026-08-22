@@ -7,7 +7,7 @@ describe("VerticalTeaser", () => {
     render(
       <VerticalTeaser
         eyebrow="Weddings" title="Say it with flowers" cta="Explore weddings"
-        imageSrc="/weddings/oh1-scaled.webp" imageAlt="A wedding arch"
+        imageSrc="/weddings/oh1-scaled.webp"
         href="/en/weddings"
       />,
     );

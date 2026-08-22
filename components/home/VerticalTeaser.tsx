@@ -3,10 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 export function VerticalTeaser({
-  eyebrow, title, cta, imageSrc, imageAlt, href,
+  eyebrow, title, cta, imageSrc, href,
 }: {
   eyebrow: string; title: string; cta: string;
-  imageSrc: string; imageAlt: string; href: string;
+  imageSrc: string; href: string;
 }) {
   return (
     <Link
@@ -14,7 +14,7 @@ export function VerticalTeaser({
       className="group relative block overflow-hidden rounded-[var(--radius-bento)] aspect-[16/9] text-bone"
     >
       <Image
-        src={imageSrc} alt={imageAlt} fill
+        src={imageSrc} alt="" fill
         className="object-cover transition-transform duration-700 ease-[var(--ease-elegant)] group-hover:scale-[1.03]"
         sizes="(min-width: 768px) 50vw, 100vw"
       />

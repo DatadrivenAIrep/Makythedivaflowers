@@ -11,12 +11,12 @@ export async function Verticals({ locale }: { locale: Locale }) {
       <div className="grid gap-4 md:grid-cols-2 md:gap-6">
         <VerticalTeaser
           eyebrow={w("eyebrow")} title={w("title")} cta={w("cta")}
-          imageSrc="/weddings/oh1-scaled.webp" imageAlt={w("title")}
+          imageSrc="/weddings/oh1-scaled.webp"
           href={`/${locale}/weddings`}
         />
         <VerticalTeaser
           eyebrow={e("eyebrow")} title={e("title")} cta={e("cta")}
-          imageSrc="/events/evento-01/p01.webp" imageAlt={e("title")}
+          imageSrc="/events/evento-01/p01.webp"
           href={`/${locale}/events`}
         />
       </div>

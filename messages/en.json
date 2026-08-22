@@ -270,6 +270,9 @@
         "close": "Close",
         "video_label": "TikTok video"
       }
+    },
+    "social_proof": {
+      "aria": "Customer reviews and social media"
     }
   },
   "footer": {

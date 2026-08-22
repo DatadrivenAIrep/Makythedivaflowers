@@ -270,6 +270,9 @@
         "close": "Cerrar",
         "video_label": "Video de TikTok"
       }
+    },
+    "social_proof": {
+      "aria": "Reseñas y redes sociales"
     }
   },
   "footer": {
