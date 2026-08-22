@@ -1,5 +1,5 @@
 "use client";
-import { memo, useMemo } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
 type Petal = {
@@ -8,6 +8,8 @@ type Petal = {
   size: number;
   duration: number;
   delay: number;
+  burstDuration: number;
+  burstDelay: number;
   drift: number;
   rotateFrom: number;
   rotateTo: number;
@@ -35,6 +37,8 @@ function buildPetals(count: number): Petal[] {
       size: 10 + r(2) * 14,
       duration: 14 + r(3) * 12,
       delay: -r(4) * 20,
+      burstDuration: 2.4 + r(10) * 1.2,
+      burstDelay: r(11) * 0.4,
       drift: (r(5) - 0.5) * 80,
       rotateFrom: r(6) * 360,
       rotateTo: r(6) * 360 + (r(7) > 0.5 ? 360 : -360),
@@ -44,11 +48,26 @@ function buildPetals(count: number): Petal[] {
   });
 }
 
-function PetalRainImpl({ count = 14 }: { count?: number }) {
+function PetalRainImpl({ count = 14, burst = false }: { count?: number; burst?: boolean }) {
   const reduce = useReducedMotion() ?? false;
+  // framer-motion's useReducedMotion caches its matchMedia read process-wide
+  // on first use, so it can miss a preference set after that (e.g. a bag-add
+  // burst mounted after some other component already initialized the check
+  // with a different result). Read matchMedia directly too — see the same
+  // workaround + rationale in HeroMedia.tsx.
+  const [reduceMQ, setReduceMQ] = useState(false);
   const petals = useMemo(() => buildPetals(count), [count]);
 
-  if (reduce) return null;
+  useEffect(() => {
+    if (!window.matchMedia) return;
+    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduceMQ(mql.matches);
+    const onChange = () => setReduceMQ(mql.matches);
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
+
+  if (reduce || reduceMQ) return null;
 
   return (
     <div
@@ -73,12 +92,21 @@ function PetalRainImpl({ count = 14 }: { count?: number }) {
             x: [0, p.drift, -p.drift * 0.6, p.drift * 0.4, 0],
             rotate: [p.rotateFrom, p.rotateTo],
           }}
-          transition={{
-            duration: p.duration,
-            delay: p.delay,
-            repeat: Infinity,
-            ease: "linear",
-          }}
+          transition={
+            burst
+              ? {
+                  duration: p.burstDuration,
+                  delay: p.burstDelay,
+                  repeat: 0,
+                  ease: "easeIn",
+                }
+              : {
+                  duration: p.duration,
+                  delay: p.delay,
+                  repeat: Infinity,
+                  ease: "linear",
+                }
+          }
         >
           <svg
             viewBox="0 0 20 28"

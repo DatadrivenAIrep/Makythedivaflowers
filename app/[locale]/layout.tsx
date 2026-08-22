@@ -9,6 +9,7 @@ import { Footer } from "@/components/nav/Footer";
 import { LocaleChrome } from "@/components/nav/LocaleChrome";
 import { CartDrawerHost } from "@/components/cart/CartDrawerHost";
 import { ToastAddedToBag } from "@/components/cart/ToastAddedToBag";
+import { AddToBagDelight } from "@/components/cart/AddToBagDelight";
 import { LocalBusinessLD } from "@/components/seo/LocalBusinessLD";
 import { ContactContextProvider } from "@/components/contact/ContactContextProvider";
 import { TextMakyTrigger } from "@/components/contact/TextMakyTrigger";
@@ -45,6 +46,7 @@ export default async function LocaleLayout({
             <>
               <CartDrawerHost locale={locale as Locale} />
               <ToastAddedToBag />
+              <AddToBagDelight />
               <TextMakyTrigger />
             </>
           }
