@@ -7,7 +7,6 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import { cn } from "@/lib/cn";
-import { PetalRain } from "@/components/home/PetalRain";
 
 type Item = {
   slug: string;
@@ -213,7 +212,6 @@ function CategoryOrbitImpl({
           "linear-gradient(to bottom, var(--color-charcoal) 0%, #F2C5D1 100%)",
       }}
     >
-      <PetalRain />
       <div className="relative z-10 mx-auto max-w-[1600px] px-6">
         <div className="relative z-20 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="flex flex-col gap-4">
@@ -253,15 +251,6 @@ function CategoryOrbitImpl({
               reduce={reduce}
             />
           ))}
-
-          <div
-            aria-hidden
-            className="pointer-events-none absolute left-1/2 top-1/2 z-30 hidden -translate-x-1/2 -translate-y-1/2 md:block"
-          >
-            <span className="inline-block rounded-full border border-bone/30 bg-charcoal/70 px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.3em] text-bone/80 backdrop-blur">
-              LAT 40.7000° N · LON 73.6700° W
-            </span>
-          </div>
         </div>
       </div>
 
