@@ -37,8 +37,9 @@ function MagneticButtonImpl({
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 200, damping: 18 });
-  const sy = useSpring(y, { stiffness: 200, damping: 18 });
+  const springOpts = { stiffness: 260, damping: 30 }; // critically-damped, mirrors SPRING.default from @/lib/motion
+  const sx = useSpring(x, springOpts);
+  const sy = useSpring(y, springOpts);
 
   const onMove = (e: React.MouseEvent) => {
     if (reduce || !ref.current) return;

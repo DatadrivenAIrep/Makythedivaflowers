@@ -31,7 +31,7 @@ export const Button = React.forwardRef<
     <Comp
       ref={ref}
       className={cn(
-        "inline-flex items-center justify-center font-sans font-medium tracking-tight transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-rouge focus-visible:ring-offset-2 focus-visible:ring-offset-bone disabled:opacity-50",
+        "inline-flex items-center justify-center font-sans font-medium tracking-tight transition-[transform,background-color,border-color,color] [transition-duration:var(--motion-fast)] outline-none focus-visible:ring-2 focus-visible:ring-rouge focus-visible:ring-offset-2 focus-visible:ring-offset-bone disabled:opacity-50",
         variantClass[variant],
         sizeClass[size],
         className,
