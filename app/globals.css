@@ -34,6 +34,7 @@ html, body {
   background: var(--color-bone);
   color: var(--color-ink);
   font-family: var(--font-sans);
+  font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -56,6 +57,22 @@ html, body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --material-bg: var(--color-bone);
+    --material-bg-strong: var(--color-bone);
+    --material-blur: 0px;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --border: rgb(14 13 12 / 0.55);
+    --material-bg: var(--color-bone);
+    --material-blur: 0px;
   }
 }
 
