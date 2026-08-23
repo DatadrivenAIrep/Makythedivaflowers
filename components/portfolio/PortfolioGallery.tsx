@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { PortfolioCard } from "@/components/portfolio/PortfolioCard";
 import { MediaLightbox } from "@/components/portfolio/MediaLightbox";
+import { Reveal } from "@/components/motion/Reveal";
 import type { PortfolioEvent } from "@/types/portfolio";
 import type { Locale } from "@/types/locale";
 
@@ -22,10 +23,10 @@ export function PortfolioGallery({
 
   return (
     <section className="py-16 sm:py-20">
-      <header className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-12">
+      <Reveal as="header" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-12">
         <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60">{t("eyebrow")}</p>
         <h2 className="mt-3 font-display text-5xl text-ink leading-[0.95] tracking-tighter">{t("title")}</h2>
-      </header>
+      </Reveal>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 divide-y divide-ink/10">
         {events.map((event, i) => (
@@ -43,7 +44,7 @@ export function PortfolioGallery({
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-12">
         <a
           href="#inquire"
-          className="inline-flex w-fit items-center gap-2 rounded-full bg-ink px-6 py-3 font-sans text-sm tracking-tight text-bone transition-colors hover:bg-ink/90"
+          className="inline-flex w-fit items-center gap-2 rounded-full bg-ink px-6 py-3 font-sans text-sm tracking-tight text-bone transition-[transform,background-color,border-color,color,opacity] [transition-duration:var(--motion-fast)] hover:bg-ink/90 active:scale-[0.97] will-change-transform"
         >
           {t("cta")}
         </a>

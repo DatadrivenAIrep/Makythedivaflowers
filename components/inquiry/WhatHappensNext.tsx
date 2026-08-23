@@ -1,4 +1,6 @@
 // components/inquiry/WhatHappensNext.tsx
+import { Reveal } from "@/components/motion/Reveal";
+
 export function WhatHappensNext({
   title,
   steps,
@@ -8,7 +10,7 @@ export function WhatHappensNext({
 }) {
   return (
     <section className="py-14">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+      <Reveal className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <h2 className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60">
           {title}
         </h2>
@@ -22,7 +24,7 @@ export function WhatHappensNext({
             </li>
           ))}
         </ol>
-      </div>
+      </Reveal>
     </section>
   );
 }
