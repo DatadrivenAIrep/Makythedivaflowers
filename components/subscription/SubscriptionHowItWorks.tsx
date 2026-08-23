@@ -1,5 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/locale";
+import { Reveal } from "@/components/motion/Reveal";
+import { StaggerGroup, StaggerItem } from "@/components/motion/StaggerGroup";
 
 const STEPS = ["step_1", "step_2", "step_3"] as const;
 
@@ -8,13 +10,14 @@ export async function SubscriptionHowItWorks({ locale }: { locale: Locale }) {
   return (
     <section className="bg-ink">
       <div className="mx-auto max-w-7xl px-6 md:px-10 lg:px-16 py-20 md:py-28">
-        <h2 className="font-display text-4xl sm:text-5xl text-bone leading-[0.95] tracking-tighter max-w-2xl">
+        <Reveal as="h2" className="font-display text-4xl sm:text-5xl text-bone leading-[0.95] tracking-tighter max-w-2xl">
           {t("heading")}
-        </h2>
-        <ol className="mt-14 grid md:grid-cols-3 border border-bone/10 rounded-2xl overflow-hidden">
+        </Reveal>
+        <StaggerGroup as="ol" className="mt-14 grid md:grid-cols-3 border border-bone/10 rounded-2xl overflow-hidden">
           {STEPS.map((key, idx) => (
-            <li
+            <StaggerItem
               key={key}
+              as="li"
               className="flex flex-col gap-4 px-8 py-10 border-b border-bone/10 md:border-b-0 md:border-r last:border-r-0"
             >
               <span
@@ -27,9 +30,9 @@ export async function SubscriptionHowItWorks({ locale }: { locale: Locale }) {
                 {t(`${key}.title`)}
               </p>
               <p className="text-sm text-bone/55 leading-relaxed">{t(`${key}.body`)}</p>
-            </li>
+            </StaggerItem>
           ))}
-        </ol>
+        </StaggerGroup>
       </div>
     </section>
   );
