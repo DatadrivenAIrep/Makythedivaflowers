@@ -58,7 +58,7 @@ function PdpConfiguratorImpl({ product, locale, cutoff, motionMode, campaign }: 
   }
 
   return (
-    <div className="mt-8 flex flex-col gap-6">
+    <div className="mt-8 flex flex-col gap-6 pb-24 lg:pb-0">
       <div className="flex flex-col gap-2">
         <p className="font-mono text-[10px] uppercase tracking-wider text-mute-500">
           {locale === "es" ? "Tamaño" : "Size"}
@@ -105,6 +105,25 @@ function PdpConfiguratorImpl({ product, locale, cutoff, motionMode, campaign }: 
         locale={locale}
         cardMessage={message}
       />
+
+      {/* Mobile-only sticky buy bar — desktop keeps the sticky column */}
+      <div
+        className="lg:hidden fixed inset-x-0 bottom-0 z-40 px-4 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3
+                   [background:var(--material-bg-strong)]
+                   [backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))]
+                   [-webkit-backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))]
+                   [box-shadow:inset_0_1px_0_var(--material-edge),0_-8px_30px_-24px_rgb(14_13_12/0.5)]"
+      >
+        <AddToBag
+          productId={product.id}
+          variantId={variantId}
+          addOnIds={addOnIds}
+          totalCents={totalCents}
+          disabled={!variantId || !date}
+          locale={locale}
+          cardMessage={message}
+        />
+      </div>
     </div>
   );
 }
