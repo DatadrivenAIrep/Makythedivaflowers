@@ -1,5 +1,5 @@
 "use client";
-import { memo } from "react";
+import { memo, useMemo, type ElementType } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { SPRING } from "@/lib/motion";
 
@@ -9,6 +9,8 @@ type Props = {
   stagger?: number;
   className?: string;
   style?: React.CSSProperties;
+  /** semantic element to render (e.g. "ul"/"ol"); defaults to a div */
+  as?: ElementType;
 };
 
 function StaggerGroupImpl({
@@ -17,8 +19,12 @@ function StaggerGroupImpl({
   stagger = 0.09,
   className,
   style,
+  as,
 }: Props) {
   const reduce = useReducedMotion();
+  // motion.create (not the deprecated motion() call) memoized on `as`, so the
+  // component type is stable across re-renders (no remount / reveal re-fire).
+  const MotionTag = useMemo(() => motion.create(as ?? "div"), [as]);
   const variants = {
     hidden: {},
     show: {
@@ -26,7 +32,7 @@ function StaggerGroupImpl({
     },
   };
   return (
-    <motion.div
+    <MotionTag
       className={className}
       style={style}
       initial="hidden"
@@ -35,7 +41,7 @@ function StaggerGroupImpl({
       variants={variants}
     >
       {children}
-    </motion.div>
+    </MotionTag>
   );
 }
 
@@ -50,10 +56,20 @@ export const staggerItemVariants = {
   },
 };
 
-export function StaggerItem({ children, className }: { children: React.ReactNode; className?: string }) {
+export function StaggerItem({
+  children,
+  className,
+  as,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  /** semantic element to render (e.g. "li"); defaults to a div */
+  as?: ElementType;
+}) {
+  const MotionTag = useMemo(() => motion.create(as ?? "div"), [as]);
   return (
-    <motion.div variants={staggerItemVariants} className={className}>
+    <MotionTag variants={staggerItemVariants} className={className}>
       {children}
-    </motion.div>
+    </MotionTag>
   );
 }
