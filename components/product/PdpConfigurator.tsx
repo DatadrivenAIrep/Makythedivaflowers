@@ -49,6 +49,20 @@ function PdpConfiguratorImpl({ product, locale, cutoff, motionMode, campaign }: 
     return () => observer.disconnect();
   }, []);
 
+  // The bar must also hide once the site footer scrolls into view: sections
+  // (GiftAssuranceBar/PdpAccordion/PairsWellWith/JournalTile) sit between the
+  // inline CTA and the footer, so inlineInView alone goes true too late and
+  // the bar overlaps the footer's legal links for the rest of the scroll.
+  const [footerInView, setFooterInView] = useState(false);
+
+  useEffect(() => {
+    const el = document.querySelector("[data-site-footer]");
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const obs = new IntersectionObserver(([entry]) => setFooterInView(entry.isIntersecting));
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   const totalCents = useMemo(() => {
     const v = product.variants.find((x) => x.id === variantId)?.priceCents ?? 0;
     const adds =
@@ -126,7 +140,7 @@ function PdpConfiguratorImpl({ product, locale, cutoff, motionMode, campaign }: 
           above is scrolled out of view, so it never permanently covers the
           footer's legal links at the bottom of the page. Desktop keeps the
           sticky column instead. */}
-      {!inlineInView && (
+      {!inlineInView && !footerInView && (
         <div
           className="lg:hidden fixed inset-x-0 bottom-0 z-40 px-4 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3
                      [background:var(--material-bg-strong)]

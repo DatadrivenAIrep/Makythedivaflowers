@@ -47,6 +47,7 @@ function ImageStackImpl({ product, locale }: Props) {
   // (e.g. device rotation) so the crop doesn't land mid-image.
   useEffect(() => {
     if (width) value.set(-activeIdx * width);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [width]);
 
   function goTo(i: number) {

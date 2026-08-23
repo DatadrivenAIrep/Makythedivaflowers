@@ -14,7 +14,7 @@ export async function Footer({ locale }: { locale: Locale }) {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-ink text-bone mt-32">
+    <footer data-site-footer className="bg-ink text-bone mt-32">
       <div className="max-w-[1400px] mx-auto px-6 pt-20 pb-10">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 pb-16 border-b border-bone/10">
           <div className="md:col-span-5 space-y-6">
