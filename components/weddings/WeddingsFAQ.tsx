@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { weddingFAQ } from "@/data/wedding-faq";
 import type { Locale } from "@/types/locale";
 import { springs } from "@/lib/motion-config";
+import { Reveal } from "@/components/motion/Reveal";
 
 export function WeddingsFAQ({ locale }: { locale: Locale }) {
   const t = useTranslations("weddings.faq");
@@ -15,11 +16,11 @@ export function WeddingsFAQ({ locale }: { locale: Locale }) {
   return (
     <section className="py-24 bg-bone">
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
-        <header className="mb-10">
+        <Reveal as="header" className="mb-10">
           <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60">{t("eyebrow")}</p>
           <h2 className="mt-3 font-display text-5xl text-ink leading-[0.95] tracking-tighter">{t("title")}</h2>
-        </header>
-        <ul className="border-t border-ink/10">
+        </Reveal>
+        <Reveal as="ul" className="border-t border-ink/10">
           {weddingFAQ.map((item) => {
             const isOpen = openId === item.id;
             return (
@@ -56,7 +57,7 @@ export function WeddingsFAQ({ locale }: { locale: Locale }) {
               </li>
             );
           })}
-        </ul>
+        </Reveal>
       </div>
     </section>
   );
