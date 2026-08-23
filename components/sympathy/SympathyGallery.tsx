@@ -55,7 +55,7 @@ export function SympathyGallery({ locale }: { locale: Locale }) {
                     aria-hidden="true"
                     className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent"
                   />
-                  <span className="absolute left-4 top-4 rounded-full [background:var(--material-bg)] [backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] [-webkit-backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] border-[var(--border)] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-bone">
+                  <span className="absolute left-4 top-4 rounded-full [background:var(--material-bg)] [backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] [-webkit-backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] border border-[var(--border)] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-bone">
                     {formLabel}
                   </span>
                 </a>

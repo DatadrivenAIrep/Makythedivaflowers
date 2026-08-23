@@ -42,7 +42,7 @@ export function PortfolioCard({ event, index, locale, namespace, onOpen }: Props
             className="transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
           />
           <div className="pointer-events-none absolute inset-0 bg-ink/0 transition-colors duration-300 group-hover:bg-ink/10" />
-          <p className="absolute bottom-5 right-5 font-mono text-[11px] uppercase tracking-[0.18em] text-bone/80 [background:var(--material-bg)] [backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] [-webkit-backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] border-[var(--border)] rounded-full px-3 py-1.5">
+          <p className="absolute bottom-5 right-5 font-mono text-[11px] uppercase tracking-[0.18em] text-bone/80 [background:var(--material-bg)] [backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] [-webkit-backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] border border-[var(--border)] rounded-full px-3 py-1.5">
             {t("media_count", { count: event.media.length })}
           </p>
         </div>
