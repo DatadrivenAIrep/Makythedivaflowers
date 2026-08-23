@@ -60,7 +60,7 @@ export function ZipChecker({ locale }: { locale: Locale }) {
         />
         <button
           type="submit"
-          className="rounded-md bg-ink px-4 py-2 text-sm font-medium text-bone hover:bg-ink/90"
+          className="rounded-md bg-ink px-4 py-2 text-sm font-medium text-bone hover:bg-ink/90 active:scale-[0.97] will-change-transform transition-[transform,background-color,border-color,color,opacity] [transition-duration:var(--motion-fast)]"
         >
           Check
         </button>

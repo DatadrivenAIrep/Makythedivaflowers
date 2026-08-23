@@ -76,7 +76,7 @@ export function MothersDayCutoffBanner({
         <a
           href={ctaHref}
           onClick={trackCutoffBannerClick}
-          className="rounded-full bg-bone px-3 py-1 text-xs font-semibold text-rouge hover:bg-bone/90"
+          className="rounded-full bg-bone px-3 py-1 text-xs font-semibold text-rouge hover:bg-bone/90 active:scale-[0.97] will-change-transform transition-[transform,background-color,border-color,color,opacity] [transition-duration:var(--motion-fast)]"
         >
           {ctaLabel}
         </a>

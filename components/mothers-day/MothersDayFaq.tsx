@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/locale";
+import { Reveal } from "@/components/motion/Reveal";
 
 export async function MothersDayFaq({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: "mothers_day" });
@@ -12,20 +13,22 @@ export async function MothersDayFaq({ locale }: { locale: Locale }) {
   ];
   return (
     <section className="mx-auto max-w-3xl px-4 py-16">
-      <h2 className="mb-8 text-center font-display text-3xl text-ink">
-        {t("faq_title")}
-      </h2>
-      <div className="space-y-3">
-        {faqs.map((f) => (
-          <details
-            key={f.q}
-            className="rounded-md border border-ink/10 bg-bone px-4 py-3"
-          >
-            <summary className="cursor-pointer font-medium text-ink">{f.q}</summary>
-            <p className="mt-2 text-ink/80">{f.a}</p>
-          </details>
-        ))}
-      </div>
+      <Reveal as="div">
+        <h2 className="mb-8 text-center font-display text-3xl text-ink">
+          {t("faq_title")}
+        </h2>
+        <div className="space-y-3">
+          {faqs.map((f) => (
+            <details
+              key={f.q}
+              className="rounded-md border border-ink/10 bg-bone px-4 py-3"
+            >
+              <summary className="cursor-pointer font-medium text-ink">{f.q}</summary>
+              <p className="mt-2 text-ink/80">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </Reveal>
     </section>
   );
 }
