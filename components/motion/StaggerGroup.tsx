@@ -1,6 +1,7 @@
 "use client";
 import { memo } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import { SPRING } from "@/lib/motion";
 
 type Props = {
   children: React.ReactNode;
@@ -45,7 +46,7 @@ export const staggerItemVariants = {
   show: {
     opacity: 1,
     y: 0,
-    transition: { type: "spring", stiffness: 100, damping: 20 } as const,
+    transition: SPRING.default,
   },
 };
 
