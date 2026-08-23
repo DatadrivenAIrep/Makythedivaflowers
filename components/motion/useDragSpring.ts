@@ -1,6 +1,6 @@
 // components/motion/useDragSpring.ts
 "use client";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { useMotionValue, animate, useReducedMotion } from "framer-motion";
 import { SPRING, projectSnap, rubberband } from "@/lib/motion";
 
@@ -20,6 +20,9 @@ export function useDragSpring({ axis = "y", snapPoints, onSettle }: Opts) {
   // velocity/position history for release velocity
   const hist = useRef<{ p: number; t: number }[]>([]);
   const grabOffset = useRef(0);
+  // Live window listeners for the in-progress drag, if any — lets unmount
+  // clean up when onUp never fires (component unmounted mid-drag).
+  const active = useRef<{ move: (e: PointerEvent) => void; up: () => void } | null>(null);
 
   function point(e: PointerEvent | React.PointerEvent) {
     return axis === "y" ? e.clientY : e.clientX;
@@ -47,6 +50,7 @@ export function useDragSpring({ axis = "y", snapPoints, onSettle }: Opts) {
     const onUp = () => {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
+      active.current = null;
       const h = hist.current;
       const first = h[0], last = h[h.length - 1];
       const dt = Math.max(1, last.t - first.t);
@@ -55,9 +59,19 @@ export function useDragSpring({ axis = "y", snapPoints, onSettle }: Opts) {
       if (reduce) { value.set(target); onSettle?.(target); return; }
       animate(value, target, { ...SPRING.momentum, velocity, onComplete: () => onSettle?.(target) });
     };
+    active.current = { move: onMove, up: onUp };
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
   }
+
+  // If the component unmounts mid-drag, onUp never fires and the window
+  // listeners (plus their stale closures over value/hist) would otherwise leak.
+  useEffect(() => () => {
+    if (active.current) {
+      window.removeEventListener("pointermove", active.current.move);
+      window.removeEventListener("pointerup", active.current.up);
+    }
+  }, []);
 
   return { value, bind: { onPointerDown }, animateTo };
 }

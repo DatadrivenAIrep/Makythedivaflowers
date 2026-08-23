@@ -52,4 +52,23 @@ describe("useDragSpring", () => {
     // the DOM attribute (see note on `capturedValue` above).
     expect(capturedValue?.get()).toBeCloseTo(300, 0);
   });
+
+  it("removes window listeners on unmount after a drag starts", () => {
+    const removed: string[] = [];
+    const origAdd = window.addEventListener;
+    const origRemove = window.removeEventListener;
+    const addSpy = vi.spyOn(window, "addEventListener");
+    vi.spyOn(window, "removeEventListener").mockImplementation((type, ...a) => {
+      removed.push(String(type));
+      return (origRemove as typeof window.removeEventListener).call(window, type, ...a);
+    });
+    const { unmount } = render(<Harness />);
+    const el = screen.getByTestId("sheet");
+    fireEvent.pointerDown(el, { clientY: 10 }); // starts a drag → window listeners added
+    expect(addSpy.mock.calls.some(([t]) => t === "pointermove")).toBe(true);
+    act(() => { unmount(); }); // unmount mid-drag
+    expect(removed).toContain("pointermove");
+    expect(removed).toContain("pointerup");
+    (window.addEventListener as unknown) = origAdd; (window.removeEventListener as unknown) = origRemove;
+  });
 });
