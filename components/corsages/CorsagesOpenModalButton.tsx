@@ -22,7 +22,7 @@ export function CorsagesOpenModalButton({
       type="button"
       onClick={() => setOpen(true)}
       className={cn(
-        "inline-flex items-center justify-center rounded-full px-6 py-3 font-sans text-sm tracking-tight transition",
+        "inline-flex items-center justify-center rounded-full px-6 py-3 font-sans text-sm tracking-tight transition-[transform,background-color,border-color,color,opacity] [transition-duration:var(--motion-fast)] active:scale-[0.97] will-change-transform",
         variant === "primary" &&
           "bg-ink text-bone hover:bg-ink/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40",
         variant === "ghost" &&

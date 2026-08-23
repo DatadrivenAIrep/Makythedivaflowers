@@ -1,6 +1,8 @@
 // components/corsages/CorsagesHowItWorks.tsx
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/locale";
+import { Reveal } from "@/components/motion/Reveal";
+import { StaggerGroup, StaggerItem } from "@/components/motion/StaggerGroup";
 
 export async function CorsagesHowItWorks({ locale: _locale }: { locale: Locale }) {
   const t = await getTranslations("corsages");
@@ -12,15 +14,17 @@ export async function CorsagesHowItWorks({ locale: _locale }: { locale: Locale }
   return (
     <section className="bg-ink text-bone">
       <div className="mx-auto max-w-[var(--container-max)] px-6 py-20 md:py-24">
-        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-bone/40">
-          {t("how_eyebrow")}
-        </p>
-        <h2 className="mt-3 font-display italic text-4xl md:text-5xl tracking-tighter leading-[0.95]">
-          {t("how_title")}
-        </h2>
-        <ol className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-3">
+        <Reveal as="div">
+          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-bone/40">
+            {t("how_eyebrow")}
+          </p>
+          <h2 className="mt-3 font-display italic text-4xl md:text-5xl tracking-tighter leading-[0.95]">
+            {t("how_title")}
+          </h2>
+        </Reveal>
+        <StaggerGroup as="ol" className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-3">
           {steps.map((s) => (
-            <li key={s.n} className="border-t border-bone/15 pt-5">
+            <StaggerItem as="li" key={s.n} className="border-t border-bone/15 pt-5">
               <span className="font-mono text-[11px] tracking-[0.2em] text-bone/40">
                 {s.n}
               </span>
@@ -30,9 +34,9 @@ export async function CorsagesHowItWorks({ locale: _locale }: { locale: Locale }
               <p className="mt-2 font-sans text-sm text-bone/70 leading-relaxed">
                 {s.body}
               </p>
-            </li>
+            </StaggerItem>
           ))}
-        </ol>
+        </StaggerGroup>
       </div>
     </section>
   );
