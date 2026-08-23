@@ -23,7 +23,7 @@ import { resolveCartLines, cartSubtotalCents } from "@/lib/cart-helpers";
 import { computeOrderTotals, computeDeliveryCentsForZip } from "@/lib/totals";
 import { PRODUCTS } from "@/data/products";
 import type { Locale } from "@/types/locale";
-import { springs } from "@/lib/motion-config";
+import { SPRING } from "@/lib/motion";
 import {
   trackBeginCheckout,
   trackAddShippingInfo,
@@ -377,7 +377,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-ink/10 bg-bone/40 overflow-hidden">
+    <section className="rounded-2xl border border-[var(--border)] overflow-hidden [background:var(--material-bg)] [backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] [-webkit-backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))]">
       <button
         type="button"
         onClick={onHeaderClick}
@@ -394,7 +394,7 @@ function Section({
             initial={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }}
             animate={reduce ? { opacity: 1 } : { height: "auto", opacity: 1 }}
             exit={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }}
-            transition={reduce ? { duration: 0 } : springs.soft}
+            transition={reduce ? { duration: 0 } : SPRING.default}
             className="overflow-hidden"
           >
             <div className="px-5 pb-6 space-y-4">{children}</div>
