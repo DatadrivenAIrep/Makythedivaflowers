@@ -1,7 +1,7 @@
 // components/motion/Reveal.tsx
 "use client";
 import { motion, useReducedMotion } from "framer-motion";
-import type { ElementType, ReactNode } from "react";
+import { useMemo, type ElementType, type ReactNode } from "react";
 import { SPRING } from "@/lib/motion";
 
 type Props = {
@@ -21,7 +21,10 @@ type Props = {
  */
 export function Reveal({ children, delay = 0, y = 16, className, as }: Props) {
   const reduce = useReducedMotion();
-  const MotionTag = motion(as ?? "div");
+  // motion.create (not the deprecated motion() call) memoized on `as`, so the
+  // component type is stable across re-renders — otherwise a parent re-render
+  // remounts the subtree and re-fires this once:true reveal (content flashes).
+  const MotionTag = useMemo(() => motion.create(as ?? "div"), [as]);
   return (
     <MotionTag
       className={className}
