@@ -1,6 +1,7 @@
 // components/story/FounderPortrait.tsx
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import { Reveal } from "@/components/motion/Reveal";
 import type { Locale } from "@/types/locale";
 
 export async function FounderPortrait({ locale }: { locale: Locale }) {
@@ -8,7 +9,7 @@ export async function FounderPortrait({ locale }: { locale: Locale }) {
   return (
     <section className="py-20 bg-petal/20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <Reveal className="grid lg:grid-cols-2 gap-16 items-center">
           <div className="aspect-[3/4] overflow-hidden rounded-2xl bg-bone relative">
             <Image
               src="https://picsum.photos/seed/diva-founder/1200/1600"
@@ -23,7 +24,7 @@ export async function FounderPortrait({ locale }: { locale: Locale }) {
             <h2 className="font-display text-5xl text-ink leading-[0.95] tracking-tighter">{t("title")}</h2>
             <p className="text-base sm:text-lg text-ink/80 leading-relaxed max-w-[58ch]">{t("body")}</p>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
