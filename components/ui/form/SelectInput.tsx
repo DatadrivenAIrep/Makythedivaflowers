@@ -11,7 +11,7 @@ export const SelectInput = React.forwardRef<
       ref={ref}
       className={cn(
         "block w-full bg-bone rounded-lg px-4 py-3 font-sans text-base text-ink appearance-none",
-        "outline-none transition-colors duration-200 cursor-pointer",
+        "outline-none transition-colors [transition-duration:var(--motion-fast)] cursor-pointer",
         isInvalid
           ? "border border-rouge focus:ring-2 focus:ring-rouge/20"
           : "border border-ink/15 hover:border-ink/30 focus:border-rouge focus:ring-2 focus:ring-rouge/20",

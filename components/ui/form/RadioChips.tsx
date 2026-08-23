@@ -32,7 +32,7 @@ export function RadioChips({ name, items, value, onChange, cols = 4, className, 
             htmlFor={id}
             className={cn(
               "cursor-pointer rounded-xl border px-4 py-3.5 text-center font-sans text-sm",
-              "min-h-[52px] flex items-center justify-center transition-colors duration-200",
+              "min-h-[52px] flex items-center justify-center transition-[transform,background-color,border-color,color] [transition-duration:var(--motion-fast)] active:scale-[0.97] will-change-transform",
               isActive
                 ? "border-rouge bg-rouge/[0.08] text-ink"
                 : "border-ink/15 text-ink/70 hover:border-ink/30",

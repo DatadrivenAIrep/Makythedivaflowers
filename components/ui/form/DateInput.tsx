@@ -12,7 +12,7 @@ export const DateInput = React.forwardRef<
       type="date"
       className={cn(
         "block w-full bg-bone rounded-lg px-4 py-3 font-mono text-sm text-ink",
-        "outline-none transition-colors duration-200",
+        "outline-none transition-colors [transition-duration:var(--motion-fast)]",
         isInvalid
           ? "border border-rouge focus:ring-2 focus:ring-rouge/20"
           : "border border-ink/15 hover:border-ink/30 focus:border-rouge focus:ring-2 focus:ring-rouge/20",

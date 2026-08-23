@@ -2,6 +2,7 @@
 import * as React from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Check } from "@phosphor-icons/react/dist/ssr";
+import { SPRING } from "@/lib/motion";
 
 type Action = { label: string; onClick: () => void };
 
@@ -23,13 +24,13 @@ export function FormSuccess({ title, body, action }: Props) {
     <motion.div
       initial={reduce ? { opacity: 0 } : { opacity: 0, y: 8 }}
       animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
-      transition={{ duration: reduce ? 0 : 0.25 }}
+      transition={reduce ? { duration: 0 } : SPRING.default}
       className="flex flex-col items-start gap-4"
     >
       <motion.span
         initial={reduce ? { scale: 1 } : { scale: 0 }}
         animate={{ scale: 1 }}
-        transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 220, damping: 14 }}
+        transition={reduce ? { duration: 0 } : SPRING.momentum}
         className="inline-flex items-center justify-center size-10 rounded-full bg-rouge text-bone"
       >
         <Check size={18} weight="bold" />

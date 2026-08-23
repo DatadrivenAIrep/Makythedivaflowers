@@ -18,7 +18,7 @@ export const FormSubmit = React.forwardRef<HTMLButtonElement, Props>(
           "inline-flex items-center justify-center rounded-full",
           "bg-ink text-bone hover:bg-rouge",
           "px-8 py-4 min-h-[52px] font-sans text-sm font-medium tracking-tight",
-          "transition-colors duration-200 outline-none",
+          "transition-[transform,background-color] [transition-duration:var(--motion-fast)] active:scale-[0.98] will-change-transform outline-none",
           "focus-visible:ring-2 focus-visible:ring-rouge focus-visible:ring-offset-2 focus-visible:ring-offset-bone",
           "disabled:opacity-60 disabled:cursor-not-allowed",
           fullWidth ? "w-full sm:w-auto sm:self-end" : "",

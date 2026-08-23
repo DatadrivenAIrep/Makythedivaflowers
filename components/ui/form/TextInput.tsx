@@ -13,7 +13,7 @@ export const TextInput = React.forwardRef<
       className={cn(
         "block w-full bg-transparent border-0 border-b py-3 px-0",
         "font-sans text-base text-ink placeholder:text-mute-400",
-        "outline-none transition-colors duration-200",
+        "outline-none transition-colors [transition-duration:var(--motion-fast)]",
         isInvalid
           ? "border-b-[1.5px] border-rouge"
           : "border-b border-ink/20 hover:border-ink/35 focus:border-b-[1.5px] focus:border-rouge",
