@@ -31,7 +31,7 @@ function VariantChipsImpl({ product, locale, value, onChange }: Props) {
               aria-pressed={selected}
               onClick={() => onChange(v.id)}
               className={cn(
-                "inline-flex h-11 items-center gap-3 rounded-full border px-4 font-sans text-sm tracking-tight transition-colors",
+                "inline-flex h-11 items-center gap-3 rounded-full border px-4 font-sans text-sm tracking-tight transition-[transform,background-color,border-color] [transition-duration:var(--motion-fast)] active:scale-[0.97] will-change-transform",
                 selected ? "border-transparent bg-ink text-bone" : "border-ink/15 text-ink/85 hover:border-ink/40",
               )}
             >

@@ -17,7 +17,7 @@ function FilterChipImpl({ label, selected, onToggle, ariaLabel }: Props) {
       aria-label={ariaLabel ?? label}
       onClick={onToggle}
       className={cn(
-        "inline-flex h-9 items-center rounded-full border px-3.5 font-sans text-sm tracking-tight transition-colors duration-200",
+        "inline-flex h-9 items-center rounded-full border px-3.5 font-sans text-sm tracking-tight transition-[transform,background-color,border-color,color] [transition-duration:var(--motion-fast)] active:scale-[0.96] will-change-transform",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rouge focus-visible:ring-offset-2 focus-visible:ring-offset-bone",
         selected
           ? "border-transparent bg-rouge text-bone"

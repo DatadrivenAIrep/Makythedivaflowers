@@ -112,7 +112,7 @@ function FilterBarImpl({
   const hasAny = Object.keys(filter).length > 0 || sort !== "newest";
 
   return (
-    <div className="sticky top-16 z-30 -mx-6 border-y border-ink/10 bg-bone/85 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-bone/70">
+    <div className="sticky top-16 z-30 -mx-6 border-y border-[var(--border)] px-6 py-3 [background:var(--material-bg)] [backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] [-webkit-backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))]">
       <div className="mx-auto flex max-w-[var(--container-max)] flex-wrap items-center gap-x-6 gap-y-3">
         <span className="font-mono text-[10px] uppercase tracking-wider text-mute-500">
           {l("filter_label", locale)}
