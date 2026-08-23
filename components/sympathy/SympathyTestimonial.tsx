@@ -1,4 +1,5 @@
 import type { Locale } from "@/types/locale";
+import { Reveal } from "@/components/motion/Reveal";
 
 // A single, dignified pull-quote from a family we served. Kept out of the
 // Google-reviews JSON-LD (data/reviews.ts) on purpose — this is a private
@@ -19,7 +20,7 @@ const COPY = {
 export function SympathyTestimonial({ locale }: { locale: Locale }) {
   return (
     <section className="bg-bone py-20 md:py-28">
-      <figure className="mx-auto max-w-[var(--container-max)] px-6">
+      <Reveal as="figure" className="mx-auto max-w-[var(--container-max)] px-6">
         <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute-500">
           {COPY.eyebrow[locale]}
         </p>
@@ -31,7 +32,7 @@ export function SympathyTestimonial({ locale }: { locale: Locale }) {
           <span className="mx-2 text-ink/30">·</span>
           {COPY.context[locale]}
         </figcaption>
-      </figure>
+      </Reveal>
     </section>
   );
 }

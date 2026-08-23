@@ -1,5 +1,6 @@
 import type { Locale } from "@/types/locale";
 import { SITE } from "@/data/site";
+import { Reveal } from "@/components/motion/Reveal";
 
 const COPY = {
   eyebrow: { en: "For funeral homes & directors", es: "Para funerarias y directores" },
@@ -39,7 +40,7 @@ export function SympathyFuneralHomes({ locale }: { locale: Locale }) {
   return (
     <section className="bg-bone py-20 md:py-24">
       <div className="mx-auto max-w-[var(--container-max)] px-6">
-        <div className="rounded-[var(--radius-bento)] border border-ink/15 bg-bone/60 p-8 md:p-12">
+        <Reveal as="div" className="rounded-[var(--radius-bento)] border border-ink/15 bg-bone/60 p-8 md:p-12">
           <div className="grid gap-10 md:grid-cols-[1.1fr_1fr] md:items-start">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-rouge">
@@ -81,7 +82,7 @@ export function SympathyFuneralHomes({ locale }: { locale: Locale }) {
               </p>
             </div>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

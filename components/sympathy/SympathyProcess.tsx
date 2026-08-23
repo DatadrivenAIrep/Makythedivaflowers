@@ -1,4 +1,6 @@
 import type { Locale } from "@/types/locale";
+import { Reveal } from "@/components/motion/Reveal";
+import { StaggerGroup, StaggerItem } from "@/components/motion/StaggerGroup";
 
 const COPY = {
   eyebrow: { en: "How it works", es: "Cómo lo hacemos" },
@@ -35,17 +37,18 @@ export function SympathyProcess({ locale }: { locale: Locale }) {
   return (
     <section className="bg-bone py-20 md:py-24">
       <div className="mx-auto max-w-[var(--container-max)] px-6">
-        <header className="max-w-2xl">
+        <Reveal as="header" className="max-w-2xl">
           <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute-500">
             {COPY.eyebrow[locale]}
           </p>
           <h2 className="mt-3 font-display text-4xl leading-[1] tracking-tighter text-ink md:text-5xl">
             {COPY.title[locale]}
           </h2>
-        </header>
-        <ol className="mt-12 grid gap-6 md:grid-cols-3">
+        </Reveal>
+        <StaggerGroup as="ol" className="mt-12 grid gap-6 md:grid-cols-3">
           {COPY.steps.map((step) => (
-            <li
+            <StaggerItem
+              as="li"
               key={step.title.en}
               className="rounded-[var(--radius-bento)] border border-ink/10 bg-bone/60 p-8"
             >
@@ -55,9 +58,9 @@ export function SympathyProcess({ locale }: { locale: Locale }) {
               <p className="mt-3 font-sans text-sm leading-relaxed text-ink/75">
                 {step.body[locale]}
               </p>
-            </li>
+            </StaggerItem>
           ))}
-        </ol>
+        </StaggerGroup>
       </div>
     </section>
   );

@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Locale } from "@/types/locale";
 import { SITE } from "@/data/site";
+import { Reveal } from "@/components/motion/Reveal";
 
 const COPY = {
   eyebrow: { en: "Sympathy & memorials", es: "Pésame y memoriales" },
@@ -36,7 +37,7 @@ export function SympathyHero({ locale }: { locale: Locale }) {
         aria-hidden="true"
         className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-ink to-transparent"
       />
-      <div className="relative mx-auto max-w-[var(--container-max)] px-6 pt-24 pb-20 md:pt-32 md:pb-28">
+      <Reveal as="div" className="relative mx-auto max-w-[var(--container-max)] px-6 pt-24 pb-20 md:pt-32 md:pb-28">
         <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-bone/70">
           {COPY.eyebrow[locale]}
         </p>
@@ -49,7 +50,7 @@ export function SympathyHero({ locale }: { locale: Locale }) {
         <div className="mt-10 flex flex-wrap items-center gap-4">
           <a
             href={SITE.phoneHref}
-            className="inline-flex items-center gap-3 rounded-full bg-bone px-6 py-3 font-sans text-base font-medium text-ink transition-colors hover:bg-bone/90"
+            className="inline-flex items-center gap-3 rounded-full bg-bone px-6 py-3 font-sans text-base font-medium text-ink transition-[transform,background-color,border-color,color,opacity] [transition-duration:var(--motion-fast)] hover:bg-bone/90 active:scale-[0.97] will-change-transform"
           >
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
               <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" strokeLinecap="round" strokeLinejoin="round" />
@@ -58,12 +59,12 @@ export function SympathyHero({ locale }: { locale: Locale }) {
           </a>
           <Link
             href="#inquire"
-            className="inline-flex items-center gap-2 rounded-full border border-bone/30 px-6 py-3 font-sans text-base text-bone transition-colors hover:bg-bone/10"
+            className="inline-flex items-center gap-2 rounded-full border border-bone/30 px-6 py-3 font-sans text-base text-bone transition-[transform,background-color,border-color,color,opacity] [transition-duration:var(--motion-fast)] hover:bg-bone/10 active:scale-[0.97] will-change-transform"
           >
             {COPY.inquire[locale]} →
           </Link>
         </div>
-      </div>
+      </Reveal>
     </header>
   );
 }

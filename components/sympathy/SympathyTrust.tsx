@@ -1,5 +1,6 @@
 import type { Locale } from "@/types/locale";
 import { SITE } from "@/data/site";
+import { Reveal } from "@/components/motion/Reveal";
 
 const COPY = {
   eyebrow: { en: "Direct coordination", es: "Coordinación directa" },
@@ -19,7 +20,7 @@ export function SympathyTrust({ locale }: { locale: Locale }) {
   return (
     <section className="bg-ink py-20 text-bone md:py-24">
       <div className="mx-auto max-w-[var(--container-max)] px-6">
-        <div className="rounded-[var(--radius-bento)] border border-bone/10 bg-bone/[0.04] p-8 md:p-12">
+        <Reveal as="div" className="rounded-[var(--radius-bento)] border border-bone/10 bg-bone/[0.04] p-8 md:p-12">
           <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-bone/60">
             {COPY.eyebrow[locale]}
           </p>
@@ -57,7 +58,7 @@ export function SympathyTrust({ locale }: { locale: Locale }) {
               </dd>
             </div>
           </dl>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

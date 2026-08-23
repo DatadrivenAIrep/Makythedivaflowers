@@ -5,6 +5,8 @@ import { PRODUCTS } from "@/data/products";
 import { pickLocalized } from "@/types/product";
 import { formatMoneyCents } from "@/lib/format";
 import { startingPriceCents } from "@/data/product-helpers";
+import { Reveal } from "@/components/motion/Reveal";
+import { StaggerGroup, StaggerItem } from "@/components/motion/StaggerGroup";
 
 const COPY = {
   eyebrow: { en: "For the smaller gesture", es: "Para el gesto más pequeño" },
@@ -31,7 +33,7 @@ export function SympathySmallerPieces({ locale }: { locale: Locale }) {
   return (
     <section className="bg-bone py-20 md:py-24">
       <div className="mx-auto max-w-[var(--container-max)] px-6">
-        <header className="max-w-2xl">
+        <Reveal as="header" className="max-w-2xl">
           <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute-500">
             {COPY.eyebrow[locale]}
           </p>
@@ -41,13 +43,14 @@ export function SympathySmallerPieces({ locale }: { locale: Locale }) {
           <p className="mt-4 max-w-xl font-sans text-base leading-relaxed text-ink/75">
             {COPY.body[locale]}
           </p>
-        </header>
-        <ul className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2">
+        </Reveal>
+        <StaggerGroup as="ul" className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2">
           {items.map((p) => {
             const image = p.images[0];
             const from = formatMoneyCents(startingPriceCents(p), locale);
             return (
-              <li
+              <StaggerItem
+                as="li"
                 key={p.id}
                 className="group overflow-hidden rounded-[var(--radius-bento)] border border-ink/10 bg-bone"
               >
@@ -72,10 +75,10 @@ export function SympathySmallerPieces({ locale }: { locale: Locale }) {
                     </p>
                   </div>
                 </Link>
-              </li>
+              </StaggerItem>
             );
           })}
-        </ul>
+        </StaggerGroup>
       </div>
     </section>
   );

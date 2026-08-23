@@ -1,6 +1,8 @@
 import Image from "next/image";
 import type { Locale } from "@/types/locale";
 import { SYMPATHY_PIECES, SYMPATHY_FORMS } from "@/data/sympathy-pieces";
+import { Reveal } from "@/components/motion/Reveal";
+import { StaggerGroup, StaggerItem } from "@/components/motion/StaggerGroup";
 
 const COPY = {
   eyebrow: { en: "Recent work", es: "Trabajos recientes" },
@@ -16,7 +18,7 @@ export function SympathyGallery({ locale }: { locale: Locale }) {
   return (
     <section className="bg-ink/[0.97] py-20 text-bone md:py-28">
       <div className="mx-auto max-w-[var(--container-max)] px-6">
-        <header className="max-w-2xl">
+        <Reveal as="header" className="max-w-2xl">
           <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-bone/60">
             {COPY.eyebrow[locale]}
           </p>
@@ -26,12 +28,13 @@ export function SympathyGallery({ locale }: { locale: Locale }) {
           <p className="mt-4 font-sans text-base leading-relaxed text-bone/75">
             {COPY.body[locale]}
           </p>
-        </header>
-        <ul className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        </Reveal>
+        <StaggerGroup as="ul" className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {SYMPATHY_PIECES.map((piece) => {
             const formLabel = SYMPATHY_FORMS[piece.form][locale];
             return (
-              <li
+              <StaggerItem
+                as="li"
                 key={piece.slug}
                 className="group flex flex-col overflow-hidden rounded-[var(--radius-bento)] border border-bone/10 bg-ink/60"
               >
@@ -52,7 +55,7 @@ export function SympathyGallery({ locale }: { locale: Locale }) {
                     aria-hidden="true"
                     className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent"
                   />
-                  <span className="absolute left-4 top-4 rounded-full bg-bone/15 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-bone backdrop-blur">
+                  <span className="absolute left-4 top-4 rounded-full [background:var(--material-bg)] [backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] [-webkit-backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] border-[var(--border)] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-bone">
                     {formLabel}
                   </span>
                 </a>
@@ -70,10 +73,10 @@ export function SympathyGallery({ locale }: { locale: Locale }) {
                     {COPY.inquire[locale]}
                   </a>
                 </div>
-              </li>
+              </StaggerItem>
             );
           })}
-        </ul>
+        </StaggerGroup>
       </div>
     </section>
   );
