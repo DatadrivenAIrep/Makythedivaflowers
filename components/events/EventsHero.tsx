@@ -6,7 +6,6 @@ import { WhatsAppCta } from "@/components/inquiry/WhatsAppCta";
 import { RatingChip } from "@/components/social/RatingChip";
 import { REVIEWS_AGGREGATE } from "@/data/reviews";
 import type { Locale } from "@/types/locale";
-import { Reveal } from "@/components/motion/Reveal";
 
 export async function EventsHero({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: "events" });
@@ -22,7 +21,7 @@ export async function EventsHero({ locale }: { locale: Locale }) {
       />
       <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/20 to-transparent" />
       <div className="relative z-10 mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 pb-20 pt-32 grid lg:grid-cols-12 gap-8">
-        <Reveal className="lg:col-span-7 space-y-6">
+        <div className="lg:col-span-7 space-y-6">
           <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-bone/80">{t("eyebrow")}</p>
           <h1 className="font-display text-bone text-6xl sm:text-7xl lg:text-8xl leading-[0.92] tracking-tighter">
             {t("hero_title")}
@@ -40,7 +39,7 @@ export async function EventsHero({ locale }: { locale: Locale }) {
               count: REVIEWS_AGGREGATE.total,
             })}
           />
-        </Reveal>
+        </div>
       </div>
     </section>
   );

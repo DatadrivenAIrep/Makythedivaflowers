@@ -34,7 +34,7 @@ export async function SubscriptionHero({ locale }: { locale: Locale }) {
 
       {/* Eyebrow pill */}
       <div className="absolute top-20 left-4 md:top-24 md:left-8 lg:left-14 z-20">
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-bone/85 border border-bone/30 [background:var(--material-bg)] [backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] [-webkit-backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] px-3 py-1.5 rounded-full inline-block">
+        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-bone/85 border border-[var(--border)] [background:var(--material-bg)] [backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] [-webkit-backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] px-3 py-1.5 rounded-full inline-block">
           {t("eyebrow")}
         </span>
       </div>

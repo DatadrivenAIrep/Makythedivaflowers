@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Locale } from "@/types/locale";
 import { SITE } from "@/data/site";
-import { Reveal } from "@/components/motion/Reveal";
 
 const COPY = {
   eyebrow: { en: "Sympathy & memorials", es: "Pésame y memoriales" },
@@ -37,7 +36,7 @@ export function SympathyHero({ locale }: { locale: Locale }) {
         aria-hidden="true"
         className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-ink to-transparent"
       />
-      <Reveal as="div" className="relative mx-auto max-w-[var(--container-max)] px-6 pt-24 pb-20 md:pt-32 md:pb-28">
+      <div className="relative mx-auto max-w-[var(--container-max)] px-6 pt-24 pb-20 md:pt-32 md:pb-28">
         <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-bone/70">
           {COPY.eyebrow[locale]}
         </p>
@@ -64,7 +63,7 @@ export function SympathyHero({ locale }: { locale: Locale }) {
             {COPY.inquire[locale]} →
           </Link>
         </div>
-      </Reveal>
+      </div>
     </header>
   );
 }

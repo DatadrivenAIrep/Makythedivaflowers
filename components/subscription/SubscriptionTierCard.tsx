@@ -23,7 +23,7 @@ function SubscriptionTierCardImpl({ locale, plan, selected, onSelect }: Props) {
       onClick={() => onSelect(plan.id)}
       aria-pressed={selected}
       className={cn(
-        "relative flex h-full flex-col rounded-[var(--radius-bento)] border text-left transition-all duration-200",
+        "relative flex h-full flex-col rounded-[var(--radius-bento)] border text-left transition-[transform,background-color,border-color,color,box-shadow] [transition-duration:var(--motion-fast)] active:scale-[0.98] will-change-transform",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rouge/50",
         selected
           ? "border-rouge bg-ink text-bone shadow-[0_8px_32px_rgba(184,52,94,0.25)]"
