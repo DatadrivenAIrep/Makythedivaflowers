@@ -1,5 +1,5 @@
 "use client";
-import { memo, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import type { Locale } from "@/types/locale";
 import type { Product, SubscriptionCadence as Cadence } from "@/types/product";
 import type { Occasion } from "@/schemas/card-message";
@@ -35,6 +35,20 @@ function PdpConfiguratorImpl({ product, locale, cutoff, motionMode, campaign }: 
     product.subscription?.cadences[0] ?? "weekly",
   );
 
+  // Apple sticky-CTA pattern: the mobile bar only appears once the inline
+  // AddToBag has scrolled out of view, so it never sits permanently on top
+  // of the footer's legal links (see components/product/PdpConfigurator.tsx
+  // sticky bar below).
+  const inlineRef = useRef<HTMLDivElement>(null);
+  const [inlineInView, setInlineInView] = useState(true);
+
+  useEffect(() => {
+    if (!inlineRef.current || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(([entry]) => setInlineInView(entry.isIntersecting));
+    observer.observe(inlineRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   const totalCents = useMemo(() => {
     const v = product.variants.find((x) => x.id === variantId)?.priceCents ?? 0;
     const adds =
@@ -58,7 +72,7 @@ function PdpConfiguratorImpl({ product, locale, cutoff, motionMode, campaign }: 
   }
 
   return (
-    <div className="mt-8 flex flex-col gap-6 pb-24 lg:pb-0">
+    <div className="mt-8 flex flex-col gap-6">
       <div className="flex flex-col gap-2">
         <p className="font-mono text-[10px] uppercase tracking-wider text-mute-500">
           {locale === "es" ? "Tamaño" : "Size"}
@@ -96,24 +110,7 @@ function PdpConfiguratorImpl({ product, locale, cutoff, motionMode, campaign }: 
         campaign={campaign}
       />
 
-      <AddToBag
-        productId={product.id}
-        variantId={variantId}
-        addOnIds={addOnIds}
-        totalCents={totalCents}
-        disabled={!variantId || !date}
-        locale={locale}
-        cardMessage={message}
-      />
-
-      {/* Mobile-only sticky buy bar — desktop keeps the sticky column */}
-      <div
-        className="lg:hidden fixed inset-x-0 bottom-0 z-40 px-4 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3
-                   [background:var(--material-bg-strong)]
-                   [backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))]
-                   [-webkit-backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))]
-                   [box-shadow:inset_0_1px_0_var(--material-edge),0_-8px_30px_-24px_rgb(14_13_12/0.5)]"
-      >
+      <div ref={inlineRef}>
         <AddToBag
           productId={product.id}
           variantId={variantId}
@@ -124,6 +121,30 @@ function PdpConfiguratorImpl({ product, locale, cutoff, motionMode, campaign }: 
           cardMessage={message}
         />
       </div>
+
+      {/* Mobile-only sticky buy bar — shown only while the inline AddToBag
+          above is scrolled out of view, so it never permanently covers the
+          footer's legal links at the bottom of the page. Desktop keeps the
+          sticky column instead. */}
+      {!inlineInView && (
+        <div
+          className="lg:hidden fixed inset-x-0 bottom-0 z-40 px-4 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3
+                     [background:var(--material-bg-strong)]
+                     [backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))]
+                     [-webkit-backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))]
+                     [box-shadow:inset_0_1px_0_var(--material-edge),0_-8px_30px_-24px_rgb(14_13_12/0.5)]"
+        >
+          <AddToBag
+            productId={product.id}
+            variantId={variantId}
+            addOnIds={addOnIds}
+            totalCents={totalCents}
+            disabled={!variantId || !date}
+            locale={locale}
+            cardMessage={message}
+          />
+        </div>
+      )}
     </div>
   );
 }

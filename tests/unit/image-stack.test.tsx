@@ -12,6 +12,7 @@ beforeEach(() => {
 });
 
 const product = {
+  title: { en: "Test Bouquet", es: "Ramo de Prueba" },
   images: [
     { src: "/a.webp", alt: { en: "Alpha", es: "Alpha" }, aspect: "4/5" },
     { src: "/b.webp", alt: { en: "Beta", es: "Beta" }, aspect: "4/5" },
@@ -25,6 +26,10 @@ describe("ImageStack", () => {
     // main track has all images; thumbnails mirror them → each alt appears
     expect(screen.getAllByAltText("Alpha").length).toBeGreaterThan(0);
     expect(screen.getAllByAltText("Gamma").length).toBeGreaterThan(0);
+    // a non-active image's alt must appear twice — once in the track, once
+    // in its thumbnail. Fails against a single-main-image component that
+    // only renders the active slide's alt once.
+    expect(screen.getAllByAltText("Beta")).toHaveLength(2);
     // one thumbnail button per image
     expect(screen.getAllByRole("button").length).toBe(3);
   });

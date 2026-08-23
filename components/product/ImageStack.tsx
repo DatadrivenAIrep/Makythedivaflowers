@@ -12,6 +12,9 @@ type Props = {
   locale: Locale;
 };
 
+// Track height is fixed to the first image's aspect ratio; a product with
+// mixed per-image aspect ratios would need a different layout (a no-op today
+// — all multi-image products use a uniform aspect across their image set).
 function aspectClass(a?: string) {
   return a === "1/1" ? "aspect-square" : a === "16/9" ? "aspect-video" : "aspect-[4/5]";
 }
@@ -40,6 +43,12 @@ function ImageStackImpl({ product, locale }: Props) {
     onSettle: (p) => { if (width) setActiveIdx(Math.round(-p / width)); },
   });
 
+  // Re-sync the track to the active image when the viewport width changes
+  // (e.g. device rotation) so the crop doesn't land mid-image.
+  useEffect(() => {
+    if (width) value.set(-activeIdx * width);
+  }, [width]);
+
   function goTo(i: number) {
     setActiveIdx(i);
     if (width) animateTo(-i * width);
@@ -56,13 +65,18 @@ function ImageStackImpl({ product, locale }: Props) {
           "relative overflow-hidden rounded-[var(--radius-product)] bg-mute-100 touch-pan-y",
           aspectClass(first.aspect),
         )}
-        role="group"
-        aria-roledescription="carousel"
-        onKeyDown={(e) => {
-          if (e.key === "ArrowRight" && activeIdx < images.length - 1) goTo(activeIdx + 1);
-          if (e.key === "ArrowLeft" && activeIdx > 0) goTo(activeIdx - 1);
-        }}
-        tabIndex={0}
+        role={single ? undefined : "group"}
+        aria-roledescription={single ? undefined : "carousel"}
+        aria-label={single ? undefined : product.title[locale]}
+        tabIndex={single ? undefined : 0}
+        onKeyDown={
+          single
+            ? undefined
+            : (e) => {
+                if (e.key === "ArrowRight" && activeIdx < images.length - 1) goTo(activeIdx + 1);
+                if (e.key === "ArrowLeft" && activeIdx > 0) goTo(activeIdx - 1);
+              }
+        }
       >
         {single ? (
           <img src={first.src} alt={first.alt[locale]} className="absolute inset-0 size-full object-cover" />
