@@ -3,12 +3,13 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/locale";
 import { SITE } from "@/data/site";
+import { Reveal } from "@/components/motion/Reveal";
 
 export async function OrchidsCTA({ locale }: { locale: Locale }) {
   const t = await getTranslations("orchids");
   return (
     <section className="bg-bone text-ink">
-      <div className="mx-auto max-w-[var(--container-max)] px-6 py-20 md:py-24">
+      <Reveal as="div" className="mx-auto max-w-[var(--container-max)] px-6 py-20 md:py-24">
         <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-ink/60">
           {t("cta_eyebrow")}
         </p>
@@ -21,18 +22,18 @@ export async function OrchidsCTA({ locale }: { locale: Locale }) {
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
             href={`/${locale}/product/phalaenopsis-orchid`}
-            className="rounded-full bg-ink px-6 py-3 font-sans text-sm text-bone transition-opacity hover:opacity-85"
+            className="rounded-full bg-ink px-6 py-3 font-sans text-sm text-bone transition-[transform,background-color,border-color,color,opacity] [transition-duration:var(--motion-fast)] active:scale-[0.97] will-change-transform hover:opacity-85"
           >
             {t("cta_button")}
           </Link>
           <a
             href={SITE.phoneHref}
-            className="rounded-full border border-ink/25 px-6 py-3 font-sans text-sm transition-colors hover:bg-ink hover:text-bone"
+            className="rounded-full border border-ink/25 px-6 py-3 font-sans text-sm transition-[transform,background-color,border-color,color,opacity] [transition-duration:var(--motion-fast)] active:scale-[0.97] will-change-transform hover:bg-ink hover:text-bone"
           >
             {t("cta_call")}
           </a>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

@@ -41,7 +41,7 @@ export async function OrchidsHero({ locale }: { locale: Locale }) {
         </p>
         <Link
           href={`/${locale}/product/phalaenopsis-orchid`}
-          className="mt-6 inline-block rounded-full border border-bone/40 px-6 py-2.5 font-sans text-sm text-bone transition-colors hover:bg-bone hover:text-ink"
+          className="mt-6 inline-block rounded-full border border-bone/40 px-6 py-2.5 font-sans text-sm text-bone transition-[transform,background-color,border-color,color,opacity] [transition-duration:var(--motion-fast)] active:scale-[0.97] will-change-transform hover:bg-bone hover:text-ink"
         >
           {t("hero_cta")}
         </Link>

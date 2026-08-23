@@ -1,12 +1,13 @@
 // components/orchids/OrchidsWhy.tsx
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/locale";
+import { Reveal } from "@/components/motion/Reveal";
 
 export async function OrchidsWhy({ locale: _locale }: { locale: Locale }) {
   const t = await getTranslations("orchids");
   return (
     <section className="bg-ink text-bone">
-      <div className="mx-auto max-w-[var(--container-max)] px-6 py-20 md:py-24">
+      <Reveal as="div" className="mx-auto max-w-[var(--container-max)] px-6 py-20 md:py-24">
         <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-bone/40">
           {t("why_eyebrow")}
         </p>
@@ -32,7 +33,7 @@ export async function OrchidsWhy({ locale: _locale }: { locale: Locale }) {
         <p className="mt-10 max-w-2xl font-sans text-sm leading-relaxed text-bone/70 md:text-base">
           {t("why_body")}
         </p>
-      </div>
+      </Reveal>
     </section>
   );
 }
