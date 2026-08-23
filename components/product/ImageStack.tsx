@@ -1,7 +1,8 @@
 // components/product/ImageStack.tsx
 "use client";
-import { useState, memo } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useState, useRef, useEffect, memo } from "react";
+import { motion } from "framer-motion";
+import { useDragSpring } from "@/components/motion/useDragSpring";
 import type { Product } from "@/types/product";
 import type { Locale } from "@/types/locale";
 import { cn } from "@/lib/cn";
@@ -11,41 +12,82 @@ type Props = {
   locale: Locale;
 };
 
+function aspectClass(a?: string) {
+  return a === "1/1" ? "aspect-square" : a === "16/9" ? "aspect-video" : "aspect-[4/5]";
+}
+
 function ImageStackImpl({ product, locale }: Props) {
-  const reduce = useReducedMotion();
+  const images = product.images;
   const [activeIdx, setActiveIdx] = useState(0);
-  const active = product.images[activeIdx];
-  if (!active) return null;
-  const aspect =
-    active.aspect === "1/1"
-      ? "aspect-square"
-      : active.aspect === "16/9"
-        ? "aspect-video"
-        : "aspect-[4/5]";
+  const [width, setWidth] = useState(0);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const first = images[0];
+
+  useEffect(() => {
+    const el = viewportRef.current;
+    if (!el) return;
+    const measure = () => setWidth(el.clientWidth);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const snapPoints = images.map((_, i) => -i * width);
+  const { value, bind, animateTo } = useDragSpring({
+    axis: "x",
+    snapPoints: snapPoints.length ? snapPoints : [0],
+    onSettle: (p) => { if (width) setActiveIdx(Math.round(-p / width)); },
+  });
+
+  function goTo(i: number) {
+    setActiveIdx(i);
+    if (width) animateTo(-i * width);
+  }
+
+  if (!first) return null;
+  const single = images.length < 2;
 
   return (
     <div>
-      <div className={cn("relative overflow-hidden rounded-[var(--radius-product)] bg-mute-100", aspect)}>
-        <AnimatePresence mode="wait">
-          <motion.img
-            key={active.src}
-            src={active.src}
-            alt={active.alt[locale]}
-            className="absolute inset-0 size-full object-cover"
-            initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 1.02 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ type: "spring", stiffness: 120, damping: 18 }}
-          />
-        </AnimatePresence>
+      <div
+        ref={viewportRef}
+        className={cn(
+          "relative overflow-hidden rounded-[var(--radius-product)] bg-mute-100 touch-pan-y",
+          aspectClass(first.aspect),
+        )}
+        role="group"
+        aria-roledescription="carousel"
+        onKeyDown={(e) => {
+          if (e.key === "ArrowRight" && activeIdx < images.length - 1) goTo(activeIdx + 1);
+          if (e.key === "ArrowLeft" && activeIdx > 0) goTo(activeIdx - 1);
+        }}
+        tabIndex={0}
+      >
+        {single ? (
+          <img src={first.src} alt={first.alt[locale]} className="absolute inset-0 size-full object-cover" />
+        ) : (
+          <motion.div className="flex h-full" style={{ x: value, willChange: "transform" }} {...bind}>
+            {images.map((img) => (
+              <img
+                key={img.src}
+                src={img.src}
+                alt={img.alt[locale]}
+                draggable={false}
+                className="h-full w-full shrink-0 object-cover select-none"
+              />
+            ))}
+          </motion.div>
+        )}
       </div>
-      {product.images.length > 1 && (
+
+      {!single && (
         <div className="mt-3 grid grid-cols-3 gap-3">
-          {product.images.map((img, i) => (
+          {images.map((img, i) => (
             <button
               key={img.src}
               type="button"
-              onClick={() => setActiveIdx(i)}
+              onClick={() => goTo(i)}
               aria-label={img.alt[locale]}
               aria-current={i === activeIdx}
               className={cn(
