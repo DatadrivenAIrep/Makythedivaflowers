@@ -1,5 +1,6 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
@@ -28,6 +29,14 @@ export function MobileDrawer({
   locale: Locale;
 }) {
   const t = useTranslations("nav");
+  const [mounted, setMounted] = useState(false);
+
+  // The drawer is portaled to document.body so its `fixed` positioning
+  // resolves against the viewport, not the header. The header sets a
+  // `backdrop-filter` (and framer-motion transform), which would otherwise
+  // make it the containing block for fixed descendants and clip the panel
+  // to the header's height. Portaling requires the client, so gate on mount.
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -38,7 +47,9 @@ export function MobileDrawer({
     return () => document.removeEventListener("keydown", handler);
   }, [isOpen, onClose]);
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <>
@@ -125,6 +136,7 @@ export function MobileDrawer({
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }
