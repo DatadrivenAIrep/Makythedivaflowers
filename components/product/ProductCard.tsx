@@ -32,7 +32,7 @@ function ProductCardImpl({ product, locale, reduceMotion, priority, campaign }: 
 
   return (
     <Link href={href} data-testid="product-card" className="group block focus-visible:outline-none">
-      <div className="relative overflow-hidden rounded-[var(--radius-product)] bg-mute-100">
+      <div className="relative overflow-hidden rounded-t-[var(--radius-arch-top)] rounded-b-[var(--radius-product)] bg-mute-100 transition-shadow duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:shadow-[0_24px_60px_-30px_var(--color-rouge-glow)]">
         {cover && reduceMotion ? (
           <ProductImage
             image={cover}
@@ -50,7 +50,7 @@ function ProductCardImpl({ product, locale, reduceMotion, priority, campaign }: 
           />
         ) : null}
         {product.tags.includes("same-day") && (
-          <span className="absolute left-3 top-3 rounded-full border border-ink/15 bg-bone/90 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-ink">
+          <span className="absolute bottom-3 left-3 rounded-full border border-ink/15 bg-bone/90 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-ink">
             {t("badge_today")}
           </span>
         )}
