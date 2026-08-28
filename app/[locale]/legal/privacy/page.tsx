@@ -6,7 +6,7 @@ import { SITE } from "@/data/site";
 import { formatAddressLine } from "@/lib/format";
 import type { Locale } from "@/types/locale";
 
-const SECTIONS = ["data_collected", "how_we_use", "sharing", "cookies", "rights", "contact"] as const;
+const SECTIONS = ["data_collected", "how_we_use", "sms_messaging", "sharing", "cookies", "rights", "contact"] as const;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;

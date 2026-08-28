@@ -304,7 +304,7 @@
       "page_title": "Política de Privacidad — Diva Flowers",
       "page_description": "Cómo Diva Flowers recopila, usa y protege tu información personal.",
       "title": "Política de Privacidad",
-      "updated": "Última actualización: 1 de mayo de 2026",
+      "updated": "Última actualización: 18 de agosto de 2026",
       "data_collected": {
         "heading": "Información que recopilamos",
         "p1": "Recopilamos información que proporcionas directamente, como tu nombre, correo electrónico, número de teléfono y dirección de entrega cuando realizas un pedido o envías una consulta. También recopilamos información de pago, aunque esta es procesada por nuestro proveedor de pagos externo y no se almacena en nuestros servidores.",
@@ -314,6 +314,11 @@
         "heading": "Cómo usamos tu información",
         "p1": "Usamos tu información personal para procesar y completar tus pedidos, responder a tus consultas y comunicarnos contigo sobre tu cuenta y compras. También podemos enviarte comunicaciones de marketing si has optado por recibirlas.",
         "p2": "No vendemos tu información personal a terceros. Podemos compartir información con proveedores de servicios que nos ayudan a operar nuestro sitio web y realizar nuestro negocio, sujeto a acuerdos de confidencialidad."
+      },
+      "sms_messaging": {
+        "heading": "Mensajes de Texto (SMS)",
+        "p1": "Si te suscribes, te enviamos mensajes de texto SMS sobre tus pedidos y entregas y —cuando has dado tu consentimiento— promociones y ofertas de temporada. La frecuencia de mensajes varía y pueden aplicar tarifas de mensajes y datos. Puedes cancelar en cualquier momento respondiendo STOP a cualquier mensaje, o responder HELP para obtener ayuda.",
+        "p2": "No vendemos ni compartimos tu número de teléfono móvil ni tu consentimiento de suscripción a SMS con terceros ni afiliados para sus propios fines de marketing. Tu consentimiento para recibir mensajes de texto nunca es condición para ninguna compra. Los mensajes se envían a través de nuestro proveedor de mensajería (Twilio) únicamente para entregar los mensajes que solicitaste."
       },
       "sharing": {
         "heading": "Compartir información",

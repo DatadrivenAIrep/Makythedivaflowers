@@ -304,7 +304,7 @@
       "page_title": "Privacy Policy — Diva Flowers",
       "page_description": "How Diva Flowers collects, uses, and protects your personal information.",
       "title": "Privacy Policy",
-      "updated": "Last updated: May 1, 2026",
+      "updated": "Last updated: August 18, 2026",
       "data_collected": {
         "heading": "Information We Collect",
         "p1": "We collect information you provide directly, such as your name, email address, phone number, and delivery address when you place an order or submit an inquiry. We also collect payment information, though this is processed by our third-party payment provider and not stored on our servers.",
@@ -314,6 +314,11 @@
         "heading": "How We Use Your Information",
         "p1": "We use your personal information to process and fulfill your orders, respond to your inquiries, and communicate with you about your account and purchases. We may also send you marketing communications if you have opted in to receive them.",
         "p2": "We do not sell your personal information to third parties. We may share information with service providers who assist us in operating our website and conducting our business, subject to confidentiality agreements."
+      },
+      "sms_messaging": {
+        "heading": "SMS / Text Messaging",
+        "p1": "If you opt in, we send you SMS text messages about your orders and deliveries, and — where you have consented — promotions and seasonal offers. Message frequency varies, and message and data rates may apply. You can opt out at any time by replying STOP to any message, or reply HELP for assistance.",
+        "p2": "We do not sell or share your mobile phone number or your SMS opt-in consent with third parties or affiliates for their own marketing purposes. Your consent to receive text messages is never a condition of any purchase. Messages are sent through our messaging provider (Twilio) solely to deliver the messages you requested."
       },
       "sharing": {
         "heading": "Information Sharing",
