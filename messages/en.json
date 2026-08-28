@@ -88,6 +88,10 @@
     "pickup_at": "Pick up at",
     "pickup_date": "Pickup date",
     "pickup_window": "Pickup time",
+    "consent_label": "Text me about my order & offers",
+    "consent_fine": "Optional. By checking this, you agree to receive recurring automated order and marketing text messages from Diva Flowers at this number. Consent is not a condition of purchase. Msg & data rates may apply. Message frequency varies. Reply STOP to cancel, HELP for help.",
+    "consent_terms": "Terms",
+    "consent_privacy": "Privacy Policy",
     "errors": {
       "email_invalid": "Please enter a valid email address.",
       "phone_too_short": "Please enter a valid phone number.",

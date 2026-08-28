@@ -64,10 +64,15 @@ function makeReq(body: string, sig: string | null = "test_sig") {
   });
 }
 
-function makeOrder(id: string, piId: string, paymentStatus: Order["paymentStatus"] = "pending"): Order {
+function makeOrder(
+  id: string,
+  piId: string,
+  paymentStatus: Order["paymentStatus"] = "pending",
+  source: Order["source"] = "web",
+): Order {
   return {
     id,
-    source: "web",
+    source,
     locale: "en",
     lines: [],
     fulfillment: {
@@ -236,7 +241,11 @@ describe("POST /api/stripe/webhook", () => {
 });
 
 describe("checkout.session.completed", () => {
-  it("marks the order paid and dispatches payment_confirmed", async () => {
+  it("marks a web order paid and routes it through the consent-aware web hook", async () => {
+    // source: "web" (the makeOrder default) — this is the admin payment-link/resend
+    // path for a web order that has no CRM customer yet. It must go through
+    // onWebOrderPaid so messagingChannel reflects checkout consent, not the
+    // dispatchPaymentConfirmed default of "sms".
     await saveOrder(makeOrder("o2", "pi_222"));
     await updateOrderCheckoutSessionId("o2", "cs_test");
 
@@ -257,8 +266,38 @@ describe("checkout.session.completed", () => {
 
     const o = await getOrder("o2");
     expect(o?.paymentStatus).toBe("paid");
+    expect(onWebOrderPaidMock).toHaveBeenCalledTimes(1);
+    expect(onWebOrderPaidMock).toHaveBeenCalledWith("o2");
+    expect(dispatchPaymentConfirmedMock).not.toHaveBeenCalled();
+  });
+
+  it("dispatches payment_confirmed directly for a non-web (intake) order", async () => {
+    // Intake orders already have a CRM customer + chosen channel from intake time;
+    // onWebOrderPaid would early-return on the existing customerId link and drop
+    // the confirmation, so these must go straight to dispatchPaymentConfirmed.
+    await saveOrder(makeOrder("o4", "pi_444", "pending", "walk-in"));
+    await updateOrderCheckoutSessionId("o4", "cs_test3");
+
+    constructEvent.mockReturnValue({
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          id: "cs_test3",
+          metadata: { orderId: "o4" },
+          client_reference_id: "o4",
+        },
+      },
+    });
+
+    const { POST } = await import("@/app/api/stripe/webhook/route");
+    const res = await POST(makeReq("{}"));
+    expect(res.status).toBe(200);
+
+    const o = await getOrder("o4");
+    expect(o?.paymentStatus).toBe("paid");
     expect(dispatchPaymentConfirmedMock).toHaveBeenCalledTimes(1);
     expect(dispatchPaymentConfirmedMock.mock.calls[0][0].paymentStatus).toBe("paid");
+    expect(onWebOrderPaidMock).not.toHaveBeenCalled();
   });
 
   it("is idempotent on re-delivery", async () => {
@@ -282,7 +321,7 @@ describe("checkout.session.completed", () => {
 
     const o = await getOrder("o3");
     expect(o?.paymentStatus).toBe("paid");
-    // Second delivery is a no-op: order already paid, so dispatch is skipped.
-    expect(dispatchPaymentConfirmedMock).toHaveBeenCalledTimes(1);
+    // Second delivery is a no-op: order already paid, so the hook is skipped.
+    expect(onWebOrderPaidMock).toHaveBeenCalledTimes(1);
   });
 });

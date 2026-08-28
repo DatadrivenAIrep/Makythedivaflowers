@@ -88,6 +88,10 @@
     "pickup_at": "Recoger en",
     "pickup_date": "Fecha de recogida",
     "pickup_window": "Hora de recogida",
+    "consent_label": "Envíenme textos sobre mi pedido y ofertas",
+    "consent_fine": "Opcional. Al marcar, aceptas recibir mensajes de texto automatizados y recurrentes sobre tu pedido y de marketing de Diva Flowers a este número. El consentimiento no es condición de compra. Pueden aplicar tarifas de mensajes y datos. La frecuencia varía. Responde STOP para cancelar, HELP para ayuda.",
+    "consent_terms": "Términos",
+    "consent_privacy": "Política de Privacidad",
     "errors": {
       "email_invalid": "Por favor ingresa un correo electrónico válido.",
       "phone_too_short": "Por favor ingresa un número de teléfono válido.",

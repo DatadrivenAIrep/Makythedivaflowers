@@ -98,6 +98,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
     mode: "onBlur",
     defaultValues: {
       contact: { email: "", phone: "" },
+      smsConsent: false,
       delivery: {
         method: "delivery",
         recipient: { name: "", phone: "" },
