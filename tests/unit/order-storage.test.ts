@@ -114,4 +114,17 @@ describe("order-storage SQLite mirror", () => {
     const row = getDb().prepare("SELECT id FROM orders WHERE id = ?").get("o_mirror") as { id: string } | undefined;
     expect(row?.id).toBe("o_mirror");
   });
+
+  it("persists smsConsent through saveOrder/getOrder", async () => {
+    const order = { ...makeOrder("do_consent"), smsConsent: true };
+    await saveOrder(order);
+    const back = await getOrder("do_consent");
+    expect(back?.smsConsent).toBe(true);
+  });
+
+  it("defaults smsConsent to false when the order omits it", async () => {
+    await saveOrder(makeOrder("do_no_consent"));
+    const back = await getOrder("do_no_consent");
+    expect(back?.smsConsent).toBe(false);
+  });
 });
