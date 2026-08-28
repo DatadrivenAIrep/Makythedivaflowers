@@ -124,4 +124,20 @@ describe("onWebOrderPaid", () => {
     await expect(onWebOrderPaid("do_1")).resolves.toBeUndefined();
     expect(dispatchPaymentConfirmedMock).not.toHaveBeenCalled();
   });
+
+  it("opts the customer into SMS when the order has consent", async () => {
+    getOrderMock.mockResolvedValue({ ...ORDER, smsConsent: true });
+    await onWebOrderPaid("do_1");
+    expect(upsertOnOrderMock).toHaveBeenCalledWith(
+      expect.objectContaining({ messagingChannel: "sms" }),
+    );
+  });
+
+  it("sets channel to none when the order has no consent", async () => {
+    getOrderMock.mockResolvedValue({ ...ORDER, smsConsent: false });
+    await onWebOrderPaid("do_1");
+    expect(upsertOnOrderMock).toHaveBeenCalledWith(
+      expect.objectContaining({ messagingChannel: "none" }),
+    );
+  });
 });

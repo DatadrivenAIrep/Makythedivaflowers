@@ -38,8 +38,9 @@ export async function onWebOrderPaid(orderId: string): Promise<void> {
       address: order.fulfillment.method === "delivery" ? order.fulfillment.address : undefined,
       orderAt: order.paidAt ?? order.createdAt,
       locale: order.locale,
-      // messagingChannel is deliberately unset — dispatch defaults to SMS, and
-      // this is the field the checkout consent box will write in Delivery 3.
+      // Consent decides the channel: opted in → SMS (confirmation + marketing
+      // eligible); not opted in → none, so dispatchPaymentConfirmed sends nothing.
+      messagingChannel: order.smsConsent ? "sms" : "none",
     });
 
     const linked: Order = { ...order, customerId: customer.id };

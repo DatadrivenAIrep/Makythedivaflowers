@@ -93,4 +93,30 @@ describe("checkoutSchema", () => {
     };
     expect(checkoutSchema.safeParse(ambiguous).success).toBe(true);
   });
+
+  it("defaults smsConsent to false when omitted", () => {
+    const base = {
+      contact: { email: "a@x.com", phone: "5165550100" },
+      delivery: {
+        method: "pickup",
+        recipient: { name: "Ana", phone: "5165550100" },
+        window: { date: "2099-07-01", slot: "midday" },
+      },
+    };
+    const parsed = checkoutSchema.parse(base);
+    expect(parsed.smsConsent).toBe(false);
+  });
+
+  it("accepts smsConsent true", () => {
+    const base = {
+      smsConsent: true,
+      contact: { email: "a@x.com", phone: "5165550100" },
+      delivery: {
+        method: "pickup",
+        recipient: { name: "Ana", phone: "5165550100" },
+        window: { date: "2099-07-01", slot: "midday" },
+      },
+    };
+    expect(checkoutSchema.parse(base).smsConsent).toBe(true);
+  });
 });

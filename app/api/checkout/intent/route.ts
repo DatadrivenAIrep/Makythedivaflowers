@@ -93,6 +93,7 @@ export async function POST(req: Request) {
     lines: backfilledLines,
     fulfillment,
     contact: form.contact,
+    smsConsent: form.smsConsent,
     totals,
     status: "pending",
     paymentStatus: "pending",
