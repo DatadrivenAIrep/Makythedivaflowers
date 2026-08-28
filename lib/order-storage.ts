@@ -54,7 +54,7 @@ function upsertSqlite(order: Order): void {
        window_date, window_slot, card_message, lines_json,
        subtotal_cents, delivery_cents, tax_cents, total_cents, amount_paid_cents,
        fulfillment_status, payment_status, payment_method, paid_at,
-       stripe_payment_intent_id, taken_by, internal_notes,
+       stripe_payment_intent_id, taken_by, internal_notes, sms_consent,
        stripe_checkout_session_id, gift_card_id, gift_card_cents,
        order_number, created_at, updated_at
      ) VALUES (
@@ -63,7 +63,7 @@ function upsertSqlite(order: Order): void {
        @window_date, @window_slot, @card_message, @lines_json,
        @subtotal_cents, @delivery_cents, @tax_cents, @total_cents, @amount_paid_cents,
        @fulfillment_status, @payment_status, @payment_method, @paid_at,
-       @stripe_payment_intent_id, @taken_by, @internal_notes,
+       @stripe_payment_intent_id, @taken_by, @internal_notes, @sms_consent,
        @stripe_checkout_session_id, @gift_card_id, @gift_card_cents,
        @order_number, @created_at, @updated_at
      )
@@ -94,6 +94,7 @@ function upsertSqlite(order: Order): void {
        stripe_payment_intent_id=excluded.stripe_payment_intent_id,
        taken_by=excluded.taken_by,
        internal_notes=excluded.internal_notes,
+       sms_consent=excluded.sms_consent,
        stripe_checkout_session_id=excluded.stripe_checkout_session_id,
        gift_card_id=excluded.gift_card_id,
        gift_card_cents=excluded.gift_card_cents,

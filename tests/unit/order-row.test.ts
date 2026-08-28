@@ -22,6 +22,7 @@ const sample: Order = {
   status: "pending",
   paymentStatus: "pending",
   amountPaidCents: 0,
+  smsConsent: false,
   createdAt: "2026-05-16T00:00:00.000Z",
   updatedAt: "2026-05-16T00:00:00.000Z",
 };
@@ -55,5 +56,35 @@ describe("order-row", () => {
     expect(row.window_date).toBeNull();
     const back = rowToOrder(row);
     expect(back.fulfillment.method).toBe("in-store");
+  });
+});
+
+const baseOrder: Order = {
+  id: "do_test",
+  source: "web",
+  locale: "en",
+  lines: [{ kind: "catalog", productId: "p1", variantId: "v1", addOnIds: [], qty: 1 }],
+  fulfillment: {
+    method: "pickup",
+    recipient: { name: "Ana", phone: "5165550100" },
+    window: { date: "2099-07-01", slot: "midday" },
+  },
+  contact: { email: "a@x.com", phone: "5165550100" },
+  totals: { subtotalCents: 5000, deliveryCents: 0, taxCents: 431, totalCents: 5431 },
+  status: "pending",
+  paymentStatus: "pending",
+  createdAt: "2026-08-18T00:00:00Z",
+  updatedAt: "2026-08-18T00:00:00Z",
+};
+
+describe("order-row smsConsent", () => {
+  it("round-trips smsConsent true", () => {
+    const row = orderToRow({ ...baseOrder, smsConsent: true });
+    expect(row.sms_consent).toBe(1);
+    expect(rowToOrder(row).smsConsent).toBe(true);
+  });
+  it("round-trips smsConsent false / absent as false", () => {
+    expect(orderToRow(baseOrder).sms_consent).toBe(0);
+    expect(rowToOrder(orderToRow(baseOrder)).smsConsent).toBe(false);
   });
 });
