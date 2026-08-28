@@ -92,7 +92,16 @@ export async function POST(req: Request) {
         if (csOrder.paymentStatus === "paid") break; // idempotent
 
         await updateOrderPaidByCheckoutSession(session.id);
-        await dispatchPaymentConfirmed({ ...csOrder, paymentStatus: "paid", paidAt: csOrder.paidAt ?? new Date().toISOString() });
+        if (csOrder.source === "web") {
+          // Web order paid via the admin payment-link/resend flow: route through
+          // the consent-aware hook so messagingChannel reflects the checkout
+          // consent box, not the default. (updateOrderPaidByCheckoutSession above
+          // already marked it paid, so onWebOrderPaid re-reads a paid order.)
+          await onWebOrderPaid(csOrder.id);
+        } else {
+          // Intake orders already have a CRM customer + chosen channel.
+          await dispatchPaymentConfirmed({ ...csOrder, paymentStatus: "paid", paidAt: csOrder.paidAt ?? new Date().toISOString() });
+        }
         break;
       }
       case "payment_intent.payment_failed": {
