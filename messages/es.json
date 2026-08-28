@@ -341,6 +341,22 @@
         "p2": "Nos reservamos el derecho de actualizar esta Política de Privacidad en cualquier momento. Los cambios se publicarán en esta página con una fecha de vigencia actualizada. Tu uso continuado de nuestro sitio web después de cualquier cambio constituye tu aceptación de la política actualizada."
       }
     },
+    "sms_consent": {
+      "page_title": "Formulario de Registro SMS — Diva Flowers",
+      "page_description": "El formulario de registro en tienda que Diva Flowers usa para recopilar el consentimiento de SMS.",
+      "eyebrow": "Registro en tienda",
+      "title": "Registro de Clientes",
+      "intro": "Este es el formulario de registro que usamos en el mostrador de nuestra tienda. Déjanos tus datos para enterarte de colecciones y ofertas. Recibir textos es opcional — puedes unirte sin ello.",
+      "field_name": "Nombre completo",
+      "field_phone": "Celular",
+      "field_email": "Correo",
+      "field_birthday": "Cumpleaños (opcional)",
+      "field_signature": "Firma",
+      "field_date": "Fecha",
+      "consent_heading": "Envíenme textos",
+      "optional": "Opcional",
+      "optout_note": "Deja esta casilla en blanco y aun así puedes registrarte."
+    },
     "terms": {
       "page_title": "Términos de Servicio — Diva Flowers",
       "page_description": "Los términos y condiciones que rigen tu uso de Diva Flowers y la compra de nuestros productos.",
