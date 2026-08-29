@@ -45,44 +45,62 @@ export default async function SmsConsentPage({
           <p className="mt-4 max-w-[60ch] text-base leading-relaxed text-ink/70">{t("intro")}</p>
         </header>
 
-        <section className="rounded-2xl border-2 border-ink/80 p-5 sm:p-6">
+        <form className="rounded-2xl border-2 border-ink/80 p-5 sm:p-6">
           <h2 className="mb-5 font-display text-2xl tracking-tight text-ink">{tc("consent_heading")}</h2>
 
           <div className="mb-6 grid gap-4 sm:grid-cols-2">
-            <label className="block">
-              <span className="mb-1 block font-mono text-[11px] uppercase tracking-[0.14em] text-ink/50">
+            <div className="block">
+              <label
+                htmlFor="sms-optin-phone"
+                className="mb-1 block font-mono text-[11px] uppercase tracking-[0.14em] text-ink/50"
+              >
                 {t("field_phone")}
-              </span>
+              </label>
               <input
+                id="sms-optin-phone"
+                name="phone"
                 type="tel"
                 inputMode="tel"
                 placeholder="(516) 555-0123"
-                aria-label={t("field_phone")}
                 className="w-full rounded-lg border border-ink/25 bg-white px-3 py-2 text-sm text-ink"
               />
-            </label>
-            <label className="block">
-              <span className="mb-1 block font-mono text-[11px] uppercase tracking-[0.14em] text-ink/50">
+            </div>
+            <div className="block">
+              <label
+                htmlFor="sms-optin-email"
+                className="mb-1 block font-mono text-[11px] uppercase tracking-[0.14em] text-ink/50"
+              >
                 {t("field_email")}
-              </span>
+              </label>
               <input
+                id="sms-optin-email"
+                name="email"
                 type="email"
                 placeholder="you@example.com"
-                aria-label={t("field_email")}
                 className="w-full rounded-lg border border-ink/25 bg-white px-3 py-2 text-sm text-ink"
               />
-            </label>
+            </div>
           </div>
 
           <div className="space-y-4">
-            <div className="flex items-start gap-3">
-              <div className="mt-0.5 h-6 w-6 shrink-0 rounded border-2 border-ink" aria-hidden="true" />
-              <p className="text-sm text-ink">{tc("consent_transactional_label")}</p>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="mt-0.5 h-6 w-6 shrink-0 rounded border-2 border-ink" aria-hidden="true" />
-              <p className="text-sm text-ink">{tc("consent_marketing_label")}</p>
-            </div>
+            <label htmlFor="sms-optin-transactional" className="flex items-start gap-3">
+              <input
+                id="sms-optin-transactional"
+                name="sms_transactional"
+                type="checkbox"
+                className="mt-0.5 h-6 w-6 shrink-0 accent-rouge"
+              />
+              <span className="text-sm text-ink">{tc("consent_transactional_label")}</span>
+            </label>
+            <label htmlFor="sms-optin-marketing" className="flex items-start gap-3">
+              <input
+                id="sms-optin-marketing"
+                name="sms_marketing"
+                type="checkbox"
+                className="mt-0.5 h-6 w-6 shrink-0 accent-rouge"
+              />
+              <span className="text-sm text-ink">{tc("consent_marketing_label")}</span>
+            </label>
           </div>
 
           <p className="mt-5 border-t border-ink/10 pt-4 text-sm leading-relaxed text-ink/70">
@@ -95,7 +113,7 @@ export default async function SmsConsentPage({
               {tc("consent_privacy")}
             </Link>
           </p>
-        </section>
+        </form>
 
         <p className="mt-6 text-sm italic text-ink/55">{t("optout_note")}</p>
 
