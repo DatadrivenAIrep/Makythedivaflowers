@@ -1464,6 +1464,7 @@
     "nav_occasions": "Ocasiones",
     "nav_metrics": "Métricas",
     "nav_pipeline": "Pipeline",
+    "nav_campaigns": "Campañas",
     "nav_new_order": "Nueva orden",
     "last_updated": "Actualizado",
     "refresh": "Actualizar",
@@ -1659,5 +1660,25 @@
     "cancel": "Cancelar",
     "error_load": "No se pudo cargar. Intenta de nuevo.",
     "not_found": "Lead no encontrado"
+  },
+  "admin_campaigns": {
+    "title": "Campañas SMS",
+    "intro": "Envía una promoción a los clientes que aceptaron recibir mensajes de marketing.",
+    "body_es_label": "Mensaje (español)",
+    "body_en_label": "Mensaje (inglés, opcional)",
+    "name_hint": "Usa {nombre} para insertar el primer nombre del cliente.",
+    "recipients": "{count} destinatarios",
+    "segments_note": "{count} segmento(s) SMS",
+    "save_draft": "Guardar borrador",
+    "test_send": "Enviar prueba a mi celular",
+    "send_all": "Enviar a {count} clientes",
+    "sending": "Enviando…",
+    "sent_result": "Enviados {sent}, fallidos {failed}, omitidos {skipped}.",
+    "history": "Campañas anteriores",
+    "status_draft": "Borrador",
+    "status_sending": "Enviando",
+    "status_sent": "Enviada",
+    "confirm_send": "¿Enviar esta promoción a {count} clientes ahora?",
+    "error": "Algo salió mal. Intenta de nuevo."
   }
 }

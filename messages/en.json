@@ -1464,6 +1464,7 @@
     "nav_occasions": "Occasions",
     "nav_metrics": "Metrics",
     "nav_pipeline": "Pipeline",
+    "nav_campaigns": "Campaigns",
     "nav_new_order": "New order",
     "last_updated": "Updated",
     "refresh": "Refresh",
@@ -1659,5 +1660,25 @@
     "cancel": "Cancel",
     "error_load": "Could not load. Try again.",
     "not_found": "Lead not found"
+  },
+  "admin_campaigns": {
+    "title": "SMS Campaigns",
+    "intro": "Send a promotion to customers who opted in to marketing texts.",
+    "body_es_label": "Message (Spanish)",
+    "body_en_label": "Message (English, optional)",
+    "name_hint": "Use {nombre} to insert the customer's first name.",
+    "recipients": "{count} recipients",
+    "segments_note": "{count} SMS segment(s)",
+    "save_draft": "Save draft",
+    "test_send": "Send test to my phone",
+    "send_all": "Send to {count} customers",
+    "sending": "Sending…",
+    "sent_result": "Sent {sent}, failed {failed}, skipped {skipped}.",
+    "history": "Past campaigns",
+    "status_draft": "Draft",
+    "status_sending": "Sending",
+    "status_sent": "Sent",
+    "confirm_send": "Send this promotion to {count} customers now?",
+    "error": "Something went wrong. Try again."
   }
 }
