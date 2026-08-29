@@ -12,6 +12,29 @@ const eventVideo = (n: string, slug: string) => ({
 
 export const eventProjects: PortfolioEvent[] = [
   {
+    id: "quinceanera-saint-brigid",
+    kind: "event",
+    venue: { en: "Quinceañera · Saint Brigid Church", es: "Quinceañera · Iglesia Saint Brigid" },
+    date: { en: "August 29, 2026", es: "29 de agosto de 2026" },
+    media: [
+      { type: "photo", src: "/events/quinceanera-saint-brigid/p01.webp", alt: { en: "Quinceañera walking the rose-lined church aisle", es: "Quinceañera caminando por el pasillo decorado con rosas" } },
+      { type: "photo", src: "/events/quinceanera-saint-brigid/p02.webp", alt: { en: "Church aisle lined with blush hydrangea and rose arrangements", es: "Pasillo de la iglesia con arreglos de hortensias y rosas rosadas" } },
+      { type: "photo", src: "/events/quinceanera-saint-brigid/p03.webp", alt: { en: "Altar framed by soft pink floral arrangements", es: "Altar enmarcado por arreglos florales rosados" } },
+      { type: "photo", src: "/events/quinceanera-saint-brigid/p04.webp", alt: { en: "Quinceañera in her blush ballgown down the aisle", es: "Quinceañera con su vestido rosa por el pasillo" } },
+      { type: "photo", src: "/events/quinceanera-saint-brigid/p05.webp", alt: { en: "Pew florals and rose petals along the aisle", es: "Flores en las bancas y pétalos de rosa por el pasillo" } },
+      { type: "photo", src: "/events/quinceanera-saint-brigid/p06.webp", alt: { en: "Close view of the blush pew arrangements", es: "Vista cercana de los arreglos rosados en las bancas" } },
+      { type: "photo", src: "/events/quinceanera-saint-brigid/p07.webp", alt: { en: "Quinceañera at the altar during the Mass", es: "Quinceañera en el altar durante la misa" } },
+      { type: "photo", src: "/events/quinceanera-saint-brigid/p08.webp", alt: { en: "Ceremony moment framed by florals", es: "Momento de la ceremonia enmarcado por flores" } },
+      { type: "photo", src: "/events/quinceanera-saint-brigid/p09.webp", alt: { en: "Aisle arrangements with the celebrant", es: "Arreglos del pasillo con el sacerdote" } },
+      { type: "photo", src: "/events/quinceanera-saint-brigid/p10.webp", alt: { en: "Portrait of the quinceañera among the flowers", es: "Retrato de la quinceañera entre las flores" } },
+      { type: "photo", src: "/events/quinceanera-saint-brigid/p11.webp", alt: { en: "Family portrait after the ceremony", es: "Retrato familiar después de la ceremonia" } },
+      { type: "photo", src: "/events/quinceanera-saint-brigid/p12.webp", alt: { en: "Quinceañera bouquet of pink and cream roses", es: "Ramo de quinceañera de rosas rosadas y crema" } },
+      { type: "photo", src: "/events/quinceanera-saint-brigid/p13.webp", alt: { en: "Quinceañera bouquet with blush satin ribbon", es: "Ramo de quinceañera con lazo de satín rosa" } },
+      { type: "photo", src: "/events/quinceanera-saint-brigid/p14.webp", alt: { en: "Rose and baby's breath floral crown", es: "Corona floral de rosas y gypsophila" } },
+      { type: "photo", src: "/events/quinceanera-saint-brigid/p15.webp", alt: { en: "Pair of floral crowns for the celebration", es: "Par de coronas florales para la celebración" } },
+    ],
+  },
+  {
     id: "evento-01",
     kind: "event",
     venue: { en: "Private Event", es: "Evento privado" },

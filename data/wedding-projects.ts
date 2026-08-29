@@ -1,6 +1,27 @@
 import type { PortfolioEvent } from "@/types/portfolio";
 
 export const weddingProjects: PortfolioEvent[] = [
+  {
+    id: "coral-house",
+    kind: "wedding",
+    venue: { en: "Coral House", es: "Coral House" },
+    date: { en: "August 28, 2026", es: "28 de agosto de 2026" },
+    media: [
+      { type: "photo", src: "/weddings/coral-house/p01.webp", alt: { en: "White blossom-tree centerpiece over green linen", es: "Centro de mesa con árbol de flores blancas sobre mantel verde" } },
+      { type: "photo", src: "/weddings/coral-house/p02.webp", alt: { en: "Reception room with towering blossom-tree centerpieces", es: "Salón de recepción con altos centros de árboles florales" } },
+      { type: "photo", src: "/weddings/coral-house/p03.webp", alt: { en: "Glass-roof conservatory and dance floor", es: "Salón con techo de cristal y pista de baile" } },
+      { type: "photo", src: "/weddings/coral-house/p04.webp", alt: { en: "Tall candelabra centerpiece with baby's breath", es: "Centro alto tipo candelabro con gypsophila" } },
+      { type: "photo", src: "/weddings/coral-house/p05.webp", alt: { en: "Towering baby's-breath candelabra arrangement", es: "Imponente arreglo de gypsophila en candelabro" } },
+      { type: "photo", src: "/weddings/coral-house/p06.webp", alt: { en: "Sweetheart table with a white-and-green garland", es: "Mesa de novios con guirnalda blanca y verde" } },
+      { type: "photo", src: "/weddings/coral-house/p07.webp", alt: { en: "Reception tables beneath the blossom trees", es: "Mesas de recepción bajo los árboles florales" } },
+      { type: "photo", src: "/weddings/coral-house/p08.webp", alt: { en: "Low centerpiece with white blooms and greenery", es: "Centro bajo con flores blancas y follaje" } },
+      { type: "photo", src: "/weddings/coral-house/p09.webp", alt: { en: "Cascade bridal bouquet of white orchids on marble", es: "Ramo de novia en cascada de orquídeas blancas sobre mármol" } },
+      { type: "photo", src: "/weddings/coral-house/p10.webp", alt: { en: "Bridal bouquet laid with its wrapped stems", es: "Ramo de novia con sus tallos envueltos" } },
+      { type: "photo", src: "/weddings/coral-house/p11.webp", alt: { en: "Detail of the ribbon-wrapped bouquet handle", es: "Detalle del mango del ramo envuelto en cinta" } },
+      { type: "video", src: "/weddings/coral-house/v01.mp4", poster: "/weddings/coral-house/v01.webp", alt: { en: "Bridal bouquet film by Diva Flowers", es: "Video del ramo de novia por Diva Flowers" } },
+      { type: "video", src: "/weddings/coral-house/v02.mp4", poster: "/weddings/coral-house/v02.webp", alt: { en: "Bridal bouquet reel by Diva Flowers", es: "Reel del ramo de novia por Diva Flowers" } },
+    ],
+  },
   // Placeholder events — replace with real photos when available
   {
     id: "westbury-oct-2024",
