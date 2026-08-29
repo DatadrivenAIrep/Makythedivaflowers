@@ -35,10 +35,12 @@ export default function CampaignsPage() {
 
   async function sendTest() {
     if (!draft) return;
-    await fetch(`/api/admin/campaigns/${draft.id}/test`, {
+    const res = await fetch(`/api/admin/campaigns/${draft.id}/test`, {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ to: testTo || undefined, locale: "es" }),
     });
+    const d = await res.json();
+    setResult(d.ok ? "✓" : t("error"));
   }
 
   async function sendAll() {
@@ -96,7 +98,7 @@ export default function CampaignsPage() {
         {history.map((c) => (
           <li key={c.id} className="flex justify-between border-b border-ink/5 py-1">
             <span className="truncate">{c.bodyEs}</span>
-            <span className="text-ink/50">{c.status} · {c.sentCount}/{c.sentCount + c.failedCount}</span>
+            <span className="text-ink/50">{t(`status_${c.status}`)} · {c.sentCount}/{c.sentCount + c.failedCount}</span>
           </li>
         ))}
       </ul>
