@@ -348,7 +348,9 @@
       "page_description": "The SMS text-message consent options Diva Flowers shows at checkout.",
       "eyebrow": "SMS text messages",
       "title": "SMS Text Message Opt-In",
-      "intro": "When you place an order on our website, our checkout shows the two optional SMS consent options below. They are independent and unchecked by default — you can check either, both, or neither. This page reproduces them so the exact consent language can be reviewed.",
+      "intro": "When you place an order on our website, our checkout collects your mobile number together with the two optional SMS consent options below — so it is clear which number is opting in. They are independent and unchecked by default: you can check either, both, or neither. This page reproduces that opt-in.",
+      "field_phone": "Mobile phone",
+      "field_email": "Email",
       "optout_note": "You can opt out at any time by replying STOP to any message."
     },
     "terms": {

@@ -348,7 +348,9 @@
       "page_description": "Las opciones de consentimiento de mensajes SMS que Diva Flowers muestra en el checkout.",
       "eyebrow": "Mensajes de texto SMS",
       "title": "Consentimiento de Mensajes SMS",
-      "intro": "Cuando haces un pedido en nuestro sitio web, el checkout muestra las dos opciones de consentimiento SMS de abajo. Son independientes y están desmarcadas por defecto — puedes marcar una, ambas o ninguna. Esta página las reproduce para que se pueda revisar el texto exacto de consentimiento.",
+      "intro": "Cuando haces un pedido en nuestro sitio web, el checkout recopila tu número de celular junto con las dos opciones de consentimiento SMS de abajo — para que quede claro cuál número está dando su consentimiento. Son independientes y están desmarcadas por defecto: puedes marcar una, ambas o ninguna. Esta página reproduce ese opt-in.",
+      "field_phone": "Celular",
+      "field_email": "Correo",
       "optout_note": "Puedes cancelar en cualquier momento respondiendo STOP a cualquier mensaje."
     },
     "terms": {
