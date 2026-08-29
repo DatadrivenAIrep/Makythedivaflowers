@@ -1194,6 +1194,8 @@
     "twilio_test_msg_order_received": "Pedido recibido",
     "twilio_test_msg_payment_link": "Link de pago",
     "twilio_test_msg_payment_confirmed": "Pago confirmado",
+    "twilio_test_msg_out_for_delivery": "En camino",
+    "twilio_test_msg_delivered": "Entregado",
     "twilio_test_err_no_credentials": "Faltan las credenciales de Twilio.",
     "twilio_test_err_sms_disabled": "Enciende \"SMS en vivo\" primero.",
     "twilio_test_err_generic": "Error de Twilio: {error}",

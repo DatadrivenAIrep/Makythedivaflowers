@@ -8,7 +8,13 @@ import type { MessageTemplate } from "@/lib/message-storage";
 export const runtime = "nodejs";
 
 // The customer-facing templates that can be previewed via a real test send.
-const KNOWN_TEMPLATES: MessageTemplate[] = ["order_received", "payment_link", "payment_confirmed"];
+const KNOWN_TEMPLATES: MessageTemplate[] = [
+  "order_received",
+  "payment_link",
+  "payment_confirmed",
+  "out_for_delivery",
+  "delivered",
+];
 
 // Sample values so the previewed template reads like a real message.
 function sampleVars(locale: "en" | "es"): TemplateVars {

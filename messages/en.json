@@ -1194,6 +1194,8 @@
     "twilio_test_msg_order_received": "Order received",
     "twilio_test_msg_payment_link": "Payment link",
     "twilio_test_msg_payment_confirmed": "Payment confirmed",
+    "twilio_test_msg_out_for_delivery": "Out for delivery",
+    "twilio_test_msg_delivered": "Delivered",
     "twilio_test_err_no_credentials": "Twilio credentials are missing.",
     "twilio_test_err_sms_disabled": "Turn on \"SMS live\" first.",
     "twilio_test_err_generic": "Twilio error: {error}",
