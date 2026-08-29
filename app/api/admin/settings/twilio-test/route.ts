@@ -2,13 +2,30 @@ import { NextResponse } from "next/server";
 import { SITE } from "@/data/site";
 import { twilioSmsEnabled } from "@/lib/twilio-config";
 import { getTwilioClient, sendSms } from "@/lib/twilio-server";
+import { renderSmsBody, type TemplateVars } from "@/lib/messaging-templates";
+import type { MessageTemplate } from "@/lib/message-storage";
 
 export const runtime = "nodejs";
 
-// Sends ONE real SMS to verify the config. Target defaults to the owner's mobile,
-// but the admin can pass `to` in the body to test another number. Calls sendSms
-// directly (bypasses the dry-run branch) — a simulated test proves nothing.
-// Guarded by proxy.ts (all /api/admin/* is admin-only).
+// The customer-facing templates that can be previewed via a real test send.
+const KNOWN_TEMPLATES: MessageTemplate[] = ["order_received", "payment_link", "payment_confirmed"];
+
+// Sample values so the previewed template reads like a real message.
+function sampleVars(locale: "en" | "es"): TemplateVars {
+  return {
+    recipient_name: "Maria",
+    total: "$89.50",
+    window: locale === "es" ? "jue 21 ago · mañana (9–12)" : "Thu Aug 21 · morning (9–12)",
+    link: "https://buy.stripe.com/test_sample",
+    shop_phone: SITE.phoneDisplay,
+    order_number: "1042",
+  };
+}
+
+// Sends ONE real SMS to verify config or preview a template. `to` defaults to
+// the owner's mobile; `template` (a known customer template) + `locale` render a
+// realistic sample, otherwise a plain config-check message is sent. Calls sendSms
+// directly (bypasses the dry-run branch). Guarded by proxy.ts (admin-only).
 export async function POST(req: Request) {
   try {
     if (!getTwilioClient()) {
@@ -17,7 +34,10 @@ export async function POST(req: Request) {
     if (!twilioSmsEnabled()) {
       return NextResponse.json({ ok: false, error: "sms_disabled" });
     }
-    const body = (await req.json().catch(() => null)) as { to?: unknown } | null;
+    const body = (await req.json().catch(() => null)) as
+      | { to?: unknown; template?: unknown; locale?: unknown }
+      | null;
+
     const raw = typeof body?.to === "string" ? body.to.trim() : "";
     let to: string = SITE.mobile.e164;
     if (raw) {
@@ -27,7 +47,14 @@ export async function POST(req: Request) {
       }
       to = raw; // sendSms normalizes to E.164
     }
-    await sendSms(to, "Diva Flowers — prueba de configuración ✓");
+
+    const template = typeof body?.template === "string" ? body.template : "";
+    const locale = body?.locale === "en" ? "en" : "es";
+    const message = KNOWN_TEMPLATES.includes(template as MessageTemplate)
+      ? renderSmsBody(template as MessageTemplate, locale, sampleVars(locale))
+      : "Diva Flowers — prueba de configuración ✓";
+
+    await sendSms(to, message);
     return NextResponse.json({ ok: true });
   } catch (e) {
     return NextResponse.json({ ok: false, error: e instanceof Error ? e.message : String(e) });

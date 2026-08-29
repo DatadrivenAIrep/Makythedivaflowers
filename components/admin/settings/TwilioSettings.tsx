@@ -26,6 +26,8 @@ export default function TwilioSettings() {
     state: "idle",
   });
   const [testTo, setTestTo] = useState("");
+  const [testTemplate, setTestTemplate] = useState("config");
+  const [testLocale, setTestLocale] = useState("es");
 
   const reload = useCallback(async () => {
     const d = (await fetch("/api/admin/settings").then((r) => r.json())) as Config;
@@ -77,7 +79,11 @@ export default function TwilioSettings() {
       const d = await fetch("/api/admin/settings/twilio-test", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ to: testTo.trim() }),
+        body: JSON.stringify({
+          to: testTo.trim(),
+          template: testTemplate === "config" ? "" : testTemplate,
+          locale: testLocale,
+        }),
       }).then((r) => r.json());
       if (d.ok) setTest({ state: "ok" });
       else setTest({ state: "error", msg: d.error });
@@ -254,6 +260,26 @@ export default function TwilioSettings() {
         {/* Test send */}
         <div className="border-t border-mute-100 pt-5">
           <div className="flex flex-wrap items-center gap-2">
+            <select
+              value={testTemplate}
+              onChange={(e) => setTestTemplate(e.target.value)}
+              aria-label={t("twilio_test_msg_label")}
+              className="min-h-11 rounded-xl border border-ink/20 bg-bone px-3 text-sm"
+            >
+              <option value="config">{t("twilio_test_msg_config")}</option>
+              <option value="order_received">{t("twilio_test_msg_order_received")}</option>
+              <option value="payment_link">{t("twilio_test_msg_payment_link")}</option>
+              <option value="payment_confirmed">{t("twilio_test_msg_payment_confirmed")}</option>
+            </select>
+            <select
+              value={testLocale}
+              onChange={(e) => setTestLocale(e.target.value)}
+              aria-label="Language"
+              className="min-h-11 rounded-xl border border-ink/20 bg-bone px-3 text-sm"
+            >
+              <option value="es">ES</option>
+              <option value="en">EN</option>
+            </select>
             <input
               type="tel"
               inputMode="tel"

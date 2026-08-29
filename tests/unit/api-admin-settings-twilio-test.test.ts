@@ -62,6 +62,15 @@ describe("twilio test-send endpoint", () => {
     expect(sendSmsMock).not.toHaveBeenCalled();
   });
 
+  it("renders and sends a chosen customer template", async () => {
+    const body = await (
+      await POST(makeReq({ to: "7022716195", template: "payment_confirmed", locale: "es" }))
+    ).json();
+    expect(body).toEqual({ ok: true });
+    // payment_confirmed (es) renders the sample order number.
+    expect(sendSmsMock).toHaveBeenCalledWith("7022716195", expect.stringContaining("Orden #1042"));
+  });
+
   it("surfaces the twilio error verbatim on failure", async () => {
     sendSmsMock.mockRejectedValue(new Error("21610 unregistered"));
     const body = await (await POST(makeReq())).json();
