@@ -1,7 +1,7 @@
 -- 018_campaigns.sql — marketing SMS campaigns, separate from the order-scoped
 -- `messages` table. `campaigns` is one composed promotion; `campaign_sends` is
 -- one row per recipient attempt (audit + idempotency).
-CREATE TABLE campaigns (
+CREATE TABLE IF NOT EXISTS campaigns (
   id              TEXT PRIMARY KEY,
   body_es         TEXT NOT NULL,
   body_en         TEXT NOT NULL DEFAULT '',
@@ -14,7 +14,7 @@ CREATE TABLE campaigns (
   sent_at         TEXT
 );
 
-CREATE TABLE campaign_sends (
+CREATE TABLE IF NOT EXISTS campaign_sends (
   id           TEXT PRIMARY KEY,
   campaign_id  TEXT NOT NULL,
   customer_id  TEXT NOT NULL,
@@ -24,4 +24,4 @@ CREATE TABLE campaign_sends (
   error        TEXT,
   created_at   TEXT NOT NULL
 );
-CREATE INDEX idx_campaign_sends_campaign ON campaign_sends(campaign_id);
+CREATE INDEX IF NOT EXISTS idx_campaign_sends_campaign ON campaign_sends(campaign_id);

@@ -69,6 +69,12 @@ describe("renderCampaignBody", () => {
     expect(body).not.toContain("{nombre}");
     expect(body).not.toContain("  "); // no double space left behind
   });
+  it("substitutes the {name} alias in an English body", () => {
+    const c = { ...CAMPAIGN, bodyEn: "Hello {name}, spring blooms are here." };
+    const body = renderCampaignBody(c, { name: "Bob Buyer", locale: "en" });
+    expect(body).toContain("Hello Bob,");
+    expect(body).toContain(OPT_OUT_FOOTER.en);
+  });
 });
 
 describe("smsSegments", () => {

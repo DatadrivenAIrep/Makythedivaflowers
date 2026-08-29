@@ -55,6 +55,13 @@ describe("POST /api/twilio/inbound", () => {
     expect(removeTagMock).not.toHaveBeenCalled();
   });
 
+  it("START from an already-active customer is a no-op", async () => {
+    // default mock: messagingChannel "sms"
+    const res = await POST(makeReq({ From: "+15168512815", Body: "START" }));
+    expect(res.status).toBe(200);
+    expect(updateCustomerMock).not.toHaveBeenCalled();
+  });
+
   it("an unrelated reply changes nothing", async () => {
     await POST(makeReq({ From: "+15168512815", Body: "thank you!" }));
     expect(updateCustomerMock).not.toHaveBeenCalled();

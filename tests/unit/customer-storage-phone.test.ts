@@ -32,4 +32,10 @@ describe("getByPhoneUS", () => {
   it("returns null for an unknown number", () => {
     expect(getByPhoneUS("+17025550000")).toBeNull();
   });
+
+  it("matches when the stored phone is in 11-digit leading-1 form", () => {
+    upsertOnOrder({ name: "Leo Eleven", phone: "15169998888", orderAt: "2026-08-02T00:00:00Z", locale: "en" });
+    expect(getByPhoneUS("+15169998888")?.name).toBe("Leo Eleven");
+    expect(getByPhoneUS("5169998888")?.name).toBe("Leo Eleven");
+  });
 });
