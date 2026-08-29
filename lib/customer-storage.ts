@@ -75,6 +75,25 @@ export function getByPhone(phone: string): Customer | null {
   return row ? rowToCustomer(row) : null;
 }
 
+/**
+ * Resolve a customer from an inbound phone number (e.g. Twilio's E.164 `From`)
+ * when we can't assume it matches the stored digit-format. Stored phones are
+ * digits-only and usually 10 digits (US), but could be 11 with a leading `1`.
+ * Match on the trailing 10 US digits by trying the plausible stored forms.
+ */
+export function getByPhoneUS(phone: string): Customer | null {
+  runMigrations();
+  const digits = normalizePhone(phone);
+  const last10 = digits.slice(-10);
+  // Distinct candidate stored forms, most-specific first.
+  const candidates = Array.from(new Set([digits, last10, `1${last10}`])).filter(Boolean);
+  const placeholders = candidates.map(() => "?").join(", ");
+  const row = getDb()
+    .prepare(`SELECT * FROM customers WHERE phone IN (${placeholders}) LIMIT 1`)
+    .get(...candidates) as CustomerRow | undefined;
+  return row ? rowToCustomer(row) : null;
+}
+
 export type UpsertInput = {
   name: string;
   phone: string;
