@@ -3,7 +3,19 @@ import { closeDb, getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import { changeFulfillmentStatus } from "@/lib/order-mutations";
 
-beforeEach(() => { vi.stubEnv("SQLITE_FILE", ":memory:"); runMigrations(); });
+const dispatchOutForDeliveryMock = vi.fn();
+const dispatchDeliveredMock = vi.fn();
+vi.mock("@/lib/order-dispatch", () => ({
+  dispatchOutForDelivery: (...a: unknown[]) => dispatchOutForDeliveryMock(...a),
+  dispatchDelivered: (...a: unknown[]) => dispatchDeliveredMock(...a),
+}));
+
+beforeEach(() => {
+  vi.stubEnv("SQLITE_FILE", ":memory:");
+  runMigrations();
+  dispatchOutForDeliveryMock.mockReset();
+  dispatchDeliveredMock.mockReset();
+});
 afterEach(() => { closeDb(); vi.unstubAllEnvs(); });
 
 function seed(id: string, status: string) {
@@ -43,5 +55,32 @@ describe("changeFulfillmentStatus", () => {
   it("rejects unsupported statuses (failed, canceled) from this endpoint", async () => {
     seed("o5", "pending");
     await expect(changeFulfillmentStatus("o5", "canceled")).rejects.toThrow();
+  });
+
+  it("dispatches out_for_delivery on that transition", async () => {
+    seed("o_ofd", "preparing");
+    await changeFulfillmentStatus("o_ofd", "out-for-delivery");
+    expect(dispatchOutForDeliveryMock).toHaveBeenCalledTimes(1);
+    expect(dispatchDeliveredMock).not.toHaveBeenCalled();
+  });
+
+  it("dispatches delivered on that transition", async () => {
+    seed("o_del", "out-for-delivery");
+    await changeFulfillmentStatus("o_del", "delivered");
+    expect(dispatchDeliveredMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not dispatch on other transitions", async () => {
+    seed("o_prep", "pending");
+    await changeFulfillmentStatus("o_prep", "preparing");
+    expect(dispatchOutForDeliveryMock).not.toHaveBeenCalled();
+    expect(dispatchDeliveredMock).not.toHaveBeenCalled();
+  });
+
+  it("a dispatch failure does not break the status change", async () => {
+    dispatchOutForDeliveryMock.mockRejectedValueOnce(new Error("boom"));
+    seed("o_fail", "preparing");
+    const r = await changeFulfillmentStatus("o_fail", "out-for-delivery");
+    expect(r.status).toBe("out-for-delivery");
   });
 });

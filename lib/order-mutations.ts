@@ -111,6 +111,21 @@ export async function changeFulfillmentStatus(
     orderId, actor: "maky", kind: "fulfillment",
     summary: `Estado: ${cur.status} → ${status}`,
   });
+  if (status === "out-for-delivery") {
+    try {
+      const { dispatchOutForDelivery } = await import("@/lib/order-dispatch");
+      await dispatchOutForDelivery(next);
+    } catch (e) {
+      console.error(JSON.stringify({ event: "dispatch_out_for_delivery_failed", orderId, error: String(e) }));
+    }
+  } else if (status === "delivered") {
+    try {
+      const { dispatchDelivered } = await import("@/lib/order-dispatch");
+      await dispatchDelivered(next);
+    } catch (e) {
+      console.error(JSON.stringify({ event: "dispatch_delivered_failed", orderId, error: String(e) }));
+    }
+  }
   return next;
 }
 
