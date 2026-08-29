@@ -25,6 +25,7 @@ export default function TwilioSettings() {
   const [test, setTest] = useState<{ state: "idle" | "sending" | "ok" | "error"; msg?: string }>({
     state: "idle",
   });
+  const [testTo, setTestTo] = useState("");
 
   const reload = useCallback(async () => {
     const d = (await fetch("/api/admin/settings").then((r) => r.json())) as Config;
@@ -73,9 +74,11 @@ export default function TwilioSettings() {
   async function sendTest() {
     setTest({ state: "sending" });
     try {
-      const d = await fetch("/api/admin/settings/twilio-test", { method: "POST" }).then((r) =>
-        r.json(),
-      );
+      const d = await fetch("/api/admin/settings/twilio-test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ to: testTo.trim() }),
+      }).then((r) => r.json());
       if (d.ok) setTest({ state: "ok" });
       else setTest({ state: "error", msg: d.error });
     } catch {
@@ -122,6 +125,8 @@ export default function TwilioSettings() {
         ? t("twilio_test_err_no_credentials")
         : test.msg === "sms_disabled"
         ? t("twilio_test_err_sms_disabled")
+        : test.msg === "invalid_number"
+        ? t("twilio_test_err_invalid_number")
         : t("twilio_test_err_generic", { error: test.msg ?? "" })
       : "";
 
@@ -248,15 +253,26 @@ export default function TwilioSettings() {
 
         {/* Test send */}
         <div className="border-t border-mute-100 pt-5">
-          <button
-            type="button"
-            onClick={sendTest}
-            disabled={test.state === "sending"}
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-ink/20 text-sm font-display hover:bg-bone disabled:opacity-40 transition"
-          >
-            <PaperPlaneTilt size={16} weight="bold" />
-            {test.state === "sending" ? t("twilio_test_sending") : t("twilio_test_button")}
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <input
+              type="tel"
+              inputMode="tel"
+              value={testTo}
+              onChange={(e) => setTestTo(e.target.value)}
+              placeholder={t("twilio_test_to_placeholder")}
+              aria-label={t("twilio_test_to_placeholder")}
+              className="min-h-11 w-48 rounded-xl border border-ink/20 bg-bone px-3 text-sm"
+            />
+            <button
+              type="button"
+              onClick={sendTest}
+              disabled={test.state === "sending"}
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-ink/20 text-sm font-display hover:bg-bone disabled:opacity-40 transition"
+            >
+              <PaperPlaneTilt size={16} weight="bold" />
+              {test.state === "sending" ? t("twilio_test_sending") : t("twilio_test_button")}
+            </button>
+          </div>
           <p className="mt-2 text-xs text-mute-500">{t("twilio_test_hint")}</p>
           {test.state === "ok" && (
             <p className="mt-2 text-sm text-green-700">{t("twilio_test_sent")}</p>
