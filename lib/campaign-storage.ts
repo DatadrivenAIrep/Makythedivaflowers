@@ -63,6 +63,19 @@ export function createDraft(input: { bodyEs: string; bodyEn?: string; segment?: 
   return getCampaign(id)!;
 }
 
+/**
+ * Update a draft's bodies in place (guarded to `status='draft'`), so re-saving to
+ * refresh the preview edits the same row instead of minting a new draft each time.
+ * Returns the updated campaign, or null if the id isn't a draft (or doesn't exist).
+ */
+export function updateDraft(id: string, input: { bodyEs: string; bodyEn?: string }): Campaign | null {
+  runMigrations();
+  const res = getDb()
+    .prepare("UPDATE campaigns SET body_es = ?, body_en = ? WHERE id = ? AND status = 'draft'")
+    .run(input.bodyEs, input.bodyEn ?? "", id);
+  return res.changes === 1 ? getCampaign(id) : null;
+}
+
 export function getCampaign(id: string): Campaign | null {
   runMigrations();
   const row = getDb().prepare("SELECT * FROM campaigns WHERE id = ?").get(id) as CampaignRow | undefined;

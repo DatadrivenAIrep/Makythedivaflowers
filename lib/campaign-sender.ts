@@ -39,20 +39,9 @@ export function renderCampaignBody(
   return `${merged} ${OPT_OUT_FOOTER[locale]}`;
 }
 
-// GSM 03.38 basic + extension charset. Anything outside it forces UCS-2.
-const GSM7 =
-  "@£$¥èéùìòÇ\nØø\rÅåΔ_ΦΓΛΩΠΨΣΘΞ ÆæßÉ !\"#¤%&'()*+,-./0123456789:;<=>?" +
-  "¡ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÑÜ§¿abcdefghijklmnopqrstuvwxyzäöñüà" +
-  "^{}\\[~]|€";
-
-/** Estimate SMS segments for the preview (GSM-7: 160/153; UCS-2: 70/67). */
-export function smsSegments(body: string): number {
-  const chars = [...body];
-  const gsm7 = chars.every((ch) => GSM7.includes(ch));
-  const len = chars.length;
-  if (gsm7) return len <= 160 ? 1 : Math.ceil(len / 153);
-  return len <= 70 ? 1 : Math.ceil(len / 67);
-}
+// SMS-segment math lives in a client-safe module so the compose UI can share it;
+// re-exported here so server callers (the [id] preview route) keep one import site.
+export { smsSegments } from "@/lib/sms-segments";
 
 function isCode21610(e: unknown): boolean {
   return typeof e === "object" && e !== null && (e as { code?: number }).code === 21610;

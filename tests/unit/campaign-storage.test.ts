@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { closeDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import {
-  createDraft, getCampaign, listCampaigns, markSending, recordSend, finalizeCampaign,
+  createDraft, getCampaign, listCampaigns, markSending, recordSend, finalizeCampaign, updateDraft,
 } from "@/lib/campaign-storage";
 
 beforeEach(() => {
@@ -46,6 +46,25 @@ describe("campaign-storage", () => {
     expect(done?.sentCount).toBe(1);
     expect(done?.failedCount).toBe(1);
     expect(done?.sentAt).toBeTruthy();
+  });
+
+  it("updateDraft edits a draft's bodies in place and returns it", () => {
+    const c = createDraft({ bodyEs: "old es", bodyEn: "" });
+    const u = updateDraft(c.id, { bodyEs: "new es", bodyEn: "new en" });
+    expect(u?.bodyEs).toBe("new es");
+    expect(u?.bodyEn).toBe("new en");
+    expect(getCampaign(c.id)?.bodyEs).toBe("new es"); // persisted, same row
+  });
+
+  it("updateDraft returns null once the campaign is no longer a draft (and leaves it unchanged)", () => {
+    const c = createDraft({ bodyEs: "x" });
+    markSending(c.id); // status now 'sending'
+    expect(updateDraft(c.id, { bodyEs: "y" })).toBeNull();
+    expect(getCampaign(c.id)?.bodyEs).toBe("x");
+  });
+
+  it("updateDraft returns null for a missing id", () => {
+    expect(updateDraft("nope", { bodyEs: "y" })).toBeNull();
   });
 
   it("lists campaigns newest first", () => {
