@@ -11,7 +11,9 @@ import {
 import AdminButton from "@/components/admin/dashboard/AdminButton";
 import type { Campaign } from "@/lib/campaign-storage";
 import { smsSegments } from "@/lib/sms-segments";
+import type { CampaignTemplate } from "@/data/campaign-templates";
 import CampaignHistory from "./CampaignHistory";
+import CampaignTemplates from "./CampaignTemplates";
 
 type Preview = {
   recipientCount: number;
@@ -158,6 +160,18 @@ export default function CampaignsPage({ locale }: { locale: string }) {
     }
   }
 
+  // Tapping a template fills the compose fields. Clear the stale preview so the
+  // owner re-saves to preview the new copy; keep draftId so the re-save updates
+  // the same draft row rather than minting a new one.
+  function pickTemplate(tpl: CampaignTemplate) {
+    setBodyEs(tpl.bodyEs);
+    setBodyEn(tpl.bodyEn);
+    setPreview(null);
+    setError(null);
+    setTest({ state: "idle" });
+    setSendResult(null);
+  }
+
   const hasDraft = draftId !== null;
 
   return (
@@ -174,7 +188,8 @@ export default function CampaignsPage({ locale }: { locale: string }) {
           <h2 className="font-display text-base text-ink">{t("compose_section")}</h2>
         </div>
         <div className="space-y-5 px-6 py-5">
-          <div className="grid gap-4 md:grid-cols-2">
+          <CampaignTemplates locale={locale} onPick={pickTemplate} />
+          <div className="grid gap-4 border-t border-ink/5 pt-5 md:grid-cols-2">
             <Field label={t("body_es_label")} value={bodyEs} onChange={setBodyEs} />
             <Field label={t("body_en_label")} value={bodyEn} onChange={setBodyEn} />
           </div>

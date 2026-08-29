@@ -1680,6 +1680,7 @@
     "confirm_send": "Send this promotion to {count} customers now?",
     "error": "Something went wrong. Try again.",
     "compose_section": "Compose",
+    "templates_hint": "Start from a template, or write your own below.",
     "saving": "Saving…",
     "update_draft": "Update draft",
     "chars": "{count} characters",

@@ -1680,6 +1680,7 @@
     "confirm_send": "¿Enviar esta promoción a {count} clientes ahora?",
     "error": "Algo salió mal. Intenta de nuevo.",
     "compose_section": "Redactar",
+    "templates_hint": "Empieza desde una plantilla, o escribe la tuya abajo.",
     "saving": "Guardando…",
     "update_draft": "Actualizar borrador",
     "chars": "{count} caracteres",
