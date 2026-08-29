@@ -18,6 +18,9 @@ vi.mock("@/lib/order-storage", () => ({
 const dispatchPaymentConfirmedMock = vi.fn();
 vi.mock("@/lib/order-dispatch", () => ({
   dispatchPaymentConfirmed: (...args: unknown[]) => dispatchPaymentConfirmedMock(...args),
+  // The owner alert formats the delivery window with this helper; a deterministic
+  // stub keeps the test off the DB/server-only chain the real module pulls in.
+  windowLabel: () => "sáb, 21 ago · mañana (9–12)",
 }));
 
 const notifyOwnerMock = vi.fn();
@@ -163,5 +166,14 @@ describe("onWebOrderPaid", () => {
   it("texts the owner once when a web order is paid", async () => {
     await onWebOrderPaid("do_1");
     expect(notifyOwnerMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("includes the order number, total, and delivery window in the owner alert", async () => {
+    await onWebOrderPaid("do_1");
+    const msg = notifyOwnerMock.mock.calls[0][0] as string;
+    expect(msg).toContain("#1042");
+    expect(msg).toContain("$86.90");
+    // windowLabel renders the delivery date + slot; "entrega" must precede it.
+    expect(msg).toMatch(/entrega .+/);
   });
 });

@@ -1,7 +1,7 @@
 import "server-only";
 import { upsertOnOrder, addTag } from "@/lib/customer-storage";
 import { getOrder, updateOrder } from "@/lib/order-storage";
-import { dispatchPaymentConfirmed } from "@/lib/order-dispatch";
+import { dispatchPaymentConfirmed, windowLabel } from "@/lib/order-dispatch";
 import { notifyOwner } from "@/lib/notify-owner";
 import type { Order } from "@/types/order";
 
@@ -57,7 +57,8 @@ export async function onWebOrderPaid(orderId: string): Promise<void> {
 
     const total = `$${(order.totals.totalCents / 100).toFixed(2)}`;
     const num = order.orderNumber != null ? `#${order.orderNumber}` : order.id;
-    await notifyOwner(`Nueva orden web ${num} · ${total}. — Diva Flowers`);
+    const when = windowLabel(order, "es");
+    await notifyOwner(`Nueva orden web ${num} · ${total} · entrega ${when}. — Diva Flowers`);
   } catch (e) {
     console.error(
       JSON.stringify({

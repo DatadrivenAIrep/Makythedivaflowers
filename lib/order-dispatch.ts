@@ -5,7 +5,7 @@ import { hasRecentSuccess } from "@/lib/message-storage";
 import { SITE } from "@/data/site";
 import type { Order } from "@/types/order";
 
-function windowLabel(order: Order, locale: "en" | "es"): string {
+export function windowLabel(order: Order, locale: "en" | "es"): string {
   if (order.fulfillment.method === "in-store") {
     return locale === "es" ? "se lo lleva" : "in-store";
   }
