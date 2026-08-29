@@ -22,6 +22,7 @@ vi.mock("@/lib/customer-storage", () => ({
 }));
 
 import { POST as createPost, GET as listGet } from "@/app/api/admin/campaigns/route";
+import { GET as detailGet } from "@/app/api/admin/campaigns/[id]/route";
 import { POST as sendPost } from "@/app/api/admin/campaigns/[id]/send/route";
 
 function jsonReq(body: unknown) {
@@ -57,6 +58,30 @@ describe("GET /api/admin/campaigns", () => {
   it("lists campaigns", async () => {
     const res = await listGet();
     expect((await res.json()).campaigns).toHaveLength(1);
+  });
+});
+
+describe("GET /api/admin/campaigns/[id]", () => {
+  it("returns campaign detail with recipient count and bilingual previews", async () => {
+    getCampaignMock.mockReturnValue({ id: "cmp_1", segment: "sms-marketing", status: "draft" });
+    listMarketingRecipientsMock.mockReturnValue([{ id: "c1" }, { id: "c2" }, { id: "c3" }]);
+    const res = await detailGet(new Request("http://x"), { params: Promise.resolve({ id: "cmp_1" }) });
+    const data = await res.json();
+    expect(data).toEqual({
+      campaign: { id: "cmp_1", segment: "sms-marketing", status: "draft" },
+      recipientCount: 3,
+      previewEs: "¡Hola Ana! Promo Responde STOP para cancelar.",
+      previewEn: "¡Hola Ana! Promo Responde STOP para cancelar.",
+      segmentsEs: 1,
+      segmentsEn: 1,
+    });
+  });
+
+  it("404s when the campaign is missing", async () => {
+    getCampaignMock.mockReturnValue(null);
+    const res = await detailGet(new Request("http://x"), { params: Promise.resolve({ id: "nope" }) });
+    expect(res.status).toBe(404);
+    expect(await res.json()).toEqual({ error: "not_found" });
   });
 });
 
