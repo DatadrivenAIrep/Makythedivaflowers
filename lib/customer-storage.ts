@@ -403,6 +403,38 @@ export function listCustomers(
   return { customers, stats: customerStats(now), nextCursor };
 }
 
+export type MarketingRecipient = {
+  id: string;
+  name: string;
+  phone: string;
+  locale?: "en" | "es";
+  messagingChannel?: MessagingChannel;
+};
+
+/** Opted-in recipients for a marketing tag: has the tag AND is not opted out
+ *  (messaging_channel != 'none'). No 200-row cap — a campaign hits the whole list. */
+export function listMarketingRecipients(tag: string): MarketingRecipient[] {
+  runMigrations();
+  const rows = getDb()
+    .prepare(
+      `SELECT c.id, c.name, c.phone, c.messaging_channel, c.locale
+       FROM customers c
+       WHERE EXISTS (SELECT 1 FROM customer_tags t WHERE t.customer_id = c.id AND t.tag = ?)
+         AND (c.messaging_channel IS NULL OR c.messaging_channel <> 'none')
+       ORDER BY c.id`,
+    )
+    .all(tag) as Array<{
+    id: string; name: string; phone: string; messaging_channel: string | null; locale: string | null;
+  }>;
+  return rows.map((r) => ({
+    id: r.id,
+    name: r.name,
+    phone: r.phone,
+    locale: (r.locale as "en" | "es" | null) ?? undefined,
+    messagingChannel: (r.messaging_channel as MessagingChannel | null) ?? undefined,
+  }));
+}
+
 export function customerStats(now: Date = new Date()): CustomerListStats {
   runMigrations();
   const db = getDb();
