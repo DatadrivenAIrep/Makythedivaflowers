@@ -2,7 +2,8 @@ import { describe, it, expect } from "vitest";
 import { renderSmsBody, whatsappContentVars, type TemplateVars } from "@/lib/messaging-templates";
 
 const vars: TemplateVars = {
-  recipient_name: "Lola",
+  buyer_name: "Sofia", // the buyer (who paid + receives the SMS)
+  recipient_name: "Lola", // the flower recipient (must NOT be greeted)
   total: "$205.51",
   window: "Sat May 17 · afternoon (12–4 pm)",
   link: "https://buy.stripe.com/test_abc123",
@@ -12,15 +13,23 @@ const vars: TemplateVars = {
 describe("renderSmsBody", () => {
   it("renders order_received in English", () => {
     const body = renderSmsBody("order_received", "en", vars);
-    expect(body).toContain("Hi Lola");
+    expect(body).toContain("Hi Sofia");
     expect(body).toContain("$205.51");
     expect(body).toContain("(516) 484-3456");
   });
 
   it("renders order_received in Spanish", () => {
     const body = renderSmsBody("order_received", "es", vars);
-    expect(body).toContain("Hola Lola");
+    expect(body).toContain("Hola Sofia");
     expect(body).toContain("recibió tu pedido");
+  });
+
+  it("greets the BUYER, not the flower recipient", () => {
+    for (const tpl of ["order_received", "payment_confirmed", "out_for_delivery"] as const) {
+      const es = renderSmsBody(tpl, "es", vars);
+      expect(es, tpl).toContain("Sofia"); // buyer
+      expect(es, tpl).not.toContain("Lola"); // recipient must not be greeted
+    }
   });
 
   it("renders payment_link with the URL", () => {
@@ -30,7 +39,7 @@ describe("renderSmsBody", () => {
 
   it("renders payment_confirmed in Spanish", () => {
     const body = renderSmsBody("payment_confirmed", "es", vars);
-    expect(body).toContain("¡Gracias Lola");
+    expect(body).toContain("¡Gracias Sofia");
     expect(body).toContain("recibió tu pago");
   });
 
@@ -70,6 +79,26 @@ describe("renderSmsBody", () => {
     expect(renderSmsBody("delivered", "en", vars)).toContain("Delivered");
     expect(renderSmsBody("delivered", "es", vars)).toContain("Entregado");
     expect(renderSmsBody("delivered", "es", vars)).toContain(vars.shop_phone);
+  });
+
+  it("renders ready_for_pickup in both locales, greeting the buyer", () => {
+    const en = renderSmsBody("ready_for_pickup", "en", vars);
+    const es = renderSmsBody("ready_for_pickup", "es", vars);
+    expect(en).toContain("ready for pickup");
+    expect(en).toContain("Sofia");
+    expect(es).toContain("listo para recoger");
+    expect(es).toContain("Sofia");
+    expect(es).toContain(vars.shop_phone);
+  });
+
+  it("renders review_request with the review link in both locales", () => {
+    const en = renderSmsBody("review_request", "en", vars);
+    const es = renderSmsBody("review_request", "es", vars);
+    expect(en).toContain("Google review");
+    expect(en).toContain(vars.link!);
+    expect(es).toContain("reseña en Google");
+    expect(es).toContain(vars.link!);
+    expect(es).toContain("Sofia");
   });
 });
 

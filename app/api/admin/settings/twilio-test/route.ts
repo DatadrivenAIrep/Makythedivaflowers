@@ -13,12 +13,15 @@ const KNOWN_TEMPLATES: MessageTemplate[] = [
   "payment_link",
   "payment_confirmed",
   "out_for_delivery",
+  "ready_for_pickup",
   "delivered",
+  "review_request",
 ];
 
 // Sample values so the previewed template reads like a real message.
 function sampleVars(locale: "en" | "es"): TemplateVars {
   return {
+    buyer_name: "Sofía",
     recipient_name: "Maria",
     total: "$89.50",
     window: locale === "es" ? "jue 21 ago · mañana (9–12)" : "Thu Aug 21 · morning (9–12)",

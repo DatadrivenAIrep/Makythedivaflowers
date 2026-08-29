@@ -12,13 +12,32 @@ export default function SettingsPage() {
   const base = `/${locale}/admin/dashboard`;
 
   const [currentMasked, setCurrentMasked] = useState<string | null | undefined>(undefined);
+  const [reviewUrl, setReviewUrl] = useState("");
+  const [reviewState, setReviewState] = useState<"idle" | "saving" | "saved" | "error">("idle");
 
   useEffect(() => {
     fetch("/api/admin/settings")
       .then((r) => r.json())
-      .then((d) => setCurrentMasked(d.google_places_api_key ?? null))
+      .then((d) => {
+        setCurrentMasked(d.google_places_api_key ?? null);
+        setReviewUrl(d.google_review_url ?? "");
+      })
       .catch(() => setCurrentMasked(null));
   }, []);
+
+  async function saveReviewUrl() {
+    setReviewState("saving");
+    try {
+      const res = await fetch("/api/admin/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: "google_review_url", value: reviewUrl.trim() }),
+      });
+      setReviewState(res.ok ? "saved" : "error");
+    } catch {
+      setReviewState("error");
+    }
+  }
 
   return (
     <main className="max-w-[640px] mx-auto p-6">
@@ -98,6 +117,34 @@ export default function SettingsPage() {
               ))}
             </ol>
           </details>
+
+          {/* Google review link (for the manual review-request SMS) */}
+          <div className="border-t border-mute-100 pt-5">
+            <label className="block text-sm font-medium text-ink">{t("review_url_label")}</label>
+            <p className="mt-0.5 text-xs text-mute-500">{t("review_url_description")}</p>
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <input
+                type="url"
+                inputMode="url"
+                value={reviewUrl}
+                onChange={(e) => {
+                  setReviewUrl(e.target.value);
+                  setReviewState("idle");
+                }}
+                placeholder={t("review_url_placeholder")}
+                className="min-h-11 flex-1 rounded-lg border border-ink/20 bg-bone px-3 text-sm outline-none focus:border-ink focus:bg-white"
+              />
+              <button
+                onClick={saveReviewUrl}
+                disabled={reviewState === "saving"}
+                className="min-h-11 rounded-lg bg-ink px-4 text-sm text-bone disabled:opacity-40"
+              >
+                {reviewState === "saving" ? t("review_url_saving") : t("review_url_save")}
+              </button>
+            </div>
+            {reviewState === "saved" && <p className="mt-2 text-xs text-success">{t("review_url_saved")}</p>}
+            {reviewState === "error" && <p className="mt-2 text-xs text-error">{t("review_url_error")}</p>}
+          </div>
         </div>
       </section>
 

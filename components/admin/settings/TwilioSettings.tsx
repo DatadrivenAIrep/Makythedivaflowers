@@ -271,7 +271,9 @@ export default function TwilioSettings() {
               <option value="payment_link">{t("twilio_test_msg_payment_link")}</option>
               <option value="payment_confirmed">{t("twilio_test_msg_payment_confirmed")}</option>
               <option value="out_for_delivery">{t("twilio_test_msg_out_for_delivery")}</option>
+              <option value="ready_for_pickup">{t("twilio_test_msg_ready_for_pickup")}</option>
               <option value="delivered">{t("twilio_test_msg_delivered")}</option>
+              <option value="review_request">{t("twilio_test_msg_review_request")}</option>
             </select>
             <select
               value={testLocale}

@@ -22,6 +22,7 @@ const baseReq = {
   locale: "en" as const,
   template: "order_received" as const,
   vars: {
+    buyer_name: "Sofia",
     recipient_name: "Lola",
     total: "$205.51",
     window: "Sat May 17 · afternoon (12–4 pm)",

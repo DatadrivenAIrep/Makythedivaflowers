@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
   WhatsappLogo, ArrowsClockwise, Check, CheckCircle,
-  Package, Truck, XCircle, X, Pencil, Eye, Printer,
+  Package, Truck, XCircle, X, Pencil, Eye, Printer, Storefront, Star,
 } from "@phosphor-icons/react/dist/ssr";
 import { useTranslations, useLocale } from "next-intl";
 import { formatDateTime } from "@/lib/format-datetime";
@@ -48,6 +48,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
   const [cancelReason, setCancelReason] = useState("");
   const [refundChecked, setRefundChecked] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [reviewMsg, setReviewMsg] = useState<{ ok: boolean; text: string } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -77,6 +78,34 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
         onChanged();
       }
     } finally { setBusy(false); }
+  }
+
+  function reviewErr(reason: string): string {
+    switch (reason) {
+      case "no_review_url": return t("review_no_url");
+      case "opted_out": return t("review_opted_out");
+      case "already_sent": return t("review_already_sent");
+      default: return t("review_failed");
+    }
+  }
+
+  async function requestReview() {
+    setBusy(true);
+    setReviewMsg(null);
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}/request-review`, { method: "POST" });
+      const d = (await res.json().catch(() => ({ ok: false }))) as { ok: boolean; reason?: string; error?: string };
+      if (d.ok) {
+        setReviewMsg({ ok: true, text: t("review_sent") });
+        const refreshed = await fetch(`/api/admin/orders/${orderId}`, { cache: "no-store" });
+        setData((await refreshed.json()) as DetailResp);
+        onChanged();
+      } else {
+        setReviewMsg({ ok: false, text: reviewErr(String(d.reason ?? d.error ?? "")) });
+      }
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function saveEdit(patch: OrderEditPatch) {
@@ -319,20 +348,26 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
                     onClick={() => call("PATCH", `/api/admin/orders/${order.id}/fulfillment`, { status: "preparing" })}>{t("prepare")}</AdminButton>
                 )}
                 {order.status !== "out-for-delivery" && (
-                  <AdminButton variant="secondary" icon={Truck} disabled={busy}
-                    onClick={() => call("PATCH", `/api/admin/orders/${order.id}/fulfillment`, { status: "out-for-delivery" })}>{t("out_for_delivery")}</AdminButton>
+                  <AdminButton variant="secondary" icon={order.fulfillment.method === "pickup" ? Storefront : Truck} disabled={busy}
+                    onClick={() => call("PATCH", `/api/admin/orders/${order.id}/fulfillment`, { status: "out-for-delivery" })}>{order.fulfillment.method === "pickup" ? t("ready_for_pickup") : t("out_for_delivery")}</AdminButton>
                 )}
                 <AdminButton variant="primary" icon={CheckCircle} disabled={busy}
-                  onClick={() => call("PATCH", `/api/admin/orders/${order.id}/fulfillment`, { status: "delivered" })}>{t("delivered")}</AdminButton>
+                  onClick={() => call("PATCH", `/api/admin/orders/${order.id}/fulfillment`, { status: "delivered" })}>{order.fulfillment.method === "pickup" ? t("picked_up") : t("delivered")}</AdminButton>
               </>
             )}
             <AdminButton variant="secondary" icon={WhatsappLogo}
               href={`https://wa.me/${order.contact.phone.replace(/\D/g, "")}`} target="_blank" rel="noreferrer">{t("whatsapp")}</AdminButton>
+            {order.status === "delivered" && (
+              <AdminButton variant="secondary" icon={Star} disabled={busy} onClick={requestReview}>{t("request_review")}</AdminButton>
+            )}
             {order.status !== "delivered" && order.status !== "canceled" && !cancelOpen && (
               <AdminButton variant="danger" icon={XCircle} disabled={busy}
                 className="ml-auto" onClick={() => setCancelOpen(true)}>{t("cancel_order")}</AdminButton>
             )}
           </div>
+          {reviewMsg && (
+            <p className={`mt-2 text-xs ${reviewMsg.ok ? "text-success" : "text-error"}`}>{reviewMsg.text}</p>
+          )}
           {cancelOpen && (
             <div className="mt-2 rounded border border-red-300 bg-red-50 p-3 text-xs">
               <div className="mb-2 font-semibold text-red-700">{t("cancel_this_order")}</div>

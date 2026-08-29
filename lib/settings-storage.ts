@@ -26,6 +26,9 @@ export function deleteSetting(key: string): void {
 }
 
 export const SETTING_GOOGLE_PLACES_KEY = "google_places_api_key";
+/** Public "leave us a review" Google link (e.g. https://g.page/r/…/review). Used by
+ *  the manual review-request SMS. Owner pastes it in /admin/settings. */
+export const SETTING_GOOGLE_REVIEW_URL = "google_review_url";
 
 export const SETTING_TWILIO_ACCOUNT_SID = "twilio_account_sid";
 export const SETTING_TWILIO_AUTH_TOKEN = "twilio_auth_token";

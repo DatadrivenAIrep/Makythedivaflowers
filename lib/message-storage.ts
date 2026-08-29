@@ -8,7 +8,9 @@ export type MessageTemplate =
   | "payment_link"
   | "payment_confirmed"
   | "out_for_delivery"
-  | "delivered";
+  | "ready_for_pickup"
+  | "delivered"
+  | "review_request";
 export type MessageStatus = "queued" | "sent" | "failed" | "skipped";
 
 export type Message = {

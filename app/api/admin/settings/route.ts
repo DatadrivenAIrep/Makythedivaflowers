@@ -5,6 +5,7 @@ import {
   setSetting,
   deleteSetting,
   SETTING_GOOGLE_PLACES_KEY,
+  SETTING_GOOGLE_REVIEW_URL,
   SETTING_TWILIO_ACCOUNT_SID,
   SETTING_TWILIO_AUTH_TOKEN,
   SETTING_TWILIO_PHONE_NUMBER,
@@ -24,6 +25,7 @@ export const runtime = "nodejs";
 // The only keys exposed through this route — guards against free-form injection.
 const ALLOWED_KEYS = [
   SETTING_GOOGLE_PLACES_KEY,
+  SETTING_GOOGLE_REVIEW_URL,
   SETTING_TWILIO_ACCOUNT_SID,
   SETTING_TWILIO_AUTH_TOKEN,
   SETTING_TWILIO_PHONE_NUMBER,
@@ -41,6 +43,9 @@ const putSchema = z
     }
     if (data.key === SETTING_TWILIO_PHONE_NUMBER && !/^\+\d{11,15}$/.test(v)) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, message: "invalid_phone", path: ["value"] });
+    }
+    if (data.key === SETTING_GOOGLE_REVIEW_URL && !/^https?:\/\/\S+$/.test(v)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "invalid_url", path: ["value"] });
     }
     if (
       (data.key === SETTING_TWILIO_SMS_ENABLED || data.key === SETTING_TWILIO_DRY_RUN) &&
@@ -61,6 +66,9 @@ export async function GET() {
   const google = getSetting(SETTING_GOOGLE_PLACES_KEY);
   return NextResponse.json({
     [SETTING_GOOGLE_PLACES_KEY]: mask(google ?? undefined),
+    // The review URL is a public link, not a secret — return it as-is so the owner
+    // can see and verify what they pasted.
+    [SETTING_GOOGLE_REVIEW_URL]: getSetting(SETTING_GOOGLE_REVIEW_URL) ?? null,
     [SETTING_TWILIO_ACCOUNT_SID]: mask(twilioAccountSid()),
     [SETTING_TWILIO_AUTH_TOKEN]: mask(twilioAuthToken()),
     [SETTING_TWILIO_PHONE_NUMBER]: twilioPhoneNumber() ?? null,

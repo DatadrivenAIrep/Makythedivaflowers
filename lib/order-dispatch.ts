@@ -2,6 +2,7 @@ import "server-only";
 import { sendMessage } from "@/lib/messaging";
 import { getByPhone } from "@/lib/customer-storage";
 import { hasRecentSuccess } from "@/lib/message-storage";
+import { getSetting, SETTING_GOOGLE_REVIEW_URL } from "@/lib/settings-storage";
 import { SITE } from "@/data/site";
 import type { Order } from "@/types/order";
 
@@ -44,6 +45,14 @@ function firstName(full: string): string {
   return full.trim().split(/\s+/)[0] || full;
 }
 
+/** The buyer (order.contact) is who paid and who every customer SMS is sent to.
+ *  Web checkout lets the buyer leave their name blank, so fall back to the
+ *  recipient's name — the only name we have — rather than greeting no one. */
+function buyerFirstName(order: Order): string {
+  const buyer = order.contact.name?.trim();
+  return firstName(buyer && buyer.length ? buyer : order.fulfillment.recipient.name);
+}
+
 function shopPhoneFromSite(): string {
   // SITE structure depends on the data file; fall back to a literal if missing.
   const site = SITE as unknown as { phone?: string; contact?: { phone?: string } };
@@ -64,6 +73,7 @@ export async function dispatchOrderReceived(order: Order, link?: string): Promis
     locale,
     template,
     vars: {
+      buyer_name: buyerFirstName(order),
       recipient_name: firstName(order.fulfillment.recipient.name),
       total: totalLabel(order.totals.totalCents),
       window: windowLabel(order, locale),
@@ -75,9 +85,16 @@ export async function dispatchOrderReceived(order: Order, link?: string): Promis
   });
 }
 
+/**
+ * Fired when a shop advances an order to "out-for-delivery". Delivery orders get
+ * the "on the way" SMS; PICKUP orders get "ready for pickup" (same trigger, since
+ * there is no separate pickup-ready status); in-store orders get nothing. Always
+ * to the BUYER (order.contact), greeting the buyer — not the flower recipient.
+ */
 export async function dispatchOutForDelivery(order: Order): Promise<void> {
-  if (order.fulfillment.method !== "delivery") return;
-  if (hasRecentSuccess(order.id, "out_for_delivery", 24)) return;
+  if (order.fulfillment.method === "in-store") return;
+  const template = order.fulfillment.method === "pickup" ? "ready_for_pickup" : "out_for_delivery";
+  if (hasRecentSuccess(order.id, template, 24)) return;
   const customer = await getByPhone(order.contact.phone);
   const channel = customer?.messagingChannel ?? "sms";
   if (channel === "none") return;
@@ -88,8 +105,9 @@ export async function dispatchOutForDelivery(order: Order): Promise<void> {
     customerId: customer?.id,
     channel,
     locale,
-    template: "out_for_delivery",
+    template,
     vars: {
+      buyer_name: buyerFirstName(order),
       recipient_name: firstName(order.fulfillment.recipient.name),
       total: totalLabel(order.totals.totalCents),
       window: windowLabel(order, locale),
@@ -114,6 +132,7 @@ export async function dispatchDelivered(order: Order): Promise<void> {
     locale,
     template: "delivered",
     vars: {
+      buyer_name: buyerFirstName(order),
       recipient_name: firstName(order.fulfillment.recipient.name),
       total: totalLabel(order.totals.totalCents),
       window: windowLabel(order, locale),
@@ -137,6 +156,7 @@ export async function dispatchPaymentConfirmed(order: Order): Promise<void> {
     locale,
     template: "payment_confirmed",
     vars: {
+      buyer_name: buyerFirstName(order),
       recipient_name: firstName(order.fulfillment.recipient.name),
       total: totalLabel(order.totals.totalCents),
       window: windowLabel(order, locale),
@@ -145,4 +165,44 @@ export async function dispatchPaymentConfirmed(order: Order): Promise<void> {
     },
     to: { phone: order.contact.phone, email: order.contact.email },
   });
+}
+
+export type ReviewRequestResult = { ok: boolean; reason?: string };
+
+/**
+ * Manually-triggered Google-review-request SMS (the shop picks which delivered/
+ * picked-up orders to ask). Sends to the BUYER, needs the google_review_url setting
+ * configured, honours consent, and dedupes so a double-click doesn't double-send.
+ * Never throws — returns a reason the admin UI surfaces.
+ */
+export async function dispatchReviewRequest(order: Order): Promise<ReviewRequestResult> {
+  // Server-side guard: only a completed (delivered / picked-up) order may be asked
+  // for a review — the UI gates on this too, but a direct POST must not ask a
+  // customer whose order hasn't arrived (or was canceled).
+  if (order.status !== "delivered") return { ok: false, reason: "not_delivered" };
+  const reviewUrl = getSetting(SETTING_GOOGLE_REVIEW_URL);
+  if (!reviewUrl) return { ok: false, reason: "no_review_url" };
+  if (hasRecentSuccess(order.id, "review_request", 24)) return { ok: false, reason: "already_sent" };
+  const customer = await getByPhone(order.contact.phone);
+  const channel = customer?.messagingChannel ?? "sms";
+  if (channel === "none") return { ok: false, reason: "opted_out" };
+  const locale = resolveLocale(customer?.locale, order.locale);
+
+  const res = await sendMessage({
+    orderId: order.id,
+    customerId: customer?.id,
+    channel,
+    locale,
+    template: "review_request",
+    vars: {
+      buyer_name: buyerFirstName(order),
+      recipient_name: firstName(order.fulfillment.recipient.name),
+      total: totalLabel(order.totals.totalCents),
+      link: reviewUrl,
+      shop_phone: shopPhoneFromSite(),
+    },
+    to: { phone: order.contact.phone, email: order.contact.email },
+  });
+  if (res.status === "sent") return { ok: true };
+  return { ok: false, reason: res.error ?? res.status };
 }
