@@ -30,6 +30,7 @@ export type OrderRow = {
   taken_by: string | null;
   internal_notes: string | null;
   sms_consent: number;
+  sms_marketing_consent: number;
   stripe_checkout_session_id: string | null;
   gift_card_id: string | null;
   gift_card_cents: number | null;
@@ -69,6 +70,7 @@ export function orderToRow(o: Order): OrderRow {
     taken_by: o.takenBy ?? null,
     internal_notes: o.internalNotes ?? null,
     sms_consent: o.smsConsent ? 1 : 0,
+    sms_marketing_consent: o.smsMarketingConsent ? 1 : 0,
     stripe_checkout_session_id: o.stripeCheckoutSessionId ?? null,
     gift_card_id: o.giftCardId ?? null,
     gift_card_cents: o.giftCardCents ?? null,
@@ -129,6 +131,7 @@ export function rowToOrder(r: OrderRow): Order {
     takenBy: r.taken_by ?? undefined,
     internalNotes: r.internal_notes ?? undefined,
     smsConsent: r.sms_consent === 1,
+    smsMarketingConsent: r.sms_marketing_consent === 1,
     stripeCheckoutSessionId: r.stripe_checkout_session_id ?? undefined,
     ...(r.gift_card_id != null ? { giftCardId: r.gift_card_id } : {}),
     ...(r.gift_card_cents != null ? { giftCardCents: r.gift_card_cents } : {}),

@@ -27,26 +27,35 @@ export function ContactStep({ form }: Props) {
           aria-invalid={!!errors?.phone || undefined}
           {...register("contact.phone")} />
       </FormField>
-      <label className="flex items-start gap-3 cursor-pointer">
-        <input
-          type="checkbox"
-          className="mt-1 h-5 w-5 shrink-0 accent-rouge"
-          {...register("smsConsent")}
-        />
-        <span className="text-sm text-ink">
-          <span className="font-medium">{t("consent_label")}</span>
-          <span className="mt-1 block text-xs text-ink/60">{t("consent_fine")}</span>
-          <span className="mt-1 block text-xs">
-            <a href={`/${locale}/legal/terms`} target="_blank" rel="noopener noreferrer" className="underline">
-              {t("consent_terms")}
-            </a>
-            {" · "}
-            <a href={`/${locale}/legal/privacy`} target="_blank" rel="noopener noreferrer" className="underline">
-              {t("consent_privacy")}
-            </a>
-          </span>
-        </span>
-      </label>
+      <fieldset className="space-y-3">
+        <legend className="text-sm font-medium text-ink">{t("consent_heading")}</legend>
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            className="mt-0.5 h-5 w-5 shrink-0 accent-rouge"
+            {...register("smsConsent")}
+          />
+          <span className="text-sm text-ink">{t("consent_transactional_label")}</span>
+        </label>
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            className="mt-0.5 h-5 w-5 shrink-0 accent-rouge"
+            {...register("smsMarketingConsent")}
+          />
+          <span className="text-sm text-ink">{t("consent_marketing_label")}</span>
+        </label>
+        <p className="text-xs text-ink/60">
+          {t("consent_fine")}{" "}
+          <a href={`/${locale}/legal/terms`} target="_blank" rel="noopener noreferrer" className="underline">
+            {t("consent_terms")}
+          </a>
+          {" · "}
+          <a href={`/${locale}/legal/privacy`} target="_blank" rel="noopener noreferrer" className="underline">
+            {t("consent_privacy")}
+          </a>
+        </p>
+      </fieldset>
     </div>
   );
 }

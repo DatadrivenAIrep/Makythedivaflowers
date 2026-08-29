@@ -94,6 +94,7 @@ export async function POST(req: Request) {
     fulfillment,
     contact: form.contact,
     smsConsent: form.smsConsent,
+    smsMarketingConsent: form.smsMarketingConsent,
     totals,
     status: "pending",
     paymentStatus: "pending",

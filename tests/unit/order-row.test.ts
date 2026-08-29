@@ -23,6 +23,7 @@ const sample: Order = {
   paymentStatus: "pending",
   amountPaidCents: 0,
   smsConsent: false,
+  smsMarketingConsent: false,
   createdAt: "2026-05-16T00:00:00.000Z",
   updatedAt: "2026-05-16T00:00:00.000Z",
 };

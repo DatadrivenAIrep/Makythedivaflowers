@@ -88,8 +88,10 @@
     "pickup_at": "Recoger en",
     "pickup_date": "Fecha de recogida",
     "pickup_window": "Hora de recogida",
-    "consent_label": "Envíenme textos sobre mi pedido y ofertas",
-    "consent_fine": "Opcional. Al marcar, aceptas recibir mensajes de texto automatizados y recurrentes sobre tu pedido y de marketing de Diva Flowers a este número. El consentimiento no es condición de compra. Pueden aplicar tarifas de mensajes y datos. La frecuencia varía. Responde STOP para cancelar, HELP para ayuda.",
+    "consent_heading": "Envíame textos (opcional)",
+    "consent_transactional_label": "Avisos de pedido y entrega — textos sobre mi pedido y su entrega.",
+    "consent_marketing_label": "Promociones y ofertas — textos de marketing sobre ofertas de temporada y promociones.",
+    "consent_fine": "Ambas casillas son opcionales e independientes — marca una, ambas o ninguna. Al marcar una casilla, aceptas recibir mensajes de texto automatizados y recurrentes de ese tipo de Diva Flowers a este número. El consentimiento no es condición de compra. Pueden aplicar tarifas de mensajes y datos. La frecuencia varía. Responde STOP para cancelar, HELP para ayuda.",
     "consent_terms": "Términos",
     "consent_privacy": "Política de Privacidad",
     "errors": {
@@ -342,20 +344,12 @@
       }
     },
     "sms_consent": {
-      "page_title": "Formulario de Registro SMS — Diva Flowers",
-      "page_description": "El formulario de registro en tienda que Diva Flowers usa para recopilar el consentimiento de SMS.",
-      "eyebrow": "Registro en tienda",
-      "title": "Registro de Clientes",
-      "intro": "Este es el formulario de registro que usamos en el mostrador de nuestra tienda. Déjanos tus datos para enterarte de colecciones y ofertas. Recibir textos es opcional — puedes unirte sin ello.",
-      "field_name": "Nombre completo",
-      "field_phone": "Celular",
-      "field_email": "Correo",
-      "field_birthday": "Cumpleaños (opcional)",
-      "field_signature": "Firma",
-      "field_date": "Fecha",
-      "consent_heading": "Envíenme textos",
-      "optional": "Opcional",
-      "optout_note": "Deja esta casilla en blanco y aun así puedes registrarte."
+      "page_title": "Consentimiento SMS — Diva Flowers",
+      "page_description": "Las opciones de consentimiento de mensajes SMS que Diva Flowers muestra en el checkout.",
+      "eyebrow": "Mensajes de texto SMS",
+      "title": "Consentimiento de Mensajes SMS",
+      "intro": "Cuando haces un pedido en nuestro sitio web, el checkout muestra las dos opciones de consentimiento SMS de abajo. Son independientes y están desmarcadas por defecto — puedes marcar una, ambas o ninguna. Esta página las reproduce para que se pueda revisar el texto exacto de consentimiento.",
+      "optout_note": "Puedes cancelar en cualquier momento respondiendo STOP a cualquier mensaje."
     },
     "terms": {
       "page_title": "Términos de Servicio — Diva Flowers",

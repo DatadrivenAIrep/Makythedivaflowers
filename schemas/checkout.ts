@@ -61,6 +61,7 @@ export const checkoutSchema = z.object({
   }),
   delivery: z.discriminatedUnion("method", [deliveryFulfillment, pickupFulfillment]),
   smsConsent: z.boolean().optional().default(false),
+  smsMarketingConsent: z.boolean().optional().default(false),
 });
 
 export type CheckoutInput = z.input<typeof checkoutSchema>;

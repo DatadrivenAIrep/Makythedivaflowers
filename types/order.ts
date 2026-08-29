@@ -102,8 +102,10 @@ export type Order = {
   giftCardCents?: number; // amount the gift card covered on this order
   takenBy?: string;
   internalNotes?: string;
-  /** Buyer opted in to automated SMS (order + marketing) at web checkout. */
+  /** Buyer opted in to transactional SMS (order + delivery updates) at checkout. */
   smsConsent?: boolean;
+  /** Buyer opted in to marketing/promotional SMS — captured separately from smsConsent. */
+  smsMarketingConsent?: boolean;
   createdAt: string;
   updatedAt: string;
 };

@@ -11,21 +11,25 @@ function Harness() {
     defaultValues: {
       contact: { email: "", phone: "" },
       smsConsent: false,
+      smsMarketingConsent: false,
     } as CheckoutInput,
   });
   return <ContactStep form={form} />;
 }
 
 describe("ContactStep consent", () => {
-  it("renders an unchecked, optional sms consent checkbox with disclosure", () => {
+  it("renders two separate, unchecked, optional SMS consent checkboxes", () => {
     render(
       <NextIntlClientProvider locale="es" messages={esMessages as Record<string, unknown>}>
         <Harness />
       </NextIntlClientProvider>,
     );
-    const box = screen.getByRole("checkbox");
-    expect((box as HTMLInputElement).checked).toBe(false);
-    expect(screen.getByText(/Envíenme textos/)).toBeDefined();
+    const boxes = screen.getAllByRole("checkbox") as HTMLInputElement[];
+    // Two independent checkboxes: transactional + marketing.
+    expect(boxes.length).toBe(2);
+    expect(boxes.every((b) => !b.checked)).toBe(true);
+    expect(screen.getByText(/Avisos de pedido y entrega/)).toBeDefined();
+    expect(screen.getByText(/Promociones y ofertas/)).toBeDefined();
     expect(screen.getByText(/Responde STOP/)).toBeDefined();
   });
 });

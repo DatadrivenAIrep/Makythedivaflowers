@@ -1,5 +1,5 @@
 import "server-only";
-import { upsertOnOrder } from "@/lib/customer-storage";
+import { upsertOnOrder, addTag } from "@/lib/customer-storage";
 import { getOrder, updateOrder } from "@/lib/order-storage";
 import { dispatchPaymentConfirmed } from "@/lib/order-dispatch";
 import type { Order } from "@/types/order";
@@ -38,10 +38,17 @@ export async function onWebOrderPaid(orderId: string): Promise<void> {
       address: order.fulfillment.method === "delivery" ? order.fulfillment.address : undefined,
       orderAt: order.paidAt ?? order.createdAt,
       locale: order.locale,
-      // Consent decides the channel: opted in → SMS (confirmation + marketing
-      // eligible); not opted in → none, so dispatchPaymentConfirmed sends nothing.
+      // Transactional consent decides the channel: opted in → SMS (order &
+      // delivery updates); not opted in → none, so dispatchPaymentConfirmed
+      // sends nothing.
       messagingChannel: order.smsConsent ? "sms" : "none",
     });
+
+    // Marketing consent is captured separately (a distinct checkbox). Tag the
+    // customer so promotional campaigns can target only those who opted in.
+    if (order.smsMarketingConsent) {
+      addTag(customer.id, "sms-marketing");
+    }
 
     const linked: Order = { ...order, customerId: customer.id };
     await updateOrder(linked);

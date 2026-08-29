@@ -88,8 +88,10 @@
     "pickup_at": "Pick up at",
     "pickup_date": "Pickup date",
     "pickup_window": "Pickup time",
-    "consent_label": "Text me about my order & offers",
-    "consent_fine": "Optional. By checking this, you agree to receive recurring automated order and marketing text messages from Diva Flowers at this number. Consent is not a condition of purchase. Msg & data rates may apply. Message frequency varies. Reply STOP to cancel, HELP for help.",
+    "consent_heading": "Text me (optional)",
+    "consent_transactional_label": "Order & delivery updates — texts about my order and its delivery.",
+    "consent_marketing_label": "Promotions & offers — marketing texts about seasonal offers and promotions.",
+    "consent_fine": "Both boxes are optional and independent — check either, both, or neither. By checking a box, you agree to receive recurring automated texts of that type from Diva Flowers at this number. Consent is not a condition of purchase. Msg & data rates may apply. Message frequency varies. Reply STOP to cancel, HELP for help.",
     "consent_terms": "Terms",
     "consent_privacy": "Privacy Policy",
     "errors": {
@@ -342,20 +344,12 @@
       }
     },
     "sms_consent": {
-      "page_title": "SMS Sign-Up Form — Diva Flowers",
-      "page_description": "The in-store sign-up form Diva Flowers uses to collect SMS consent.",
-      "eyebrow": "In-store sign-up",
-      "title": "Customer Sign-Up",
-      "intro": "This is the sign-up form we use at our shop counter. Leave your details to hear about seasonal collections and offers. Texting is optional — you can join without it.",
-      "field_name": "Full name",
-      "field_phone": "Mobile phone",
-      "field_email": "Email",
-      "field_birthday": "Birthday (optional)",
-      "field_signature": "Signature",
-      "field_date": "Date",
-      "consent_heading": "Text me too",
-      "optional": "Optional",
-      "optout_note": "Leave this box blank and you can still sign up."
+      "page_title": "SMS Opt-In — Diva Flowers",
+      "page_description": "The SMS text-message consent options Diva Flowers shows at checkout.",
+      "eyebrow": "SMS text messages",
+      "title": "SMS Text Message Opt-In",
+      "intro": "When you place an order on our website, our checkout shows the two optional SMS consent options below. They are independent and unchecked by default — you can check either, both, or neither. This page reproduces them so the exact consent language can be reviewed.",
+      "optout_note": "You can opt out at any time by replying STOP to any message."
     },
     "terms": {
       "page_title": "Terms of Service — Diva Flowers",

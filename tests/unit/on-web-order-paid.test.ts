@@ -2,8 +2,10 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { Order } from "@/types/order";
 
 const upsertOnOrderMock = vi.fn();
+const addTagMock = vi.fn();
 vi.mock("@/lib/customer-storage", () => ({
   upsertOnOrder: (...args: unknown[]) => upsertOnOrderMock(...args),
+  addTag: (...args: unknown[]) => addTagMock(...args),
 }));
 
 const getOrderMock = vi.fn();
@@ -43,6 +45,7 @@ const ORDER: Order = {
 
 beforeEach(() => {
   upsertOnOrderMock.mockReset().mockReturnValue({ id: "cus_1" });
+  addTagMock.mockReset();
   getOrderMock.mockReset().mockResolvedValue(ORDER);
   updateOrderMock.mockReset().mockResolvedValue(undefined);
   dispatchPaymentConfirmedMock.mockReset().mockResolvedValue(undefined);
@@ -139,5 +142,17 @@ describe("onWebOrderPaid", () => {
     expect(upsertOnOrderMock).toHaveBeenCalledWith(
       expect.objectContaining({ messagingChannel: "none" }),
     );
+  });
+
+  it("tags the customer sms-marketing when marketing consent is given", async () => {
+    getOrderMock.mockResolvedValue({ ...ORDER, smsMarketingConsent: true });
+    await onWebOrderPaid("do_1");
+    expect(addTagMock).toHaveBeenCalledWith("cus_1", "sms-marketing");
+  });
+
+  it("does not tag sms-marketing without marketing consent", async () => {
+    getOrderMock.mockResolvedValue({ ...ORDER, smsMarketingConsent: false });
+    await onWebOrderPaid("do_1");
+    expect(addTagMock).not.toHaveBeenCalled();
   });
 });
