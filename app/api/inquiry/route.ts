@@ -36,6 +36,11 @@ export async function POST(req: Request) {
   await notifyInquiry(record); // best-effort; never throws
   console.log(`[inquiry] ${parsed.data.type} from ${parsed.data.contact.email}`);
   if (parsed.data.type === "wedding" || parsed.data.type === "event") {
+    const kind = parsed.data.type === "wedding" ? "boda" : "evento";
+    const { notifyOwner } = await import("@/lib/notify-owner");
+    await notifyOwner(
+      `Nuevo lead de ${kind}: ${parsed.data.contact.name} · ${parsed.data.contact.phone}. Revisa el pipeline.`,
+    );
     try {
       const { createInquiry } = await import("@/lib/inquiry-storage-db");
       const c = parsed.data.contact;

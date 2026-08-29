@@ -26,6 +26,8 @@ export async function POST(req: Request) {
     ip,
     locale: parsed.data.locale,
   });
+  const { notifyOwner } = await import("@/lib/notify-owner");
+  await notifyOwner(`Nueva consulta: ${parsed.data.name} · ${parsed.data.email} — "${parsed.data.subject}".`);
   // Also enter the pipeline DB so it can be tracked/acknowledged in the radar.
   // Best-effort: the public form must never fail because of the pipeline DB.
   try {

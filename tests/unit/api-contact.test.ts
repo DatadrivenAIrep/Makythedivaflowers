@@ -6,6 +6,9 @@ import { listUnacknowledged } from "@/lib/inquiry-storage-db";
 // Isolate the JSON mirror so the test never writes pending-inquiries.json.
 vi.mock("@/lib/inquiry-storage", () => ({ saveInquiry: vi.fn().mockResolvedValue(undefined) }));
 
+const notifyOwnerMock = vi.fn();
+vi.mock("@/lib/notify-owner", () => ({ notifyOwner: (...a: unknown[]) => notifyOwnerMock(...a) }));
+
 import { POST } from "@/app/api/contact/route";
 
 beforeEach(() => { vi.stubEnv("SQLITE_FILE", ":memory:"); runMigrations(); });
@@ -25,4 +28,16 @@ it("saves a contact submission as an unacknowledged contact inquiry", async () =
   expect(contacts).toHaveLength(1);
   expect(contacts[0].contactName).toBe("Luis");
   expect(contacts[0].acknowledgedAt).toBeUndefined();
+});
+
+it("texts the owner about a new contact inquiry", async () => {
+  await POST(new Request("http://x/api/contact", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      name: "Luis", email: "luis@x.com", subject: "Hola",
+      body: "Quiero un ramo grande por favor", locale: "es", honeypot: "",
+    }),
+  }));
+  expect(notifyOwnerMock).toHaveBeenCalledWith(expect.stringContaining("Luis"));
 });

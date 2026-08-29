@@ -20,6 +20,9 @@ vi.mock("@/lib/order-dispatch", () => ({
   dispatchPaymentConfirmed: (...args: unknown[]) => dispatchPaymentConfirmedMock(...args),
 }));
 
+const notifyOwnerMock = vi.fn();
+vi.mock("@/lib/notify-owner", () => ({ notifyOwner: (...a: unknown[]) => notifyOwnerMock(...a) }));
+
 import { onWebOrderPaid } from "@/lib/on-web-order-paid";
 
 const ORDER: Order = {
@@ -49,6 +52,7 @@ beforeEach(() => {
   getOrderMock.mockReset().mockResolvedValue(ORDER);
   updateOrderMock.mockReset().mockResolvedValue(undefined);
   dispatchPaymentConfirmedMock.mockReset().mockResolvedValue(undefined);
+  notifyOwnerMock.mockReset();
 });
 
 describe("onWebOrderPaid", () => {
@@ -154,5 +158,10 @@ describe("onWebOrderPaid", () => {
     getOrderMock.mockResolvedValue({ ...ORDER, smsMarketingConsent: false });
     await onWebOrderPaid("do_1");
     expect(addTagMock).not.toHaveBeenCalled();
+  });
+
+  it("texts the owner once when a web order is paid", async () => {
+    await onWebOrderPaid("do_1");
+    expect(notifyOwnerMock).toHaveBeenCalledTimes(1);
   });
 });
