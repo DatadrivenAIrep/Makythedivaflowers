@@ -28,6 +28,10 @@ const BODIES: Record<"en" | "es", Record<MessageTemplate, (v: TemplateVars) => s
       `Hi ${v.recipient_name}, your Diva Flowers order is reserved. Total ${v.total}. Pay here: ${v.link ?? ""}. Delivery confirmed once paid. — Maky`,
     payment_confirmed: (v) =>
       `Thanks ${v.recipient_name}! Diva Flowers received your payment. ${totalSentence(v, "en")} Delivery ${v.window ?? ""}. — Maky`,
+    out_for_delivery: (v) =>
+      `Hi ${v.recipient_name}! Your Diva Flowers order is on the way, arriving ${v.window ?? ""}. — Maky`,
+    delivered: (v) =>
+      `Delivered! Your Diva Flowers order has arrived. Thank you! — Maky · ${v.shop_phone}`,
   },
   es: {
     order_received: (v) =>
@@ -36,6 +40,10 @@ const BODIES: Record<"en" | "es", Record<MessageTemplate, (v: TemplateVars) => s
       `Hola ${v.recipient_name}, tu pedido en Diva Flowers está reservado. Total ${v.total}. Paga aquí: ${v.link ?? ""}. Confirmamos la entrega al recibir el pago. — Maky`,
     payment_confirmed: (v) =>
       `¡Gracias ${v.recipient_name}! Diva Flowers recibió tu pago. ${totalSentence(v, "es")} Entrega ${v.window ?? ""}. — Maky`,
+    out_for_delivery: (v) =>
+      `¡Hola ${v.recipient_name}! Tu pedido de Diva Flowers va en camino, llega ${v.window ?? ""}. — Maky`,
+    delivered: (v) =>
+      `¡Entregado! Tu pedido de Diva Flowers ya llegó. ¡Gracias por tu compra! — Maky · ${v.shop_phone}`,
   },
 };
 
@@ -58,6 +66,10 @@ export function whatsappContentVars(
       return { "1": vars.recipient_name, "2": vars.total, "3": vars.link ?? "" };
     case "payment_confirmed":
       return { "1": vars.recipient_name, "2": vars.window ?? "", "3": vars.order_number ?? "" };
+    case "out_for_delivery":
+      return { "1": vars.recipient_name, "2": vars.window ?? "" };
+    case "delivered":
+      return { "1": vars.recipient_name, "2": vars.shop_phone };
   }
 }
 

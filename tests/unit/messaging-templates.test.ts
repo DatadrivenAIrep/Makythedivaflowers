@@ -60,6 +60,17 @@ describe("renderSmsBody", () => {
     const body = renderSmsBody("payment_confirmed", "en", { ...vars, order_number: "1042" });
     expect(body.length).toBeLessThanOrEqual(160);
   });
+
+  it("renders out_for_delivery in both locales", () => {
+    expect(renderSmsBody("out_for_delivery", "en", vars)).toContain("on the way");
+    expect(renderSmsBody("out_for_delivery", "es", vars)).toContain("va en camino");
+  });
+
+  it("renders delivered in both locales", () => {
+    expect(renderSmsBody("delivered", "en", vars)).toContain("Delivered");
+    expect(renderSmsBody("delivered", "es", vars)).toContain("Entregado");
+    expect(renderSmsBody("delivered", "es", vars)).toContain(vars.shop_phone);
+  });
 });
 
 describe("whatsappContentVars", () => {

@@ -3,7 +3,12 @@ import { getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 
 export type MessageChannel = "sms" | "whatsapp" | "email";
-export type MessageTemplate = "order_received" | "payment_link" | "payment_confirmed";
+export type MessageTemplate =
+  | "order_received"
+  | "payment_link"
+  | "payment_confirmed"
+  | "out_for_delivery"
+  | "delivered";
 export type MessageStatus = "queued" | "sent" | "failed" | "skipped";
 
 export type Message = {
