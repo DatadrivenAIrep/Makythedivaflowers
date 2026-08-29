@@ -78,6 +78,16 @@ describe("smsSegments", () => {
   it("treats accented Spanish as UCS-2 (70-char segments)", () => {
     expect(smsSegments("á".repeat(71))).toBe(2);
   });
+  it("stays 1 segment at the GSM-7 160-char boundary, 2 just past it", () => {
+    expect(smsSegments("x".repeat(160))).toBe(1);
+    expect(smsSegments("x".repeat(161))).toBe(2);
+  });
+  it("stays 1 segment at the UCS-2 70-char boundary", () => {
+    expect(smsSegments("á".repeat(70))).toBe(1);
+  });
+  it("counts an empty body as 1 segment", () => {
+    expect(smsSegments("")).toBe(1);
+  });
 });
 
 describe("sendCampaign", () => {
@@ -106,9 +116,12 @@ describe("sendCampaign", () => {
       { id: "cus_1", name: "Ana", phone: "5168512815", locale: "es", messagingChannel: "sms" },
     ]);
     getCustomerByIdMock.mockReturnValue({ id: "cus_1", messagingChannel: "sms" });
-    await sendCampaign("cmp_1");
+    const res = await sendCampaign("cmp_1");
     expect(sendSmsMock).not.toHaveBeenCalled();
     expect(recordSendMock).toHaveBeenCalledWith(expect.objectContaining({ status: "dry_run" }));
+    // Dry sends must still count toward "sent" in the tally the owner sees.
+    expect(res).toEqual({ sent: 1, failed: 0, skipped: 0 });
+    expect(finalizeCampaignMock).toHaveBeenCalledWith("cmp_1", { sent: 1, failed: 0 });
   });
 
   it("skips a recipient who opted out between list-build and send", async () => {
