@@ -75,6 +75,54 @@ export async function dispatchOrderReceived(order: Order, link?: string): Promis
   });
 }
 
+export async function dispatchOutForDelivery(order: Order): Promise<void> {
+  if (order.fulfillment.method !== "delivery") return;
+  if (hasRecentSuccess(order.id, "out_for_delivery", 24)) return;
+  const customer = await getByPhone(order.contact.phone);
+  const channel = customer?.messagingChannel ?? "sms";
+  if (channel === "none") return;
+  const locale = resolveLocale(customer?.locale, order.locale);
+
+  await sendMessage({
+    orderId: order.id,
+    customerId: customer?.id,
+    channel,
+    locale,
+    template: "out_for_delivery",
+    vars: {
+      recipient_name: firstName(order.fulfillment.recipient.name),
+      total: totalLabel(order.totals.totalCents),
+      window: windowLabel(order, locale),
+      shop_phone: shopPhoneFromSite(),
+    },
+    to: { phone: order.contact.phone, email: order.contact.email },
+  });
+}
+
+export async function dispatchDelivered(order: Order): Promise<void> {
+  if (order.fulfillment.method !== "delivery") return;
+  if (hasRecentSuccess(order.id, "delivered", 24)) return;
+  const customer = await getByPhone(order.contact.phone);
+  const channel = customer?.messagingChannel ?? "sms";
+  if (channel === "none") return;
+  const locale = resolveLocale(customer?.locale, order.locale);
+
+  await sendMessage({
+    orderId: order.id,
+    customerId: customer?.id,
+    channel,
+    locale,
+    template: "delivered",
+    vars: {
+      recipient_name: firstName(order.fulfillment.recipient.name),
+      total: totalLabel(order.totals.totalCents),
+      window: windowLabel(order, locale),
+      shop_phone: shopPhoneFromSite(),
+    },
+    to: { phone: order.contact.phone, email: order.contact.email },
+  });
+}
+
 export async function dispatchPaymentConfirmed(order: Order): Promise<void> {
   if (hasRecentSuccess(order.id, "payment_confirmed", 24)) return;
   const customer = await getByPhone(order.contact.phone);
