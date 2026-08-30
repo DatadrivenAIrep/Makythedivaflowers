@@ -124,4 +124,42 @@ describe("listConversations / conversationThread (DB-backed)", () => {
     expect(conversation).toBeNull();
     expect(thread).toEqual([]);
   });
+
+  it("folds a null-customer_id outbound row into the matching customer's thread by last-10 phone", () => {
+    // Regression for the SMS inbox fragmentation bug: an outbound transactional
+    // message can land with customer_id = NULL (e.g. an exact-digit lookup missed
+    // because the order's phone was stored in an 11-digit form), while an inbound
+    // reply from the same person resolves customer_id via fuzzy last-10 matching.
+    // Without folding, that produces two threads for one person: one keyed by
+    // customer id (named), one keyed by bare phone (unnamed).
+    const seen = new Date(Date.now() - 10 * DAY).toISOString();
+    getDb()
+      .prepare(
+        `INSERT INTO customers (id, name, phone, email, order_count, first_seen_at, last_seen_at)
+         VALUES ('c1', 'Ana', '5168512815', 'ana@x.com', 1, ?, ?)`,
+      )
+      .run(seen, seen);
+
+    const t1 = new Date(Date.now() - 2 * DAY).toISOString();
+    getDb()
+      .prepare(
+        `INSERT INTO messages (id, order_id, customer_id, channel, template, locale, to_phone,
+           to_email, provider_sid, status, error, body, created_at, updated_at)
+         VALUES ('m1', 'o1', NULL, 'sms', 'order_confirmed', 'es', '15168512815', NULL, NULL,
+           'sent', NULL, 'Tu pedido fue confirmado', ?, ?)`,
+      )
+      .run(t1, t1);
+
+    const t2 = new Date(Date.now() - 1 * DAY).toISOString();
+    getDb()
+      .prepare(
+        `INSERT INTO inbound_messages (id, from_phone, customer_id, body, provider_sid, created_at)
+         VALUES ('in1', '5168512815', 'c1', 'gracias!', NULL, ?)`,
+      )
+      .run(t2);
+
+    const list = listConversations();
+    expect(list).toHaveLength(1);
+    expect(list[0]).toMatchObject({ key: "c1", name: "Ana", count: 2 });
+  });
 });

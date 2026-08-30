@@ -1,7 +1,7 @@
 import "server-only";
 import { getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
-import { normalizePhone, getCustomerById } from "@/lib/customer-storage";
+import { normalizePhone, getCustomerById, getByPhoneUS } from "@/lib/customer-storage";
 
 export type ThreadMessage = {
   id: string;
@@ -72,20 +72,45 @@ type MsgRow = {
 type CampRow = { id: string; customer_id: string; phone: string; status: string; created_at: string; body_es: string };
 type InRow = { id: string; customer_id: string | null; from_phone: string; body: string; created_at: string };
 
+type NameForResult = { key: string; name?: string; phone: string; customerId?: string };
+
+/**
+ * Resolve an event's grouping key. When it already carries a `customerId`
+ * (set at dispatch/webhook time from an exact or fuzzy phone match), key on
+ * that customer directly. Otherwise — most often an outbound row whose
+ * `customer_id` came back NULL from an exact-match lookup — try the same
+ * fuzzy last-10-digit resolution the inbound webhook uses (`getByPhoneUS`)
+ * before falling back to a bare phone key. This folds a phone-keyed event
+ * into the matching customer's thread instead of fragmenting it into a
+ * second, unnamed conversation.
+ *
+ * `phoneCache` memoizes the no-customerId branch per `fetchEvents` call so
+ * repeated events from the same unlinked phone number only hit the DB once.
+ */
 function nameFor(
   customerId: string | null | undefined,
   phone: string,
-): { key: string; name?: string; phone: string; customerId?: string } {
+  phoneCache: Map<string, NameForResult>,
+): NameForResult {
   if (customerId) {
     const c = getCustomerById(customerId);
     return { key: customerId, name: c?.name, phone: c?.phone ?? phone, customerId };
   }
-  return { key: last10(phone), phone };
+  const cacheKey = last10(phone);
+  const cached = phoneCache.get(cacheKey);
+  if (cached) return cached;
+  const byPhone = getByPhoneUS(phone);
+  const resolved: NameForResult = byPhone
+    ? { key: byPhone.id, name: byPhone.name, phone: byPhone.phone, customerId: byPhone.id }
+    : { key: cacheKey, phone };
+  phoneCache.set(cacheKey, resolved);
+  return resolved;
 }
 
 function fetchEvents(limit: number): RawEvent[] {
   const db = getDb();
   const events: RawEvent[] = [];
+  const phoneCache = new Map<string, NameForResult>();
   const msgs = db
     .prepare(
       `SELECT id, customer_id, to_phone, template, body, status, created_at
@@ -93,7 +118,7 @@ function fetchEvents(limit: number): RawEvent[] {
     )
     .all(limit) as MsgRow[];
   for (const m of msgs) {
-    const who = nameFor(m.customer_id, m.to_phone ?? "");
+    const who = nameFor(m.customer_id, m.to_phone ?? "", phoneCache);
     events.push({
       ...who,
       id: m.id,
@@ -113,7 +138,7 @@ function fetchEvents(limit: number): RawEvent[] {
     )
     .all(limit) as CampRow[];
   for (const cs of camps) {
-    const who = nameFor(cs.customer_id, cs.phone);
+    const who = nameFor(cs.customer_id, cs.phone, phoneCache);
     events.push({ ...who, id: cs.id, direction: "out", kind: "campaign", text: cs.body_es, status: cs.status, at: cs.created_at });
   }
   const ins = db
@@ -123,7 +148,7 @@ function fetchEvents(limit: number): RawEvent[] {
     )
     .all(limit) as InRow[];
   for (const i of ins) {
-    const who = nameFor(i.customer_id, i.from_phone);
+    const who = nameFor(i.customer_id, i.from_phone, phoneCache);
     events.push({ ...who, id: i.id, direction: "in", kind: "inbound", text: i.body, at: i.created_at });
   }
   return events;
