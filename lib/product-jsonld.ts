@@ -55,6 +55,18 @@ const returnPolicy = {
   merchantReturnLink: `${SITE.url}/en/legal/returns`,
 };
 
+/**
+ * NOT INCLUDED, deliberately: aggregateRating / review.
+ *
+ * REVIEWS_AGGREGATE (4.9 from 127 Google reviews) rates the *business*, not any
+ * one arrangement. Google requires a Product's rating to be for that product,
+ * and attaching the shop's rating to all 106 items is a structured-data policy
+ * violation that risks losing rich results across the whole site — including the
+ * ones the Florist node legitimately earns.
+ *
+ * If per-product reviews are ever collected, add them here keyed to the product.
+ * Until then this stays out. Enforced by tests/unit/product-jsonld.test.ts.
+ */
 export function buildProductJsonLd(
   product: Product,
   locale: Locale,

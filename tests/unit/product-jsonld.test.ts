@@ -101,3 +101,28 @@ describe("buildProductJsonLd", () => {
     expect(d).toBe("2027-01-15");
   });
 });
+
+describe("product ratings policy", () => {
+  // Attaching the shop's 4.9/127 Google rating to every product is tempting and
+  // is a structured-data policy violation: Google requires a Product's rating to
+  // describe that product. Doing it risks rich results sitewide, so this guard
+  // fails the build if the business aggregate ever leaks into product markup.
+  it("never claims a rating a single product has not earned", () => {
+    for (const p of [fx(), fx({ quoteOnly: true }), fx({ active: false })]) {
+      const data = buildProductJsonLd(p, "en", ORIGIN) as Record<string, unknown>;
+      expect(data.aggregateRating).toBeUndefined();
+      expect(data.review).toBeUndefined();
+      expect(data.offers && (data.offers as Record<string, unknown>).aggregateRating).toBeFalsy();
+    }
+  });
+
+  it("does not import the site-wide review aggregate", async () => {
+    const src = await import("node:fs").then((fs) =>
+      fs.readFileSync("lib/product-jsonld.ts", "utf8"),
+    );
+    // Check import statements only — the doc comment in that file names
+    // REVIEWS_AGGREGATE precisely to explain why it is absent.
+    const imports = src.split("\n").filter((l) => l.trimStart().startsWith("import"));
+    expect(imports.join("\n")).not.toMatch(/@\/data\/reviews|REVIEWS_AGGREGATE/);
+  });
+});

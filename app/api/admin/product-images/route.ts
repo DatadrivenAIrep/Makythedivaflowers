@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { verifySession, SESSION_COOKIE } from "@/lib/admin-auth";
 import { setImageOverride, deleteImageOverride, getAllImageOverrides } from "@/lib/product-images";
@@ -12,9 +13,22 @@ const ALLOWED_TYPES: Record<string, string> = {
   "image/webp": "webp",
 };
 
+
+// Product pages are statically prerendered, so a new image does not appear until
+// the affected routes are regenerated. Both locales, plus the surfaces that
+// render the same thumbnail.
+function revalidateProductSurfaces(slug: string | undefined) {
+  for (const locale of ["en", "es"]) {
+    if (slug) revalidatePath(`/${locale}/product/${slug}`);
+    revalidatePath(`/${locale}/shop`);
+  }
+}
+
 function productExists(id: string) {
   return PRODUCTS.some((p) => p.id === id);
 }
+
+const slugFor = (id: string) => PRODUCTS.find((p) => p.id === id)?.slug;
 
 export async function POST(req: NextRequest) {
   const token = (await cookies()).get(SESSION_COOKIE)?.value ?? "";
@@ -47,6 +61,7 @@ export async function POST(req: NextRequest) {
 
   const src = `/products/${filename}`;
   setImageOverride(productId, src);
+  revalidateProductSurfaces(slugFor(productId));
 
   return NextResponse.json({ src });
 }
@@ -64,6 +79,7 @@ export async function DELETE(req: NextRequest) {
     const oldFile = path.join(process.cwd(), "public", current.src);
     try { fs.unlinkSync(oldFile); } catch {}
     deleteImageOverride(productId);
+    revalidateProductSurfaces(slugFor(productId));
   }
 
   return NextResponse.json({ ok: true });

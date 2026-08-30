@@ -10,17 +10,18 @@ import { CardMessage } from "./CardMessage";
 import { SubscriptionCadence as CadencePicker } from "./SubscriptionCadence";
 import { AddToBag } from "./AddToBag";
 import { RequestQuote } from "./RequestQuote";
+import { useCampaignParam } from "@/lib/use-campaign-param";
 
 type Props = {
   product: Product;
   locale: Locale;
   cutoff: string;
   motionMode: "default" | "sympathy";
-  campaign?: Occasion;
 };
 
-function PdpConfiguratorImpl({ product, locale, cutoff, motionMode, campaign }: Props) {
+function PdpConfiguratorImpl({ product, locale, cutoff, motionMode }: Props) {
   void motionMode;
+  const campaign = useCampaignParam();
   const isSympathy = product.category === "sympathy";
   const defaultVariantId = useMemo(() => {
     const middle = product.variants.find((v) => v.id === "lush");
