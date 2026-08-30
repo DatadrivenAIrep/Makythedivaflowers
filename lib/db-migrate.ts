@@ -29,11 +29,23 @@ export function runMigrations(): void {
     .filter((f) => f.endsWith(".sql"))
     .sort();
   const insert = db.prepare("INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)");
+  const isApplied = db.prepare("SELECT 1 FROM schema_migrations WHERE name = ?");
   for (const f of files) {
     if (applied.has(f)) continue;
     const sql = fs.readFileSync(path.join(MIGRATIONS_DIR, f), "utf8");
-    db.exec("BEGIN");
+    // BEGIN IMMEDIATE grabs the write lock up front so concurrent processes — e.g.
+    // `next build`'s parallel workers, each its own process on the same sqlite file
+    // — serialize here instead of both running a non-idempotent statement (SQLite
+    // has no ALTER TABLE ... ADD COLUMN IF NOT EXISTS). Once we hold the lock,
+    // re-check whether another process already applied this file (its ALTER + the
+    // schema_migrations row commit atomically together) and skip it if so.
+    db.exec("BEGIN IMMEDIATE");
     try {
+      if (isApplied.get(f)) {
+        db.exec("COMMIT");
+        applied.add(f);
+        continue;
+      }
       db.exec(sql);
       insert.run(f, new Date().toISOString());
       db.exec("COMMIT");
