@@ -1473,6 +1473,7 @@
     "nav_occasions": "Ocasiones",
     "nav_metrics": "Métricas",
     "nav_pipeline": "Pipeline",
+    "nav_messages": "Mensajes",
     "nav_campaigns": "Campañas",
     "nav_new_order": "Nueva orden",
     "last_updated": "Actualizado",
@@ -1722,5 +1723,24 @@
     "col_sent": "Enviados",
     "col_failed": "Fallidos",
     "col_date": "Fecha"
+  },
+  "admin_messages": {
+    "title": "Mensajes",
+    "intro": "Conversaciones de SMS con tus clientes.",
+    "empty": "Aún no hay mensajes.",
+    "search": "Busca por nombre o teléfono",
+    "no_selection": "Elige una conversación para leerla.",
+    "sent": "Enviado",
+    "failed": "Falló",
+    "skipped": "Omitido",
+    "campaign": "Campaña",
+    "reply_whatsapp": "Responder por WhatsApp",
+    "tpl_order_received": "Confirmación de orden",
+    "tpl_payment_link": "Link de pago",
+    "tpl_payment_confirmed": "Pago confirmado",
+    "tpl_out_for_delivery": "En camino",
+    "tpl_ready_for_pickup": "Listo para recoger",
+    "tpl_delivered": "Entregado",
+    "tpl_review_request": "Pedir reseña"
   }
 }
