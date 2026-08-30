@@ -12,6 +12,7 @@ import { WhatHappensNext } from "@/components/inquiry/WhatHappensNext";
 import { Testimonials } from "@/components/social/Testimonials";
 import { generalReviews } from "@/data/review-helpers";
 import type { Locale } from "@/types/locale";
+import { localeAlternates } from "@/lib/seo/alternates";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -19,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
   return {
     title: t("page_title"),
     description: t("page_description"),
-    alternates: { languages: { en: "/en/events", es: "/es/events" } },
+    alternates: localeAlternates(locale, "/events"),
   };
 }
 

@@ -20,6 +20,16 @@ export const SITE = {
     postal: "11507",
     country: "USA",
   },
+  geo: { lat: 40.7729367, lng: -73.6493681 },
+  // Stable schema.org node ids — every JSON-LD block that describes the shop
+  // points at the same @id so Google merges them into one entity instead of
+  // reading two unrelated LocalBusinesses.
+  ld: {
+    businessId: "https://makythedivaflowers.com/#florist",
+    websiteId: "https://makythedivaflowers.com/#website",
+    orgId: "https://makythedivaflowers.com/#organization",
+  },
+  priceRange: "$$",
   map: {
     embedSrc: "https://maps.google.com/maps?q=1077+Willis+Ave%2C+Albertson%2C+NY+11507&t=m&z=16&output=embed",
     directionsHref: "https://www.google.com/maps/dir/?api=1&destination=1077+Willis+Ave%2C+Albertson%2C+NY+11507",
@@ -30,6 +40,13 @@ export const SITE = {
     { day: "Sun", value: "10:00 AM – 4:00 PM", schema: "Su 10:00-16:00" },
   ],
   deliveryZones: ["Albertson", "Roslyn", "Manhasset", "Great Neck", "Port Washington", "and surrounding Long Island, Queens & western Suffolk areas"],
+  // Towns we name explicitly in schema + on-page copy for local search.
+  servedTowns: [
+    "Albertson", "Roslyn", "Roslyn Heights", "Manhasset", "Great Neck",
+    "Port Washington", "Williston Park", "Mineola", "Garden City",
+    "Westbury", "New Hyde Park", "Carle Place", "Old Westbury",
+    "Herricks", "Searingtown", "East Hills", "Glen Head", "Syosset",
+  ],
   cutoffTime: "2:00 PM",
   cutoff24: "14:00",  // HH:mm format for parseCutoff/isSameDayEligible
   social: [
@@ -48,14 +65,17 @@ export const SITE = {
     en: "Romance, by the stem.",
     es: "Romance, tallo a tallo.",
   },
+  // The <title> is a search-results asset, not a brand asset: it leads with what
+  // people actually type ("albertson ny florist", "same day flower delivery")
+  // and closes with the brand. The tagline stays the on-page H1 — see Hero.
   metadata: {
     title: {
-      en: "Diva Flowers — Romance, by the stem.",
-      es: "Diva Flowers — Romance, tallo a tallo.",
+      en: "Albertson NY Florist | Same-Day Flower Delivery | Diva Flowers",
+      es: "Floristería en Albertson NY | Flores a Domicilio el Mismo Día | Diva Flowers",
     },
     description: {
-      en: "Romantic, abundant florals from Long Island. Same-day delivery across Nassau, Queens & western Suffolk.",
-      es: "Florales románticos y abundantes desde Long Island. Entrega el mismo día en Nassau, Queens y oeste de Suffolk.",
+      en: "Maky The Diva Flowers is a local florist in Albertson, NY — same-day flower delivery, wedding flowers, sympathy and funeral arrangements, and custom design across Roslyn, Manhasset, Great Neck, Garden City and all of Nassau County.",
+      es: "Maky The Diva Flowers es una floristería local en Albertson, NY — entrega de flores el mismo día, flores de boda, arreglos fúnebres y diseño floral personalizado en Roslyn, Manhasset, Great Neck, Garden City y todo Nassau County.",
     },
   },
   // Bilingual by design — the marquee is a single brand loop, not localized. See spec §5.1.

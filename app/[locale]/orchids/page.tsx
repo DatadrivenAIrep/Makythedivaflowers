@@ -10,6 +10,7 @@ import { OrchidsSizes } from "@/components/orchids/OrchidsSizes";
 import { OrchidsColors } from "@/components/orchids/OrchidsColors";
 import { OrchidsCare } from "@/components/orchids/OrchidsCare";
 import { OrchidsCTA } from "@/components/orchids/OrchidsCTA";
+import { localeAlternates } from "@/lib/seo/alternates";
 
 export async function generateMetadata({
   params,
@@ -21,13 +22,7 @@ export async function generateMetadata({
   return {
     title: t("page_title"),
     description: t("meta_description"),
-    alternates: {
-      canonical: `/${locale}/orchids`,
-      languages: {
-        en: "/en/orchids",
-        es: "/es/orchids",
-      },
-    },
+    alternates: localeAlternates(locale, "/orchids"),
   };
 }
 

@@ -51,11 +51,14 @@ export function getDb(): DatabaseSyncType {
   const sqlite = loadSqlite();
   const file = resolveFile();
   dbInstance = new sqlite.DatabaseSync(file);
+  // busy_timeout MUST come first. Switching to WAL takes an exclusive lock, and
+  // with the default zero timeout it fails instantly rather than waiting — which
+  // is what broke static builds, where 7 workers open the database at once.
+  dbInstance.exec("PRAGMA busy_timeout = 10000");
   if (file !== ":memory:") {
     dbInstance.exec("PRAGMA journal_mode = WAL");
   }
   dbInstance.exec("PRAGMA foreign_keys = ON");
-  dbInstance.exec("PRAGMA busy_timeout = 5000");
   return dbInstance;
 }
 

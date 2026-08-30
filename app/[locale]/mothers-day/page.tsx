@@ -13,6 +13,7 @@ import { MothersDayViewTracker } from "@/components/mothers-day/MothersDayViewTr
 import { GoogleReviews } from "@/components/home/GoogleReviews";
 import { PetalRain } from "@/components/home/PetalRain";
 import { KineticMarquee } from "@/components/brand/KineticMarquee";
+import { localeAlternates } from "@/lib/seo/alternates";
 
 const CURATED_SLUGS = [
   "angels-touch",
@@ -35,13 +36,7 @@ export async function generateMetadata({
   return {
     title: t("page_title"),
     description: t("meta_description"),
-    alternates: {
-      canonical: `${SITE.url}/${locale}/mothers-day`,
-      languages: {
-        en: "/en/mothers-day",
-        es: "/es/mothers-day",
-      },
-    },
+    alternates: localeAlternates(locale, "/mothers-day"),
     openGraph: {
       title: t("page_title"),
       description: t("meta_description"),

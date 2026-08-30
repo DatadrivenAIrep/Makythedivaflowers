@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import {
   getAllPriceOverrides,
@@ -8,6 +9,16 @@ import {
 import { PRODUCTS } from "@/data/products";
 
 export const runtime = "nodejs";
+
+// Product pages are statically prerendered and now publish price in JSON-LD, so
+// a price change has to regenerate them or the page quotes a stale number.
+function revalidatePricedSurfaces(productId: string) {
+  const slug = PRODUCTS.find((p) => p.id === productId)?.slug;
+  for (const locale of ["en", "es"]) {
+    if (slug) revalidatePath(`/${locale}/product/${slug}`);
+    revalidatePath(`/${locale}/shop`);
+  }
+}
 
 // Guard: productId + variantId must exist in the static catalog.
 function isValidVariant(productId: string, variantId: string): boolean {
@@ -41,6 +52,7 @@ export async function PUT(req: Request) {
     return NextResponse.json({ error: "variant_not_found" }, { status: 404 });
 
   setPriceOverride(productId, variantId, priceCents);
+  revalidatePricedSurfaces(productId);
   return NextResponse.json({ ok: true });
 }
 
@@ -55,5 +67,6 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: "variant_not_found" }, { status: 404 });
 
   deletePriceOverride(productId, variantId);
+  revalidatePricedSurfaces(productId);
   return NextResponse.json({ ok: true });
 }

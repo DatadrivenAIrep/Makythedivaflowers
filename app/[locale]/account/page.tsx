@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { AccountShell } from "@/components/account/AccountShell";
 import { AuthForm } from "@/components/account/AuthForm";
 import type { Locale } from "@/types/locale";
+import { localeAlternates } from "@/lib/seo/alternates";
 
 export async function generateMetadata({
   params,
@@ -12,12 +13,7 @@ export async function generateMetadata({
   const { locale } = await params;
   return {
     title: locale === "es" ? "Iniciar sesión — Diva Flowers" : "Sign In — Diva Flowers",
-    alternates: {
-      languages: {
-        en: "/en/account",
-        es: "/es/account",
-      },
-    },
+    alternates: localeAlternates(locale, "/account"),
   };
 }
 

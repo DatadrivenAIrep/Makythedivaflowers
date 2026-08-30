@@ -6,6 +6,7 @@ import { SITE } from "@/data/site";
 import { deliveryZones } from "@/data/delivery-zones";
 import { formatAddressLine, formatMoneyCents } from "@/lib/format";
 import type { Locale } from "@/types/locale";
+import { localeAlternates } from "@/lib/seo/alternates";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -13,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
   return {
     title: t("page_title"),
     description: t("page_description"),
-    alternates: { languages: { en: "/en/legal/shipping", es: "/es/legal/shipping" } },
+    alternates: localeAlternates(locale, "/legal/shipping"),
   };
 }
 

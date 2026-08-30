@@ -357,41 +357,41 @@
       "page_title": "Terms of Service — Diva Flowers",
       "page_description": "The terms and conditions governing your use of Diva Flowers and purchase of our products.",
       "title": "Terms of Service",
-      "updated": "Last updated: May 1, 2026 · Draft — consult an attorney before publishing",
+      "updated": "Last updated: May 1, 2026",
       "acceptance": {
         "heading": "Acceptance of Terms",
-        "p1": "DRAFT: By accessing or using the Diva Flowers website and placing orders for our products, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our website or services.",
-        "p2": "DRAFT: We reserve the right to modify these terms at any time. Continued use of our website after changes are posted constitutes acceptance of the modified terms. This document is a draft; consult a qualified attorney before publishing as your official terms of service."
+        "p1": "By accessing or using the Diva Flowers website and placing orders for our products, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our website or services.",
+        "p2": "We reserve the right to modify these terms at any time. Continued use of our website after changes are posted constitutes acceptance of the modified terms."
       },
       "orders": {
         "heading": "Orders and Payment",
-        "p1": "DRAFT: All orders are subject to availability and confirmation of the order price. We reserve the right to refuse or cancel any order for any reason, including inaccuracies in pricing or product descriptions, or suspected fraudulent activity.",
-        "p2": "DRAFT: Payment is due at the time of order. We accept major credit cards and other payment methods as indicated at checkout. All prices are in US dollars and subject to applicable sales tax. Please have an attorney review this section for compliance with New York consumer protection law."
+        "p1": "All orders are subject to availability and confirmation of the order price. We reserve the right to refuse or cancel any order for any reason, including inaccuracies in pricing or product descriptions, or suspected fraudulent activity.",
+        "p2": "Payment is due at the time of order. We accept major credit cards and other payment methods as indicated at checkout. All prices are in US dollars and subject to applicable sales tax."
       },
       "delivery": {
         "heading": "Delivery",
-        "p1": "DRAFT: We offer same-day delivery to select areas in Nassau County, Queens, and Western Suffolk. Delivery windows are estimates and we cannot guarantee exact delivery times due to traffic and other variables beyond our control.",
-        "p2": "DRAFT: You are responsible for providing accurate delivery information. If a delivery attempt fails due to an incorrect address or no one being available to receive the order, additional delivery fees may apply. Floral products are perishable; we are not responsible for damage resulting from delayed receipt after a successful delivery."
+        "p1": "We offer same-day delivery to select areas in Nassau County, Queens, and Western Suffolk. Delivery windows are estimates and we cannot guarantee exact delivery times due to traffic and other variables beyond our control.",
+        "p2": "You are responsible for providing accurate delivery information. If a delivery attempt fails due to an incorrect address or no one being available to receive the order, additional delivery fees may apply. Floral products are perishable; we are not responsible for damage resulting from delayed receipt after a successful delivery."
       },
       "returns": {
         "heading": "Returns and Refunds",
-        "p1": "DRAFT: Because our products are perishable, we do not accept returns. If you are unsatisfied with your order, please contact us within 24 hours of delivery with photos of the arrangement. We will review each case individually.",
-        "p2": "DRAFT: Refunds or replacements are issued at our sole discretion and are generally limited to situations where the product was materially different from what was ordered or arrived in significantly damaged condition due to our error. This section should be reviewed by an attorney for compliance with applicable consumer protection laws."
+        "p1": "Because our products are perishable, we do not accept returns. If you are unsatisfied with your order, please contact us within 24 hours of delivery with photos of the arrangement. We will review each case individually.",
+        "p2": "Refunds or replacements are issued at our sole discretion and are generally limited to situations where the product was materially different from what was ordered or arrived in significantly damaged condition due to our error."
       },
       "subscriptions": {
         "heading": "Subscriptions",
-        "p1": "DRAFT: Floral subscription plans are billed on a recurring basis as described at the time of purchase. You may pause or cancel your subscription at any time before your next billing date. Cancellations after billing has occurred will take effect for the following billing period.",
-        "p2": "DRAFT: We reserve the right to modify subscription pricing with advance notice. Seasonal unavailability of specific flowers may result in substitutions of equal or greater value. We will always communicate material changes to your subscription plan before they take effect."
+        "p1": "Floral subscription plans are billed on a recurring basis as described at the time of purchase. You may pause or cancel your subscription at any time before your next billing date. Cancellations after billing has occurred will take effect for the following billing period.",
+        "p2": "We reserve the right to modify subscription pricing with advance notice. Seasonal unavailability of specific flowers may result in substitutions of equal or greater value. We will always communicate material changes to your subscription plan before they take effect."
       },
       "limitation": {
         "heading": "Limitation of Liability",
-        "p1": "DRAFT: To the fullest extent permitted by law, Diva Flowers shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of your use of our products or services, even if we have been advised of the possibility of such damages.",
-        "p2": "DRAFT: Our total liability to you for any claim arising from your purchase or use of our products shall not exceed the amount you paid for the specific product or service giving rise to the claim. This limitation of liability clause requires attorney review to ensure it is enforceable under New York law."
+        "p1": "To the fullest extent permitted by law, Diva Flowers shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of your use of our products or services, even if we have been advised of the possibility of such damages.",
+        "p2": "Our total liability to you for any claim arising from your purchase or use of our products shall not exceed the amount you paid for the specific product or service giving rise to the claim."
       },
       "contact": {
         "heading": "Contact",
-        "p1": "DRAFT: If you have questions about these Terms of Service, please contact us at studio@divaflowers.com or by mail at Diva Flowers, 1077 Willis Ave, Albertson, NY 11507.",
-        "p2": "DRAFT: These Terms of Service are governed by the laws of the State of New York. Any disputes arising under these terms shall be resolved in the courts of Nassau County, New York. This document is a draft and must be reviewed and approved by a licensed attorney before use."
+        "p1": "If you have questions about these Terms of Service, please contact us at studio@divaflowers.com or by mail at Diva Flowers, 1077 Willis Ave, Albertson, NY 11507.",
+        "p2": "These Terms of Service are governed by the laws of the State of New York. Any disputes arising under these terms shall be resolved in the courts of Nassau County, New York."
       }
     },
     "returns": {

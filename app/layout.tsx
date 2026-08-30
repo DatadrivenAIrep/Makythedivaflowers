@@ -32,11 +32,28 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  // Without metadataBase, Next resolves relative og:image URLs against
+  // localhost:3000 — every share card on the live site was pointing at a
+  // dev-server URL and rendering blank. Keep this set.
+  metadataBase: new URL(SITE.url),
   title: SITE.metadata.title.en,
   description: SITE.metadata.description.en,
+  applicationName: SITE.brand,
   icons: {
     icon: "/favicon-logo.webp",
     apple: "/apple-icon.webp",
+  },
+  openGraph: {
+    type: "website",
+    siteName: SITE.merchantName,
+    locale: "en_US",
+    alternateLocale: ["es_US"],
+  },
+  twitter: { card: "summary_large_image" },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
   },
 };
 

@@ -5,8 +5,16 @@ import { getDb } from "@/lib/db";
 
 const MIGRATIONS_DIR = path.join(process.cwd(), "db", "migrations");
 
+// Migrations are idempotent but not free: the CREATE TABLE below is a write, and
+// this used to run on every single call. During a static build that meant one
+// write attempt per prerendered page across 7 parallel workers, which SQLite
+// answered with "database is locked". Memoized against the live connection, so
+// closeDb() (tests, reconnects) correctly forces a re-run.
+let migratedFor: unknown = null;
+
 export function runMigrations(): void {
   const db = getDb();
+  if (migratedFor === db) return;
   db.exec(
     "CREATE TABLE IF NOT EXISTS schema_migrations (name TEXT PRIMARY KEY, applied_at TEXT NOT NULL)",
   );
@@ -35,4 +43,5 @@ export function runMigrations(): void {
     }
     console.log(JSON.stringify({ event: "migration_applied", name: f }));
   }
+  migratedFor = db;
 }

@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { headers } from "next/headers";
 import type { Locale } from "@/types/locale";
 import { getProductBySlug, getPairsWith, PRODUCTS } from "@/data/products";
 import { getAllImageOverrides, applyImageOverrides } from "@/lib/product-images";
+import { getAllPriceOverrides, applyPriceOverrides } from "@/lib/product-prices";
 import { TrackEvent } from "@/components/analytics/TrackEvent";
 import type { AnalyticsItem } from "@/lib/analytics-types";
-import { parseCampaign } from "@/lib/campaign-occasion";
 import { SITE } from "@/data/site";
+import { productMetaTitle, productMetaDescription } from "@/lib/seo/product-meta";
 import { ImageStack } from "@/components/product/ImageStack";
 import { PdpConfigurator } from "@/components/product/PdpConfigurator";
 import { PdpAccordion } from "@/components/product/PdpAccordion";
@@ -20,6 +20,7 @@ import { PdpContactSubject } from "@/components/contact/PdpContactSubject";
 import { GiftAssuranceBar } from "@/components/conversion/GiftAssuranceBar";
 import { CutoffCountdown } from "@/components/conversion/CutoffCountdown";
 import { PdpReviewsBlock } from "@/components/conversion/PdpReviewsBlock";
+import { localeAlternates } from "@/lib/seo/alternates";
 
 export async function generateStaticParams() {
   return PRODUCTS.filter((p) => p.active).map((p) => ({ slug: p.slug }));
@@ -33,19 +34,16 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   const p = getProductBySlug(slug);
   if (!p) return {};
+  const title = productMetaTitle(p, locale);
+  const description = productMetaDescription(p, locale);
   return {
-    title: p.seo.title[locale],
-    description: p.seo.description[locale],
-    alternates: {
-      canonical: `/${locale}/product/${slug}`,
-      languages: {
-        en: `/en/product/${slug}`,
-        es: `/es/product/${slug}`,
-      },
-    },
+    title,
+    description,
+    alternates: localeAlternates(locale, `/product/${slug}`),
     openGraph: {
-      title: p.seo.title[locale],
-      description: p.seo.description[locale],
+      title,
+      description,
+      type: "website",
       images: p.images[0]?.src ? [p.images[0].src] : [],
     },
   };
@@ -53,26 +51,22 @@ export async function generateMetadata({
 
 export default async function ProductPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ locale: Locale; slug: string }>;
-  searchParams: Promise<{ campaign?: string | string[] }>;
 }) {
   const { locale, slug } = await params;
-  const sp = await searchParams;
-  const campaign = parseCampaign(sp.campaign);
   const rawProduct = getProductBySlug(slug);
   if (!rawProduct || !rawProduct.active) notFound();
-  const [product] = applyImageOverrides([rawProduct], getAllImageOverrides());
+  // Checkout charges the admin's overridden price, so the page — and the
+  // lowPrice/highPrice we now publish to Google — has to quote the same number.
+  // Without this the PDP advertised the catalog price while checkout billed the
+  // override, which is both a bad surprise and a Merchant Center violation.
+  const [priced] = applyPriceOverrides([rawProduct], getAllPriceOverrides());
+  const [product] = applyImageOverrides([priced], getAllImageOverrides());
   setRequestLocale(locale);
 
   const isSympathy = product.category === "sympathy";
   const pairs = getPairsWith(product);
-
-  const h = await headers();
-  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
-  const proto = h.get("x-forwarded-proto") ?? "http";
-  const origin = `${proto}://${host}`;
 
   const eyebrow =
     locale === "es"
@@ -95,7 +89,7 @@ export default async function ProductPage({
         return <TrackEvent kind="view_item" item={item} />;
       })()}
       <PdpContactSubject productName={product.title[locale]} quote={product.quoteOnly} />
-      <PdpStructuredData product={product} locale={locale} origin={origin} />
+      <PdpStructuredData product={product} locale={locale} origin={SITE.url} />
       <BreadcrumbListLD
         items={[
           { name: locale === "es" ? "Inicio" : "Home", href: `/${locale}` },
@@ -141,7 +135,6 @@ export default async function ProductPage({
               locale={locale}
               cutoff={SITE.cutoff24}
               motionMode={isSympathy ? "sympathy" : "default"}
-              campaign={campaign}
             />
 
             <div className="mt-8 border-t border-ink/10 pt-6">

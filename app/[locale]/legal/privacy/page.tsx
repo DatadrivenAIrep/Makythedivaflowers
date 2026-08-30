@@ -5,6 +5,7 @@ import { LegalShell } from "@/components/legal/LegalShell";
 import { SITE } from "@/data/site";
 import { formatAddressLine } from "@/lib/format";
 import type { Locale } from "@/types/locale";
+import { localeAlternates } from "@/lib/seo/alternates";
 
 const SECTIONS = ["data_collected", "how_we_use", "sms_messaging", "sharing", "cookies", "rights", "contact"] as const;
 
@@ -14,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
   return {
     title: t("page_title"),
     description: t("page_description"),
-    alternates: { languages: { en: "/en/legal/privacy", es: "/es/legal/privacy" } },
+    alternates: localeAlternates(locale, "/legal/privacy"),
   };
 }
 

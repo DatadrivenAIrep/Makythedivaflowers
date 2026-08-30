@@ -17,6 +17,7 @@ import {
 } from "@/data/product-helpers";
 import { parseFilterParams, type RawSearchParams } from "@/lib/search-params";
 import { getAllImageOverrides, applyImageOverrides } from "@/lib/product-images";
+import { localeAlternates } from "@/lib/seo/alternates";
 
 export async function generateMetadata({
   params,
@@ -33,10 +34,7 @@ export async function generateMetadata({
       locale === "es"
         ? "Compra arreglos, ramos, plantas y regalos. Entrega el mismo día en Long Island."
         : "Shop arrangements, bouquets, plants, and gifts. Same-day delivery on Long Island.",
-    alternates: {
-      canonical: `/${locale}/shop`,
-      languages: { en: "/en/shop", es: "/es/shop" },
-    },
+    alternates: localeAlternates(locale, "/shop"),
   };
 }
 

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { AccountShell } from "@/components/account/AccountShell";
 import { OrdersEmpty } from "@/components/account/OrdersEmpty";
 import type { Locale } from "@/types/locale";
+import { localeAlternates } from "@/lib/seo/alternates";
 
 export async function generateMetadata({
   params,
@@ -12,12 +13,7 @@ export async function generateMetadata({
   const { locale } = await params;
   return {
     title: locale === "es" ? "Mis pedidos — Diva Flowers" : "My Orders — Diva Flowers",
-    alternates: {
-      languages: {
-        en: "/en/account/orders",
-        es: "/es/account/orders",
-      },
-    },
+    alternates: localeAlternates(locale, "/account/orders"),
   };
 }
 

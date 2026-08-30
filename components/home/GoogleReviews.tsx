@@ -19,7 +19,7 @@ export async function GoogleReviews({ locale }: { locale: Locale }) {
 export async function GoogleReviewsContent({ locale }: { locale: Locale }) {
   const t = await getTranslations("home.reviews");
 
-  const jsonLd = buildReviewsJsonLd(REVIEWS, REVIEWS_AGGREGATE, SITE.brand);
+  const jsonLd = buildReviewsJsonLd(REVIEWS, REVIEWS_AGGREGATE, SITE.merchantName, SITE.ld.businessId);
 
   return (
     <>

@@ -5,6 +5,7 @@ import { SITE } from "@/data/site";
 import { NewsletterField } from "@/components/inquiry/NewsletterField";
 import { TextMakyInlineLink } from "@/components/contact/TextMakyInlineLink";
 import { TelLink } from "@/components/analytics/TelLink";
+import { LOCAL_CITIES } from "@/data/local-seo";
 import { PrivacyOptOutLink } from "@/components/analytics/PrivacyOptOutLink";
 import type { Locale } from "@/types/locale";
 
@@ -87,6 +88,38 @@ export async function Footer({ locale }: { locale: Locale }) {
             </div>
           </div>
         </div>
+
+        {/* Towns we serve. Sitewide internal links are what get the local
+            landing pages crawled at all — and they put the town names on every
+            page of the site, which is exactly how the competition ranks. */}
+        <nav
+          aria-label={locale === "es" ? "Pueblos que servimos" : "Towns we serve"}
+          className="border-t border-bone/10 pt-8"
+        >
+          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-bone/50">
+            {locale === "es" ? "Entrega de flores en" : "Flower delivery in"}
+          </p>
+          <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-[0.14em] text-bone/55">
+            {LOCAL_CITIES.map((c) => (
+              <li key={c.slug}>
+                <Link
+                  href={`/${locale}/flower-delivery/${c.slug}`}
+                  className="hover:text-bone transition-colors"
+                >
+                  {c.name}
+                </Link>
+              </li>
+            ))}
+            <li>
+              <Link
+                href={`/${locale}/flower-delivery`}
+                className="text-bone/80 hover:text-bone transition-colors"
+              >
+                {locale === "es" ? "Ver todos →" : "See all →"}
+              </Link>
+            </li>
+          </ul>
+        </nav>
 
         <div className="flex flex-col gap-4 pt-8">
           <div className="flex flex-wrap gap-6 font-mono text-[11px] uppercase tracking-[0.18em] text-bone/55">
