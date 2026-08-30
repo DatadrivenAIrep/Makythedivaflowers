@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { headers } from "next/headers";
 import type { Locale } from "@/types/locale";
 import { getProductBySlug, getPairsWith, PRODUCTS } from "@/data/products";
 import { getAllImageOverrides, applyImageOverrides } from "@/lib/product-images";
@@ -9,6 +8,7 @@ import { TrackEvent } from "@/components/analytics/TrackEvent";
 import type { AnalyticsItem } from "@/lib/analytics-types";
 import { parseCampaign } from "@/lib/campaign-occasion";
 import { SITE } from "@/data/site";
+import { productMetaTitle, productMetaDescription } from "@/lib/seo/product-meta";
 import { ImageStack } from "@/components/product/ImageStack";
 import { PdpConfigurator } from "@/components/product/PdpConfigurator";
 import { PdpAccordion } from "@/components/product/PdpAccordion";
@@ -34,13 +34,16 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   const p = getProductBySlug(slug);
   if (!p) return {};
+  const title = productMetaTitle(p, locale);
+  const description = productMetaDescription(p, locale);
   return {
-    title: p.seo.title[locale],
-    description: p.seo.description[locale],
+    title,
+    description,
     alternates: localeAlternates(locale, `/product/${slug}`),
     openGraph: {
-      title: p.seo.title[locale],
-      description: p.seo.description[locale],
+      title,
+      description,
+      type: "website",
       images: p.images[0]?.src ? [p.images[0].src] : [],
     },
   };
@@ -64,11 +67,6 @@ export default async function ProductPage({
   const isSympathy = product.category === "sympathy";
   const pairs = getPairsWith(product);
 
-  const h = await headers();
-  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
-  const proto = h.get("x-forwarded-proto") ?? "http";
-  const origin = `${proto}://${host}`;
-
   const eyebrow =
     locale === "es"
       ? `Diva Flowers · ${categoryLabel(product.category, "es")}`
@@ -90,7 +88,7 @@ export default async function ProductPage({
         return <TrackEvent kind="view_item" item={item} />;
       })()}
       <PdpContactSubject productName={product.title[locale]} quote={product.quoteOnly} />
-      <PdpStructuredData product={product} locale={locale} origin={origin} />
+      <PdpStructuredData product={product} locale={locale} origin={SITE.url} />
       <BreadcrumbListLD
         items={[
           { name: locale === "es" ? "Inicio" : "Home", href: `/${locale}` },

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildMerchantFeed } from "@/lib/merchant-feed";
+import { buildMerchantFeed, buildItemXml } from "@/lib/merchant-feed";
 import type { Product } from "@/types/product";
 
 const ORIGIN = "https://makythedivaflowers.com";
@@ -89,5 +89,46 @@ describe("buildMerchantFeed", () => {
     expect(feed).toContain('<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">');
     expect(feed).toContain("<channel>");
     expect(feed.trim().endsWith("</rss>")).toBe(true);
+  });
+});
+
+describe("seasonal availability and shipping", () => {
+  const seasonal = (): Product => ({
+    id: "s1",
+    slug: "peonies",
+    title: { en: "Peonies", es: "Peonías" },
+    category: "bouquets",
+    blurb: { en: "", es: "" },
+    description: { en: "Peonies.", es: "Peonías." },
+    images: [{ src: "/products/peonies.jpg", alt: { en: "", es: "" }, aspect: "4/5" }],
+    variants: [{ id: "standard", label: { en: "S", es: "S" }, priceCents: 9000 }],
+    tags: ["same-day"],
+    occasions: [],
+    colorFamily: [],
+    active: true,
+    seasonMonths: [5, 6],
+    seo: { title: { en: "", es: "" }, description: { en: "", es: "" } },
+  });
+
+  it("marks out-of-season items out_of_stock instead of advertising them", () => {
+    const june = buildItemXml(seasonal(), "https://x.test", new Date(2026, 5, 1));
+    expect(june).toContain("<g:availability>in_stock</g:availability>");
+    const december = buildItemXml(seasonal(), "https://x.test", new Date(2026, 11, 1));
+    expect(december).toContain("<g:availability>out_of_stock</g:availability>");
+  });
+
+  it("declares a shipping block so Merchant Center does not disapprove the item", () => {
+    const xml = buildItemXml(seasonal(), "https://x.test", new Date(2026, 5, 1));
+    expect(xml).toContain("<g:country>US</g:country>");
+    expect(xml).toContain("<g:region>NY</g:region>");
+    expect(xml).toContain("<g:price>10.00 USD</g:price>");
+  });
+
+  it("handles same-day items in zero days and the rest in one", () => {
+    const sd = seasonal();
+    expect(buildItemXml(sd, "https://x.test", new Date(2026, 5, 1)))
+      .toContain("<g:max_handling_time>0</g:max_handling_time>");
+    expect(buildItemXml({ ...sd, tags: [] }, "https://x.test", new Date(2026, 5, 1)))
+      .toContain("<g:max_handling_time>1</g:max_handling_time>");
   });
 });
