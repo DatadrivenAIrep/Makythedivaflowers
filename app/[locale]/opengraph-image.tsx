@@ -50,6 +50,13 @@ export default async function Image({
         >
           {tagline}
         </div>
+        {/*
+          One child, not five. Satori requires an explicit display on any div
+          with more than one child, and JSX counted the interpolations and the
+          literal text between them separately — which threw and made this route
+          500 on every request. The homepage and every page without its own OG
+          image fall back to this card, so all of them had a broken preview.
+        */}
         <div
           style={{
             marginTop: 32,
@@ -57,7 +64,7 @@ export default async function Image({
             color: "#6b6b6b",
           }}
         >
-          {SITE.address.locality}, {SITE.address.region} · {SITE.phoneDisplay}
+          {`${SITE.address.locality}, ${SITE.address.region} · ${SITE.phoneDisplay}`}
         </div>
       </div>
     ),
