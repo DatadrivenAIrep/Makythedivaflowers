@@ -30,9 +30,9 @@ const COLOR: Record<ColorFamily, { en: string; es: string }> = {
  * Built from the stems the copy actually names, falling back to colour for the
  * dozen gift baskets and designer's-choice pieces that have no fixed flowers.
  */
-export function productDescriptor(product: Product, locale: Locale): string {
+export function productDescriptor(product: Product, locale: Locale, maxFlowers = 2): string {
   const category = CATEGORY[product.category][locale];
-  const flowers = headlineFlowers(`${product.description.en} ${product.blurb.en}`);
+  const flowers = headlineFlowers(`${product.description.en} ${product.blurb.en}`, maxFlowers);
 
   if (flowers.length) {
     const stems = joinFlowers(flowers, locale);

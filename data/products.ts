@@ -156,7 +156,7 @@ export const PRODUCTS: Product[] = [
       { id: "lush", label: { en: "Lush", es: "Generoso" }, priceCents: 62900 },
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 84900, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
-    tags: ["same-day", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["romance", "anniversary"],
     colorFamily: ["red"],
     active: true,

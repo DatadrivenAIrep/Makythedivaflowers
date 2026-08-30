@@ -2,6 +2,7 @@ import type { Product } from "@/types/product";
 import type { Locale } from "@/types/locale";
 import { SITE } from "@/data/site";
 import { productDescriptor } from "@/lib/seo/product-descriptors";
+import { namesFlower } from "@/lib/seo/flowers";
 
 /**
  * Geo-qualifies a product's title and description for search.
@@ -37,16 +38,51 @@ export function productMetaTitle(product: Product, locale: Locale): string {
   // category in them. Insert what the arrangement actually contains ahead of
   // the brand, keeping the name first. Titles that already say "Dozen Red
   // Roses" are left alone rather than made redundant.
-  if (!ALREADY_DESCRIPTIVE.test(base)) {
-    const descriptor = productDescriptor(product, locale);
+  // Skip only when the title already names a FLOWER, or when a human wrote a
+  // descriptor we would only make worse. A category word alone is not enough:
+  // "Berry Bliss Basket — Diva Flowers" looked descriptive because the word
+  // "Basket" sits in the product's own name, so it got no descriptor at all and
+  // never said what was inside it.
+  const brandTail = base.match(/\s*[|—–-]\s*Diva Flowers\s*$/);
+  const headOnly = (brandTail ? base.slice(0, brandTail.index) : base).trim();
+  // A separator alone does not make a descriptor: "Mil Latidos — Aniversario"
+  // is an occasion, and an occasion never says what arrives. The segment after
+  // the separator has to name a flower or a product type to count.
+  const descriptorSegment = headOnly.split(/ — |: /).slice(1).join(" ");
+  const hasHumanDescriptor =
+    descriptorSegment.length > 0 && ALREADY_DESCRIPTIVE.test(descriptorSegment);
+  const titleNamesFlower = namesFlower(headOnly, locale);
+
+  if (!titleNamesFlower && !hasHumanDescriptor) {
+    // Long category labels ("Arreglo de Condolencia") plus two stems overrun
+    // the useful title length, so fall back to the single headline bloom rather
+    // than let the town get truncated out of the snippet.
+    const TITLE_BUDGET = 92;
+    let descriptor = productDescriptor(product, locale);
     // The catalog closes titles with the brand two different ways — 79 with an
     // em dash, 15 with a pipe — so match the brand tail rather than splitting on
     // one separator, which reordered the em-dash titles into nonsense
     // ("Abundant Table — Diva Flowers — Garden Rose Arrangement").
     const brand = base.match(/\s*[|—–-]\s*Diva Flowers\s*$/);
-    base = brand
-      ? `${base.slice(0, brand.index).trim()} — ${descriptor}${brand[0]}`
-      : `${base} — ${descriptor}`;
+    let head = (brand ? base.slice(0, brand.index) : base).trim();
+
+    // A trailing occasion segment ("— Anniversary") is replaced, not stacked:
+    // appending produced "A Thousand Heartbeats — Anniversary — Garden Rose &
+    // Dahlia Arrangement" at 101 characters.
+    head = head.replace(
+      /\s+[—–-]\s+(Anniversary|Birthday|Sympathy|Romance|Wedding|Aniversario|Cumpleaños|Condolencia|Boda)\s*$/i,
+      "",
+    );
+
+    // Separate with a colon when the name already carries an em dash, so
+    // "Designer's Choice — Maky" does not grow a third one.
+    const sep = head.includes(" — ") ? ": " : " — ";
+    const build = (d: string) => `${head}${sep}${d}${brand ? brand[0] : ""}`;
+    base = build(descriptor);
+    if ((base + suffix).length > TITLE_BUDGET) {
+      descriptor = productDescriptor(product, locale, 1);
+      base = build(descriptor);
+    }
   }
 
   // Titles already end in "| Diva Flowers"; append the location to that rather

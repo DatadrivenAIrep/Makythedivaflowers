@@ -96,7 +96,11 @@ export function productDetailBlocks(product: Product, locale: Locale): DetailBlo
   // --- Delivery -----------------------------------------------------------
   // Albertson is named as the studio's own location in the sentence below, so
   // repeating it as a destination reads as "from Albertson to Albertson".
-  const towns = ["Roslyn", "Manhasset", "Great Neck", "Garden City", "Mineola", "Westbury"];
+  const towns = [
+    "Roslyn", "Manhasset", "Great Neck", "Port Washington", "Garden City",
+    "Mineola", "Williston Park", "Westbury", "New Hyde Park", "Carle Place",
+    "Old Westbury", "East Hills",
+  ];
   const sameDay = product.tags.includes("same-day");
   blocks.push({
     key: "delivery",
@@ -120,9 +124,73 @@ export function productDetailBlocks(product: Product, locale: Locale): DetailBlo
   return blocks;
 }
 
+/**
+ * Per-product Q&A.
+ *
+ * The competitor's strongest product pages carry a FAQ and ours carried none —
+ * it was the clearest single gap when their best page was measured against our
+ * median. Answers come from the same catalog fields the rest of the page uses,
+ * so they cannot contradict it.
+ *
+ * Note on schema: this is rendered as visible page content and NOT marked up as
+ * FAQPage. Google restricted FAQ rich results to government and health sites in
+ * 2023, so the markup would earn nothing for a florist — but the content still
+ * answers real pre-purchase questions and gets read by AI answer engines.
+ * (Their page has no FAQPage markup either.)
+ */
+export function productFaq(product: Product, locale: Locale): { q: string; a: string }[] {
+  const es = locale === "es";
+  const flowers = extractFlowers(`${product.description.en} ${product.blurb.en}`);
+  const stems = flowers.length ? joinFlowers(flowers, locale) : null;
+  const sameDay = product.tags.includes("same-day");
+  const faq: { q: string; a: string }[] = [];
+
+  if (stems) {
+    faq.push({
+      q: es ? `¿Qué flores lleva ${product.title.es}?` : `What flowers are in ${product.title.en}?`,
+      a: es
+        ? `Se construye alrededor de ${stems.toLowerCase()}, con follaje de temporada. La receta exacta varía con lo que entre fresco al taller esa mañana.`
+        : `It is built around ${stems.toLowerCase()}, with seasonal foliage. The exact recipe shifts with what comes into the studio fresh that morning.`,
+    });
+  }
+
+  faq.push({
+    q: es ? "¿Puede variar respecto a la foto?" : "Can it vary from the photo?",
+    a: es
+      ? "Sí. Trabajamos con flor fresca de mercado, así que un tallo concreto puede no estar en su mejor momento el día de tu entrega. Cuando pasa, sustituimos por algo equivalente en color, escala y calidad — nunca por algo de menos valor."
+      : "Yes. We work with fresh market flowers, so a given stem may not be at its best on your delivery day. When that happens we substitute something equal in colour, scale and quality — never something worth less.",
+  });
+
+  faq.push({
+    q: es
+      ? `¿Hay entrega el mismo día de ${product.title.es}?`
+      : `Is ${product.title.en} available for same-day delivery?`,
+    a: es
+      ? sameDay
+        ? `Sí. Pide antes de las ${SITE.cutoffTime} y sale en el recorrido de esa tarde por Nassau County.`
+        : `Esta pieza se hace por encargo, así que necesitamos al menos un día. Llama al ${SITE.phoneDisplay} si tu fecha es ajustada y te decimos con franqueza si llegamos.`
+      : sameDay
+        ? `Yes. Order before ${SITE.cutoffTime} and it goes out on that afternoon's Nassau County run.`
+        : `This piece is made to order, so we need at least a day. Call ${SITE.phoneDisplay} if your date is tight and we will tell you straight whether we can make it.`,
+  });
+
+  faq.push({
+    q: es ? "¿A dónde entregan?" : "Where do you deliver?",
+    a: es
+      ? `Entregamos nosotros mismos desde ${SITE.address.line1}, ${SITE.address.locality}, NY ${SITE.address.postal} a ${list(["Roslyn","Manhasset","Great Neck","Port Washington","Garden City","Mineola","Williston Park","Westbury","New Hyde Park","Carle Place"], "es")} y al resto de Nassau County, Queens y el oeste de Suffolk. También puedes recogerlo en el taller.`
+      : `We deliver ourselves from ${SITE.address.line1}, ${SITE.address.locality}, NY ${SITE.address.postal} to ${list(["Roslyn","Manhasset","Great Neck","Port Washington","Garden City","Mineola","Williston Park","Westbury","New Hyde Park","Carle Place"], "en")} and the rest of Nassau County, Queens and western Suffolk. You can also collect it from the studio.`,
+  });
+
+  return faq;
+}
+
 /** The blocks flattened for the Product schema's description. */
 export function productRichDescription(product: Product, locale: Locale): string {
-  return [product.description[locale], ...productDetailBlocks(product, locale).map((b) => b.body)]
+  return [
+    product.description[locale],
+    ...productDetailBlocks(product, locale).map((b) => b.body),
+    ...productFaq(product, locale).flatMap((f) => [f.q, f.a]),
+  ]
     .join(" ")
     .replace(/\s+/g, " ")
     .trim();

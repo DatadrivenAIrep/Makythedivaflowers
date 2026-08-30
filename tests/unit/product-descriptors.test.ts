@@ -31,28 +31,13 @@ describe("flower extraction", () => {
 });
 
 describe("product titles", () => {
-  // 74 of 96 titles were brand names with no flower, occasion or category in
-  // them at all. Nobody searches "Amethyst Snowdrop".
-  const SEARCHABLE =
-    /rose|orchid|tulip|peon|lisianthus|anemone|ranunculus|dahlia|lil(y|ies)|hydrangea|sunflower|carnation|gerbera|anthurium|bouquet|arrangement|basket|vase|plant|subscription|rosa|orquídea|ramo|arreglo|cesta|planta|suscripción/i;
-
-  for (const locale of LOCALES) {
-    it(`${locale}: every active product carries a searchable term`, () => {
-      const bare = ACTIVE.filter((p) => !SEARCHABLE.test(productMetaTitle(p, locale)))
-        .map((p) => p.title.en);
-      expect(bare, `no flower/category keyword: ${bare.join(", ")}`).toEqual([]);
-    });
-
-    it(`${locale}: every title names the town`, () => {
-      expect(ACTIVE.every((p) => productMetaTitle(p, locale).includes("Albertson, NY"))).toBe(true);
-    });
-
-    it(`${locale}: titles stay unique`, () => {
-      const titles = ACTIVE.map((p) => productMetaTitle(p, locale));
-      expect(new Set(titles).size).toBe(titles.length);
-    });
-
-    it(`${locale}: the brand appears once, and last`, () => {
+  // Uniqueness, town, keyword coverage and length live in
+  // tests/unit/product-seo-audit.test.ts, which checks the whole catalog in
+  // both locales using the real flower vocabulary. Hand-rolled keyword regexes
+  // here kept producing false failures ("Lirios para Lottie" is a lily) — one
+  // locale-aware checker beats two that disagree.
+  it("keeps the brand last, exactly once", () => {
+    for (const locale of LOCALES) {
       for (const p of ACTIVE) {
         const t = productMetaTitle(p, locale);
         expect(t.match(/Diva Flowers/g)?.length, t).toBe(1);
@@ -60,8 +45,8 @@ describe("product titles", () => {
         // "Abundant Table — Diva Flowers — Garden Rose Arrangement".
         expect(t.indexOf("Diva Flowers"), t).toBeGreaterThan(t.indexOf("—"));
       }
-    });
-  }
+    }
+  });
 
   it("leaves already-descriptive titles alone rather than doubling them", () => {
     const dozen = ACTIVE.find((p) => /Dozen/i.test(p.seo.title.en));
@@ -106,6 +91,41 @@ describe("product detail depth", () => {
     const quote = ACTIVE.find((p) => p.quoteOnly);
     if (quote) {
       expect(productDetailBlocks(quote, "en").some((b) => b.key === "sizes")).toBe(false);
+    }
+  });
+});
+
+describe("same-day tag agrees with the product's own copy", () => {
+  /**
+   * The `same-day` tag drives the meta description, the delivery block and the
+   * Merchant feed's handling time. "Hundred Roses Vase" was tagged same-day
+   * while its own description read "reserve at least 24 hours ahead" — so the
+   * page promised delivery today directly beneath copy asking for a day's
+   * notice. You cannot hand-build a hundred roses in an afternoon; the tag was
+   * simply wrong, and trusting it propagated the error to three surfaces.
+   */
+  const NEEDS_NOTICE =
+    /\b(24|48|72)\s*(hours|horas)\b|hours? ahead|d[ií]as? de antelaci[oó]n|con\s+\d+\s+horas|reserva\s+con|reserve at least|made to order|por encargo/i;
+
+  it("no product promises same-day while its copy asks for notice", () => {
+    const conflicted = ACTIVE.filter(
+      (p) =>
+        p.tags.includes("same-day") &&
+        NEEDS_NOTICE.test(`${p.description.en} ${p.description.es} ${p.blurb.en} ${p.blurb.es}`),
+    ).map((p) => p.slug);
+    expect(
+      conflicted,
+      `tagged same-day but the copy asks for lead time: ${conflicted.join(", ")}`,
+    ).toEqual([]);
+  });
+
+  it("the generated delivery line matches the tag on every product and locale", () => {
+    for (const locale of LOCALES) {
+      for (const p of ACTIVE) {
+        const body = productDetailBlocks(p, locale).find((b) => b.key === "delivery")!.body;
+        const promisesToday = /goes out today|sale hoy mismo/.test(body);
+        expect(promisesToday, `${p.slug} (${locale})`).toBe(p.tags.includes("same-day"));
+      }
     }
   });
 });

@@ -112,7 +112,17 @@ export function extractFlowers(text: string): FlowerHit[] {
 export function headlineFlowers(text: string, max = 2): FlowerHit[] {
   const all = extractFlowers(text);
   const headline = all.filter((f) => !FILLER.has(f.label.en));
-  return (headline.length ? headline : all).slice(0, max);
+  const pool = headline.length ? headline : all;
+
+  // "Phalaenopsis Orchid & Orchid" — a bare head noun adds nothing next to a
+  // named variety of itself. Keep the specific one.
+  const specific = pool.filter(
+    (f) =>
+      !pool.some(
+        (o) => o !== f && o.label.en !== f.label.en && o.label.en.endsWith(` ${f.label.en}`),
+      ),
+  );
+  return specific.slice(0, max);
 }
 
 export function joinFlowers(hits: FlowerHit[], locale: Locale): string {
@@ -138,4 +148,16 @@ export function joinFlowers(hits: FlowerHit[], locale: Locale): string {
 
   if (!shared) return joined;
   return locale === "es" ? `${head(names[0])} ${joined}` : `${joined} ${head(names[0])}`;
+}
+
+/**
+ * Does `text` name a flower in this locale?
+ *
+ * `extractFlowers` matches English source copy. Checking a Spanish *title* with
+ * it silently returns nothing, which made a catalog audit report 63 flowerless
+ * titles that were fine — the Spanish half were all false positives.
+ */
+export function namesFlower(text: string, locale: Locale): boolean {
+  const low = text.toLowerCase();
+  return FLOWERS.some((f) => low.includes(f[locale]) || low.includes(f.label[locale].toLowerCase()));
 }

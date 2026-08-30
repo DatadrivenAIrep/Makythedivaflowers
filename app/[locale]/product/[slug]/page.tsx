@@ -12,6 +12,7 @@ import { productMetaTitle, productMetaDescription } from "@/lib/seo/product-meta
 import { ImageStack } from "@/components/product/ImageStack";
 import { PdpConfigurator } from "@/components/product/PdpConfigurator";
 import { PdpAccordion } from "@/components/product/PdpAccordion";
+import { PdpFaq } from "@/components/product/PdpFaq";
 import { PairsWellWith } from "@/components/product/PairsWellWith";
 import { JournalTile } from "@/components/product/JournalTile";
 import { PdpStructuredData } from "@/components/product/PdpStructuredData";
@@ -144,6 +145,8 @@ export default async function ProductPage({
             <div className="mt-8">
               <PdpAccordion product={product} locale={locale} />
             </div>
+
+            <PdpFaq product={product} locale={locale} />
           </div>
         </div>
       </section>
