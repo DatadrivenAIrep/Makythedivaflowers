@@ -1,13 +1,18 @@
-"use client";
-import { memo } from "react";
-import { useTranslations } from "next-intl";
-import { SITE } from "@/data/site";
+import type { Product } from "@/types/product";
+import type { Locale } from "@/types/locale";
+import { productDetailBlocks } from "@/lib/seo/product-detail";
 
-// Source from data/site.ts so cutoff and delivery zones stay consistent
-// across PDP, footer, legal copy, and metadata.
-const DELIVERY_ZONES = SITE.deliveryZones.join(", ");
-const CUTOFF = SITE.cutoffTime;
-
+/**
+ * Product detail accordion.
+ *
+ * This used to render three identical paragraphs on all 96 products — the same
+ * stems blurb, the same subscription pitch, the same delivery zones — which is
+ * zero unique content on every product page in the catalog. Now each item is
+ * built from that product's own stems, variant prices, occasions and lead time.
+ *
+ * Rendered on the server (no "use client"): <details> needs no JavaScript, and
+ * the text has to be in the initial HTML for it to count as page content.
+ */
 function Item({ label, body }: { label: string; body: string }) {
   return (
     <details className="group border-b border-ink/10 py-4 [&_summary::-webkit-details-marker]:hidden">
@@ -22,18 +27,12 @@ function Item({ label, body }: { label: string; body: string }) {
   );
 }
 
-function PdpAccordionImpl() {
-  const t = useTranslations("product.accordion");
+export function PdpAccordion({ product, locale }: { product: Product; locale: Locale }) {
   return (
     <div className="border-t border-ink/10">
-      <Item label={t("stems_label")} body={t("stems_body")} />
-      <Item label={t("sub_label")} body={t("sub_body")} />
-      <Item
-        label={t("delivery_label")}
-        body={t("delivery_body", { zones: DELIVERY_ZONES, cutoff: CUTOFF })}
-      />
+      {productDetailBlocks(product, locale).map((b) => (
+        <Item key={b.key} label={b.label} body={b.body} />
+      ))}
     </div>
   );
 }
-
-export const PdpAccordion = memo(PdpAccordionImpl);

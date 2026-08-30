@@ -2,6 +2,7 @@ import type { Product } from "@/types/product";
 import type { Locale } from "@/types/locale";
 import { startingPriceCents, isAvailableNow } from "@/data/product-helpers";
 import { SITE } from "@/data/site";
+import { productRichDescription } from "@/lib/seo/product-detail";
 
 const usd = (cents: number) => (cents / 100).toFixed(2);
 
@@ -87,7 +88,9 @@ export function buildProductJsonLd(
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.title[locale],
-    description: product.description[locale],
+    // Same text the accordion renders — a schema description richer than the
+    // page would be a mismatch, and thinner than the page wastes the content.
+    description: productRichDescription(product, locale),
     sku: product.id,
     category: product.category,
     image: product.images.map((i) => `${origin}${i.src}`),

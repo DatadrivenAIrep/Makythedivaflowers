@@ -235,7 +235,7 @@ export const PRODUCTS: Product[] = [
     colorFamily: ["green", "mixed"],
     active: true,
     seo: {
-      title: { en: "Rainforest Rhapsody — Tropical Arrangement | Diva", es: "Rapsodia Selvática — Arreglo Tropical | Diva" },
+      title: { en: "Rainforest Rhapsody — Tropical Arrangement | Diva Flowers", es: "Rapsodia Selvática — Arreglo Tropical | Diva Flowers" },
       description: {
         en: "Tropical arrangement with anthurium, monstera, and orchid on a low base. Long Island, same-day.",
         es: "Arreglo tropical con antúrios, monstera y orquídeas sobre base baja. Long Island, mismo día.",

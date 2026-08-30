@@ -142,7 +142,7 @@ export default async function ProductPage({
             </div>
 
             <div className="mt-8">
-              <PdpAccordion />
+              <PdpAccordion product={product} locale={locale} />
             </div>
           </div>
         </div>

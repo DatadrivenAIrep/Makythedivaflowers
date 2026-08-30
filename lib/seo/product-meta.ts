@@ -1,6 +1,7 @@
 import type { Product } from "@/types/product";
 import type { Locale } from "@/types/locale";
 import { SITE } from "@/data/site";
+import { productDescriptor } from "@/lib/seo/product-descriptors";
 
 /**
  * Geo-qualifies a product's title and description for search.
@@ -16,9 +17,38 @@ import { SITE } from "@/data/site";
 /** Towns named in product meta. Kept short — the town landing pages carry the long tail. */
 const META_TOWNS = ["Roslyn", "Manhasset", "Great Neck", "Garden City", "Mineola"];
 
+/**
+ * A title only carries real intent if it names a FLOWER or a PRODUCT TYPE.
+ *
+ * Occasion words deliberately excluded: "A Thousand Heartbeats — Anniversary"
+ * reads descriptive but tells a searcher nothing about what arrives, and it was
+ * skipping the descriptor that would have added "Garden Rose & Dahlia
+ * Arrangement".
+ */
+const ALREADY_DESCRIPTIVE =
+  /rose|orchid|tulip|peon|lisianthus|anemone|ranunculus|dahlia|lil(y|ies)|hydrangea|sunflower|carnation|gerbera|anthurium|bouquet|arrangement|vase|plant|basket|wreath|spray|corsage|boutonniere|dozen|rosa|orquídea|tulipán|ramo|arreglo|cesta|planta|jarrón/i;
+
 export function productMetaTitle(product: Product, locale: Locale): string {
-  const base = product.seo.title[locale].trim();
+  let base = product.seo.title[locale].trim();
   const suffix = ` · ${SITE.address.locality}, NY`;
+
+  // Catalog names like "Amethyst Snowdrop" or "Cloud Nine" are brand assets
+  // with zero search intent — 74 of 96 titles had no flower, occasion or
+  // category in them. Insert what the arrangement actually contains ahead of
+  // the brand, keeping the name first. Titles that already say "Dozen Red
+  // Roses" are left alone rather than made redundant.
+  if (!ALREADY_DESCRIPTIVE.test(base)) {
+    const descriptor = productDescriptor(product, locale);
+    // The catalog closes titles with the brand two different ways — 79 with an
+    // em dash, 15 with a pipe — so match the brand tail rather than splitting on
+    // one separator, which reordered the em-dash titles into nonsense
+    // ("Abundant Table — Diva Flowers — Garden Rose Arrangement").
+    const brand = base.match(/\s*[|—–-]\s*Diva Flowers\s*$/);
+    base = brand
+      ? `${base.slice(0, brand.index).trim()} — ${descriptor}${brand[0]}`
+      : `${base} — ${descriptor}`;
+  }
+
   // Titles already end in "| Diva Flowers"; append the location to that rather
   // than bolting a second brand mention on.
   return base.endsWith(suffix) ? base : `${base}${suffix}`;
