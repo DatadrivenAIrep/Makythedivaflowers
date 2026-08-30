@@ -6,11 +6,12 @@ import { journalArticles } from "@/data/journal";
 import { Grain } from "@/components/brand/Grain";
 import { StaggerGroup, StaggerItem } from "@/components/motion/StaggerGroup";
 import type { Locale } from "@/types/locale";
+import { localeAlternates } from "@/lib/seo/alternates";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "journal" });
-  return { title: t("page_title"), description: t("page_description"), alternates: { languages: { en: "/en/journal", es: "/es/journal" } } };
+  return { title: t("page_title"), description: t("page_description"), alternates: localeAlternates(locale, "/journal") };
 }
 
 export default async function JournalIndex({ params }: { params: Promise<{ locale: Locale }> }) {

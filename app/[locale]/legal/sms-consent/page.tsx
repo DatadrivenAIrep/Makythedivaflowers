@@ -9,6 +9,7 @@ import Link from "next/link";
 import { SITE } from "@/data/site";
 import { formatAddressLine } from "@/lib/format";
 import type { Locale } from "@/types/locale";
+import { localeAlternates } from "@/lib/seo/alternates";
 
 export async function generateMetadata({
   params,
@@ -20,7 +21,7 @@ export async function generateMetadata({
   return {
     title: t("page_title"),
     description: t("page_description"),
-    alternates: { languages: { en: "/en/legal/sms-consent", es: "/es/legal/sms-consent" } },
+    alternates: localeAlternates(locale, "/legal/sms-consent"),
   };
 }
 

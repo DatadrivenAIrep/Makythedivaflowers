@@ -23,19 +23,30 @@ export const REVIEWS_AGGREGATE = {
   placeUrl: "https://www.google.com/maps/place/Maky+The+Diva+Flowers/@40.7729367,-73.6493681,17z/data=!4m17!1m8!3m7!1s0x89c287d9137e7747:0xb205384ad7449685!2s1077+Willis+Ave,+Albertson,+NY+11507!3b1!8m2!3d40.7729367!4d-73.6493681!16s%2Fg%2F11rnfbbd9y!3m7!1s0x89c287d913828373:0xfac2d149a64985ed!8m2!3d40.7729367!4d-73.6493681!9m1!1b1!16s%2Fg%2F1262l8y23?hl=en-US&entry=ttu&g_ep=EgoyMDI2MDQyOS4wIKXMDSoASAFQAw%3D%3D",
 } as const;
 
+/**
+ * Individual reviews, attached by @id to the Florist node in LocalBusinessLD.
+ *
+ * This used to emit a second standalone `LocalBusiness` carrying the rating.
+ * Google saw two unrelated businesses on one page and could attach the stars to
+ * neither. The aggregateRating now lives on the Florist node; this block only
+ * adds the review bodies to that same entity.
+ */
 export function buildReviewsJsonLd(
   reviews: Review[],
   aggregate: ReviewsAggregate,
   brandName: string,
+  businessId: string,
 ): string {
   return JSON.stringify({
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
+    "@type": "Florist",
+    "@id": businessId,
     name: brandName,
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: aggregate.rating,
       reviewCount: aggregate.total,
+      bestRating: 5,
     },
     review: reviews.map((r) => ({
       "@type": "Review",

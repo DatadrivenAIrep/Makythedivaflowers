@@ -7,6 +7,7 @@ import { DeliveryZonePills } from "@/components/contact/DeliveryZonePills";
 import { ContactForm } from "@/components/inquiry/ContactForm";
 import { TextMakyInlineLink } from "@/components/contact/TextMakyInlineLink";
 import type { Locale } from "@/types/locale";
+import { localeAlternates } from "@/lib/seo/alternates";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -14,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
   return {
     title: t("page_title"),
     description: t("page_description"),
-    alternates: { languages: { en: "/en/contact", es: "/es/contact" } },
+    alternates: localeAlternates(locale, "/contact"),
   };
 }
 

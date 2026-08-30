@@ -12,6 +12,7 @@ import { Verticals } from "@/components/home/Verticals";
 import { SympathyShowcase } from "@/components/home/SympathyShowcase";
 import { StudioVisit } from "@/components/home/StudioVisit";
 import { NewsletterField } from "@/components/home/NewsletterField";
+import { localeAlternates } from "@/lib/seo/alternates";
 
 export async function generateMetadata({
   params,
@@ -23,13 +24,7 @@ export async function generateMetadata({
   return {
     title: SITE.metadata.title[lang],
     description: SITE.metadata.description[lang],
-    alternates: {
-      canonical: `${SITE.url}/${locale}`,
-      languages: {
-        en: "/en",
-        es: "/es",
-      },
-    },
+    alternates: localeAlternates(locale),
   };
 }
 

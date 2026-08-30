@@ -8,6 +8,7 @@ import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
 import { journalArticles, getArticleBySlug } from "@/data/journal";
 import { Grain } from "@/components/brand/Grain";
 import type { Locale } from "@/types/locale";
+import { localeAlternates } from "@/lib/seo/alternates";
 
 export async function generateStaticParams() {
   return journalArticles.flatMap((a) =>
@@ -22,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
   return {
     title: article.seo.title[locale],
     description: article.seo.description[locale],
-    alternates: { languages: { en: `/en/journal/${slug}`, es: `/es/journal/${slug}` } },
+    alternates: localeAlternates(locale, `/journal/${slug}`),
     openGraph: { title: article.title[locale], description: article.excerpt[locale], images: [{ url: article.cover.src }] },
   };
 }

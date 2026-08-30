@@ -49,9 +49,13 @@ const mockReviews: Review[] = [
 
 describe("buildReviewsJsonLd", () => {
   it("returns valid JSON-LD with AggregateRating and Review entries", () => {
-    const parsed = JSON.parse(buildReviewsJsonLd(mockReviews, mockAggregate, "Diva Flowers"));
+    const parsed = JSON.parse(
+      buildReviewsJsonLd(mockReviews, mockAggregate, "Diva Flowers", "https://example.com/#florist"),
+    );
     expect(parsed["@context"]).toBe("https://schema.org");
-    expect(parsed["@type"]).toBe("LocalBusiness");
+    expect(parsed["@type"]).toBe("Florist");
+    // Must match the Florist node in LocalBusinessLD so Google merges the two.
+    expect(parsed["@id"]).toBe("https://example.com/#florist");
     expect(parsed.name).toBe("Diva Flowers");
     expect(parsed.aggregateRating["@type"]).toBe("AggregateRating");
     expect(parsed.aggregateRating.ratingValue).toBe(4.9);

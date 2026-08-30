@@ -20,6 +20,7 @@ import { PdpContactSubject } from "@/components/contact/PdpContactSubject";
 import { GiftAssuranceBar } from "@/components/conversion/GiftAssuranceBar";
 import { CutoffCountdown } from "@/components/conversion/CutoffCountdown";
 import { PdpReviewsBlock } from "@/components/conversion/PdpReviewsBlock";
+import { localeAlternates } from "@/lib/seo/alternates";
 
 export async function generateStaticParams() {
   return PRODUCTS.filter((p) => p.active).map((p) => ({ slug: p.slug }));
@@ -36,13 +37,7 @@ export async function generateMetadata({
   return {
     title: p.seo.title[locale],
     description: p.seo.description[locale],
-    alternates: {
-      canonical: `/${locale}/product/${slug}`,
-      languages: {
-        en: `/en/product/${slug}`,
-        es: `/es/product/${slug}`,
-      },
-    },
+    alternates: localeAlternates(locale, `/product/${slug}`),
     openGraph: {
       title: p.seo.title[locale],
       description: p.seo.description[locale],

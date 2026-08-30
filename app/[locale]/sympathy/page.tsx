@@ -11,6 +11,7 @@ import { SympathyTrust } from "@/components/sympathy/SympathyTrust";
 import { SympathyInquiryForm } from "@/components/sympathy/SympathyInquiryForm";
 import { BreadcrumbListLD } from "@/components/seo/BreadcrumbListLD";
 import { Grain } from "@/components/brand/Grain";
+import { localeAlternates } from "@/lib/seo/alternates";
 
 export async function generateMetadata({
   params,
@@ -27,13 +28,7 @@ export async function generateMetadata({
       locale === "es"
         ? "Arreglos funerarios y memoriales a medida en Long Island y Queens. Coordinamos directamente con funerarias. Llamada o consulta."
         : "Custom funeral arrangements and memorial installations across Long Island and Queens. We coordinate directly with funeral homes.",
-    alternates: {
-      canonical: `/${locale}/sympathy`,
-      languages: {
-        en: "/en/sympathy",
-        es: "/es/sympathy",
-      },
-    },
+    alternates: localeAlternates(locale, "/sympathy"),
   };
 }
 

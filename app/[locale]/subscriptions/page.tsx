@@ -5,6 +5,7 @@ import type { Locale } from "@/types/locale";
 import { SubscriptionLanding } from "@/components/subscription/SubscriptionLanding";
 import { SubscriptionHero } from "@/components/subscription/SubscriptionHero";
 import { SubscriptionHowItWorks } from "@/components/subscription/SubscriptionHowItWorks";
+import { localeAlternates } from "@/lib/seo/alternates";
 
 export async function generateMetadata({
   params,
@@ -16,10 +17,7 @@ export async function generateMetadata({
   return {
     title: t("page_title"),
     description: t("meta_description"),
-    alternates: {
-      canonical: `/${locale}/subscriptions`,
-      languages: { en: "/en/subscriptions", es: "/es/subscriptions" },
-    },
+    alternates: localeAlternates(locale, "/subscriptions"),
   };
 }
 

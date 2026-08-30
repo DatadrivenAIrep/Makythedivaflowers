@@ -4,6 +4,7 @@ import { CartPageList } from "@/components/cart/CartPageList";
 import { CutoffReminderRow } from "@/components/conversion/CutoffReminderRow";
 import { SITE } from "@/data/site";
 import type { Locale } from "@/types/locale";
+import { localeAlternates } from "@/lib/seo/alternates";
 
 export async function generateMetadata({
   params,
@@ -13,9 +14,7 @@ export async function generateMetadata({
   return {
     title: t("page_title"),
     description: t("page_description"),
-    alternates: {
-      languages: { en: "/en/cart", es: "/es/cart" },
-    },
+    alternates: localeAlternates(locale, "/cart"),
   };
 }
 

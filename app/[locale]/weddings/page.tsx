@@ -14,6 +14,7 @@ import { WhatHappensNext } from "@/components/inquiry/WhatHappensNext";
 import { Testimonials } from "@/components/social/Testimonials";
 import { reviewsByOccasion } from "@/data/review-helpers";
 import type { Locale } from "@/types/locale";
+import { localeAlternates } from "@/lib/seo/alternates";
 
 export async function generateMetadata({
   params,
@@ -23,7 +24,7 @@ export async function generateMetadata({
   return {
     title: t("page_title"),
     description: t("meta_description"),
-    alternates: { languages: { en: "/en/weddings", es: "/es/weddings" } },
+    alternates: localeAlternates(locale, "/weddings"),
   };
 }
 

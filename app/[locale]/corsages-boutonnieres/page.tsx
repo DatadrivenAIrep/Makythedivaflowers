@@ -8,6 +8,7 @@ import { CorsagesHero } from "@/components/corsages/CorsagesHero";
 import { CorsagesPieces } from "@/components/corsages/CorsagesPieces";
 import { CorsagesHowItWorks } from "@/components/corsages/CorsagesHowItWorks";
 import { CorsagesCTA } from "@/components/corsages/CorsagesCTA";
+import { localeAlternates } from "@/lib/seo/alternates";
 
 export async function generateMetadata({
   params,
@@ -19,13 +20,7 @@ export async function generateMetadata({
   return {
     title: t("page_title"),
     description: t("meta_description"),
-    alternates: {
-      canonical: `/${locale}/corsages-boutonnieres`,
-      languages: {
-        en: "/en/corsages-boutonnieres",
-        es: "/es/corsages-boutonnieres",
-      },
-    },
+    alternates: localeAlternates(locale, "/corsages-boutonnieres"),
   };
 }
 

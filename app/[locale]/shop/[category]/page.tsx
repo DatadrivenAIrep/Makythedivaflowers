@@ -22,6 +22,7 @@ import { TrackEvent } from "@/components/analytics/TrackEvent";
 import type { AnalyticsItem } from "@/lib/analytics-types";
 import { isRoseProduct, isExoticProduct } from "@/lib/shop-categories";
 import { getAllImageOverrides, applyImageOverrides } from "@/lib/product-images";
+import { localeAlternates } from "@/lib/seo/alternates";
 
 type ShopSlug = ProductCategory | "roses" | "exotic";
 
@@ -97,13 +98,7 @@ export async function generateMetadata({
   return {
     title: `${CATEGORY_TITLES[cat][locale]} — Diva Flowers`,
     description: CATEGORY_DESCS[cat][locale],
-    alternates: {
-      canonical: `/${locale}/shop/${category}`,
-      languages: {
-        en: `/en/shop/${category}`,
-        es: `/es/shop/${category}`,
-      },
-    },
+    alternates: localeAlternates(locale, `/shop/${category}`),
   };
 }
 
