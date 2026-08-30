@@ -30,7 +30,11 @@ export function getCustomerProfile(id: string, now: Date = new Date()): Customer
       createdAt: o.createdAt,
     })),
     now,
-    { firstSeenAt: customer.firstSeenAt, lastSeenAt: customer.lastSeenAt },
+    {
+      orderCount: customer.orderCount,
+      firstSeenAt: customer.firstSeenAt,
+      lastSeenAt: customer.lastSeenAt,
+    },
   );
   return {
     customer,

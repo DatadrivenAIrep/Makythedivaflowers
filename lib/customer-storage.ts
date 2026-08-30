@@ -286,6 +286,14 @@ const AGG_JOIN = `
     GROUP BY customer_id
   ) a ON a.customer_id = c.id`;
 
+// Effective per-customer figures. Prefer the linked-order aggregate; fall back to
+// the customers row when no order carries this customer's id. This mirrors the
+// fallback metricsFromAggregate applies, so a filter and the badge it names always
+// classify the same customer the same way.
+const EFF_ORDERS = `(CASE WHEN COALESCE(a.o_count, 0) > 0 THEN a.o_count ELSE c.order_count END)`;
+const EFF_LAST_ORDER = `COALESCE(a.last_order_at, c.last_seen_at)`;
+const EFF_LTV = `COALESCE(a.ltv_cents, 0)`;
+
 function encodeOffset(n: number): string {
   return Buffer.from(String(n), "utf8").toString("base64url");
 }
@@ -317,22 +325,20 @@ export function listCustomers(
   // interpolated from those exports — never from user input).
   switch (filters.segment) {
     case "new":
-      where.push(`COALESCE(a.o_count, 0) < ${RECURRING_MIN_ORDERS}`);
+      where.push(`${EFF_ORDERS} < ${RECURRING_MIN_ORDERS}`);
       break;
     case "recurring":
-      where.push(`COALESCE(a.o_count, 0) >= ${RECURRING_MIN_ORDERS}`);
+      where.push(`${EFF_ORDERS} >= ${RECURRING_MIN_ORDERS}`);
       break;
     case "vip":
-      where.push(
-        `(COALESCE(a.o_count, 0) >= ${VIP_MIN_ORDERS} OR COALESCE(a.ltv_cents, 0) >= ${VIP_MIN_LTV_CENTS})`,
-      );
+      where.push(`(${EFF_ORDERS} >= ${VIP_MIN_ORDERS} OR ${EFF_LTV} >= ${VIP_MIN_LTV_CENTS})`);
       break;
     case "at_risk":
-      where.push(`(COALESCE(a.o_count, 0) >= ${RECURRING_MIN_ORDERS} AND a.last_order_at < ?)`);
+      where.push(`(${EFF_ORDERS} >= ${RECURRING_MIN_ORDERS} AND ${EFF_LAST_ORDER} < ?)`);
       params.push(atRiskCutoffIso(now));
       break;
     case "lapsed":
-      where.push(`(COALESCE(a.o_count, 0) = 1 AND a.last_order_at < ?)`);
+      where.push(`(${EFF_ORDERS} = 1 AND ${EFF_LAST_ORDER} < ?)`);
       params.push(atRiskCutoffIso(now));
       break;
   }
@@ -395,7 +401,7 @@ export function listCustomers(
         lastOrderAt: r.last_order_at,
       },
       now,
-      { firstSeenAt: r.first_seen_at, lastSeenAt: r.last_seen_at },
+      { orderCount: r.order_count, firstSeenAt: r.first_seen_at, lastSeenAt: r.last_seen_at },
     ),
     tags: tagsByCustomer.get(r.id) ?? [],
   }));
@@ -451,7 +457,7 @@ export function customerStats(now: Date = new Date()): CustomerListStats {
       `SELECT SUM(CASE WHEN o_count >= ${RECURRING_MIN_ORDERS} THEN 1 ELSE 0 END) AS repeat_n,
               SUM(CASE WHEN o_count >= ${RECURRING_MIN_ORDERS} AND last_order_at < ? THEN 1 ELSE 0 END) AS at_risk_n,
               SUM(CASE WHEN o_count = 1 AND last_order_at < ? THEN 1 ELSE 0 END) AS lapsed_n
-       FROM (SELECT COALESCE(a.o_count, 0) AS o_count, a.last_order_at ${AGG_JOIN})`,
+       FROM (SELECT ${EFF_ORDERS} AS o_count, ${EFF_LAST_ORDER} AS last_order_at ${AGG_JOIN})`,
     )
     .get(cutoff, cutoff) as {
       repeat_n: number | null;

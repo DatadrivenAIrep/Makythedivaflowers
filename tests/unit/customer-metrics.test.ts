@@ -28,11 +28,34 @@ describe("computeMetrics", () => {
 
   it("no orders + seen fallback → dates fall back to first/last seen", () => {
     const m = computeMetrics([], NOW, {
+      orderCount: 0,
       firstSeenAt: "2026-01-01T00:00:00Z",
       lastSeenAt: "2026-06-01T00:00:00Z",
     });
     expect(m.firstOrderAt).toBe("2026-01-01T00:00:00Z");
     expect(m.lastOrderAt).toBe("2026-06-01T00:00:00Z");
+    expect(m.segment).toBe("new");
+  });
+
+  it("no linked orders + a fallback count → segments on the stored count", () => {
+    // The customers row counted three orders; none of them carry a customer_id.
+    const m = computeMetrics([], NOW, {
+      orderCount: 3,
+      firstSeenAt: new Date(NOW.getTime() - 300 * DAY).toISOString(),
+      lastSeenAt: new Date(NOW.getTime() - 116 * DAY).toISOString(),
+    });
+    expect(m.orderCount).toBe(3);
+    expect(m.isRecurring).toBe(true);
+    expect(m.segment).toBe("at_risk");
+  });
+
+  it("linked orders win over the fallback count", () => {
+    const m = computeMetrics([order(3, 7500)], NOW, {
+      orderCount: 99,
+      firstSeenAt: new Date(NOW.getTime() - 300 * DAY).toISOString(),
+      lastSeenAt: new Date(NOW.getTime() - 3 * DAY).toISOString(),
+    });
+    expect(m.orderCount).toBe(1);
     expect(m.segment).toBe("new");
   });
 

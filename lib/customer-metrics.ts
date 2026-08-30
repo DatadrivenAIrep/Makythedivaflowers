@@ -23,7 +23,8 @@ export type OrderAggregate = {
   lastOrderAt: string | null;
 };
 
-export type SeenFallback = { firstSeenAt: string; lastSeenAt: string };
+/** The customers row itself, used when no order carries this customer's id. */
+export type SeenFallback = { orderCount: number; firstSeenAt: string; lastSeenAt: string };
 
 export type CustomerMetrics = {
   ltvCents: number;
@@ -71,8 +72,15 @@ export function metricsFromAggregate(
   const daysSinceLastOrder = lastOrderAt
     ? Math.floor((now.getTime() - new Date(lastOrderAt).getTime()) / DAY_MS)
     : null;
-  const isVip = agg.orderCount >= VIP_MIN_ORDERS || agg.ltvCents >= VIP_MIN_LTV_CENTS;
-  const isRecurring = agg.orderCount >= RECURRING_MIN_ORDERS;
+  // Orders placed before the checkout linked them are still in `orders`, just
+  // without a customer_id, so they aggregate to nothing. customers.order_count
+  // counted them at the time, so fall back to it — the same way the dates above
+  // fall back to first/last_seen_at. Without this a repeat buyer whose history
+  // was never linked reads as zero orders and is badged "new" while the row
+  // shows a months-old last order, and neither at-risk nor lapsed can find them.
+  const orderCount = agg.orderCount > 0 ? agg.orderCount : (fallback?.orderCount ?? 0);
+  const isVip = orderCount >= VIP_MIN_ORDERS || agg.ltvCents >= VIP_MIN_LTV_CENTS;
+  const isRecurring = orderCount >= RECURRING_MIN_ORDERS;
   const cutoff = atRiskCutoffIso(now);
   // At-risk compares lastOrderAt against the same ISO cutoff the SQL filter and
   // header stat use, so the badge, the "At risk" filter, and the at-risk count
@@ -82,7 +90,7 @@ export function metricsFromAggregate(
   // Lapsed is the other half of that story: bought exactly once, long ago, never
   // came back. Kept separate from at_risk because it is a different audience and
   // deserves a different message.
-  const isLapsed = agg.orderCount === 1 && lastOrderAt !== null && lastOrderAt < cutoff;
+  const isLapsed = orderCount === 1 && lastOrderAt !== null && lastOrderAt < cutoff;
   const segment: Segment = isAtRisk
     ? "at_risk"
     : isVip
@@ -94,7 +102,7 @@ export function metricsFromAggregate(
           : "new";
   return {
     ltvCents: agg.ltvCents,
-    orderCount: agg.orderCount,
+    orderCount,
     paidOrderCount: agg.paidOrderCount,
     aovCents: agg.paidOrderCount > 0 ? Math.round(agg.ltvCents / agg.paidOrderCount) : 0,
     firstOrderAt,
