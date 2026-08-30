@@ -106,4 +106,12 @@ describe("POST /api/twilio/inbound", () => {
     await POST(makeReq({ From: "+15168512815", Body: "hi" }));
     expect(insertInboundMock).not.toHaveBeenCalled();
   });
+
+  it("still syncs a STOP even if storing the inbound message throws", async () => {
+    insertInboundMock.mockImplementationOnce(() => { throw new Error("db locked"); });
+    const res = await POST(makeReq({ From: "+15168512815", Body: "STOP" }));
+    expect(res.status).toBe(200);
+    expect(updateCustomerMock).toHaveBeenCalledWith("cus_1", { messagingChannel: "none" });
+    expect(removeTagMock).toHaveBeenCalledWith("cus_1", "sms-marketing");
+  });
 });

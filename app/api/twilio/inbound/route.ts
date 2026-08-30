@@ -39,13 +39,21 @@ export async function POST(req: Request): Promise<Response> {
     const customer = from ? getByPhoneUS(from) : null;
 
     // Persist every inbound message for the inbox (STOP/START included).
+    // Best-effort: a storage failure here must never suppress the STOP/START
+    // opt-out sync below, since Twilio only gets one shot at 200 (no retry).
     if (from) {
-      insertInboundMessage({
-        fromPhone: normalizePhone(from),
-        customerId: customer?.id,
-        body,
-        providerSid: params.MessageSid,
-      });
+      try {
+        insertInboundMessage({
+          fromPhone: normalizePhone(from),
+          customerId: customer?.id,
+          body,
+          providerSid: params.MessageSid,
+        });
+      } catch (e) {
+        console.error(
+          JSON.stringify({ event: "inbound_store_failed", error: e instanceof Error ? e.message : String(e) }),
+        );
+      }
     }
 
     if (customer) {
