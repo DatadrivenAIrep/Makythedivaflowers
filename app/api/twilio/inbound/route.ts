@@ -1,6 +1,7 @@
 import twilio from "twilio";
 import { twilioAuthToken } from "@/lib/twilio-config";
-import { getByPhoneUS, updateCustomer, removeTag } from "@/lib/customer-storage";
+import { getByPhoneUS, updateCustomer, removeTag, normalizePhone } from "@/lib/customer-storage";
+import { insertInboundMessage } from "@/lib/inbound-storage";
 
 export const runtime = "nodejs";
 
@@ -33,8 +34,19 @@ export async function POST(req: Request): Promise<Response> {
     }
 
     const from = params.From ?? "";
-    const keyword = (params.Body ?? "").trim().toUpperCase();
+    const body = params.Body ?? "";
+    const keyword = body.trim().toUpperCase();
     const customer = from ? getByPhoneUS(from) : null;
+
+    // Persist every inbound message for the inbox (STOP/START included).
+    if (from) {
+      insertInboundMessage({
+        fromPhone: normalizePhone(from),
+        customerId: customer?.id,
+        body,
+        providerSid: params.MessageSid,
+      });
+    }
 
     if (customer) {
       if (STOP_WORDS.has(keyword)) {

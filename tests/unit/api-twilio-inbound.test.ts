@@ -14,7 +14,11 @@ vi.mock("@/lib/customer-storage", () => ({
   getByPhoneUS: (...a: unknown[]) => getByPhoneUSMock(...a),
   updateCustomer: (...a: unknown[]) => updateCustomerMock(...a),
   removeTag: (...a: unknown[]) => removeTagMock(...a),
+  normalizePhone: (p: string) => p.replace(/\D/g, ""),
 }));
+
+const insertInboundMock = vi.fn();
+vi.mock("@/lib/inbound-storage", () => ({ insertInboundMessage: (...a: unknown[]) => insertInboundMock(...a) }));
 
 import { POST } from "@/app/api/twilio/inbound/route";
 
@@ -37,6 +41,7 @@ beforeEach(() => {
   getByPhoneUSMock.mockReset().mockReturnValue({ id: "cus_1", messagingChannel: "sms" });
   updateCustomerMock.mockReset();
   removeTagMock.mockReset();
+  insertInboundMock.mockReset();
 });
 
 describe("POST /api/twilio/inbound", () => {
@@ -80,5 +85,25 @@ describe("POST /api/twilio/inbound", () => {
     const res = await POST(makeReq({ From: "+19995550000", Body: "STOP" }));
     expect(res.status).toBe(200);
     expect(updateCustomerMock).not.toHaveBeenCalled();
+  });
+
+  it("stores a normal inbound reply", async () => {
+    const res = await POST(makeReq({ From: "+15168512815", Body: "thank you!", MessageSid: "SM9" }));
+    expect(res.status).toBe(200);
+    expect(insertInboundMock).toHaveBeenCalledWith(expect.objectContaining({
+      fromPhone: "15168512815", customerId: "cus_1", body: "thank you!", providerSid: "SM9",
+    }));
+  });
+
+  it("stores a STOP too (and still syncs opt-out)", async () => {
+    await POST(makeReq({ From: "+15168512815", Body: "STOP" }));
+    expect(insertInboundMock).toHaveBeenCalled();
+    expect(updateCustomerMock).toHaveBeenCalledWith("cus_1", { messagingChannel: "none" });
+  });
+
+  it("stores nothing when the signature is invalid", async () => {
+    validateRequestMock.mockReturnValue(false);
+    await POST(makeReq({ From: "+15168512815", Body: "hi" }));
+    expect(insertInboundMock).not.toHaveBeenCalled();
   });
 });
