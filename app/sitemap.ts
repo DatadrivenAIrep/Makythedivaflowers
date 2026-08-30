@@ -4,6 +4,7 @@ import { PRODUCTS } from "@/data/products";
 import { isAvailableNow } from "@/data/product-helpers";
 import { journalArticles } from "@/data/journal";
 import { locales } from "@/types/locale";
+import { LOCAL_CITIES, LOCAL_OCCASIONS } from "@/data/local-seo";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://makythedivaflowers.com";
 
@@ -31,6 +32,7 @@ const STATIC_PATHS: { path: string; priority: number; changeFrequency: MetadataR
   { path: "story", priority: 0.6, changeFrequency: "yearly" },
   { path: "journal", priority: 0.7, changeFrequency: "weekly" },
   { path: "contact", priority: 0.8, changeFrequency: "yearly" },
+  { path: "flower-delivery", priority: 0.9, changeFrequency: "monthly" },
   { path: "legal/privacy", priority: 0.2, changeFrequency: "yearly" },
   { path: "legal/terms", priority: 0.2, changeFrequency: "yearly" },
   { path: "legal/returns", priority: 0.3, changeFrequency: "yearly" },
@@ -65,6 +67,28 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: 0.6,
         alternates: { languages: langs(`product/${product.slug}`) },
       });
+    }
+    // Town and town x occasion landing pages. High priority: these are the
+    // pages built to win local search, and they are useless uncrawled.
+    for (const city of LOCAL_CITIES) {
+      entries.push({
+        url: `${SITE}/${locale}/flower-delivery/${city.slug}`,
+        lastModified: now,
+        changeFrequency: "monthly",
+        priority: 0.9,
+        alternates: { languages: langs(`flower-delivery/${city.slug}`) },
+      });
+      for (const occasion of LOCAL_OCCASIONS) {
+        entries.push({
+          url: `${SITE}/${locale}/flower-delivery/${city.slug}/${occasion.slug}`,
+          lastModified: now,
+          changeFrequency: "monthly",
+          priority: 0.8,
+          alternates: {
+            languages: langs(`flower-delivery/${city.slug}/${occasion.slug}`),
+          },
+        });
+      }
     }
     for (const article of journalArticles) {
       entries.push({
