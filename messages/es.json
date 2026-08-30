@@ -929,8 +929,8 @@
       "placeholder": "—"
     },
     "reviews": {
-      "rating_aggregate": "{rating} / {total} reseñas",
-      "rating_aggregate_matched": "{rating} de {count} compradores para {occasion}",
+      "rating_aggregate": "{rating} en {total} reseñas de Google de nuestro taller",
+      "rating_aggregate_matched": "{rating} en {total} reseñas de Google de nuestro taller · {count} mencionan {occasion}",
       "read_all_cta": "Lee las {count} reseñas en Google",
       "anniversary": "aniversario",
       "birthday": "cumpleaños",

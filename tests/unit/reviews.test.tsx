@@ -22,6 +22,8 @@ vi.mock("framer-motion", () => ({
 }));
 
 import { GoogleReviewsClient } from "@/components/home/GoogleReviewsClient";
+import enMessages from "@/messages/en.json";
+import esMessages from "@/messages/es.json";
 
 const mockAggregate = { rating: 4.9, total: 127, placeUrl: "https://g.page/r/test" } as const;
 
@@ -345,4 +347,37 @@ describe("GoogleReviewsClient", () => {
     expect(tabs[0]).toHaveAttribute("aria-selected", "true");
     expect(tabs[1]).toHaveAttribute("aria-selected", "false");
   });
+});
+
+describe("review copy attributes the rating honestly", () => {
+  // The PDP block used to render "4.9 from 1 birthday buyers". The 4.9 is the
+  // studio's average across 127 Google reviews; the 1 is how many stored quotes
+  // mention birthdays. Welding them into one sentence claimed a rating that
+  // count never produced — and the block sits under a single arrangement, so it
+  // also read as if the product itself had those reviews.
+  const copy = {
+    en: enMessages.conversion.reviews,
+    es: esMessages.conversion.reviews,
+  };
+
+  for (const [locale, r] of Object.entries(copy)) {
+    it(`${locale}: the aggregate line says whose reviews these are`, () => {
+      expect(r.rating_aggregate).toMatch(/Google/);
+      expect(r.rating_aggregate).toMatch(/\{total\}/);
+      expect(r.rating_aggregate).toMatch(/studio|taller|tienda/i);
+    });
+
+    it(`${locale}: the occasion line never pins {rating} to {count}`, () => {
+      // {rating} must be qualified by {total}, and {count} must not be the only
+      // number between the rating and the occasion.
+      expect(r.rating_aggregate_matched).toMatch(/\{total\}/);
+      const ratingToCount = r.rating_aggregate_matched.match(
+        /\{rating\}[^{]*\{count\}/,
+      );
+      expect(
+        ratingToCount,
+        "{count} follows {rating} with no {total} between them — that reads as 'X from N buyers'",
+      ).toBeNull();
+    });
+  }
 });

@@ -929,8 +929,8 @@
       "placeholder": "—"
     },
     "reviews": {
-      "rating_aggregate": "{rating} / {total} reviews",
-      "rating_aggregate_matched": "{rating} from {count} {occasion} buyers",
+      "rating_aggregate": "{rating} across {total} Google reviews of our studio",
+      "rating_aggregate_matched": "{rating} across {total} Google reviews of our studio · {count} mention {occasion}",
       "read_all_cta": "Read all {count} reviews on Google",
       "anniversary": "anniversary",
       "birthday": "birthday",

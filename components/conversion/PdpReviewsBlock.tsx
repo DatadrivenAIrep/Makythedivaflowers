@@ -19,6 +19,10 @@ export function PdpReviewsBlock({ product, locale: _locale }: Props) {
     ? t("rating_aggregate", { rating: match.aggregateRating, total: match.aggregateCount })
     : t("rating_aggregate_matched", {
         rating: match.aggregateRating,
+        // The rating comes from the studio's full Google total, not from the
+        // handful of quotes that happen to mention this occasion. Passing both
+        // keeps the sentence honest about which number is which.
+        total: match.aggregateCount,
         count: match.matchedCount,
         occasion: t(match.occasionLabelKey),
       });
