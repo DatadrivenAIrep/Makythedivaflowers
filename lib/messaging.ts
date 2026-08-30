@@ -74,7 +74,7 @@ export async function sendMessage(req: SendMessageRequest): Promise<SendMessageR
       body,
     }));
     const providerSid = dryRunSid();
-    updateMessage(id, { status: "sent", providerSid });
+    updateMessage(id, { status: "sent", providerSid, body });
     return { id, status: "sent" };
   }
 
@@ -82,7 +82,7 @@ export async function sendMessage(req: SendMessageRequest): Promise<SendMessageR
     if (req.channel === "sms") {
       const body = renderSmsBody(req.template, req.locale, req.vars);
       const { sid } = await sendSms(req.to.phone, body);
-      updateMessage(id, { status: "sent", providerSid: sid });
+      updateMessage(id, { status: "sent", providerSid: sid, body });
       return { id, status: "sent" };
     } else {
       const contentSid = whatsappContentSid(req.template, req.locale)!;

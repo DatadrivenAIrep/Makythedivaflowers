@@ -25,6 +25,7 @@ export type Message = {
   providerSid?: string;
   status: MessageStatus;
   error?: string;
+  body?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -43,6 +44,7 @@ type MessageRow = {
   provider_sid: string | null;
   status: string;
   error: string | null;
+  body: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -60,6 +62,7 @@ function rowToMessage(r: MessageRow): Message {
     providerSid: r.provider_sid ?? undefined,
     status: r.status as MessageStatus,
     error: r.error ?? undefined,
+    body: r.body ?? undefined,
     createdAt: r.created_at,
     updatedAt: r.updated_at,
   };
@@ -98,6 +101,7 @@ export type UpdateInput = {
   status: MessageStatus;
   providerSid?: string;
   error?: string;
+  body?: string;
 };
 
 export function updateMessage(id: string, patch: UpdateInput): void {
@@ -105,9 +109,10 @@ export function updateMessage(id: string, patch: UpdateInput): void {
   const now = new Date().toISOString();
   getDb()
     .prepare(
-      `UPDATE messages SET status = ?, provider_sid = COALESCE(?, provider_sid), error = ?, updated_at = ? WHERE id = ?`,
+      `UPDATE messages SET status = ?, provider_sid = COALESCE(?, provider_sid),
+         error = ?, body = COALESCE(?, body), updated_at = ? WHERE id = ?`,
     )
-    .run(patch.status, patch.providerSid ?? null, patch.error ?? null, now, id);
+    .run(patch.status, patch.providerSid ?? null, patch.error ?? null, patch.body ?? null, now, id);
 }
 
 export function recentMessagesForOrder(orderId: string, limit: number): Message[] {

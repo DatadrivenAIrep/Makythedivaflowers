@@ -87,4 +87,11 @@ describe("sendMessage", () => {
     const res = await sendMessage(baseReq);
     expect(res.status).toBe("failed");
   });
+
+  it("records the rendered SMS body on the message row", async () => {
+    const res = await sendMessage(baseReq); // order_received, en, buyer Sofia
+    expect(res.status).toBe("sent");
+    const [row] = recentMessagesForOrder(baseReq.orderId, 1);
+    expect(row.body).toContain("Hi Sofia");
+  });
 });
