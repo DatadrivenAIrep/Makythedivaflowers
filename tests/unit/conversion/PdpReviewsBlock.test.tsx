@@ -2,7 +2,8 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { PdpReviewsBlock } from "@/components/conversion/PdpReviewsBlock";
-import type { Product } from "@/types/product";
+import { ELFSIGHT_APPS } from "@/data/elfsight";
+import { CONV_EVENTS } from "@/lib/conversion/events";
 
 vi.mock("next-intl", () => ({
   useTranslations: (ns?: string) => (k: string, vars?: Record<string, unknown>) => {
@@ -11,43 +12,26 @@ vi.mock("next-intl", () => ({
   },
 }));
 
-const baseProduct = (overrides: Partial<Product>): Product => ({
-  id: "p1",
-  slug: "p1",
-  title: { en: "P1", es: "P1" },
-  category: "arrangements",
-  blurb: { en: "", es: "" },
-  description: { en: "", es: "" },
-  images: [],
-  variants: [],
-  tags: [],
-  occasions: [],
-  colorFamily: ["red"],
-  active: true,
-  seo: { title: { en: "", es: "" }, description: { en: "", es: "" } },
-  ...overrides,
-});
-
 describe("PdpReviewsBlock", () => {
-  it("renders the global aggregate when product has no occasion", () => {
-    render(<PdpReviewsBlock product={baseProduct({ occasions: [] })} locale="en" />);
-    expect(screen.getByText(/conversion\.reviews\.rating_aggregate\|/)).toBeInTheDocument();
+  it("mounts the product-page Elfsight widget, not the site-wide one", () => {
+    const { container } = render(<PdpReviewsBlock />);
+    expect(
+      container.querySelector(`.elfsight-app-${ELFSIGHT_APPS.productReviews}`),
+    ).not.toBeNull();
+    expect(
+      container.querySelector(`.elfsight-app-${ELFSIGHT_APPS.siteReviews}`),
+    ).toBeNull();
   });
 
-  it("renders the matched aggregate when product has anniversary occasion", () => {
-    render(<PdpReviewsBlock product={baseProduct({ occasions: ["anniversary"] })} locale="en" />);
-    expect(screen.getByText(/conversion\.reviews\.rating_aggregate_matched\|/)).toBeInTheDocument();
+  it("keeps firing the pdp_reviews_view conversion event", () => {
+    const { container } = render(<PdpReviewsBlock />);
+    expect(
+      container.querySelector(`[data-conv-event="${CONV_EVENTS.reviews.view}"]`),
+    ).not.toBeNull();
   });
 
-  it("renders two review quotes", () => {
-    const { container } = render(<PdpReviewsBlock product={baseProduct({ occasions: ["anniversary"] })} locale="en" />);
-    expect(container.querySelectorAll("blockquote").length).toBe(2);
-  });
-
-  it("includes a Read all reviews link to the Google place URL", () => {
-    render(<PdpReviewsBlock product={baseProduct({ occasions: [] })} locale="en" />);
-    const link = screen.getByRole("link", { name: /read_all_cta/ });
-    expect(link).toHaveAttribute("href", expect.stringContaining("google.com/maps"));
-    expect(link).toHaveAttribute("target", "_blank");
+  it("labels the section for screen readers", () => {
+    render(<PdpReviewsBlock />);
+    expect(screen.getByRole("region", { name: /aria_section/ })).toBeInTheDocument();
   });
 });

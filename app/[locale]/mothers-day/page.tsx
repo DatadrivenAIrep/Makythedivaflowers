@@ -141,7 +141,7 @@ export default async function MothersDayPage({
         </div>
       </section>
 
-      <GoogleReviews locale={locale} />
+      <GoogleReviews />
 
       <section className="mx-auto max-w-7xl px-4 pt-20 pb-4 text-center">
         <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-rouge">The Edit</span>

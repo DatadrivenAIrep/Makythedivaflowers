@@ -226,17 +226,8 @@
     "reviews": {
       "eyebrow": "★ Google Reviews",
       "title": "What Our Clients Say",
-      "verified": "Verified",
-      "read_all": "Read all {count} reviews on Google",
-      "translated": "Translated · view original",
-      "original": "Showing original",
       "aria": {
-        "section": "Customer reviews",
-        "next": "Next review",
-        "prev": "Previous review",
-        "play": "Resume autoplay",
-        "pause": "Pause autoplay",
-        "goto": "Go to review {n}"
+        "section": "Customer reviews"
       }
     },
     "weddings_teaser": {
@@ -921,15 +912,9 @@
       "placeholder": "—"
     },
     "reviews": {
-      "rating_aggregate": "{rating} across {total} Google reviews of our studio",
-      "rating_aggregate_matched": "{rating} across {total} Google reviews of our studio · {count} mention {occasion}",
-      "read_all_cta": "Read all {count} reviews on Google",
-      "anniversary": "anniversary",
-      "birthday": "birthday",
-      "sympathy": "sympathy",
-      "romance": "romance",
-      "congrats": "congratulations",
-      "just_because": "just-because"
+      "eyebrow": "★ Google Reviews",
+      "title": "What Our Clients Say",
+      "aria_section": "Customer reviews"
     },
     "variants": {
       "standard": "Standard",

@@ -120,10 +120,6 @@ export default async function ProductPage({
             </p>
 
             <div className="mt-6">
-              <PdpReviewsBlock product={product} locale={locale} />
-            </div>
-
-            <div className="mt-6">
               <CutoffCountdown
                 cutoff={SITE.cutoff24}
                 tone={isSympathy ? "sympathy" : "default"}
@@ -150,6 +146,8 @@ export default async function ProductPage({
           </div>
         </div>
       </section>
+
+      <PdpReviewsBlock />
 
       <section className="mx-auto max-w-[var(--container-max)] px-6 pb-16">
         <PairsWellWith products={pairs} locale={locale} />

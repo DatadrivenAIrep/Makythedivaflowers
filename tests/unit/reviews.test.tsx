@@ -1,29 +1,45 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent, act } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { describe, it, expect, vi, afterEach } from "vitest";
+import { render, act, cleanup } from "@testing-library/react";
 import { buildReviewsJsonLd, type Review } from "@/data/reviews";
-import { GoogleReviewsCard } from "@/components/home/GoogleReviewsCard";
 
-vi.mock("next-intl", () => ({
-  useTranslations: () => (key: string) => key,
-}));
+import { ElfsightReviews } from "@/components/social/ElfsightReviews";
+import { ELFSIGHT_APPS } from "@/data/elfsight";
 
-vi.mock("framer-motion", () => ({
-  useReducedMotion: () => false,
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  motion: {
-    article: ({ children, initial: _i, animate: _a, exit: _e, transition: _t, ...props }: any) => (
-      <article {...props}>{children}</article>
-    ),
-    span: ({ children, initial: _i, animate: _a, transition: _t, style, ...props }: any) => (
-      <span style={style} {...props}>{children}</span>
-    ),
-  },
-}));
+/**
+ * Hands back the IntersectionObserver callback so a test can decide when the
+ * section "enters" the viewport. jsdom has no real observer.
+ */
+function stubIntersectionObserver() {
+  let trigger: ((entries: { isIntersecting: boolean }[]) => void) | undefined;
+  const disconnect = vi.fn();
+  const observe = vi.fn();
+  vi.stubGlobal(
+    "IntersectionObserver",
+    class {
+      constructor(cb: (entries: { isIntersecting: boolean }[]) => void) {
+        trigger = cb;
+      }
+      observe = observe;
+      disconnect = disconnect;
+      unobserve = vi.fn();
+      takeRecords = vi.fn();
+      root = null;
+      rootMargin = "";
+      thresholds = [];
+    },
+  );
+  return {
+    observe,
+    disconnect,
+    enterViewport: () => act(() => trigger?.([{ isIntersecting: true }])),
+    stayOutOfViewport: () => act(() => trigger?.([{ isIntersecting: false }])),
+  };
+}
 
-import { GoogleReviewsClient } from "@/components/home/GoogleReviewsClient";
-import enMessages from "@/messages/en.json";
-import esMessages from "@/messages/es.json";
+const APP_ID = ELFSIGHT_APPS.siteReviews;
+
+const platformScripts = () =>
+  [...document.querySelectorAll('script[src="https://elfsightcdn.com/platform.js"]')];
 
 const mockAggregate = { rating: 4.9, total: 127, placeUrl: "https://g.page/r/test" } as const;
 
@@ -71,313 +87,78 @@ describe("buildReviewsJsonLd", () => {
   });
 });
 
-const baseCardProps = {
-  author: "Jessica Morales",
-  initials: "JM",
-  displayText: "Amazing flowers for our wedding.",
-  date: "2026-04",
-  locale: "en" as const,
-  occasion: "Boda",
-  showTranslateChip: false,
-  showingOriginal: false,
-  translateLabel: "Translated · view original",
-  originalLabel: "Showing original",
-  onToggleTranslate: vi.fn(),
-  onPrev: vi.fn(),
-  onNext: vi.fn(),
-  prevLabel: "Previous review",
-  nextLabel: "Next review",
-};
-
-describe("GoogleReviewsCard", () => {
-  it("renders the display text", () => {
-    render(<GoogleReviewsCard {...baseCardProps} />);
-    expect(screen.getByText("Amazing flowers for our wedding.")).toBeInTheDocument();
+describe("ElfsightReviews", () => {
+  afterEach(() => {
+    cleanup();
+    platformScripts().forEach((el) => el.remove());
+    vi.unstubAllGlobals();
   });
 
-  it("renders the author name", () => {
-    render(<GoogleReviewsCard {...baseCardProps} />);
-    expect(screen.getByText("Jessica Morales")).toBeInTheDocument();
+  it("renders the Elfsight mount point with the widget id", () => {
+    stubIntersectionObserver();
+    const { container } = render(<ElfsightReviews appId={APP_ID} />);
+    // platform.js finds the widget by this exact class; a typo silently
+    // renders nothing, so pin it.
+    expect(
+      container.querySelector(`.elfsight-app-${APP_ID}`),
+    ).not.toBeNull();
   });
 
-  it("renders formatted date and occasion", () => {
-    render(<GoogleReviewsCard {...baseCardProps} />);
-    expect(screen.getByText(/April 2026.*Boda/)).toBeInTheDocument();
+  it("keeps the mount point lazy so the widget waits for the viewport", () => {
+    stubIntersectionObserver();
+    const { container } = render(<ElfsightReviews appId={APP_ID} />);
+    const mount = container.querySelector(`.elfsight-app-${APP_ID}`);
+    expect(mount).toHaveAttribute("data-elfsight-app-lazy");
   });
 
-  it("does not render translate chip when showTranslateChip is false", () => {
-    render(<GoogleReviewsCard {...baseCardProps} showTranslateChip={false} />);
-    expect(screen.queryByText("Translated · view original")).not.toBeInTheDocument();
+  it("does not fetch platform.js until the section nears the viewport", () => {
+    const io = stubIntersectionObserver();
+    render(<ElfsightReviews appId={APP_ID} />);
+    expect(platformScripts()).toHaveLength(0);
+
+    io.stayOutOfViewport();
+    expect(platformScripts()).toHaveLength(0);
   });
 
-  it("renders translate chip when showTranslateChip is true", () => {
-    render(<GoogleReviewsCard {...baseCardProps} showTranslateChip={true} />);
-    expect(screen.getByText("Translated · view original")).toBeInTheDocument();
+  it("appends platform.js once the section enters the viewport", () => {
+    const io = stubIntersectionObserver();
+    render(<ElfsightReviews appId={APP_ID} />);
+
+    io.enterViewport();
+
+    const [script] = platformScripts();
+    expect(script).toBeDefined();
+    expect((script as HTMLScriptElement).async).toBe(true);
+    // One shot only — the observer stops watching after the first hit.
+    expect(io.disconnect).toHaveBeenCalled();
   });
 
-  it("shows originalLabel when showingOriginal is true", () => {
-    render(<GoogleReviewsCard {...baseCardProps} showTranslateChip={true} showingOriginal={true} />);
-    expect(screen.getByText("Showing original")).toBeInTheDocument();
-    expect(screen.queryByText("Translated · view original")).not.toBeInTheDocument();
+  it("never appends platform.js twice", () => {
+    const io = stubIntersectionObserver();
+    render(<ElfsightReviews appId={APP_ID} />);
+    io.enterViewport();
+
+    // A second widget — another mount, or a client-side navigation back to
+    // this page — must reuse the script already on the document.
+    const second = stubIntersectionObserver();
+    render(<ElfsightReviews appId={ELFSIGHT_APPS.productReviews} />);
+    second.enterViewport();
+
+    expect(platformScripts()).toHaveLength(1);
   });
 
-  it("calls onToggleTranslate when translate chip is clicked", async () => {
-    const user = userEvent.setup();
-    const onToggleTranslate = vi.fn();
-    render(<GoogleReviewsCard {...baseCardProps} showTranslateChip={true} onToggleTranslate={onToggleTranslate} />);
-    await user.click(screen.getByText("Translated · view original"));
-    expect(onToggleTranslate).toHaveBeenCalledTimes(1);
+  it("mounts each widget under its own Elfsight id", () => {
+    stubIntersectionObserver();
+    const { container } = render(<ElfsightReviews appId={ELFSIGHT_APPS.productReviews} />);
+    expect(
+      container.querySelector(`.elfsight-app-${ELFSIGHT_APPS.productReviews}`),
+    ).not.toBeNull();
+    expect(ELFSIGHT_APPS.productReviews).not.toBe(ELFSIGHT_APPS.siteReviews);
   });
 
-  it("calls onNext when next arrow is clicked", async () => {
-    const user = userEvent.setup();
-    const onNext = vi.fn();
-    render(<GoogleReviewsCard {...baseCardProps} onNext={onNext} />);
-    await user.click(screen.getByRole("button", { name: "Next review" }));
-    expect(onNext).toHaveBeenCalledTimes(1);
+  it("loads immediately where IntersectionObserver is missing", () => {
+    vi.stubGlobal("IntersectionObserver", undefined);
+    render(<ElfsightReviews appId={APP_ID} />);
+    expect(platformScripts()).toHaveLength(1);
   });
-
-  it("calls onPrev when prev arrow is clicked", async () => {
-    const user = userEvent.setup();
-    const onPrev = vi.fn();
-    render(<GoogleReviewsCard {...baseCardProps} onPrev={onPrev} />);
-    await user.click(screen.getByRole("button", { name: "Previous review" }));
-    expect(onPrev).toHaveBeenCalledTimes(1);
-  });
-});
-
-const clientReviews: Review[] = [
-  {
-    id: "r1",
-    author: "Alice B.",
-    initials: "AB",
-    rating: 5,
-    occasion: "Boda",
-    date: "2026-04",
-    text: { en: "First review in English.", es: "Primera reseña en español." },
-    originalLang: "en",
-  },
-  {
-    id: "r2",
-    author: "Carlos M.",
-    initials: "CM",
-    rating: 5,
-    date: "2026-03",
-    text: { en: "Second review in English.", es: "Segunda reseña en español." },
-    originalLang: "es",
-  },
-  {
-    id: "r3",
-    author: "Diana P.",
-    initials: "DP",
-    rating: 5,
-    date: "2026-02",
-    text: { en: "Third review in English.", es: "Tercera reseña en español." },
-    originalLang: "en",
-  },
-];
-
-describe("GoogleReviewsClient", () => {
-  it("renders the first review on mount", () => {
-    render(
-      <GoogleReviewsClient
-        reviews={clientReviews}
-        locale="en"
-        autoplayMs={0}
-      />,
-    );
-    expect(screen.getByText("First review in English.")).toBeInTheDocument();
-  });
-
-  it("advances to the next review when next arrow is clicked", async () => {
-    const user = userEvent.setup();
-    render(
-      <GoogleReviewsClient
-        reviews={clientReviews}
-        locale="en"
-        autoplayMs={0}
-      />,
-    );
-    await user.click(screen.getByRole("button", { name: "aria.next" }));
-    expect(screen.getByText("Second review in English.")).toBeInTheDocument();
-  });
-
-  it("wraps from last to first on next click", async () => {
-    const user = userEvent.setup();
-    render(
-      <GoogleReviewsClient
-        reviews={clientReviews}
-        locale="en"
-        autoplayMs={0}
-      />,
-    );
-    await user.click(screen.getByRole("button", { name: "aria.next" }));
-    await user.click(screen.getByRole("button", { name: "aria.next" }));
-    expect(screen.getByText("Third review in English.")).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "aria.next" }));
-    expect(screen.getByText("First review in English.")).toBeInTheDocument();
-  });
-
-  it("goes to previous review on prev click; wraps from first to last", async () => {
-    const user = userEvent.setup();
-    render(
-      <GoogleReviewsClient
-        reviews={clientReviews}
-        locale="en"
-        autoplayMs={0}
-      />,
-    );
-    await user.click(screen.getByRole("button", { name: "aria.prev" }));
-    expect(screen.getByText("Third review in English.")).toBeInTheDocument();
-  });
-
-  it("jumps to a review when a progress segment is clicked", async () => {
-    const user = userEvent.setup();
-    render(
-      <GoogleReviewsClient
-        reviews={clientReviews}
-        locale="en"
-        autoplayMs={0}
-      />,
-    );
-    const segments = screen.getAllByRole("tab");
-    await user.click(segments[2]);
-    expect(screen.getByText("Third review in English.")).toBeInTheDocument();
-  });
-
-  it("does NOT show translate chip when locale matches originalLang", () => {
-    render(
-      <GoogleReviewsClient
-        reviews={clientReviews}
-        locale="en"
-        autoplayMs={0}
-      />,
-    );
-    // r1 has originalLang "en", locale is "en" — no chip
-    expect(screen.queryByText("translated")).not.toBeInTheDocument();
-  });
-
-  it("shows translate chip for a review in a different original language", async () => {
-    const user = userEvent.setup();
-    render(
-      <GoogleReviewsClient
-        reviews={clientReviews}
-        locale="en"
-        autoplayMs={0}
-      />,
-    );
-    // r2 has originalLang "es", locale is "en" — chip should appear
-    await user.click(screen.getByRole("button", { name: "aria.next" }));
-    expect(screen.getByText("translated")).toBeInTheDocument();
-  });
-
-  it("toggling translate chip shows original text; resets on slide change", async () => {
-    const user = userEvent.setup();
-    render(
-      <GoogleReviewsClient
-        reviews={clientReviews}
-        locale="en"
-        autoplayMs={0}
-      />,
-    );
-    // go to r2 (originalLang "es", locale "en" → shows en text, chip visible)
-    await user.click(screen.getByRole("button", { name: "aria.next" }));
-    expect(screen.getByText("Second review in English.")).toBeInTheDocument();
-    // click chip → show original (es)
-    await user.click(screen.getByText("translated"));
-    expect(screen.getByText("Segunda reseña en español.")).toBeInTheDocument();
-    // navigate away and back → resets to translated
-    await user.click(screen.getByRole("button", { name: "aria.next" }));
-    await user.click(screen.getByRole("button", { name: "aria.prev" }));
-    expect(screen.getByText("Second review in English.")).toBeInTheDocument();
-  });
-
-  it("advances review on ArrowRight keydown", () => {
-    render(
-      <GoogleReviewsClient
-        reviews={clientReviews}
-        locale="en"
-        autoplayMs={0}
-      />,
-    );
-    const container = document.querySelector("[data-reviews-client]")!;
-    fireEvent.keyDown(container, { key: "ArrowRight" });
-    expect(screen.getByText("Second review in English.")).toBeInTheDocument();
-  });
-
-  it("goes back on ArrowLeft keydown", () => {
-    render(
-      <GoogleReviewsClient
-        reviews={clientReviews}
-        locale="en"
-        autoplayMs={0}
-      />,
-    );
-    const container = document.querySelector("[data-reviews-client]")!;
-    fireEvent.keyDown(container, { key: "ArrowLeft" });
-    expect(screen.getByText("Third review in English.")).toBeInTheDocument();
-  });
-
-  it("autoplay advances review after interval", async () => {
-    vi.useFakeTimers();
-    render(
-      <GoogleReviewsClient
-        reviews={clientReviews}
-        locale="en"
-        autoplayMs={3000}
-      />,
-    );
-    expect(screen.getByText("First review in English.")).toBeInTheDocument();
-    await act(async () => {
-      vi.advanceTimersByTime(3000);
-    });
-    expect(screen.getByText("Second review in English.")).toBeInTheDocument();
-    vi.useRealTimers();
-  });
-
-  it("active progress segment has aria-selected=true", () => {
-    render(
-      <GoogleReviewsClient
-        reviews={clientReviews}
-        locale="en"
-        autoplayMs={0}
-      />,
-    );
-    const tabs = screen.getAllByRole("tab");
-    expect(tabs[0]).toHaveAttribute("aria-selected", "true");
-    expect(tabs[1]).toHaveAttribute("aria-selected", "false");
-  });
-});
-
-describe("review copy attributes the rating honestly", () => {
-  // The PDP block used to render "4.9 from 1 birthday buyers". The 4.9 is the
-  // studio's average across 127 Google reviews; the 1 is how many stored quotes
-  // mention birthdays. Welding them into one sentence claimed a rating that
-  // count never produced — and the block sits under a single arrangement, so it
-  // also read as if the product itself had those reviews.
-  const copy = {
-    en: enMessages.conversion.reviews,
-    es: esMessages.conversion.reviews,
-  };
-
-  for (const [locale, r] of Object.entries(copy)) {
-    it(`${locale}: the aggregate line says whose reviews these are`, () => {
-      expect(r.rating_aggregate).toMatch(/Google/);
-      expect(r.rating_aggregate).toMatch(/\{total\}/);
-      expect(r.rating_aggregate).toMatch(/studio|taller|tienda/i);
-    });
-
-    it(`${locale}: the occasion line never pins {rating} to {count}`, () => {
-      // {rating} must be qualified by {total}, and {count} must not be the only
-      // number between the rating and the occasion.
-      expect(r.rating_aggregate_matched).toMatch(/\{total\}/);
-      const ratingToCount = r.rating_aggregate_matched.match(
-        /\{rating\}[^{]*\{count\}/,
-      );
-      expect(
-        ratingToCount,
-        "{count} follows {rating} with no {total} between them — that reads as 'X from N buyers'",
-      ).toBeNull();
-    });
-  }
 });
