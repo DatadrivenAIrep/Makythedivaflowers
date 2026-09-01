@@ -163,6 +163,10 @@
       "cta_primary": "Ver arreglos",
       "cta_secondary": "Planear una boda"
     },
+    "occasions": {
+      "eyebrow": "Compra por ocasión",
+      "title": "¿Cuál es la ocasión?"
+    },
     "marquee": "MAKY THE DIVA FLOWERS · ROMANCE BY THE STEM · LONG ISLAND · DESDE 2014 · ENVÍOS HOY · SAME-DAY DELIVERY",
     "bento": {
       "console_eyebrow": "Dentro del estudio",
@@ -215,6 +219,11 @@
         "title": "Marfil y Esmeralda",
         "cta": "Ver la pieza",
         "quote": "Cotizar"
+      },
+      "designers_choice": {
+        "eyebrow": "Elección del diseñador",
+        "title": "Deja que Maky elija.",
+        "cta": "Ver la pieza"
       }
     },
     "categories_title": "Encuentra tu flor.",

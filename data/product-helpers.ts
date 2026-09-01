@@ -5,7 +5,10 @@ import type {
   ColorFamily,
 } from "@/types/product";
 
-export type PriceBand = "under-200" | "200-300" | "300-plus";
+// Bands are cut against the live catalog (starting prices run ~$65–$345,
+// median ~$125), so each one actually holds products. The previous
+// 200/300 split put nearly the whole shop in a single band.
+export type PriceBand = "under-100" | "100-150" | "150-200" | "200-plus";
 export type Sort = "newest" | "price-asc" | "price-desc" | "staff-pick";
 
 export type Filter = {
@@ -65,9 +68,10 @@ export function filterProducts(products: Product[], f: Filter): Product[] {
     if (f.sameDay && !p.tags.includes("same-day")) return false;
     if (f.price) {
       const c = startingPriceCents(p);
-      if (f.price === "under-200" && c >= 20000) return false;
-      if (f.price === "200-300" && (c < 20000 || c >= 30000)) return false;
-      if (f.price === "300-plus" && c < 30000) return false;
+      if (f.price === "under-100" && c >= 10000) return false;
+      if (f.price === "100-150" && (c < 10000 || c >= 15000)) return false;
+      if (f.price === "150-200" && (c < 15000 || c >= 20000)) return false;
+      if (f.price === "200-plus" && c < 20000) return false;
     }
     if (f.q && !matchesQuery(p, f.q)) return false;
     return true;

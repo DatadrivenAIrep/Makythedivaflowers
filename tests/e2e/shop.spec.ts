@@ -26,12 +26,20 @@ test.describe("shop", () => {
 
   test("filter chip writes the URL and narrows the grid", async ({ page }) => {
     await page.goto("/en/shop/arrangements");
-    const cardsBefore = page.getByRole("link").filter({ hasText: /From\s*\$/i });
-    const beforeCount = await cardsBefore.count();
+    const cards = page.getByRole("link").filter({ hasText: /From\s*\$/i });
+    // Count only once the grid has actually painted. Counting straight after
+    // goto() raced the render and could capture 0, which then made any
+    // post-filter count look like a growth rather than a narrowing.
+    await expect(cards.first()).toBeVisible();
+    const beforeCount = await cards.count();
+    expect(beforeCount).toBeGreaterThan(0);
+
     await page.getByRole("button", { name: /^Romance$/ }).click();
     await expect(page).toHaveURL(/[?&]occasion=romance/);
-    const cardsAfter = page.getByRole("link").filter({ hasText: /From\s*\$/i });
-    expect(await cardsAfter.count()).toBeLessThanOrEqual(beforeCount);
+    await expect(cards.first()).toBeVisible();
+    await expect
+      .poll(async () => cards.count(), { message: "filtered grid should not grow" })
+      .toBeLessThanOrEqual(beforeCount);
   });
 
   test("sort dropdown updates URL", async ({ page }) => {

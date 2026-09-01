@@ -17,7 +17,7 @@ export function LocaleChrome({ topNav, footer, extras, children }: Props) {
   return (
     <>
       {topNav}
-      <div className="pt-16">{children}</div>
+      <div className="pt-[var(--nav-offset)]">{children}</div>
       {footer}
       {extras}
     </>

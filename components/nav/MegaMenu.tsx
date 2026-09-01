@@ -5,6 +5,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { BloomImage } from "@/components/motion/BloomImage";
 import type { Locale } from "@/types/locale";
 import { CATS, LABELS } from "@/lib/shop-categories";
+import { OCCASION_NAV } from "@/lib/occasions-nav";
 
 type Props = { locale: Locale; label: string };
 
@@ -38,9 +39,13 @@ function MegaMenuImpl({ locale, label }: Props) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.18 }}
-            className="fixed inset-x-0 top-16 z-40 hidden border-y border-ink/10 bg-bone/95 px-6 py-8 backdrop-blur lg:block"
+            className="fixed inset-x-0 top-[var(--nav-offset)] z-40 hidden border-y border-ink/10 bg-bone/95 px-6 py-8 backdrop-blur lg:block"
           >
-            <div className="mx-auto grid max-w-[var(--container-max)] grid-cols-7 gap-3">
+            <div className="mx-auto flex max-w-[var(--container-max)] flex-col gap-6">
+            <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-mute-500">
+              {locale === "es" ? "Por tipo" : "By type"}
+            </p>
+            <div className="grid grid-cols-7 gap-3">
               {CATS.map((c) => (
                 <Link
                   role="menuitem"
@@ -65,6 +70,29 @@ function MegaMenuImpl({ locale, label }: Props) {
                   </div>
                 </Link>
               ))}
+            </div>
+
+            {/* Occasion is how people actually shop for flowers — "it's her
+                birthday", "there's a service Thursday" — so it gets equal
+                billing with product type. Shared list: lib/occasions-nav.ts */}
+            <div className="flex flex-col gap-3 border-t border-ink/10 pt-6">
+              <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-mute-500">
+                {locale === "es" ? "Por ocasión" : "By occasion"}
+              </p>
+              <ul className="flex flex-wrap items-center gap-x-7 gap-y-3">
+                {OCCASION_NAV.map((o) => (
+                  <li key={o.slug}>
+                    <Link
+                      role="menuitem"
+                      href={o.path(locale)}
+                      className="font-sans text-sm tracking-tight text-ink/75 underline-offset-4 transition-colors hover:text-ink hover:underline"
+                    >
+                      {o.label[locale]}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
             </div>
           </motion.div>
         )}

@@ -163,6 +163,10 @@
       "cta_primary": "Shop arrangements",
       "cta_secondary": "Plan a wedding"
     },
+    "occasions": {
+      "eyebrow": "Shop by occasion",
+      "title": "What is the occasion?"
+    },
     "marquee": "MAKY THE DIVA FLOWERS · ROMANCE BY THE STEM · LONG ISLAND · DESDE 2014 · ENVÍOS HOY · SAME-DAY DELIVERY",
     "bento": {
       "console_eyebrow": "Inside the studio",
@@ -215,6 +219,11 @@
         "title": "Ivory & Emerald",
         "cta": "Shop the piece",
         "quote": "Request a quote"
+      },
+      "designers_choice": {
+        "eyebrow": "Designer's choice",
+        "title": "Let Maky choose.",
+        "cta": "See the piece"
       }
     },
     "categories_title": "Find your bloom.",

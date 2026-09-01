@@ -71,6 +71,22 @@ describe("filterProducts", () => {
     variants: [{ id: "s", label: { en: "", es: "" }, priceCents: 38000 }],
     active: true,
   });
+  // Extra fixtures exist only for the price-band cases below, so the
+  // membership assertions above keep their original [a, b, c, d] input.
+  const e = fx({
+    id: "e",
+    occasions: ["birthday"],
+    colorFamily: ["mixed"],
+    tags: [],
+    variants: [{ id: "s", label: { en: "", es: "" }, priceCents: 8500 }],
+  });
+  const f = fx({
+    id: "f",
+    occasions: ["birthday"],
+    colorFamily: ["mixed"],
+    tags: [],
+    variants: [{ id: "s", label: { en: "", es: "" }, priceCents: 17500 }],
+  });
 
   it("hides inactive products", () => {
     expect(filterProducts([a, b, c, d], {} as Filter).map((p) => p.id)).toEqual(["a", "b", "d"]);
@@ -91,19 +107,33 @@ describe("filterProducts", () => {
     expect(r.map((p) => p.id)).toEqual(["a"]);
   });
 
-  it("filters by price band: under-$200", () => {
-    const r = filterProducts([a, b, c, d], { price: "under-200" } as Filter);
+  it("filters by price band: under-$100", () => {
+    const r = filterProducts([a, b, d, e, f], { price: "under-100" } as Filter);
+    expect(r.map((p) => p.id)).toEqual(["e"]);
+  });
+
+  it("filters by price band: $100-$150", () => {
+    const r = filterProducts([a, b, d, e, f], { price: "100-150" } as Filter);
     expect(r.map((p) => p.id)).toEqual(["a"]);
   });
 
-  it("filters by price band: 200-300", () => {
-    const r = filterProducts([a, b, c, d], { price: "200-300" } as Filter);
-    expect(r.map((p) => p.id)).toEqual(["b"]);
+  it("filters by price band: $150-$200", () => {
+    const r = filterProducts([a, b, d, e, f], { price: "150-200" } as Filter);
+    expect(r.map((p) => p.id)).toEqual(["f"]);
   });
 
-  it("filters by price band: 300-plus", () => {
-    const r = filterProducts([a, b, c, d], { price: "300-plus" } as Filter);
-    expect(r.map((p) => p.id)).toEqual(["d"]);
+  it("filters by price band: $200+", () => {
+    const r = filterProducts([a, b, d, e, f], { price: "200-plus" } as Filter);
+    expect(r.map((p) => p.id)).toEqual(["b", "d"]);
+  });
+
+  it("bands are contiguous: every product lands in exactly one band", () => {
+    const all = [a, b, d, e, f];
+    const bands = ["under-100", "100-150", "150-200", "200-plus"] as const;
+    const hits = all.map(
+      (p) => bands.filter((band) => filterProducts([p], { price: band } as Filter).length === 1).length,
+    );
+    expect(hits).toEqual([1, 1, 1, 1, 1]);
   });
 
   it("combines filters with AND", () => {

@@ -1,8 +1,8 @@
 // tests/unit/conversion/ReciprocityCard.test.tsx
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { ReciprocityCard } from "@/components/conversion/ReciprocityCard";
+import { PRODUCTS } from "@/data/products";
 import type { Order } from "@/types/order";
 
 vi.mock("next-intl", () => ({
@@ -10,8 +10,6 @@ vi.mock("next-intl", () => ({
 }));
 
 // Build a minimal Order — field names match the actual Order type
-// Note: no products in data/products.ts have category: "subscriptions",
-// so hasSubscription is always false and the subscription nudge always renders.
 const baseOrder = (overrides: Partial<Order> = {}): Order => ({
   id: "ord_a4f2c9",
   source: "web",
@@ -33,34 +31,54 @@ const baseOrder = (overrides: Partial<Order> = {}): Order => ({
   ...overrides,
 });
 
-
 describe("ReciprocityCard", () => {
-  it("renders the referral code derived from order id", () => {
-    render(<ReciprocityCard order={baseOrder()} locale="en" />);
-    expect(screen.getByText("DIVA-A4F2C9")).toBeInTheDocument();
-  });
-
   it("renders the subscription nudge for a non-subscription order", () => {
     render(<ReciprocityCard order={baseOrder()} locale="en" />);
     expect(screen.getByText("subscription_title")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /subscription_cta/ })).toHaveAttribute(
+      "href",
+      "/en/shop/subscriptions",
+    );
   });
 
-  // No products in data/products.ts have category: "subscriptions",
-  // so the subscription nudge always shows. This test confirms the nudge
-  // is visible even with an empty lines array (no subscription products present).
-  it("renders the subscription nudge when lines array is empty (no subscription products exist)", () => {
+  it("renders the subscription nudge when the order has no catalog lines", () => {
     render(<ReciprocityCard order={baseOrder({ lines: [] })} locale="en" />);
     expect(screen.getByText("subscription_title")).toBeInTheDocument();
   });
 
-  it("copies the referral code to clipboard on click", async () => {
-    // userEvent.setup() installs its own clipboard stub on window.navigator.clipboard.
-    // Spy on that stub so the component's navigator.clipboard.writeText() call is tracked.
-    const user = userEvent.setup();
-    const writeTextSpy = vi.spyOn(navigator.clipboard, "writeText").mockResolvedValue(undefined);
+  it("renders nothing when the order already contains a subscription", () => {
+    const subscription = PRODUCTS.find((p) => p.category === "subscriptions");
+    if (!subscription) {
+      // No subscription products in the catalog today; the guard is still worth
+      // keeping, so assert that rather than silently passing an empty test.
+      expect(PRODUCTS.some((p) => p.category === "subscriptions")).toBe(false);
+      return;
+    }
+    const { container } = render(
+      <ReciprocityCard
+        order={baseOrder({
+          lines: [
+            {
+              kind: "catalog",
+              productId: subscription.id,
+              variantId: subscription.variants[0].id,
+              addOnIds: [],
+              qty: 1,
+            },
+          ],
+        })}
+        locale="en"
+      />,
+    );
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  // The referral half was removed deliberately: it handed out a DIVA-XXXX code
+  // that no endpoint could redeem. This guards against it coming back before a
+  // promo engine exists to honour it.
+  it("does not show a referral code the checkout cannot redeem", () => {
     render(<ReciprocityCard order={baseOrder()} locale="en" />);
-    await user.click(screen.getByRole("button", { name: /referral_copy_cta/ }));
-    expect(writeTextSpy).toHaveBeenCalledWith("DIVA-A4F2C9");
-    writeTextSpy.mockRestore();
+    expect(screen.queryByText(/DIVA-/)).not.toBeInTheDocument();
+    expect(screen.queryByText("referral_title")).not.toBeInTheDocument();
   });
 });

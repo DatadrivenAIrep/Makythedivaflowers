@@ -5,7 +5,7 @@ import { cn } from "@/lib/cn";
 import { CONV_EVENTS } from "@/lib/conversion/events";
 
 type Size = "sm" | "md";
-type Surface = "pdp" | "cart" | "checkout";
+type Surface = "pdp" | "cart" | "checkout" | "home";
 
 type Props = {
   size?: Size;
