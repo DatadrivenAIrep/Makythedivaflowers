@@ -41,7 +41,7 @@ const ORDER: Order = {
     window: { date: "2026-08-21", slot: "morning" },
   },
   contact: { name: "Bob Buyer", email: "bob@example.com", phone: "5165550100" },
-  totals: { subtotalCents: 8000, deliveryCents: 0, taxCents: 690, totalCents: 8690 },
+  totals: { subtotalCents: 8000, deliveryCents: 0, discountCents: 0, taxCents: 690, totalCents: 8690 },
   status: "pending",
   paymentStatus: "paid",
   paidAt: "2026-08-17T15:00:00Z",

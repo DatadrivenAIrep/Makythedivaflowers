@@ -24,7 +24,53 @@ describe("computeOrderTotals", () => {
 
   it("treats zero subtotal as zero everything", () => {
     const totals = computeOrderTotals(0, 1500);
-    expect(totals).toEqual({ subtotalCents: 0, deliveryCents: 0, taxCents: 0, totalCents: 0 });
+    expect(totals).toEqual({
+      subtotalCents: 0,
+      deliveryCents: 0,
+      discountCents: 0,
+      taxCents: 0,
+      totalCents: 0,
+    });
+  });
+
+  it("reports a zero discount when none is passed", () => {
+    expect(computeOrderTotals(20000, 1500).discountCents).toBe(0);
+  });
+});
+
+describe("computeOrderTotals with a discount", () => {
+  it("subtracts the discount from the taxable base, not just the total", () => {
+    // A merchant discount reduces the taxable receipt, so tax is charged on
+    // what the customer actually pays for goods plus delivery.
+    const totals = computeOrderTotals(20000, 1500, 2000);
+    expect(totals.discountCents).toBe(2000);
+    expect(totals.taxCents).toBe(Math.round((20000 + 1500 - 2000) * TAX_RATE));
+    expect(totals.totalCents).toBe(20000 + 1500 - 2000 + totals.taxCents);
+  });
+
+  it("keeps subtotal and delivery at their pre-discount values", () => {
+    const totals = computeOrderTotals(20000, 1500, 2000);
+    expect(totals.subtotalCents).toBe(20000);
+    expect(totals.deliveryCents).toBe(1500);
+  });
+
+  it("caps the discount at subtotal plus delivery so the total never goes negative", () => {
+    const totals = computeOrderTotals(10000, 1000, 999999);
+    expect(totals.discountCents).toBe(11000);
+    expect(totals.taxCents).toBe(0);
+    expect(totals.totalCents).toBe(0);
+  });
+
+  it("ignores a negative discount", () => {
+    const totals = computeOrderTotals(20000, 1500, -500);
+    expect(totals.discountCents).toBe(0);
+    expect(totals.totalCents).toBe(computeOrderTotals(20000, 1500).totalCents);
+  });
+
+  it("a discount equal to delivery prices the order as free delivery", () => {
+    const freeDelivery = computeOrderTotals(20000, 1500, 1500);
+    const noDelivery = computeOrderTotals(20000, 0, 0);
+    expect(freeDelivery.totalCents).toBe(noDelivery.totalCents);
   });
 });
 

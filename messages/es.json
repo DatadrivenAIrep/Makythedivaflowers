@@ -109,6 +109,23 @@
       "unknown_error": "Algo salió mal. Intenta de nuevo o llámanos directamente.",
       "zip_not_in_zone": "Aún no entregamos en ese código postal.",
       "payment_init_failed": "No pudimos iniciar el pago. Intenta de nuevo."
+    },
+    "promo": {
+      "label": "Código promocional",
+      "placeholder": "Ingresa un código",
+      "apply": "Aplicar",
+      "remove": "Quitar",
+      "error": {
+        "invalid": "Ese código no es válido. Revisa cómo lo escribiste.",
+        "inactive": "Ese código ya no está activo.",
+        "not_started": "Ese código todavía no está activo.",
+        "expired": "Ese código venció.",
+        "below_minimum": "Este código necesita un pedido de {amount} o más.",
+        "exhausted": "Ese código ya se agotó.",
+        "not_first_order": "Ese código es solo para la primera compra.",
+        "no_discount": "Ese código no cambia el precio de este pedido.",
+        "rate_limited": "Demasiados intentos. Espera un minuto."
+      }
     }
   },
   "confirmation": {
@@ -1463,6 +1480,7 @@
     "nav_run_sheet": "Entregas hoy",
     "nav_ledger": "Libro de órdenes",
     "nav_gift_cards": "Gift Cards",
+    "nav_promos": "Promos",
     "nav_customers": "Clientes",
     "nav_occasions": "Ocasiones",
     "nav_metrics": "Métricas",
@@ -1736,5 +1754,35 @@
     "tpl_ready_for_pickup": "Listo para recoger",
     "tpl_delivered": "Entregado",
     "tpl_review_request": "Pedir reseña"
+  },
+  "admin_promos": {
+    "title": "Códigos promocionales",
+    "subtitle": "Códigos de descuento que el cliente escribe al pagar. Desactiva uno para cortarlo al instante.",
+    "field_code": "Código",
+    "field_kind": "Tipo",
+    "field_percent": "Porcentaje",
+    "field_amount": "Monto ($)",
+    "field_min_subtotal": "Pedido mínimo ($)",
+    "field_max_redemptions": "Usos máximos",
+    "field_note": "Nota",
+    "field_first_order_only": "Solo primera compra",
+    "placeholder_optional": "Opcional",
+    "placeholder_unlimited": "Sin límite",
+    "placeholder_note": "Para qué es este código",
+    "create_cta": "Crear código",
+    "error_duplicate": "Ese código ya existe.",
+    "error_generic": "No se pudo crear el código. Revisa los valores.",
+    "col_code": "Código",
+    "col_value": "Valor",
+    "col_rules": "Reglas",
+    "col_used": "Usos",
+    "col_discounted": "Descontado",
+    "col_status": "Estado",
+    "rule_min": "mín",
+    "rule_max": "máx",
+    "rule_first_order": "primera compra",
+    "status_active": "Activo",
+    "status_inactive": "Apagado",
+    "empty": "Aún no hay códigos."
   }
 }

@@ -29,7 +29,7 @@ function makeOrder(id: string, status: Order["status"]): Order {
       window: { date: "2099-01-01", slot: "midday" },
     },
     contact: { email: "t@example.com", phone: "5555555555" },
-    totals: { subtotalCents: 1000, deliveryCents: 1000, taxCents: 173, totalCents: 2173 },
+    totals: { subtotalCents: 1000, deliveryCents: 1000, discountCents: 0, taxCents: 173, totalCents: 2173 },
     status,
     paymentStatus: "pending",
     createdAt: "2026-05-06T00:00:00.000Z",

@@ -6,7 +6,7 @@ const order: Order = {
   id: "do_1", source: "web", locale: "en",
   lines: [{ kind: "catalog", productId: "p-arr-m01", variantId: "standard", addOnIds: [], qty: 1 }],
   contact: { email: "buyer@example.com", phone: "5165551234" },
-  totals: { subtotalCents: 19100, deliveryCents: 0, taxCents: 1647, totalCents: 20747 },
+  totals: { subtotalCents: 19100, deliveryCents: 0, discountCents: 0, taxCents: 1647, totalCents: 20747 },
   status: "pending", paymentStatus: "paid",
   giftCardId: "gc_1", giftCardCents: 15000,
   createdAt: "2026-06-22T00:00:00Z", updatedAt: "2026-06-22T00:00:00Z",

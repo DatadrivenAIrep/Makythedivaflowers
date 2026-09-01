@@ -6,6 +6,7 @@ import { dispatchPaymentConfirmed } from "@/lib/order-dispatch";
 import { notifyOrderPaid } from "@/lib/order-notifications";
 import { onWebOrderPaid } from "@/lib/on-web-order-paid";
 import { redeem } from "@/lib/gift-card-storage";
+import { redeemPromo } from "@/lib/promo";
 import { enqueuePrintJob } from "@/lib/print-queue";
 import { sendPurchaseToGA4 } from "@/lib/analytics-server";
 import { resolveCartLines } from "@/lib/cart-helpers";
@@ -64,6 +65,16 @@ export async function POST(req: Request) {
             } catch (e) {
               // Order is paid; balance is single-shop courtesy. Log + alert instead of failing the webhook.
               console.error("[gift-card] redeem on payment success failed for order", order.id, e);
+            }
+          }
+          if (order.promoId && order.totals.discountCents > 0) {
+            try {
+              redeemPromo(order.promoId, order.id, order.totals.discountCents);
+            } catch (e) {
+              // The buyer already paid the discounted amount. If two checkouts
+              // raced for the last use of a limited code, log it and let the
+              // order stand rather than failing a webhook Stripe will retry.
+              console.error("[promo] redeem on payment success failed for order", order.id, e);
             }
           }
           await notifyOrderPaid(order);

@@ -23,7 +23,7 @@ const sampleOrder: Order = {
     window: { date: "2099-01-01", slot: "midday" },
   },
   contact: { email: "lola@example.com", phone: "5165550100" },
-  totals: { subtotalCents: 9400, deliveryCents: 1500, taxCents: 891, totalCents: 11791 },
+  totals: { subtotalCents: 9400, deliveryCents: 1500, discountCents: 0, taxCents: 891, totalCents: 11791 },
   status: "pending",
   paymentStatus: "pending",
   createdAt: "2026-05-17T10:00:00.000Z",

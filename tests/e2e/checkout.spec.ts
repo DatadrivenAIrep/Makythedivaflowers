@@ -2,8 +2,11 @@ import { test, expect } from "@playwright/test";
 
 test.describe("checkout", () => {
   test("end-to-end: PDP → drawer → checkout → confirmation", async ({ page }) => {
-    await page.goto("/en/shop/arrangements");
-    await page.locator("[data-testid='product-card']").first().click();
+    // Straight to a purchasable product. Clicking the first card in the grid
+    // used to work, but the newest arrangement is now a quote-only showpiece
+    // with no add-to-bag button, so the blind "first card" click stranded the
+    // whole flow.
+    await page.goto("/en/product/a-thousand-heartbeats");
     await page.getByRole("button", { name: /add to bag/i }).click();
     const drawer = page.getByRole("dialog", { name: /your bag/i });
     await expect(drawer).toBeVisible();

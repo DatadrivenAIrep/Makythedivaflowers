@@ -52,19 +52,21 @@ function upsertSqlite(order: Order): void {
        id, locale, source, customer_id, recipient_name, recipient_phone,
        contact_name, contact_email, contact_phone, fulfillment_method, address_json,
        window_date, window_slot, card_message, lines_json,
-       subtotal_cents, delivery_cents, tax_cents, total_cents, amount_paid_cents,
+       subtotal_cents, delivery_cents, discount_cents, tax_cents, total_cents, amount_paid_cents,
        fulfillment_status, payment_status, payment_method, paid_at,
        stripe_payment_intent_id, taken_by, internal_notes, sms_consent, sms_marketing_consent,
        stripe_checkout_session_id, gift_card_id, gift_card_cents,
+       promo_id, promo_code,
        order_number, created_at, updated_at
      ) VALUES (
        @id, @locale, @source, @customer_id, @recipient_name, @recipient_phone,
        @contact_name, @contact_email, @contact_phone, @fulfillment_method, @address_json,
        @window_date, @window_slot, @card_message, @lines_json,
-       @subtotal_cents, @delivery_cents, @tax_cents, @total_cents, @amount_paid_cents,
+       @subtotal_cents, @delivery_cents, @discount_cents, @tax_cents, @total_cents, @amount_paid_cents,
        @fulfillment_status, @payment_status, @payment_method, @paid_at,
        @stripe_payment_intent_id, @taken_by, @internal_notes, @sms_consent, @sms_marketing_consent,
        @stripe_checkout_session_id, @gift_card_id, @gift_card_cents,
+       @promo_id, @promo_code,
        @order_number, @created_at, @updated_at
      )
      ON CONFLICT(id) DO UPDATE SET
@@ -84,6 +86,7 @@ function upsertSqlite(order: Order): void {
        lines_json=excluded.lines_json,
        subtotal_cents=excluded.subtotal_cents,
        delivery_cents=excluded.delivery_cents,
+       discount_cents=excluded.discount_cents,
        tax_cents=excluded.tax_cents,
        total_cents=excluded.total_cents,
        amount_paid_cents=excluded.amount_paid_cents,
@@ -99,6 +102,8 @@ function upsertSqlite(order: Order): void {
        stripe_checkout_session_id=excluded.stripe_checkout_session_id,
        gift_card_id=excluded.gift_card_id,
        gift_card_cents=excluded.gift_card_cents,
+       promo_id=excluded.promo_id,
+       promo_code=excluded.promo_code,
        order_number=COALESCE(excluded.order_number, order_number),
        updated_at=excluded.updated_at`,
   ).run(row);

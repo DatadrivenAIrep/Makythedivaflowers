@@ -20,7 +20,7 @@ function mkOrder(id: string): Order {
     locale: "en",
     lines: [{ kind: "catalog", productId: "p", variantId: "v", addOnIds: [], qty: 1 }],
     contact: { name: "Buyer Name", phone: "5165551234" },
-    totals: { subtotalCents: 1000, deliveryCents: 0, taxCents: 0, totalCents: 1000 },
+    totals: { subtotalCents: 1000, deliveryCents: 0, discountCents: 0, taxCents: 0, totalCents: 1000 },
     status: "pending",
     paymentStatus: "pending",
     createdAt: "2026-06-16T00:00:00Z",

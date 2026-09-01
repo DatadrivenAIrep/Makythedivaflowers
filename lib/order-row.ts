@@ -34,6 +34,9 @@ export type OrderRow = {
   stripe_checkout_session_id: string | null;
   gift_card_id: string | null;
   gift_card_cents: number | null;
+  promo_id: string | null;
+  promo_code: string | null;
+  discount_cents: number | null;
   order_number: number | null;
   created_at: string;
   updated_at: string;
@@ -59,6 +62,7 @@ export function orderToRow(o: Order): OrderRow {
     lines_json: JSON.stringify(o.lines),
     subtotal_cents: o.totals.subtotalCents,
     delivery_cents: o.totals.deliveryCents,
+    discount_cents: o.totals.discountCents,
     tax_cents: o.totals.taxCents,
     total_cents: o.totals.totalCents,
     amount_paid_cents: o.amountPaidCents ?? 0,
@@ -74,6 +78,8 @@ export function orderToRow(o: Order): OrderRow {
     stripe_checkout_session_id: o.stripeCheckoutSessionId ?? null,
     gift_card_id: o.giftCardId ?? null,
     gift_card_cents: o.giftCardCents ?? null,
+    promo_id: o.promoId ?? null,
+    promo_code: o.promoCode ?? null,
     order_number: o.orderNumber ?? null,
     created_at: o.createdAt,
     updated_at: o.updatedAt,
@@ -119,6 +125,8 @@ export function rowToOrder(r: OrderRow): Order {
     totals: {
       subtotalCents: r.subtotal_cents,
       deliveryCents: r.delivery_cents,
+      // Orders written before promo codes existed have no column value.
+      discountCents: r.discount_cents ?? 0,
       taxCents: r.tax_cents,
       totalCents: r.total_cents,
     },
@@ -135,6 +143,8 @@ export function rowToOrder(r: OrderRow): Order {
     stripeCheckoutSessionId: r.stripe_checkout_session_id ?? undefined,
     ...(r.gift_card_id != null ? { giftCardId: r.gift_card_id } : {}),
     ...(r.gift_card_cents != null ? { giftCardCents: r.gift_card_cents } : {}),
+    ...(r.promo_id != null ? { promoId: r.promo_id } : {}),
+    ...(r.promo_code != null ? { promoCode: r.promo_code } : {}),
     createdAt: r.created_at,
     updatedAt: r.updated_at,
   };

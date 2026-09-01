@@ -23,7 +23,7 @@ const baseOrder = (overrides: Partial<Order> = {}): Order => ({
     window: { date: "2026-05-03", slot: "midday" },
     cardMessage: "",
   },
-  totals: { subtotalCents: 25500, deliveryCents: 0, taxCents: 0, totalCents: 25500 },
+  totals: { subtotalCents: 25500, deliveryCents: 0, discountCents: 0, taxCents: 0, totalCents: 25500 },
   status: "pending",
   paymentStatus: "paid",
   createdAt: "2026-05-02T12:00:00Z",

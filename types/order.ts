@@ -12,6 +12,12 @@ export type Recipient = { name: string; phone: string };
 export type OrderTotals = {
   subtotalCents: number;
   deliveryCents: number;
+  /**
+   * Promotional discount applied to this order, in cents. Subtotal and delivery
+   * stay at their pre-discount values so the receipt can show what was taken
+   * off; the discount reduces the taxable base and the total.
+   */
+  discountCents: number;
   taxCents: number;
   totalCents: number;
 };
@@ -100,6 +106,9 @@ export type Order = {
   stripeCheckoutSessionId?: string;
   giftCardId?: string;
   giftCardCents?: number; // amount the gift card covered on this order
+  /** Promo code applied at checkout. The discount itself lives in totals.discountCents. */
+  promoId?: string;
+  promoCode?: string;
   takenBy?: string;
   internalNotes?: string;
   /** Buyer opted in to transactional SMS (order + delivery updates) at checkout. */

@@ -15,6 +15,8 @@ type Props = {
   items: ReadonlyArray<OrderLine>;
   subtotal: number; // cents
   delivery: number; // cents
+  /** Promo discount in cents; the row is hidden when zero. */
+  discount?: number;
   total: number;    // cents
   /** When true, delivery and total render as "—" because the customer hasn't entered a valid ZIP yet. */
   deliveryPending?: boolean;
@@ -23,7 +25,7 @@ type Props = {
   eyebrow?: string;
 };
 
-export function OrderSummaryPanel({ items, subtotal, delivery, total, deliveryPending = false, isPickup = false, locale, eyebrow = "Your order" }: Props) {
+export function OrderSummaryPanel({ items, subtotal, delivery, discount = 0, total, deliveryPending = false, isPickup = false, locale, eyebrow = "Your order" }: Props) {
   return (
     <div className="relative h-full min-h-[280px] md:min-h-[640px] overflow-hidden bg-gradient-to-br from-ink to-[#2a1a16] text-bone">
       <div
@@ -75,6 +77,16 @@ export function OrderSummaryPanel({ items, subtotal, delivery, total, deliveryPe
               {isPickup ? "Free" : (deliveryPending ? "—" : formatMoneyCents(delivery, locale))}
             </dd>
           </div>
+          {discount > 0 && (
+            <div className="flex items-center justify-between">
+              <dt className="font-mono text-[11px] uppercase tracking-[0.22em] text-rouge">
+                {locale === "es" ? "Descuento" : "Discount"}
+              </dt>
+              <dd className="font-mono text-sm text-rouge">
+                −{formatMoneyCents(discount, locale)}
+              </dd>
+            </div>
+          )}
           <div className="flex items-baseline justify-between pt-3 border-t border-bone/10">
             <dt className="font-mono text-[11px] uppercase tracking-[0.22em] text-bone/70">Total</dt>
             <dd className="font-display text-2xl tracking-tighter">

@@ -54,4 +54,24 @@ describe("resolveOrderTotals", () => {
     expect(t.taxCents).toBe(Math.round((t.subtotalCents + 2000) * 0.08625));
     expect(t.totalCents).toBe(t.subtotalCents + 2000 + t.taxCents);
   });
+
+  it("reports no discount when none is given", () => {
+    const t = resolveOrderTotals({
+      lines: [customLine(5000, 1)],
+      fulfillmentMethod: "in-store",
+    });
+    expect(t.discountCents).toBe(0);
+  });
+
+  it("cascades: an overridden discount recomputes tax + total", () => {
+    const t = resolveOrderTotals({
+      lines: [customLine(10000, 1)],
+      fulfillmentMethod: "in-store",
+      override: { discountCents: 2500 },
+    });
+    expect(t.subtotalCents).toBe(10000);
+    expect(t.discountCents).toBe(2500);
+    expect(t.taxCents).toBe(Math.round((10000 - 2500) * 0.08625));
+    expect(t.totalCents).toBe(10000 - 2500 + t.taxCents);
+  });
 });

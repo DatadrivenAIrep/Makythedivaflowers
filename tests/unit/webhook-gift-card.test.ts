@@ -34,7 +34,7 @@ async function seedPartialOrder(cardId: string) {
     lines: [{ kind: "catalog", productId: "p-arr-m01", variantId: "standard", addOnIds: [], qty: 1 }],
     fulfillment: { method: "pickup", recipient: { name: "M", phone: "5165550100" }, window: { date: "2026-07-01", slot: "midday" } },
     contact: { phone: "5165550100", email: "a@b.com" },
-    totals: { subtotalCents: 20000, deliveryCents: 0, taxCents: 1725, totalCents: 21725 },
+    totals: { subtotalCents: 20000, deliveryCents: 0, discountCents: 0, taxCents: 1725, totalCents: 21725 },
     status: "pending", paymentStatus: "pending",
     giftCardId: cardId, giftCardCents: 500,
     createdAt: "2026-06-22T00:00:00Z", updatedAt: "2026-06-22T00:00:00Z",

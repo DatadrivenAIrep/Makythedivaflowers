@@ -45,7 +45,7 @@ export function makeOrder(o: MakeOrderOpts = {}): Order {
     lines,
     fulfillment: fulfillment as Order["fulfillment"],
     contact: { phone: "5165551212" },
-    totals: { subtotalCents: 8000, deliveryCents: 1500, taxCents: 0, totalCents: 9500 },
+    totals: { subtotalCents: 8000, deliveryCents: 1500, discountCents: 0, taxCents: 0, totalCents: 9500 },
     status: o.status ?? "pending",
     paymentStatus: o.paymentStatus ?? "paid",
     amountPaidCents: 9500,

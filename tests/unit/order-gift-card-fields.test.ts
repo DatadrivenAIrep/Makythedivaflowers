@@ -25,7 +25,7 @@ const baseOrder: Order = {
     window: { date: "2026-07-01", slot: "midday" },
   },
   contact: { phone: "5165550100", email: "a@b.com" },
-  totals: { subtotalCents: 19000, deliveryCents: 0, taxCents: 1639, totalCents: 20639 },
+  totals: { subtotalCents: 19000, deliveryCents: 0, discountCents: 0, taxCents: 1639, totalCents: 20639 },
   status: "pending",
   paymentStatus: "paid",
   paymentMethod: "gift-card",
