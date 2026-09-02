@@ -93,6 +93,24 @@ function MegaMenuImpl({ locale, label }: Props) {
                 ))}
               </ul>
             </div>
+
+            {/* Gift cards sit with the shop, not in the footer: it is something
+                the studio sells, and someone who cannot choose for a recipient
+                is exactly the person looking at this menu. */}
+            <div className="flex flex-wrap items-center gap-x-7 gap-y-3 border-t border-ink/10 pt-6">
+              <Link
+                role="menuitem"
+                href={`/${locale}/gift-cards`}
+                className="font-sans text-sm tracking-tight text-rouge underline-offset-4 transition-colors hover:underline"
+              >
+                {locale === "es" ? "Tarjetas de regalo" : "Gift cards"}
+              </Link>
+              <span className="font-sans text-sm tracking-tight text-ink/55">
+                {locale === "es"
+                  ? "¿No sabes qué mandar? Que elijan ellos."
+                  : "Not sure what to send? Let them choose."}
+              </span>
+            </div>
             </div>
           </motion.div>
         )}

@@ -136,6 +136,16 @@ export function MobileDrawer({
                 </div>
               </div>
 
+              {/* Gift cards: sold by the studio, so it belongs with the shop
+                  rather than buried with the legal links. */}
+              <Link
+                href={`/${locale}/gift-cards`}
+                onClick={onClose}
+                className="font-display text-xl text-rouge block py-3 border-b border-ink/[0.08]"
+              >
+                {t("gift_cards")} →
+              </Link>
+
               {/* Main links */}
               {NAV_LINKS(locale).map((l) => (
                 <Link
