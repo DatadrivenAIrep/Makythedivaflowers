@@ -478,43 +478,35 @@
     "title": "Your account.",
     "tabs": {
       "sign-in": "Sign in",
-      "sign-up": "Sign up",
       "orders": "Orders"
-    },
-    "sign-in": {
-      "shell": {
-        "eyebrow": "Welcome back",
-        "title": "Sign in to your account.",
-        "body": "Manage subscriptions, view orders, and update your delivery preferences.",
-        "signature": "— Diva, NYC"
-      },
-      "email": "Email",
-      "password": "Password",
-      "submit": "Sign in",
-      "stub_title": "You're signed in.",
-      "stub_body": "Authentication is coming soon. We'll notify you when your account is ready.",
-      "stub_notice": "Stub — full auth not yet implemented"
-    },
-    "sign-up": {
-      "shell": {
-        "eyebrow": "Create account",
-        "title": "Begin a relationship with Diva.",
-        "body": "We'll save your preferences for future arrangements and send order updates.",
-        "signature": "— Diva, NYC"
-      },
-      "name": "Full name",
-      "email": "Email",
-      "password": "Password",
-      "submit": "Create account",
-      "stub_title": "Account created.",
-      "stub_body": "Thank you for signing up. We'll send you an email when your account is fully ready.",
-      "stub_notice": "Stub — full auth not yet implemented"
     },
     "orders": {
       "empty_title": "No orders yet.",
       "empty_body": "When you place an order, it will appear here. Start by browsing our arrangements.",
       "empty_cta": "Shop now",
       "stub_notice": "Stub — order history coming soon"
+    },
+    "sign_in_sms": {
+      "intro": "Enter the phone number you order with and we will text you a code. No password.",
+      "phone_label": "Phone number",
+      "submit_phone": "Send me a code",
+      "code_sent": "If {phone} is on file, a six-digit code is on its way.",
+      "code_label": "Six-digit code",
+      "submit_code": "Sign in",
+      "change_number": "Use a different number",
+      "error_phone": "That does not look like a phone number.",
+      "error_code": "That code is not right. Check it and try again.",
+      "error_expired": "That code expired. Ask for a new one.",
+      "error_too_many": "Too many tries. Wait a few minutes and start again.",
+      "error_rate_limited": "Too many requests. Wait a few minutes.",
+      "error_generic": "Something went wrong. Try again."
+    },
+    "history": {
+      "title": "Your orders",
+      "sign_out": "Sign out",
+      "order_again": "Send this again",
+      "delivered_to": "Delivered to",
+      "picked_up": "Picked up at the shop"
     }
   },
   "journal": {

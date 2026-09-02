@@ -478,43 +478,35 @@
     "title": "Tu cuenta.",
     "tabs": {
       "sign-in": "Iniciar sesión",
-      "sign-up": "Registrarse",
       "orders": "Pedidos"
-    },
-    "sign-in": {
-      "shell": {
-        "eyebrow": "Bienvenido de vuelta",
-        "title": "Inicia sesión en tu cuenta.",
-        "body": "Gestiona suscripciones, consulta órdenes y actualiza tus preferencias de entrega.",
-        "signature": "— Diva, NYC"
-      },
-      "email": "Correo electrónico",
-      "password": "Contraseña",
-      "submit": "Iniciar sesión",
-      "stub_title": "Sesión iniciada.",
-      "stub_body": "La autenticación estará disponible próximamente. Te notificaremos cuando tu cuenta esté lista.",
-      "stub_notice": "Provisional — autenticación completa no implementada aún"
-    },
-    "sign-up": {
-      "shell": {
-        "eyebrow": "Crear cuenta",
-        "title": "Comienza una relación con Diva.",
-        "body": "Guardaremos tus preferencias para futuros arreglos y te enviaremos actualizaciones de tus pedidos.",
-        "signature": "— Diva, NYC"
-      },
-      "name": "Nombre completo",
-      "email": "Correo electrónico",
-      "password": "Contraseña",
-      "submit": "Crear cuenta",
-      "stub_title": "Cuenta creada.",
-      "stub_body": "Gracias por registrarte. Te enviaremos un correo cuando tu cuenta esté completamente lista.",
-      "stub_notice": "Provisional — autenticación completa no implementada aún"
     },
     "orders": {
       "empty_title": "Sin pedidos aún.",
       "empty_body": "Cuando hagas un pedido, aparecerá aquí. Empieza explorando nuestros arreglos.",
       "empty_cta": "Comprar ahora",
       "stub_notice": "Provisional — historial de pedidos próximamente"
+    },
+    "sign_in_sms": {
+      "intro": "Escribe el teléfono con el que pides y te mandamos un código por texto. Sin contraseña.",
+      "phone_label": "Teléfono",
+      "submit_phone": "Mándame un código",
+      "code_sent": "Si {phone} está en nuestros registros, va en camino un código de seis dígitos.",
+      "code_label": "Código de seis dígitos",
+      "submit_code": "Entrar",
+      "change_number": "Usar otro número",
+      "error_phone": "Eso no parece un teléfono.",
+      "error_code": "Ese código no es correcto. Revísalo e intenta de nuevo.",
+      "error_expired": "Ese código venció. Pide uno nuevo.",
+      "error_too_many": "Demasiados intentos. Espera unos minutos y empieza de nuevo.",
+      "error_rate_limited": "Demasiadas solicitudes. Espera unos minutos.",
+      "error_generic": "Algo salió mal. Intenta de nuevo."
+    },
+    "history": {
+      "title": "Tus pedidos",
+      "sign_out": "Cerrar sesión",
+      "order_again": "Mandar esto otra vez",
+      "delivered_to": "Entregado en",
+      "picked_up": "Recogido en la tienda"
     }
   },
   "journal": {
