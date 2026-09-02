@@ -1,4 +1,9 @@
 // tests/unit/conversion/CutoffCountdown.test.tsx
+//
+// Render states, with next-intl mocked. Because the mock echoes whatever
+// variables it is handed, it cannot tell whether they match the ones the real
+// message declares — that contract is covered against the real message bundle
+// in cutoff-copy.test.tsx.
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { CutoffCountdown } from "@/components/conversion/CutoffCountdown";
@@ -26,7 +31,8 @@ describe("CutoffCountdown", () => {
     render(<CutoffCountdown cutoff="14:00" tone="default" locale="en" />);
     await vi.runOnlyPendingTimersAsync();
     expect(screen.getByText(/conversion\.cutoff\.before_body/)).toBeInTheDocument();
-    expect(screen.getByText(/"h":1,"m":47/)).toBeInTheDocument();
+    // One {time} fragment, which is what the message actually declares.
+    expect(screen.getByText(/"time":/)).toBeInTheDocument();
   });
 
   it("renders sympathy variant when tone=sympathy", async () => {

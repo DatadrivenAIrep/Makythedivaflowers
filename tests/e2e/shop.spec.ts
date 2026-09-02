@@ -5,8 +5,10 @@ test.describe("shop", () => {
   test("hub renders in EN with mosaic + newest grid", async ({ page }) => {
     await page.goto("/en/shop");
     await expect(page.getByRole("heading", { name: /Every arrangement/i, level: 1 })).toBeVisible();
-    await expect(page.getByRole("link", { name: /Arrangements/i }).first()).toBeVisible();
+    // The hub is a hero plus two grids now; the category mosaic it used to
+    // carry moved into the shop menu.
     await expect(page.getByRole("heading", { name: /Newest arrivals/i })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /All products/i })).toBeVisible();
   });
 
   test("hub renders in ES", async ({ page }) => {
@@ -19,9 +21,11 @@ test.describe("shop", () => {
     await page.goto("/en/shop/arrangements");
     await expect(page.getByRole("heading", { name: /Arrangements/i, level: 1 })).toBeVisible();
     await expect(page.getByRole("button", { name: /Romance/i })).toBeVisible();
-    // four arrangements seeded
+    // A floor, not an exact count: the catalog grows, and a test that has to be
+    // edited every time a product is added stops being read.
     const cards = page.getByRole("link").filter({ hasText: /From\s*\$/i });
-    await expect(cards).toHaveCount(4);
+    await expect(cards.first()).toBeVisible();
+    expect(await cards.count()).toBeGreaterThan(5);
   });
 
   test("filter chip writes the URL and narrows the grid", async ({ page }) => {
@@ -50,7 +54,15 @@ test.describe("shop", () => {
 
   test("clear filters resets the URL", async ({ page }) => {
     await page.goto("/en/shop/arrangements?occasion=romance&sort=price-asc");
-    await page.getByRole("button", { name: /^Clear$/ }).click();
+    // Wait for the bar to be interactive before clicking: clicking mid-hydration
+    // lands on nothing and the URL never changes.
+    const clear = page.getByRole("button", { name: /^Clear$/ });
+    await expect(clear).toBeVisible();
+    await clear.click();
     await expect(page).toHaveURL(/\/en\/shop\/arrangements$/);
+    await expect(page.getByRole("button", { name: /^Romance$/ })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
   });
 });

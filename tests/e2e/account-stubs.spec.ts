@@ -39,5 +39,6 @@ test("a wrong code is refused", async ({ page }) => {
   await page.getByRole("button", { name: /send me a code/i }).click();
   await page.getByLabel(/six-digit code/i).fill("000000");
   await page.getByRole("button", { name: /^sign in$/i }).click();
-  await expect(page.getByRole("alert")).toBeVisible();
+  // Filtered past Next's route announcer, which also carries role="alert".
+  await expect(page.getByRole("alert").filter({ hasText: /code/i })).toBeVisible();
 });

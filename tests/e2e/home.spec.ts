@@ -4,7 +4,13 @@ test("home renders in English with hero, marquee, bento, studio visit", async ({
   await page.goto("/en");
   await expect(page.getByRole("heading", { level: 1, name: /Romance, by the stem/ })).toBeVisible();
   await expect(page.getByRole("link", { name: /Shop arrangements/ })).toBeVisible();
-  await expect(page.getByText("A Thousand Heartbeats")).toBeVisible();
+  // The home no longer features one named arrangement — it leads with the
+  // occasion strip, which is how people actually arrive ("it's her birthday").
+  await expect(page.getByText(/Shop by occasion/i)).toBeVisible();
+  await expect(page.getByRole("link", { name: /^Birthday$/i })).toHaveAttribute(
+    "href",
+    "/en/ocasiones/birthday",
+  );
   await expect(page.getByRole("heading", { name: /Find your bloom/ })).toBeVisible();
   await expect(page.getByRole("heading", { name: /Walk in, ring the bell/ })).toBeVisible();
   await expect(page.getByRole("link", { name: /Get directions/ })).toBeVisible();
