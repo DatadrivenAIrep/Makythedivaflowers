@@ -194,7 +194,7 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 20300, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["same-day"],
-    occasions: ["birthday", "congrats", "just-because"],
+    occasions: ["birthday", "congrats", "just-because", "thank-you", "graduation"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -305,7 +305,7 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 10100, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["same-day"],
-    occasions: ["just-because", "birthday"],
+    occasions: ["just-because", "birthday", "thank-you", "thinking-of-you", "get-well"],
     colorFamily: ["mixed", "pastel"],
     active: true,
     seo: {
@@ -380,7 +380,7 @@ export const PRODUCTS: Product[] = [
       { id: "candles", label: { en: "Add taper candle pair", es: "Añadir par de velas" }, priceCents: 2500 },
     ],
     tags: ["new", "same-day", "staff-pick", "seasonal"],
-    occasions: ["just-because", "congrats"],
+    occasions: ["just-because", "congrats", "thank-you"],
     colorFamily: ["mixed"],
     active: true,
     seasonMonths: [9, 10, 11],
@@ -483,7 +483,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["congrats", "just-because", "birthday"],
+    occasions: ["congrats", "just-because", "birthday", "new-baby"],
     colorFamily: ["pastel", "white"],
     active: true,
     seo: {
@@ -516,7 +516,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["mothers-day", "anniversary", "romance", "just-because", "sympathy"],
+    occasions: ["mothers-day", "anniversary", "romance", "just-because", "sympathy", "thinking-of-you"],
     colorFamily: ["white"],
     active: true,
     seo: {
@@ -549,7 +549,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day", "seasonal"],
-    occasions: ["just-because", "congrats"],
+    occasions: ["just-because", "congrats", "thank-you"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -684,7 +684,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["congrats", "birthday"],
+    occasions: ["congrats", "birthday", "graduation"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -717,7 +717,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 13500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday", "get-well"],
+    occasions: ["just-because", "birthday", "get-well", "new-baby", "thank-you"],
     colorFamily: ["mixed", "green"],
     active: true,
     seo: {
@@ -750,7 +750,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 14500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because", "mothers-day"],
+    occasions: ["birthday", "just-because", "mothers-day", "new-baby", "thinking-of-you", "get-well"],
     colorFamily: ["pastel"],
     active: true,
     seo: {
@@ -820,7 +820,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["congrats", "just-because"],
+    occasions: ["congrats", "just-because", "graduation"],
     colorFamily: ["white", "mixed"],
     active: true,
     seo: {
@@ -889,7 +889,7 @@ export const PRODUCTS: Product[] = [
       { id: "champagne", label: { en: "Add Veuve Clicquot", es: "Añadir Veuve Clicquot" }, priceCents: 8900 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["romance", "anniversary", "congrats", "just-because"],
+    occasions: ["romance", "anniversary", "congrats", "just-because", "new-baby"],
     colorFamily: ["white"],
     active: true,
     seo: {
@@ -922,7 +922,7 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 16900, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["just-because", "birthday", "congrats"],
+    occasions: ["just-because", "birthday", "congrats", "thank-you"],
     colorFamily: ["pink", "mixed"],
     active: true,
     seo: {
@@ -988,7 +988,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 13500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday", "mothers-day"],
+    occasions: ["just-because", "birthday", "mothers-day", "new-baby", "get-well"],
     colorFamily: ["pastel"],
     active: true,
     seo: {
@@ -1054,7 +1054,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["congrats", "just-because"],
+    occasions: ["congrats", "just-because", "thank-you"],
     colorFamily: ["white", "green"],
     active: true,
     seo: {
@@ -1291,7 +1291,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because", "congrats"],
+    occasions: ["birthday", "just-because", "congrats", "graduation"],
     colorFamily: ["mixed", "pink"],
     active: true,
     seo: {
@@ -1391,7 +1391,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday"],
+    occasions: ["just-because", "birthday", "new-baby"],
     colorFamily: ["pastel", "pink"],
     active: true,
     seo: {
@@ -1424,7 +1424,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15000 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["romance", "just-because", "anniversary"],
+    occasions: ["romance", "just-because", "anniversary", "thinking-of-you"],
     colorFamily: ["white", "green"],
     active: true,
     seo: {
@@ -1457,7 +1457,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["congrats", "just-because"],
+    occasions: ["congrats", "just-because", "thinking-of-you", "get-well"],
     colorFamily: ["green"],
     active: true,
     seo: {
@@ -1490,7 +1490,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["birthday", "just-because", "congrats"],
+    occasions: ["birthday", "just-because", "congrats", "graduation"],
     colorFamily: ["pink", "mixed"],
     active: true,
     seo: {
@@ -1556,7 +1556,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "congrats"],
+    occasions: ["just-because", "congrats", "thank-you"],
     colorFamily: ["white", "green"],
     active: true,
     seo: {
@@ -1622,7 +1622,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "congrats", "just-because"],
+    occasions: ["birthday", "congrats", "just-because", "graduation"],
     colorFamily: ["mixed", "pink"],
     active: true,
     seo: {
@@ -1688,7 +1688,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 14500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because"],
+    occasions: ["birthday", "just-because", "graduation"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -1724,7 +1724,7 @@ export const PRODUCTS: Product[] = [
       { id: "card", label: { en: "Handwritten card", es: "Tarjeta escrita a mano" }, priceCents: 500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "congrats", "birthday", "get-well"],
+    occasions: ["just-because", "congrats", "birthday", "get-well", "thank-you"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -1757,7 +1757,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday"],
+    occasions: ["just-because", "birthday", "thank-you"],
     colorFamily: ["mixed", "pastel"],
     active: true,
     seo: {
@@ -1827,7 +1827,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16000 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday"],
+    occasions: ["just-because", "birthday", "new-baby", "thinking-of-you", "get-well"],
     colorFamily: ["green", "pastel"],
     active: true,
     seo: {
@@ -1926,7 +1926,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday", "get-well", "sympathy"],
+    occasions: ["just-because", "birthday", "get-well", "sympathy", "new-baby", "thinking-of-you"],
     colorFamily: ["pastel", "white"],
     active: true,
     seo: {
@@ -2025,7 +2025,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["birthday", "just-because", "congrats"],
+    occasions: ["birthday", "just-because", "congrats", "graduation"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -2161,7 +2161,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
     tags: ["new", "seasonal", "same-day"],
-    occasions: ["just-because", "birthday"],
+    occasions: ["just-because", "birthday", "thank-you", "thinking-of-you"],
     colorFamily: ["white", "green"],
     active: true,
     seo: {
@@ -2194,7 +2194,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 16500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["sympathy", "congrats", "just-because", "birthday"],
+    occasions: ["sympathy", "congrats", "just-because", "birthday", "thinking-of-you"],
     colorFamily: ["green"],
     active: true,
     seo: {
@@ -2261,7 +2261,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "staff-pick"],
-    occasions: ["birthday", "congrats", "just-because"],
+    occasions: ["birthday", "congrats", "just-because", "graduation"],
     colorFamily: ["pink", "green", "mixed"],
     active: true,
     seo: {
@@ -2370,7 +2370,7 @@ export const PRODUCTS: Product[] = [
       },
     ],
     tags: ["same-day", "new", "staff-pick"],
-    occasions: ["just-because", "congrats", "birthday", "get-well"],
+    occasions: ["just-because", "congrats", "birthday", "get-well", "new-baby", "thinking-of-you"],
     colorFamily: ["white", "pink"],
     active: true,
     seo: {
@@ -2407,7 +2407,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["congrats", "just-because"],
+    occasions: ["congrats", "just-because", "graduation"],
     colorFamily: ["mixed", "green"],
     active: true,
     seo: {
@@ -2440,7 +2440,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday", "mothers-day"],
+    occasions: ["just-because", "birthday", "mothers-day", "new-baby", "thinking-of-you", "get-well"],
     colorFamily: ["pastel", "pink"],
     active: true,
     seo: {
@@ -2473,7 +2473,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 14500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because"],
+    occasions: ["birthday", "just-because", "thank-you", "get-well"],
     colorFamily: ["pastel", "mixed"],
     active: true,
     seo: {
@@ -2608,7 +2608,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because", "congrats"],
+    occasions: ["birthday", "just-because", "congrats", "graduation"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -2674,7 +2674,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15000 },
     ],
     tags: ["new", "seasonal", "same-day"],
-    occasions: ["just-because", "birthday"],
+    occasions: ["just-because", "birthday", "new-baby"],
     colorFamily: ["pastel", "mixed"],
     active: true,
     seo: {
@@ -2707,7 +2707,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 18500 },
     ],
     tags: ["new", "staff-pick"],
-    occasions: ["congrats", "just-because"],
+    occasions: ["congrats", "just-because", "graduation"],
     colorFamily: ["white", "green"],
     active: true,
     seo: {
@@ -2842,7 +2842,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 14000 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday", "get-well"],
+    occasions: ["just-because", "birthday", "get-well", "thank-you"],
     colorFamily: ["mixed", "white"],
     active: true,
     seo: {
@@ -3219,7 +3219,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["congrats", "birthday", "just-because"],
+    occasions: ["congrats", "birthday", "just-because", "graduation"],
     colorFamily: ["pink", "mixed"],
     active: true,
     seo: {
@@ -3285,7 +3285,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15000 },
     ],
     tags: ["new", "seasonal", "same-day"],
-    occasions: ["just-because", "birthday"],
+    occasions: ["just-because", "birthday", "new-baby", "thinking-of-you", "get-well"],
     colorFamily: ["pastel", "white"],
     active: true,
     seo: {
@@ -3318,7 +3318,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 13500 },
     ],
     tags: ["new", "same-day", "seasonal"],
-    occasions: ["just-because", "birthday", "mothers-day"],
+    occasions: ["just-because", "birthday", "mothers-day", "thank-you"],
     colorFamily: ["mixed", "pastel"],
     active: true,
     seo: {

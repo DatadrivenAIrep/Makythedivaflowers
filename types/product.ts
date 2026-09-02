@@ -38,7 +38,11 @@ export type Occasion =
   | "congrats"
   | "just-because"
   | "mothers-day"
-  | "get-well";
+  | "get-well"
+  | "graduation"
+  | "new-baby"
+  | "thank-you"
+  | "thinking-of-you";
 export type ColorFamily =
   | "pink"
   | "red"
