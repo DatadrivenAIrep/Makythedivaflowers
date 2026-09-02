@@ -26,6 +26,7 @@ const KNOWN_REASONS = new Set([
   "below_minimum",
   "exhausted",
   "not_first_order",
+  "not_yours",
   "no_discount",
   "rate_limited",
 ]);

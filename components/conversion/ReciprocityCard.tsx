@@ -9,22 +9,19 @@ import type { Locale } from "@/types/locale";
 type Props = {
   order: Order;
   locale: Locale;
+  /** The buyer's own code to share. Absent until the order is linked to a customer. */
+  referralCode?: string;
 };
 
 /**
  * Post-purchase nudge on the confirmation page.
  *
- * The referral block that used to lead this card was removed on purpose: it
- * handed the buyer a DIVA-XXXX code that no endpoint could redeem, so the offer
- * read as real and then failed at checkout. `lib/conversion/referral-code.ts`
- * and the `referral_*` copy keys are kept for the promo-engine work that will
- * make it redeemable — restore the block only once a code entered at checkout
- * actually discounts the order.
- *
- * What remains is the subscription nudge, and it is skipped for buyers who just
- * subscribed.
+ * The referral block is shown only when there is a real code behind it. It used
+ * to print a DIVA-XXXX code no endpoint could redeem, which read as an offer and
+ * then failed at checkout; now the code comes from the promo engine, gives the
+ * friend $15 and credits the referrer $15 once that order is paid.
  */
-export function ReciprocityCard({ order, locale }: Props) {
+export function ReciprocityCard({ order, locale, referralCode }: Props) {
   const t = useTranslations("conversion.reciprocity");
 
   const hasSubscription = order.lines.some((l) => {
@@ -33,10 +30,27 @@ export function ReciprocityCard({ order, locale }: Props) {
     return p?.category === "subscriptions";
   });
 
-  if (hasSubscription) return null;
+  if (hasSubscription && !referralCode) return null;
 
   return (
-    <section className="space-y-3 rounded-2xl border border-ink/10 bg-bone/40 p-6">
+    <section className="space-y-6 rounded-2xl border border-ink/10 bg-bone/40 p-6">
+      {referralCode && (
+        <div className="space-y-3">
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-mute-500">
+            {t("referral_eyebrow")}
+          </p>
+          <h2 className="font-display text-xl text-ink leading-tight">{t("referral_title")}</h2>
+          <p className="text-sm text-ink/75 max-w-[58ch]">{t("referral_body")}</p>
+          <code
+            aria-label={`${t("referral_eyebrow")} ${referralCode}`}
+            className="inline-block rounded-lg border border-ink/15 bg-bone px-3 py-2 font-mono text-sm tracking-widest text-ink"
+          >
+            {referralCode}
+          </code>
+        </div>
+      )}
+      {!hasSubscription && (
+        <div className={referralCode ? "space-y-3 border-t border-ink/10 pt-6" : "space-y-3"}>
       <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-mute-500">
         {t("subscription_eyebrow")}
       </p>
@@ -49,6 +63,8 @@ export function ReciprocityCard({ order, locale }: Props) {
       >
         {t("subscription_cta")} →
       </Link>
+        </div>
+      )}
     </section>
   );
 }

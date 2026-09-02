@@ -8,11 +8,17 @@ import { ProductImage } from "@/components/product/ProductImage";
 import { formatMoneyCents, formatPhoneUS, formatDeliveryWindow } from "@/lib/format";
 import { Button } from "@/components/ui/Button";
 import { ReciprocityCard } from "@/components/conversion/ReciprocityCard";
+import { grantReferralCode } from "@/lib/promo-grants";
 import type { Order } from "@/types/order";
 import type { Locale } from "@/types/locale";
 
 export async function ConfirmationView({ order, locale }: { order: Order; locale: Locale }) {
   const t = await getTranslations({ locale, namespace: "confirmation" });
+  // The buyer's own code to share. Absent until the paid-order hook has linked
+  // this order to a customer, which is the right moment to start offering it.
+  const referralCode = order.customerId
+    ? (grantReferralCode(order.customerId)?.code ?? undefined)
+    : undefined;
   const resolved = resolveCartLines(order.lines, PRODUCTS);
   const hasSubscription = resolved.some((r) => r.product.category === "subscriptions");
   const f = order.fulfillment;
@@ -115,7 +121,7 @@ export async function ConfirmationView({ order, locale }: { order: Order; locale
         </Button>
       </footer>
       <section className="mt-8">
-        <ReciprocityCard order={order} locale={locale} />
+        <ReciprocityCard order={order} locale={locale} referralCode={referralCode} />
       </section>
     </div>
   );

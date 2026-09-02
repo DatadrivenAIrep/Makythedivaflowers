@@ -124,6 +124,7 @@
         "below_minimum": "This code needs an order of {amount} or more.",
         "exhausted": "That code has been fully claimed.",
         "not_first_order": "That code is for a first order only.",
+        "not_yours": "That code was sent to a different number.",
         "no_discount": "That code doesn't change this order's price.",
         "rate_limited": "Too many tries. Wait a minute and try again."
       }
@@ -961,14 +962,27 @@
     },
     "reciprocity": {
       "referral_eyebrow": "Refer a friend",
-      "referral_title": "Send a friend $20.",
-      "referral_body": "Get $20 toward your next arrangement when they order.",
-      "referral_copy_cta": "Copy code",
-      "referral_copied": "Copied!",
+      "referral_title": "Give a friend $15.",
+      "referral_body": "Share this code. They get $15 off their first order of $75 or more, and we credit you $15 as soon as it is paid.",
       "subscription_eyebrow": "Stay in bloom",
       "subscription_title": "Loved sending this?",
       "subscription_body": "Weekly arrangements at her door, hand-built fresh every Thursday. Pause anytime. Skip a week. Cancel in two clicks.",
       "subscription_cta": "See subscriptions"
+    },
+    "welcome": {
+      "eyebrow": "First order",
+      "title": "10% off your first order.",
+      "body": "We text you a code, good for 30 days on any order of $75 or more. No emails, no newsletter — one message with your code.",
+      "phone_label": "Mobile number",
+      "consent": "Text me my code and the occasional offer from Diva Flowers. Message and data rates may apply; reply STOP to opt out.",
+      "submit": "Text me the code",
+      "dismiss": "No thanks",
+      "close": "Close",
+      "sent_title": "Check your phone.",
+      "sent_body": "Your code is on its way. It comes off any order of $75 or more, for the next 30 days.",
+      "error_phone": "That does not look like a mobile number.",
+      "error_rate_limited": "We already sent a code to that number. Check your messages.",
+      "error_generic": "Something went wrong. Try again."
     }
   },
   "subscriptions": {

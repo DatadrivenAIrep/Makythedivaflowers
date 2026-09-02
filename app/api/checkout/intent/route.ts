@@ -86,6 +86,7 @@ export async function POST(req: Request) {
         phone: form.contact.phone,
         email: form.contact.email,
       }),
+      buyerPhone: form.contact.phone,
     });
     if (!check.ok) {
       return NextResponse.json(

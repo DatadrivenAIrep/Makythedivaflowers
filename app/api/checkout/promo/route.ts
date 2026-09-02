@@ -36,6 +36,7 @@ export async function POST(req: Request) {
     subtotalCents,
     deliveryCents,
     buyerHasOrdered: buyerHasPaidOrder({ phone, email }),
+    buyerPhone: phone,
   });
 
   if (!check.ok) {

@@ -124,6 +124,7 @@
         "below_minimum": "Este código necesita un pedido de {amount} o más.",
         "exhausted": "Ese código ya se agotó.",
         "not_first_order": "Ese código es solo para la primera compra.",
+        "not_yours": "Ese código se envió a otro número.",
         "no_discount": "Ese código no cambia el precio de este pedido.",
         "rate_limited": "Demasiados intentos. Espera un minuto."
       }
@@ -960,15 +961,28 @@
       "local_body": "Tienda real en Willis Ave. Entregamos lo que hacemos."
     },
     "reciprocity": {
-      "referral_eyebrow": "Invita a un amigo",
-      "referral_title": "Regala $20 a un amigo.",
-      "referral_body": "Recibe $20 para tu próximo arreglo cuando lo use.",
-      "referral_copy_cta": "Copiar código",
-      "referral_copied": "¡Copiado!",
+      "referral_eyebrow": "Refiere a una amiga",
+      "referral_title": "Regálale $15 a una amiga.",
+      "referral_body": "Comparte este código. Ella recibe $15 en su primer pedido de $75 o más, y a ti te acreditamos $15 en cuanto se pague.",
       "subscription_eyebrow": "Sigue floreciendo",
       "subscription_title": "¿Te gustó enviarlo?",
       "subscription_body": "Arreglos semanales en su puerta, hechos cada jueves. Pausa cuando quieras. Salta una semana. Cancela en dos clics.",
       "subscription_cta": "Ver suscripciones"
+    },
+    "welcome": {
+      "eyebrow": "Primera compra",
+      "title": "10% en tu primer pedido.",
+      "body": "Te mandamos un código por texto, válido 30 días en cualquier pedido de $75 o más. Sin correos ni boletines — un mensaje con tu código.",
+      "phone_label": "Celular",
+      "consent": "Mándenme mi código y alguna oferta ocasional de Diva Flowers. Pueden aplicar tarifas de mensajes y datos; responde STOP para cancelar.",
+      "submit": "Mándame el código",
+      "dismiss": "Ahora no",
+      "close": "Cerrar",
+      "sent_title": "Revisa tu celular.",
+      "sent_body": "Tu código va en camino. Se descuenta de cualquier pedido de $75 o más, durante los próximos 30 días.",
+      "error_phone": "Eso no parece un número de celular.",
+      "error_rate_limited": "Ya mandamos un código a ese número. Revisa tus mensajes.",
+      "error_generic": "Algo salió mal. Intenta de nuevo."
     }
   },
   "subscriptions": {

@@ -27,6 +27,10 @@ export type Promo = {
   startsAt?: string;
   endsAt?: string;
   note?: string;
+  /** Digits only. When set, only this buyer may redeem the code. */
+  assignedPhone?: string;
+  /** Customer credited once this code is used on a paid order. */
+  referrerCustomerId?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -48,6 +52,8 @@ type PromoRow = {
   starts_at: string | null;
   ends_at: string | null;
   note: string | null;
+  assigned_phone: string | null;
+  referrer_customer_id: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -65,9 +71,17 @@ function rowToPromo(r: PromoRow): Promo {
     startsAt: r.starts_at ?? undefined,
     endsAt: r.ends_at ?? undefined,
     note: r.note ?? undefined,
+    assignedPhone: r.assigned_phone ?? undefined,
+    referrerCustomerId: r.referrer_customer_id ?? undefined,
     createdAt: r.created_at,
     updatedAt: r.updated_at,
   };
+}
+
+/** Phone comparison is on digits alone: the same person types (516) 555-0100
+ *  one time and 5165550100 the next. */
+export function onlyDigits(phone: string): string {
+  return phone.replace(/\D/g, "");
 }
 
 /** Entry is forgiving: people paste codes with stray spaces and in any case. */
@@ -89,6 +103,8 @@ export type CreatePromoInput = {
   startsAt?: string;
   endsAt?: string;
   note?: string;
+  assignedPhone?: string;
+  referrerCustomerId?: string;
 };
 
 export function createPromo(input: CreatePromoInput): Promo {
@@ -110,8 +126,9 @@ export function createPromo(input: CreatePromoInput): Promo {
     .prepare(
       `INSERT INTO promo_codes (
          id, code, kind, value, min_subtotal_cents, max_redemptions,
-         first_order_only, active, starts_at, ends_at, note, created_at, updated_at
-       ) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?)`,
+         first_order_only, active, starts_at, ends_at, note,
+         assigned_phone, referrer_customer_id, created_at, updated_at
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?)`,
     )
     .run(
       id,
@@ -124,6 +141,8 @@ export function createPromo(input: CreatePromoInput): Promo {
       input.startsAt ?? null,
       input.endsAt ?? null,
       input.note ?? null,
+      input.assignedPhone ? onlyDigits(input.assignedPhone) : null,
+      input.referrerCustomerId ?? null,
       now,
       now,
     );
@@ -163,6 +182,8 @@ export type PromoContext = {
   deliveryCents: number;
   /** True when this buyer already has a paid order — gates first-order codes. */
   buyerHasOrdered?: boolean;
+  /** Who is trying to redeem — checked against a code's assigned phone. */
+  buyerPhone?: string;
 };
 
 /**
@@ -194,6 +215,7 @@ export type PromoRejection =
   | "below_minimum"
   | "exhausted"
   | "not_first_order"
+  | "not_yours"
   | "no_discount";
 
 export type PromoCheck =
@@ -221,6 +243,31 @@ export function validatePromo(code: string, ctx: PromoContext): PromoCheck {
   }
   if (promo.firstOrderOnly && ctx.buyerHasOrdered) {
     return { ok: false, reason: "not_first_order" };
+  }
+  if (promo.referrerCustomerId) {
+    // A referral code is for the friend, not the friend-maker. firstOrderOnly
+    // usually catches the referrer, but not before their own first order has
+    // been paid — so exclude them by phone outright.
+    const owner = getDb()
+      .prepare("SELECT phone FROM customers WHERE id = ?")
+      .get(promo.referrerCustomerId) as { phone: string } | undefined;
+    const ownerDigits = owner ? onlyDigits(owner.phone) : "";
+    const buyer = ctx.buyerPhone ? onlyDigits(ctx.buyerPhone) : "";
+    if (
+      ownerDigits.length >= 10 &&
+      buyer.length >= 10 &&
+      ownerDigits.slice(-10) === buyer.slice(-10)
+    ) {
+      return { ok: false, reason: "not_yours" };
+    }
+  }
+  if (promo.assignedPhone) {
+    // Bound to one buyer: a code texted to someone is theirs, not a public one
+    // the moment they forward the message.
+    const buyer = ctx.buyerPhone ? onlyDigits(ctx.buyerPhone) : "";
+    const owner = promo.assignedPhone;
+    const same = buyer.length >= 10 && owner.length >= 10 && buyer.slice(-10) === owner.slice(-10);
+    if (!same) return { ok: false, reason: "not_yours" };
   }
 
   const discountCents = discountForPromo(promo, ctx);

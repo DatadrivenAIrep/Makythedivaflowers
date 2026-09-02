@@ -1,7 +1,15 @@
 export type GiftCardStatus = "active" | "void";
 
-// "purchase" = bought by a customer on the site; the rest are staff-issued.
-export type GiftCardReason = "loyalty" | "apology" | "prize" | "marketing" | "other" | "purchase";
+// "purchase" = bought by a customer on the site, "referral" = credit earned by
+// introducing someone; the rest are staff-issued.
+export type GiftCardReason =
+  | "loyalty"
+  | "apology"
+  | "prize"
+  | "marketing"
+  | "other"
+  | "purchase"
+  | "referral";
 
 export type GiftCard = {
   id: string;
