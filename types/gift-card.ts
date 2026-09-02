@@ -1,6 +1,7 @@
 export type GiftCardStatus = "active" | "void";
 
-export type GiftCardReason = "loyalty" | "apology" | "prize" | "marketing" | "other";
+// "purchase" = bought by a customer on the site; the rest are staff-issued.
+export type GiftCardReason = "loyalty" | "apology" | "prize" | "marketing" | "other" | "purchase";
 
 export type GiftCard = {
   id: string;
@@ -14,6 +15,9 @@ export type GiftCard = {
   personalMessage?: string;
   reason?: GiftCardReason;
   issuedBy?: string;
+  /** Set when a customer bought the card on the site rather than staff issuing it. */
+  purchasePaymentIntentId?: string;
+  purchaserEmail?: string;
   expiresAt?: string; // ISO
   createdAt: string;
   updatedAt: string;

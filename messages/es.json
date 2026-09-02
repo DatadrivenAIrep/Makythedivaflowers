@@ -16,6 +16,7 @@
     "sympathy": "Pésame",
     "orchids": "Orquídeas",
     "subscriptions": "Suscripciones",
+    "gift_cards": "Tarjetas de regalo",
     "weddings": "Bodas",
     "events": "Eventos",
     "story": "Historia",
@@ -1784,5 +1785,33 @@
     "status_active": "Activo",
     "status_inactive": "Apagado",
     "empty": "Aún no hay códigos."
+  },
+  "gift_cards": {
+    "eyebrow": "Tarjetas de regalo",
+    "title": "Que elijan ellos las flores.",
+    "lead": "La tarjeta llega por correo con tu mensaje y sirve para cualquier pedido — entrega, recoger en tienda o una suscripción. Dura un año y el saldo que no usen se queda en la tarjeta.",
+    "how_title": "Cómo funciona",
+    "how_1": "Elige un monto y escribe una nota.",
+    "how_2": "Le mandamos la tarjeta por correo con tu mensaje.",
+    "how_3": "Escriben el código al pagar. El saldo que sobre se queda en la tarjeta.",
+    "fine_print": "Válida un año desde la compra en nuestro estudio de Albertson, en línea o en persona. No se cambia por efectivo.",
+    "form": {
+      "amount_label": "Monto",
+      "amount_custom": "Otro",
+      "recipient_email": "Correo de quien la recibe",
+      "recipient_name": "Nombre de quien la recibe",
+      "from_label": "De parte de",
+      "purchaser_email": "Tu correo",
+      "purchaser_hint": "Para tu recibo.",
+      "message_label": "Mensaje en la tarjeta",
+      "continue": "Continuar al pago",
+      "pay": "Pagar {amount}",
+      "paying": "Procesando…",
+      "done_title": "Va en camino.",
+      "done_body": "Le mandamos la tarjeta a {email}. Tu recibo va para ti.",
+      "error_amount": "Elige un monto de {min} o más.",
+      "error_amount_max": "Para más de {max}, llama a la tienda y lo armamos.",
+      "error_generic": "No se pudo procesar. Revisa los datos e intenta de nuevo."
+    }
   }
 }

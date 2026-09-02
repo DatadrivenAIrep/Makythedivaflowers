@@ -19,6 +19,8 @@ type GiftCardRow = {
   personal_message: string | null;
   reason: string | null;
   issued_by: string | null;
+  purchase_payment_intent_id: string | null;
+  purchaser_email: string | null;
   expires_at: string | null;
   created_at: string;
   updated_at: string;
@@ -37,6 +39,8 @@ function rowToCard(r: GiftCardRow): GiftCard {
     personalMessage: r.personal_message ?? undefined,
     reason: (r.reason as GiftCardReason | null) ?? undefined,
     issuedBy: r.issued_by ?? undefined,
+    purchasePaymentIntentId: r.purchase_payment_intent_id ?? undefined,
+    purchaserEmail: r.purchaser_email ?? undefined,
     expiresAt: r.expires_at ?? undefined,
     createdAt: r.created_at,
     updatedAt: r.updated_at,
@@ -90,6 +94,76 @@ export function issueGiftCard(input: IssueGiftCardInput): GiftCard {
     }
   }
   throw new Error("could not generate a unique gift card code");
+}
+
+export type PurchaseGiftCardInput = {
+  /** The Stripe payment that paid for this card; also the idempotency key. */
+  paymentIntentId: string;
+  initialCents: number;
+  recipientEmail: string;
+  recipientName?: string;
+  fromLabel?: string;
+  personalMessage?: string;
+  purchaserEmail?: string;
+};
+
+/**
+ * Issue a card the customer paid for.
+ *
+ * Called from the Stripe webhook, so it must be safe to call twice: a replayed
+ * `payment_intent.succeeded` cannot mint a second card. The guarantee is the
+ * unique index on `purchase_payment_intent_id`, not a check in this function —
+ * two webhook deliveries arriving together would both pass a check.
+ */
+export function issueGiftCardForPayment(input: PurchaseGiftCardInput): GiftCard {
+  const existing = getGiftCardByPaymentIntent(input.paymentIntentId);
+  if (existing) return existing;
+
+  const db = getDb();
+  const now = new Date();
+  const nowIso = now.toISOString();
+  const expires = new Date(now);
+  expires.setFullYear(expires.getFullYear() + 1);
+
+  const insert = db.prepare(
+    `INSERT INTO gift_cards (
+       id, code, initial_cents, balance_cents, status,
+       recipient_email, recipient_name, from_label, personal_message,
+       reason, issued_by, purchase_payment_intent_id, purchaser_email,
+       expires_at, created_at, updated_at
+     ) VALUES (?, ?, ?, ?, 'active', ?, ?, ?, ?, 'purchase', NULL, ?, ?, ?, ?, ?)`,
+  );
+
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const id = newId("gc");
+    const code = generateGiftCardCode();
+    try {
+      insert.run(
+        id, code, input.initialCents, input.initialCents,
+        input.recipientEmail, input.recipientName ?? null, input.fromLabel ?? null,
+        input.personalMessage ?? null, input.paymentIntentId, input.purchaserEmail ?? null,
+        expires.toISOString(), nowIso, nowIso,
+      );
+      return getGiftCardById(id)!;
+    } catch (e) {
+      const msg = String(e);
+      // Lost the race on this payment: the other writer's card is the real one.
+      if (msg.includes("idx_gift_cards_purchase_pi") || msg.includes("purchase_payment_intent_id")) {
+        const won = getGiftCardByPaymentIntent(input.paymentIntentId);
+        if (won) return won;
+      }
+      if (msg.includes("UNIQUE") && attempt < 4) continue;
+      throw e;
+    }
+  }
+  throw new Error("could not generate a unique gift card code");
+}
+
+export function getGiftCardByPaymentIntent(paymentIntentId: string): GiftCard | null {
+  const row = getDb()
+    .prepare("SELECT * FROM gift_cards WHERE purchase_payment_intent_id = ?")
+    .get(paymentIntentId) as GiftCardRow | undefined;
+  return row ? rowToCard(row) : null;
 }
 
 export function getGiftCardById(id: string): GiftCard | null {

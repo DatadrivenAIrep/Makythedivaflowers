@@ -5,7 +5,8 @@ import { getOrderByPaymentIntent, updateOrderStatusByPaymentIntent, getOrderByCh
 import { dispatchPaymentConfirmed } from "@/lib/order-dispatch";
 import { notifyOrderPaid } from "@/lib/order-notifications";
 import { onWebOrderPaid } from "@/lib/on-web-order-paid";
-import { redeem } from "@/lib/gift-card-storage";
+import { redeem, issueGiftCardForPayment, getGiftCardByPaymentIntent } from "@/lib/gift-card-storage";
+import { notifyGiftCardIssued } from "@/lib/gift-card-notifications";
 import { redeemPromo } from "@/lib/promo";
 import { enqueuePrintJob } from "@/lib/print-queue";
 import { sendPurchaseToGA4 } from "@/lib/analytics-server";
@@ -53,6 +54,34 @@ export async function POST(req: Request) {
     switch (event.type) {
       case "payment_intent.succeeded": {
         const pi = event.data.object as Stripe.PaymentIntent;
+
+        // A gift card the customer bought on the site. It has no order behind
+        // it, so it is handled here and the order path below is skipped.
+        if (pi.metadata?.kind === "gift_card") {
+          try {
+            // Checked before issuing so a replayed event does not mail twice.
+            const alreadyIssued = getGiftCardByPaymentIntent(pi.id) !== null;
+            const card = issueGiftCardForPayment({
+              paymentIntentId: pi.id,
+              initialCents: Number(pi.metadata.amountCents),
+              recipientEmail: pi.metadata.recipientEmail,
+              recipientName: pi.metadata.recipientName || undefined,
+              fromLabel: pi.metadata.fromLabel || undefined,
+              personalMessage: pi.metadata.personalMessage || undefined,
+              purchaserEmail: pi.metadata.purchaserEmail || undefined,
+            });
+            // issueGiftCardForPayment is idempotent, so a replayed event returns
+            // the same card. Only mail on the delivery that created it.
+            if (!alreadyIssued) {
+              const locale = pi.metadata.locale === "es" ? "es" : "en";
+              await notifyGiftCardIssued(card, locale);
+            }
+          } catch (e) {
+            console.error("[gift-card] issue on payment success failed", pi.id, e);
+          }
+          return NextResponse.json({ received: true });
+        }
+
         const order = await getOrderByPaymentIntent(pi.id);
         // Back-compat: "paid" is an OrderStatus alias stored in status during Task 4.
         // Task 5 will move this to paymentStatus. For now, check both.

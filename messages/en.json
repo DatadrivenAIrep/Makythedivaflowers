@@ -16,6 +16,7 @@
     "sympathy": "Sympathy",
     "orchids": "Orchids",
     "subscriptions": "Subscriptions",
+    "gift_cards": "Gift cards",
     "weddings": "Weddings",
     "events": "Events",
     "story": "Story",
@@ -1784,5 +1785,33 @@
     "status_active": "Active",
     "status_inactive": "Off",
     "empty": "No codes yet."
+  },
+  "gift_cards": {
+    "eyebrow": "Gift cards",
+    "title": "Let them choose the flowers.",
+    "lead": "The card arrives by email with your message, and works on any order — delivery, pickup, or a subscription. It never expires within the year, and any unused balance stays on it.",
+    "how_title": "How it works",
+    "how_1": "Pick an amount and write a note.",
+    "how_2": "We email the card to your recipient with your message on it.",
+    "how_3": "They enter the code at checkout. Any balance left over stays on the card.",
+    "fine_print": "Valid for one year from purchase at our Albertson studio, online or in person. Not redeemable for cash.",
+    "form": {
+      "amount_label": "Amount",
+      "amount_custom": "Other",
+      "recipient_email": "Recipient's email",
+      "recipient_name": "Recipient's name",
+      "from_label": "From",
+      "purchaser_email": "Your email",
+      "purchaser_hint": "For your receipt.",
+      "message_label": "Message on the card",
+      "continue": "Continue to payment",
+      "pay": "Pay {amount}",
+      "paying": "Processing…",
+      "done_title": "On its way.",
+      "done_body": "We have emailed the card to {email}. Your receipt is on its way to you.",
+      "error_amount": "Choose an amount of {min} or more.",
+      "error_amount_max": "For more than {max}, call the shop and we will set it up.",
+      "error_generic": "That did not go through. Check the details and try again."
+    }
   }
 }
