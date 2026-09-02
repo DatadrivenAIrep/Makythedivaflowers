@@ -3,6 +3,7 @@ import { memo } from "react";
 import type { Product } from "@/types/product";
 import type { Locale } from "@/types/locale";
 import { formatMoneyCents } from "@/lib/format";
+import { addOnsForProduct } from "@/lib/product-add-ons";
 import { cn } from "@/lib/cn";
 
 type Props = {
@@ -13,17 +14,19 @@ type Props = {
 };
 
 function AddOnTogglesImpl({ product, locale, value, onChange }: Props) {
-  if (!product.addOns || product.addOns.length === 0) return null;
+  // Same list the cart prices from — see lib/product-add-ons.ts.
+  const addOns = addOnsForProduct(product);
+  if (addOns.length === 0) return null;
   const toggle = (id: string) => {
     onChange(value.includes(id) ? value.filter((v) => v !== id) : [...value, id]);
   };
   return (
     <div className="flex flex-col gap-2">
       <p className="font-mono text-[10px] uppercase tracking-wider text-mute-500">
-        {locale === "es" ? "Acompañamientos" : "Add-ons"}
+        {locale === "es" ? "Añade un detalle" : "Add a finishing touch"}
       </p>
       <div className="flex flex-wrap gap-2">
-        {product.addOns.map((a) => {
+        {addOns.map((a) => {
           const selected = value.includes(a.id);
           return (
             <button
