@@ -40,7 +40,7 @@ async function seedOrderWithPromo(promoId: string, promoCode: string) {
       subtotalCents: 20000,
       deliveryCents: 0,
       discountCents: 2000,
-      taxCents: 1553,
+      tipCents: 0, taxCents: 1553,
       totalCents: 19553,
     },
     status: "pending",

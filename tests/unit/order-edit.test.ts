@@ -21,7 +21,7 @@ function baseOrder(id: string, over: Partial<Order> = {}): Order {
       address: { street1: "1 Main", city: "Albertson", state: "NY", zip: "11507", country: "US" },
       window: { date: "2026-07-01", slot: "midday" } },
     contact: { phone: "555" },
-    totals: { subtotalCents: 5000, deliveryCents: 1000, discountCents: 0, taxCents: 518, totalCents: 6518 },
+    totals: { subtotalCents: 5000, deliveryCents: 1000, discountCents: 0, tipCents: 0, taxCents: 518, totalCents: 6518 },
     status: "pending", paymentStatus: "pending",
     createdAt: "2026-06-01T00:00:00Z", updatedAt: "2026-06-01T00:00:00Z",
     ...over,

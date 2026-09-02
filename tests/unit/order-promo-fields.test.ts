@@ -29,7 +29,7 @@ const baseOrder: Order = {
     subtotalCents: 20000,
     deliveryCents: 0,
     discountCents: 2000,
-    taxCents: 1553,
+    tipCents: 0, taxCents: 1553,
     totalCents: 19553,
   },
   status: "pending",
@@ -51,7 +51,7 @@ describe("promo fields on an order", () => {
     await saveOrder({
       ...baseOrder,
       id: "do_nopromo",
-      totals: { ...baseOrder.totals, discountCents: 0, taxCents: 1725, totalCents: 21725 },
+      totals: { ...baseOrder.totals, discountCents: 0, tipCents: 0, taxCents: 1725, totalCents: 21725 },
     });
     const back = await getOrder("do_nopromo");
     expect(back?.totals.discountCents).toBe(0);

@@ -44,7 +44,7 @@ function makeOrder(id: string, paymentIntentId?: string): Order {
       window: { date: "2099-01-01", slot: "midday" },
     },
     contact: { email: "test@example.com", phone: "5555555555" },
-    totals: { subtotalCents: 1000, deliveryCents: 1000, discountCents: 0, taxCents: 173, totalCents: 2173 },
+    totals: { subtotalCents: 1000, deliveryCents: 1000, discountCents: 0, tipCents: 0, taxCents: 173, totalCents: 2173 },
     stripePaymentIntentId: paymentIntentId,
     status: "pending",
     paymentStatus: "pending",

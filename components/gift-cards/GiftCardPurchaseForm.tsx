@@ -21,6 +21,14 @@ type Stage =
 
 export function GiftCardPurchaseForm({ locale }: Props) {
   const t = useTranslations("gift_cards.form");
+  // A redirecting method (Afterpay, Klarna) returns the buyer to this page
+  // rather than to the in-page success state, so honour the flag it comes back
+  // with. Read once on mount; the query string is not a live source of truth.
+  const [returnedPaid] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      new URLSearchParams(window.location.search).get("gift_card") === "sent",
+  );
   const [amountCents, setAmountCents] = useState<number>(GIFT_CARD_PRESET_CENTS[1]);
   const [customAmount, setCustomAmount] = useState("");
   const [isCustom, setIsCustom] = useState(false);
@@ -86,7 +94,17 @@ export function GiftCardPurchaseForm({ locale }: Props) {
     setBusy(true);
     setError(null);
     const { stripe, elements } = stripeRef.current;
-    const result = await stripe.confirmPayment({ elements, redirect: "if_required" });
+    // return_url is required for any payment method that redirects — Afterpay,
+    // Klarna, Cash App. Without it Stripe refuses the confirmation the moment
+    // one of those is switched on in the dashboard, and the buyer sees an error
+    // with no way through. The page reads ?gift_card=sent on the way back.
+    const result = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        return_url: `${window.location.origin}/${locale}/gift-cards?gift_card=sent`,
+      },
+      redirect: "if_required",
+    });
     setBusy(false);
     if (result.error) {
       setError(result.error.message ?? t("error_generic"));
@@ -95,7 +113,7 @@ export function GiftCardPurchaseForm({ locale }: Props) {
     setStage({ status: "done" });
   }
 
-  if (stage.status === "done") {
+  if (stage.status === "done" || returnedPaid) {
     return (
       <div
         role="status"
@@ -103,7 +121,7 @@ export function GiftCardPurchaseForm({ locale }: Props) {
       >
         <h2 className="font-display text-2xl tracking-tight text-ink">{t("done_title")}</h2>
         <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-ink/75">
-          {t("done_body", { email: recipientEmail })}
+          {recipientEmail ? t("done_body", { email: recipientEmail }) : t("done_body_generic")}
         </p>
       </div>
     );

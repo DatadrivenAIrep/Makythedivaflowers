@@ -37,6 +37,7 @@ export type OrderRow = {
   promo_id: string | null;
   promo_code: string | null;
   discount_cents: number | null;
+  tip_cents: number | null;
   order_number: number | null;
   created_at: string;
   updated_at: string;
@@ -63,6 +64,7 @@ export function orderToRow(o: Order): OrderRow {
     subtotal_cents: o.totals.subtotalCents,
     delivery_cents: o.totals.deliveryCents,
     discount_cents: o.totals.discountCents,
+    tip_cents: o.totals.tipCents,
     tax_cents: o.totals.taxCents,
     total_cents: o.totals.totalCents,
     amount_paid_cents: o.amountPaidCents ?? 0,
@@ -125,8 +127,9 @@ export function rowToOrder(r: OrderRow): Order {
     totals: {
       subtotalCents: r.subtotal_cents,
       deliveryCents: r.delivery_cents,
-      // Orders written before promo codes existed have no column value.
+      // Orders written before promo codes or tips existed have no column value.
       discountCents: r.discount_cents ?? 0,
+      tipCents: r.tip_cents ?? 0,
       taxCents: r.tax_cents,
       totalCents: r.total_cents,
     },

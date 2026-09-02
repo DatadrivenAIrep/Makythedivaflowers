@@ -36,7 +36,7 @@ function order(method: "delivery" | "pickup"): Order {
     lines: [{ kind: "catalog", productId: "p1", variantId: "v1", addOnIds: [], qty: 1 }],
     fulfillment,
     contact: { name: "Bob Buyer", email: "a@x.com", phone: "5165550100" },
-    totals: { subtotalCents: 5000, deliveryCents: 0, discountCents: 0, taxCents: 431, totalCents: 5431 },
+    totals: { subtotalCents: 5000, deliveryCents: 0, discountCents: 0, tipCents: 0, taxCents: 431, totalCents: 5431 },
     status: "out-for-delivery",
     paymentStatus: "paid",
     createdAt: "2026-08-18T00:00:00Z",

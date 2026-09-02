@@ -21,7 +21,7 @@ function makeOrder(fulfillment: Order["fulfillment"]): Order {
     locale: "es",
     lines: [{ kind: "catalog", productId: "p-arr-b1-01", variantId: "standard", addOnIds: [], qty: 1 }],
     contact: { name: "Ana", email: "ana@example.com", phone: "5165551234" },
-    totals: { subtotalCents: 40000, deliveryCents: 1500, discountCents: 0, taxCents: 1720, totalCents: 43220 },
+    totals: { subtotalCents: 40000, deliveryCents: 1500, discountCents: 0, tipCents: 0, taxCents: 1720, totalCents: 43220 },
     status: "pending",
     paymentStatus: "paid",
     createdAt: "2026-07-20T15:30:00.000Z",

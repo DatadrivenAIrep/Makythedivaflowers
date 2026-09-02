@@ -12,7 +12,7 @@ const baseOrder: Order = {
   locale: "en",
   lines: [],
   contact: { email: "x@y.com", phone: "5555555555" },
-  totals: { subtotalCents: 1000, deliveryCents: 0, discountCents: 0, taxCents: 0, totalCents: 1000 },
+  totals: { subtotalCents: 1000, deliveryCents: 0, discountCents: 0, tipCents: 0, taxCents: 0, totalCents: 1000 },
   status: "pending",
   paymentStatus: "paid",
   createdAt: "2026-05-07T00:00:00.000Z",

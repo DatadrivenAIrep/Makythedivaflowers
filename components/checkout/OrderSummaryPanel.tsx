@@ -17,6 +17,8 @@ type Props = {
   delivery: number; // cents
   /** Promo discount in cents; the row is hidden when zero. */
   discount?: number;
+  /** Tip in cents; the row is hidden when zero. */
+  tip?: number;
   total: number;    // cents
   /** When true, delivery and total render as "—" because the customer hasn't entered a valid ZIP yet. */
   deliveryPending?: boolean;
@@ -25,7 +27,7 @@ type Props = {
   eyebrow?: string;
 };
 
-export function OrderSummaryPanel({ items, subtotal, delivery, discount = 0, total, deliveryPending = false, isPickup = false, locale, eyebrow = "Your order" }: Props) {
+export function OrderSummaryPanel({ items, subtotal, delivery, discount = 0, tip = 0, total, deliveryPending = false, isPickup = false, locale, eyebrow = "Your order" }: Props) {
   return (
     <div className="relative h-full min-h-[280px] md:min-h-[640px] overflow-hidden bg-gradient-to-br from-ink to-[#2a1a16] text-bone">
       <div
@@ -85,6 +87,14 @@ export function OrderSummaryPanel({ items, subtotal, delivery, discount = 0, tot
               <dd className="font-mono text-sm text-rouge">
                 −{formatMoneyCents(discount, locale)}
               </dd>
+            </div>
+          )}
+          {tip > 0 && (
+            <div className="flex items-center justify-between">
+              <dt className="font-mono text-[11px] uppercase tracking-[0.22em] text-bone/60">
+                {locale === "es" ? "Propina" : "Tip"}
+              </dt>
+              <dd className="font-mono text-sm text-bone/85">{formatMoneyCents(tip, locale)}</dd>
             </div>
           )}
           <div className="flex items-baseline justify-between pt-3 border-t border-bone/10">

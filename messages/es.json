@@ -127,6 +127,11 @@
         "no_discount": "Ese código no cambia el precio de este pedido.",
         "rate_limited": "Demasiados intentos. Espera un minuto."
       }
+    },
+    "tip": {
+      "label": "Propina para el equipo (opcional)",
+      "body": "Cada dólar va para quien lo armó y quien lo llevó.",
+      "none": "Sin propina"
     }
   },
   "confirmation": {
@@ -1413,6 +1418,8 @@
     "subtotal": "Subtotal",
     "delivery": "Delivery",
     "tax": "Tax",
+    "discount": "Descuento",
+    "tip": "Propina",
     "total": "Total",
     "status": "Estado",
     "order_canceled": "Orden cancelada",
@@ -1809,6 +1816,7 @@
       "paying": "Procesando…",
       "done_title": "Va en camino.",
       "done_body": "Le mandamos la tarjeta a {email}. Tu recibo va para ti.",
+      "done_body_generic": "La tarjeta va camino a quien la recibe, y tu recibo va para ti.",
       "error_amount": "Elige un monto de {min} o más.",
       "error_amount_max": "Para más de {max}, llama a la tienda y lo armamos.",
       "error_generic": "No se pudo procesar. Revisa los datos e intenta de nuevo."

@@ -32,6 +32,9 @@ const requestSchema = z.object({
   // Only the code travels from the client. The discount is always recomputed
   // here, so a tampered request cannot dictate its own price.
   promoCode: z.string().min(1).max(50).optional(),
+  // Capped rather than open-ended: a typo turning $10 into $1,000 should be
+  // refused, not charged. Staff can take a larger tip over the phone.
+  tipCents: z.number().int().min(0).max(20000).optional(),
 });
 
 export async function POST(req: Request) {
@@ -95,7 +98,8 @@ export async function POST(req: Request) {
     discountCents = check.discountCents;
   }
 
-  const totals = computeOrderTotals(subtotal, deliveryCents, discountCents);
+  const tipCents = parsed.data.tipCents ?? 0;
+  const totals = computeOrderTotals(subtotal, deliveryCents, discountCents, tipCents);
   const orderId = `do_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
 
   const fulfillment: OrderFulfillment =

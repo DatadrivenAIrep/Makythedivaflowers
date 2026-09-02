@@ -28,6 +28,7 @@ describe("computeOrderTotals", () => {
       subtotalCents: 0,
       deliveryCents: 0,
       discountCents: 0,
+      tipCents: 0,
       taxCents: 0,
       totalCents: 0,
     });

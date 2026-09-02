@@ -127,6 +127,11 @@
         "no_discount": "That code doesn't change this order's price.",
         "rate_limited": "Too many tries. Wait a minute and try again."
       }
+    },
+    "tip": {
+      "label": "Tip the team (optional)",
+      "body": "Every dollar goes to the designer who built it and the driver who took it.",
+      "none": "No tip"
     }
   },
   "confirmation": {
@@ -1413,6 +1418,8 @@
     "subtotal": "Subtotal",
     "delivery": "Delivery",
     "tax": "Tax",
+    "discount": "Discount",
+    "tip": "Tip",
     "total": "Total",
     "status": "Status",
     "order_canceled": "Order canceled",
@@ -1809,6 +1816,7 @@
       "paying": "Processing…",
       "done_title": "On its way.",
       "done_body": "We have emailed the card to {email}. Your receipt is on its way to you.",
+      "done_body_generic": "The card is on its way to your recipient, and your receipt is on its way to you.",
       "error_amount": "Choose an amount of {min} or more.",
       "error_amount_max": "For more than {max}, call the shop and we will set it up.",
       "error_generic": "That did not go through. Check the details and try again."

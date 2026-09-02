@@ -18,6 +18,11 @@ export type OrderTotals = {
    * off; the discount reduces the taxable base and the total.
    */
   discountCents: number;
+  /**
+   * Optional tip for the studio and the driver, in cents. Collected on behalf of
+   * the team, so it sits outside the taxable base and is added after tax.
+   */
+  tipCents: number;
   taxCents: number;
   totalCents: number;
 };

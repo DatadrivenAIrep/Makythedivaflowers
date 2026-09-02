@@ -61,23 +61,37 @@ export default function CartTotals({ lines, fulfillmentMethod, deliveryZip, deli
   // server's resolveOrderTotals). Only an explicit override on a field pins it.
   const subtotalCents = override.subtotalCents ?? computed.subtotalCents;
   const deliveryCents = override.deliveryCents ?? computed.deliveryCents;
-  // Staff intake has no promo-code flow yet, so the discount is whatever the
-  // override carries (normally nothing). Kept in the cascade so this mirrors the
-  // server's resolveOrderTotals exactly rather than drifting from it.
-  const recomputed = computeOrderTotals(subtotalCents, deliveryCents, override.discountCents ?? 0);
+  // Staff intake has neither a promo-code nor a tip flow yet, so both are
+  // whatever the override carries (normally nothing). Kept in the cascade so
+  // this mirrors the server's resolveOrderTotals rather than drifting from it.
+  const recomputed = computeOrderTotals(
+    subtotalCents,
+    deliveryCents,
+    override.discountCents ?? 0,
+    override.tipCents ?? 0,
+  );
   const discountCents = recomputed.discountCents;
+  const tipCents = recomputed.tipCents;
   const taxCents = override.taxCents ?? recomputed.taxCents;
   const totalCents =
-    override.totalCents ?? subtotalCents + deliveryCents - discountCents + taxCents;
-  const totals: OrderTotals = { subtotalCents, deliveryCents, discountCents, taxCents, totalCents };
+    override.totalCents ?? subtotalCents + deliveryCents - discountCents + taxCents + tipCents;
+  const totals: OrderTotals = {
+    subtotalCents,
+    deliveryCents,
+    discountCents,
+    tipCents,
+    taxCents,
+    totalCents,
+  };
   // "natural[k]" = value each field would show without an override ON ITSELF, so
   // the rouge/reset indicator only marks explicitly-overridden fields.
   const natural: OrderTotals = {
     subtotalCents: computed.subtotalCents,
     deliveryCents: computed.deliveryCents,
     discountCents,
+    tipCents,
     taxCents: recomputed.taxCents,
-    totalCents: subtotalCents + deliveryCents - discountCents + taxCents,
+    totalCents: subtotalCents + deliveryCents - discountCents + taxCents + tipCents,
   };
   const set = (k: keyof OrderTotals) => (v: number) => onOverride({ ...override, [k]: v });
   const clear = (k: keyof OrderTotals) => () => { const n = { ...override }; delete n[k]; onOverride(n); };
