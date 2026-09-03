@@ -30,7 +30,7 @@ describe("phalaenopsis-orchid", () => {
     expect(srcs).toEqual([
       "/products/phalaenopsis-white-single.webp",
       "/products/phalaenopsis-pink-single.webp",
-      "/products/phalaenopsis-pink-double.webp",
+      "/products/phalaenopsis-pink-double-glass.webp",
       "/products/phalaenopsis-fuchsia-double.webp",
     ]);
   });

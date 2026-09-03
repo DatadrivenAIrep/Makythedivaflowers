@@ -12,7 +12,7 @@ const SLUG = "phalaenopsis-orchid";
 // One photo per size, so the card shows what you actually get.
 const PHOTO_BY_VARIANT: Record<string, string> = {
   single: "/products/phalaenopsis-white-single.webp",
-  double: "/products/phalaenopsis-pink-double.webp",
+  double: "/products/phalaenopsis-pink-double-glass.webp",
 };
 
 export async function OrchidsSizes({ locale }: { locale: Locale }) {
