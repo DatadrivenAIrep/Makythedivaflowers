@@ -15,7 +15,7 @@ const baseOrder: Order = {
     { kind: "custom", title: "Ramo alto tonos borgoña", priceCents: 12000, designerNotes: "Rosas rojas en jarrón alto, sin relleno blanco", qty: 1 },
   ],
   contact: { name: "Ana", email: "ana@example.com", phone: "5165551234" },
-  totals: { subtotalCents: 31100, deliveryCents: 0, taxCents: 2757, totalCents: 33857 },
+  totals: { subtotalCents: 31100, deliveryCents: 0, discountCents: 0, tipCents: 0, taxCents: 2757, totalCents: 33857 },
   status: "pending",
   paymentStatus: "paid",
   internalNotes: "Entregar antes de las 2pm — cliente recoge en persona",

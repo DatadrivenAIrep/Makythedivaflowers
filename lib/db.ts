@@ -1,6 +1,7 @@
 import "server-only";
 import fs from "node:fs";
 import path from "node:path";
+import { enableWalWithRetry } from "@/lib/db-wal";
 
 // node:sqlite (Node 22.5+) is loaded via process.getBuiltinModule (Node 22.3+)
 // to bypass all bundlers — Turbopack/Vite/Webpack do not statically analyze
@@ -56,7 +57,11 @@ export function getDb(): DatabaseSyncType {
   // is what broke static builds, where 7 workers open the database at once.
   dbInstance.exec("PRAGMA busy_timeout = 10000");
   if (file !== ":memory:") {
-    dbInstance.exec("PRAGMA journal_mode = WAL");
+    // Retried rather than executed once: the journal-mode switch is the one
+    // statement busy_timeout does not cover, and a fresh database opened by
+    // seven parallel build workers loses that race often enough to break a
+    // deploy. See lib/db-wal.ts.
+    enableWalWithRetry((sql) => dbInstance!.exec(sql));
   }
   dbInstance.exec("PRAGMA foreign_keys = ON");
   return dbInstance;

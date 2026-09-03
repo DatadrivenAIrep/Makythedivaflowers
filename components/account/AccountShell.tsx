@@ -3,15 +3,16 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/locale";
 
+// No sign-up tab: sign-in is by SMS code and the account exists once you have
+// ordered, so there is nothing to register for.
 const TABS = [
   { key: "sign-in", href: (locale: Locale) => `/${locale}/account` },
-  { key: "sign-up", href: (locale: Locale) => `/${locale}/account/sign-up` },
   { key: "orders", href: (locale: Locale) => `/${locale}/account/orders` },
 ] as const;
 
 type Props = {
   locale: Locale;
-  activeTab: "sign-in" | "sign-up" | "orders";
+  activeTab: "sign-in" | "orders";
   children: React.ReactNode;
 };
 

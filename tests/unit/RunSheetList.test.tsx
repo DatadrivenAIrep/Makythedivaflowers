@@ -24,7 +24,7 @@ function deliveryOrder(id: string, name: string, zip: string): Order {
       window: { date: "2026-07-04", slot: "midday" },
     },
     contact: { phone: "5551234567" },
-    totals: { subtotalCents: 5000, deliveryCents: 1000, taxCents: 0, totalCents: 6000 },
+    totals: { subtotalCents: 5000, deliveryCents: 1000, discountCents: 0, tipCents: 0, taxCents: 0, totalCents: 6000 },
     status: "pending", paymentStatus: "paid",
     createdAt: "2026-07-04T00:00:00Z", updatedAt: "2026-07-04T00:00:00Z",
   };

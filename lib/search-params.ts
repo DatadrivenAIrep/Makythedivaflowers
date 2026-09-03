@@ -1,9 +1,12 @@
 import type { Filter, Sort } from "@/data/product-helpers";
 
-const OCCASIONS = ["birthday", "anniversary", "sympathy", "romance", "congrats", "just-because", "get-well"] as const;
+const OCCASIONS = [
+  "birthday", "anniversary", "sympathy", "romance", "congrats", "just-because",
+  "get-well", "graduation", "new-baby", "thank-you", "thinking-of-you", "mothers-day",
+] as const;
 const COLORS = ["pink", "red", "white", "mixed", "green", "pastel"] as const;
 const SIZES = ["standard", "grand", "diva"] as const;
-const PRICES = ["under-200", "200-300", "300-plus"] as const;
+const PRICES = ["under-100", "100-150", "150-200", "200-plus"] as const;
 const SORTS = ["newest", "price-asc", "price-desc", "staff-pick"] as const;
 
 function pickEnum<T extends readonly string[]>(

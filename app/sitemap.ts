@@ -5,6 +5,7 @@ import { isAvailableNow } from "@/data/product-helpers";
 import { journalArticles } from "@/data/journal";
 import { locales } from "@/types/locale";
 import { LOCAL_CITIES, LOCAL_OCCASIONS } from "@/data/local-seo";
+import { OCCASIONS_ALL } from "@/data/occasion-content";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://makythedivaflowers.com";
 
@@ -27,6 +28,7 @@ const STATIC_PATHS: { path: string; priority: number; changeFrequency: MetadataR
   { path: "corsages-boutonnieres", priority: 0.8, changeFrequency: "monthly" },
   { path: "orchids", priority: 0.7, changeFrequency: "monthly" },
   { path: "subscriptions", priority: 0.7, changeFrequency: "monthly" },
+  { path: "gift-cards", priority: 0.7, changeFrequency: "monthly" },
   { path: "events", priority: 0.7, changeFrequency: "monthly" },
   { path: "mothers-day", priority: 0.6, changeFrequency: "monthly" },
   { path: "story", priority: 0.6, changeFrequency: "yearly" },
@@ -66,6 +68,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
         changeFrequency: "weekly",
         priority: 0.6,
         alternates: { languages: langs(`product/${product.slug}`) },
+      });
+    }
+    // Occasion landing pages. Sympathy keeps its own route, so it is excluded
+    // here and covered by the static list above.
+    entries.push({
+      url: `${SITE}/${locale}/ocasiones`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+      alternates: { languages: langs("ocasiones") },
+    });
+    for (const occasion of OCCASIONS_ALL.filter((o) => o !== "sympathy")) {
+      entries.push({
+        url: `${SITE}/${locale}/ocasiones/${occasion}`,
+        lastModified: now,
+        changeFrequency: "monthly",
+        priority: 0.85,
+        alternates: { languages: langs(`ocasiones/${occasion}`) },
       });
     }
     // Town and town x occasion landing pages. High priority: these are the

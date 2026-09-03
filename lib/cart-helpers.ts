@@ -1,5 +1,6 @@
 import type { Product, ProductAddOn, ProductVariant } from "@/types/product";
 import type { CartLine, CatalogCartLine } from "@/types/order";
+import { addOnsForProduct } from "@/lib/product-add-ons";
 
 export type ResolvedCartLine = {
   line: CatalogCartLine;
@@ -23,7 +24,10 @@ export function resolveCartLine(
   if (product.quoteOnly) return null;
   const variant = product.variants.find((v) => v.id === line.variantId);
   if (!variant) return null;
-  const addOns = (product.addOns ?? []).filter((a) => line.addOnIds.includes(a.id));
+  // Resolved through the shared helper, not product.addOns, so the universal
+  // studio extras price the same here as they do on the product page — and so
+  // an add-on a product does not offer is dropped rather than charged.
+  const addOns = addOnsForProduct(product).filter((a) => line.addOnIds.includes(a.id));
   const addOnTotal = addOns.reduce((s, a) => s + a.priceCents, 0);
   const unitPriceCents = variant.priceCents + addOnTotal;
   return {

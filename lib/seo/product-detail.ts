@@ -23,6 +23,10 @@ const OCCASION: Record<Occasion, { en: string; es: string }> = {
   "just-because": { en: "just-because gifts", es: "regalos porque sí" },
   "mothers-day": { en: "Mother's Day", es: "el Día de la Madre" },
   "get-well": { en: "get-well wishes", es: "deseos de pronta mejoría" },
+  graduation: { en: "graduations", es: "graduaciones" },
+  "new-baby": { en: "new babies", es: "recién nacidos" },
+  "thank-you": { en: "thank-yous", es: "agradecimientos" },
+  "thinking-of-you": { en: "thinking-of-you gestures", es: "gestos de pienso en ti" },
 };
 
 const usd = (cents: number) => `$${(cents / 100).toFixed(0)}`;

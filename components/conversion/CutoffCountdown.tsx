@@ -5,6 +5,7 @@ import { flushSync } from "react-dom";
 import { useTranslations } from "next-intl";
 import { snapshotCutoff } from "@/lib/conversion/cutoff";
 import { CONV_EVENTS } from "@/lib/conversion/events";
+import { renderCutoffTime } from "@/lib/conversion/cutoff-time";
 import type { CutoffSnapshot } from "@/lib/conversion/types";
 import type { Locale } from "@/types/locale";
 
@@ -50,7 +51,9 @@ export function CutoffCountdown({ cutoff, tone = "default", locale: _locale }: P
     ? sym ? "after_body_sym" : "after_body"
     : sym ? "before_body_sym" : "before_body";
 
-  const timeVars = snap ? getTimeVars(snap.minutesRemaining) : null;
+  // The copy declares a single {time} variable — passing {h, m} instead is a
+  // FORMATTING_ERROR the buyer sees as broken text.
+  const time = snap ? renderCutoffTime(snap.minutesRemaining, t) : null;
 
   return (
     <div
@@ -62,19 +65,13 @@ export function CutoffCountdown({ cutoff, tone = "default", locale: _locale }: P
         {t(labelKey)}
       </p>
       <p aria-live="polite" className="text-sm text-ink/85 leading-snug">
-        {!snap
+        {!snap || time === null
           ? t("placeholder")
           : isAfter
           ? t(bodyKey)
-          : t(bodyKey, timeVars ?? {})}
+          : t(bodyKey, { time })}
       </p>
     </div>
   );
 }
 
-function getTimeVars(minutes: number): { h: number; m: number } {
-  return {
-    h: Math.floor(minutes / 60),
-    m: minutes % 60,
-  };
-}

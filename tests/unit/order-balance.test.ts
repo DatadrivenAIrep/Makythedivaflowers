@@ -7,7 +7,7 @@ function order(totalCents: number, amountPaidCents: number | undefined): Order {
     id: "x", source: "walk-in", locale: "es", lines: [],
     fulfillment: { method: "in-store", recipient: { name: "R", phone: "5" } },
     contact: { phone: "5" },
-    totals: { subtotalCents: totalCents, deliveryCents: 0, taxCents: 0, totalCents },
+    totals: { subtotalCents: totalCents, deliveryCents: 0, discountCents: 0, tipCents: 0, taxCents: 0, totalCents },
     status: "pending", paymentStatus: "pending",
     amountPaidCents,
     createdAt: "", updatedAt: "",

@@ -62,7 +62,7 @@ describe("OrchidsSizes", () => {
     const srcs = [...container.querySelectorAll("img")].map((i) => i.getAttribute("src"));
     expect(srcs).toEqual([
       "/products/phalaenopsis-white-single.webp",
-      "/products/phalaenopsis-pink-double.webp",
+      "/products/phalaenopsis-pink-double-glass.webp",
     ]);
   });
 

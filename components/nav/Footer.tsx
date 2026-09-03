@@ -123,6 +123,7 @@ export async function Footer({ locale }: { locale: Locale }) {
 
         <div className="flex flex-col gap-4 pt-8">
           <div className="flex flex-wrap gap-6 font-mono text-[11px] uppercase tracking-[0.18em] text-bone/55">
+            <Link href={`/${locale}/gift-cards`} className="hover:text-bone transition-colors">{tNav("gift_cards")}</Link>
             <Link href={`/${locale}/orchids`} className="hover:text-bone transition-colors">{tNav("orchids")}</Link>
             <Link href={`/${locale}/journal`} className="hover:text-bone transition-colors">{tNav("journal")}</Link>
             <Link href={`/${locale}/contact`} className="hover:text-bone transition-colors">{tNav("contact")}</Link>

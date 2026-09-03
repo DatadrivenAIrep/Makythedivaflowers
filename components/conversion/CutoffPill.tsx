@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useCutoff } from "@/lib/conversion/use-cutoff";
 import { CONV_EVENTS } from "@/lib/conversion/events";
+import { renderCutoffTime } from "@/lib/conversion/cutoff-time";
 import type { Locale } from "@/types/locale";
 
 type Props = {
@@ -16,7 +17,7 @@ export function CutoffPill({ cutoff, locale: _locale }: Props) {
   if (!snap) return null;
 
   const isAfter = snap.status === "after";
-  const time = renderTime(snap.minutesRemaining, t);
+  const time = renderCutoffTime(snap.minutesRemaining, t);
 
   return (
     <span
@@ -30,9 +31,3 @@ export function CutoffPill({ cutoff, locale: _locale }: Props) {
   );
 }
 
-function renderTime(minutes: number, t: ReturnType<typeof useTranslations>): string {
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  if (h > 0) return t("time_hours_minutes", { h, m });
-  return t("time_minutes", { m });
-}

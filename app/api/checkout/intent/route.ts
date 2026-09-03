@@ -8,6 +8,8 @@ import { getAllPriceOverrides, applyPriceOverrides } from "@/lib/product-prices"
 import { saveOrder, updateOrderPaymentIntent } from "@/lib/order-storage";
 import { stripe } from "@/lib/stripe-server";
 import { validateForRedemption, redeem } from "@/lib/gift-card-storage";
+import { validatePromo, redeemPromo } from "@/lib/promo";
+import { buyerHasPaidOrder } from "@/lib/buyer-history";
 import { notifyOrderPaid } from "@/lib/order-notifications";
 import { enqueuePrintJob } from "@/lib/print-queue";
 import { onWebOrderPaid } from "@/lib/on-web-order-paid";
@@ -27,6 +29,12 @@ const requestSchema = z.object({
   lines: z.array(cartLineSchema).min(1, "cart_empty"),
   form: checkoutSchema,
   giftCardCode: z.string().min(1).max(50).optional(),
+  // Only the code travels from the client. The discount is always recomputed
+  // here, so a tampered request cannot dictate its own price.
+  promoCode: z.string().min(1).max(50).optional(),
+  // Capped rather than open-ended: a typo turning $10 into $1,000 should be
+  // refused, not charged. Staff can take a larger tip over the phone.
+  tipCents: z.number().int().min(0).max(20000).optional(),
 });
 
 export async function POST(req: Request) {
@@ -66,7 +74,33 @@ export async function POST(req: Request) {
     deliveryCents = fee;
   }
 
-  const totals = computeOrderTotals(subtotal, deliveryCents);
+  // --- Promo code (optional) ---
+  let promoId: string | undefined;
+  let promoCode: string | undefined;
+  let discountCents = 0;
+  if (parsed.data.promoCode) {
+    const check = validatePromo(parsed.data.promoCode, {
+      subtotalCents: subtotal,
+      deliveryCents,
+      buyerHasOrdered: buyerHasPaidOrder({
+        phone: form.contact.phone,
+        email: form.contact.email,
+      }),
+      buyerPhone: form.contact.phone,
+    });
+    if (!check.ok) {
+      return NextResponse.json(
+        { errors: { formErrors: ["promo_invalid"], promoReason: check.reason } },
+        { status: 400 },
+      );
+    }
+    promoId = check.promo.id;
+    promoCode = check.promo.code;
+    discountCents = check.discountCents;
+  }
+
+  const tipCents = parsed.data.tipCents ?? 0;
+  const totals = computeOrderTotals(subtotal, deliveryCents, discountCents, tipCents);
   const orderId = `do_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
 
   const fulfillment: OrderFulfillment =
@@ -93,6 +127,8 @@ export async function POST(req: Request) {
     lines: backfilledLines,
     fulfillment,
     contact: form.contact,
+    promoId,
+    promoCode,
     smsConsent: form.smsConsent,
     smsMarketingConsent: form.smsMarketingConsent,
     totals,
@@ -126,6 +162,7 @@ export async function POST(req: Request) {
     try {
       await saveOrder(order);
       redeem(giftCardId, order.id, giftCardCents);
+      if (promoId) redeemPromo(promoId, order.id, discountCents);
     } catch (e) {
       console.error("[intent] gift card full-coverage failed", e);
       return NextResponse.json({ errors: { formErrors: ["gift_card_invalid"] } }, { status: 400 });
@@ -159,6 +196,9 @@ export async function POST(req: Request) {
           locale,
           fulfillmentMethod: fulfillment.method,
           ...(giftCardId ? { giftCardId, giftCardCents: String(giftCardCents) } : {}),
+          ...(promoId
+            ? { promoId, promoCode: promoCode ?? "", promoDiscountCents: String(discountCents) }
+            : {}),
         },
         receipt_email: form.contact.email,
       },

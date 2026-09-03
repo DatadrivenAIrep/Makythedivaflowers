@@ -12,7 +12,12 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       { source: "/:locale(en|es)/prom", destination: "/:locale/corsages-boutonnieres", permanent: true },
+      // Sign-in is by SMS code, so there is nothing to sign up for: the
+      // account exists once you have ordered.
+      { source: "/:locale(en|es)/account/sign-up", destination: "/:locale/account", permanent: true },
       { source: "/:locale(en|es)/shop/sympathy", destination: "/:locale/sympathy", permanent: true },
+      // Sympathy has a fuller page than an occasion landing would give it.
+      { source: "/:locale(en|es)/ocasiones/sympathy", destination: "/:locale/sympathy", permanent: true },
       { source: "/:locale(en|es)/product/dozen-roses-bouquet", destination: "/:locale/product/wrapped-red-roses", permanent: true },
       { source: "/:locale(en|es)/product/dozen-roses-in-vase", destination: "/:locale/product/wrapped-red-roses", permanent: true },
       { source: "/:locale(en|es)/product/dozen-roses-in-pink", destination: "/:locale/product/wrapped-roses-colored", permanent: true },
@@ -46,6 +51,9 @@ const nextConfig: NextConfig = {
       { source: "/:locale(en|es)/:path*", headers: [{ key: "Cache-Control", value: revalidateAlways }] },
       { source: "/:locale(en|es)/admin/:path*", headers: [{ key: "Cache-Control", value: neverStore }] },
       { source: "/:locale(en|es)/order/:path*", headers: [{ key: "Cache-Control", value: neverStore }] },
+      // Signed-in customer pages render that person's own order history.
+      { source: "/:locale(en|es)/account", headers: [{ key: "Cache-Control", value: neverStore }] },
+      { source: "/:locale(en|es)/account/:path*", headers: [{ key: "Cache-Control", value: neverStore }] },
       { source: "/:locale(en|es)/shop", headers: [{ key: "Cache-Control", value: neverStore }] },
     ];
   },

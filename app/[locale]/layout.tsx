@@ -12,6 +12,7 @@ import { ToastAddedToBag } from "@/components/cart/ToastAddedToBag";
 import { AddToBagDelight } from "@/components/cart/AddToBagDelight";
 import { LocalBusinessLD } from "@/components/seo/LocalBusinessLD";
 import { ContactContextProvider } from "@/components/contact/ContactContextProvider";
+import { WelcomeOffer } from "@/components/conversion/WelcomeOffer";
 import { TextMakyTrigger } from "@/components/contact/TextMakyTrigger";
 
 export function generateStaticParams() {
@@ -48,6 +49,7 @@ export default async function LocaleLayout({
               <ToastAddedToBag />
               <AddToBagDelight />
               <TextMakyTrigger />
+              <WelcomeOffer locale={locale as Locale} />
             </>
           }
         >

@@ -24,7 +24,7 @@ describe("parseFilterParams", () => {
       occasion: "romance",
       color: "pink",
       size: "grand",
-      price: "200-300",
+      price: "150-200",
       same_day: "1",
       sort: "price-asc",
     });
@@ -32,7 +32,7 @@ describe("parseFilterParams", () => {
       occasion: "romance",
       color: "pink",
       size: "grand",
-      price: "200-300",
+      price: "150-200",
       sameDay: true,
     });
     expect(r.sort).toBe("price-asc");
@@ -57,7 +57,7 @@ describe("serializeFilterParams", () => {
 
   it("round-trips", () => {
     const original = {
-      filter: { occasion: "anniversary", color: "red", price: "300-plus", sameDay: true },
+      filter: { occasion: "anniversary", color: "red", price: "200-plus", sameDay: true },
       sort: "price-desc",
     } as const;
     const s = serializeFilterParams(original);

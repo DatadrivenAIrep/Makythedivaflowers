@@ -19,7 +19,7 @@ const order: Order = {
   lines: [{ kind: "custom", title: "Ramo grande", priceCents: 6000, qty: 1 }],
   fulfillment: { method: "in-store", recipient: { name: "Ana", phone: "5551" } },
   contact: { name: "Ana", phone: "5551" },
-  totals: { subtotalCents: 6000, deliveryCents: 0, taxCents: 0, totalCents: 6000 },
+  totals: { subtotalCents: 6000, deliveryCents: 0, discountCents: 0, tipCents: 0, taxCents: 0, totalCents: 6000 },
   status: "delivered", paymentStatus: "paid", amountPaidCents: 6000,
   createdAt: "2026-06-30T10:00:00Z", updatedAt: "2026-06-30T10:00:00Z",
 };

@@ -14,7 +14,7 @@ const order: Order = {
     { kind: "catalog", productId: "p-arr-b1-01", variantId: "standard", addOnIds: ["candles"], qty: 1 },
   ],
   contact: { name: "Carlos Ramírez", email: "buyer@example.com", phone: "5165551234" },
-  totals: { subtotalCents: 19100, deliveryCents: 1500, taxCents: 1647, totalCents: 22247 },
+  totals: { subtotalCents: 19100, deliveryCents: 1500, discountCents: 0, tipCents: 0, taxCents: 1647, totalCents: 22247 },
   status: "pending",
   paymentStatus: "paid",
   createdAt: "2026-06-16T15:30:00.000Z",

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, useScroll, useMotionValueEvent, useReducedMotion } from "framer-motion";
 import { LocaleSwitcher } from "@/components/nav/LocaleSwitcher";
 import { CartButton } from "@/components/nav/CartButton";
+import { AnnouncementBar } from "@/components/nav/AnnouncementBar";
 import type { Locale } from "@/types/locale";
 import { cn } from "@/lib/cn";
 
@@ -38,6 +39,7 @@ export function TopNav({
       )}
       transition={reduceMotion ? { duration: 0 } : undefined}
     >
+      <AnnouncementBar locale={locale} />
       <div className="max-w-[1400px] mx-auto px-6 flex items-center justify-between h-20">
         <Link href={`/${locale}`} aria-label="Maky the Diva Flowers — Home">
           <Image

@@ -13,16 +13,35 @@ export const TAX_RATE = 0.08625; // NY combined ballpark (Nassau)
 export function computeOrderTotals(
   subtotalCents: number,
   deliveryCents: number = 0,
+  discountCents: number = 0,
+  tipCents: number = 0,
 ): OrderTotals {
   if (subtotalCents <= 0) {
-    return { subtotalCents: 0, deliveryCents: 0, taxCents: 0, totalCents: 0 };
+    return {
+      subtotalCents: 0,
+      deliveryCents: 0,
+      discountCents: 0,
+      tipCents: 0,
+      taxCents: 0,
+      totalCents: 0,
+    };
   }
-  const taxCents = Math.round((subtotalCents + deliveryCents) * TAX_RATE);
+  // A merchant discount reduces the taxable receipt, so tax is charged on what
+  // the customer actually pays. Clamped to the order value so a large fixed-
+  // amount code can never drive the total (or the tax) negative.
+  const discount = Math.min(Math.max(discountCents, 0), subtotalCents + deliveryCents);
+  const taxable = subtotalCents + deliveryCents - discount;
+  const taxCents = Math.round(taxable * TAX_RATE);
+  // The tip is collected for the team, not earned by the shop, so it is added
+  // after tax and never widens the taxable base.
+  const tip = Math.max(tipCents, 0);
   return {
     subtotalCents,
     deliveryCents,
+    discountCents: discount,
+    tipCents: tip,
     taxCents,
-    totalCents: subtotalCents + deliveryCents + taxCents,
+    totalCents: taxable + taxCents + tip,
   };
 }
 
@@ -70,8 +89,16 @@ export function resolveOrderTotals(input: {
   // those are themselves explicitly overridden). Only a total override pins it.
   const subtotalCents = o.subtotalCents ?? computed.subtotalCents;
   const deliveryCents = o.deliveryCents ?? computed.deliveryCents;
-  const recomputed = computeOrderTotals(subtotalCents, deliveryCents);
+  const recomputed = computeOrderTotals(
+    subtotalCents,
+    deliveryCents,
+    o.discountCents ?? 0,
+    o.tipCents ?? 0,
+  );
+  const discountCents = recomputed.discountCents;
+  const tipCents = recomputed.tipCents;
   const taxCents = o.taxCents ?? recomputed.taxCents;
-  const totalCents = o.totalCents ?? subtotalCents + deliveryCents + taxCents;
-  return { subtotalCents, deliveryCents, taxCents, totalCents };
+  const totalCents =
+    o.totalCents ?? subtotalCents + deliveryCents - discountCents + taxCents + tipCents;
+  return { subtotalCents, deliveryCents, discountCents, tipCents, taxCents, totalCents };
 }

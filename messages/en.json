@@ -16,6 +16,7 @@
     "sympathy": "Sympathy",
     "orchids": "Orchids",
     "subscriptions": "Subscriptions",
+    "gift_cards": "Gift cards",
     "weddings": "Weddings",
     "events": "Events",
     "story": "Story",
@@ -109,6 +110,29 @@
       "unknown_error": "Something went wrong. Please try again or call us directly.",
       "zip_not_in_zone": "We don't deliver to that ZIP yet.",
       "payment_init_failed": "We couldn't start the payment. Please try again."
+    },
+    "promo": {
+      "label": "Promo code",
+      "placeholder": "Enter a code",
+      "apply": "Apply",
+      "remove": "Remove",
+      "error": {
+        "invalid": "That code isn't valid. Check the spelling and try again.",
+        "inactive": "That code is no longer active.",
+        "not_started": "That code isn't active yet.",
+        "expired": "That code has expired.",
+        "below_minimum": "This code needs an order of {amount} or more.",
+        "exhausted": "That code has been fully claimed.",
+        "not_first_order": "That code is for a first order only.",
+        "not_yours": "That code was sent to a different number.",
+        "no_discount": "That code doesn't change this order's price.",
+        "rate_limited": "Too many tries. Wait a minute and try again."
+      }
+    },
+    "tip": {
+      "label": "Tip the team (optional)",
+      "body": "Every dollar goes to the designer who built it and the driver who took it.",
+      "none": "No tip"
     }
   },
   "confirmation": {
@@ -163,6 +187,10 @@
       "cta_primary": "Shop arrangements",
       "cta_secondary": "Plan a wedding"
     },
+    "occasions": {
+      "eyebrow": "Shop by occasion",
+      "title": "What is the occasion?"
+    },
     "marquee": "MAKY THE DIVA FLOWERS · ROMANCE BY THE STEM · LONG ISLAND · DESDE 2014 · ENVÍOS HOY · SAME-DAY DELIVERY",
     "bento": {
       "console_eyebrow": "Inside the studio",
@@ -215,6 +243,11 @@
         "title": "Ivory & Emerald",
         "cta": "Shop the piece",
         "quote": "Request a quote"
+      },
+      "designers_choice": {
+        "eyebrow": "Designer's choice",
+        "title": "Let Maky choose.",
+        "cta": "See the piece"
       }
     },
     "categories_title": "Find your bloom.",
@@ -446,43 +479,35 @@
     "title": "Your account.",
     "tabs": {
       "sign-in": "Sign in",
-      "sign-up": "Sign up",
       "orders": "Orders"
-    },
-    "sign-in": {
-      "shell": {
-        "eyebrow": "Welcome back",
-        "title": "Sign in to your account.",
-        "body": "Manage subscriptions, view orders, and update your delivery preferences.",
-        "signature": "— Diva, NYC"
-      },
-      "email": "Email",
-      "password": "Password",
-      "submit": "Sign in",
-      "stub_title": "You're signed in.",
-      "stub_body": "Authentication is coming soon. We'll notify you when your account is ready.",
-      "stub_notice": "Stub — full auth not yet implemented"
-    },
-    "sign-up": {
-      "shell": {
-        "eyebrow": "Create account",
-        "title": "Begin a relationship with Diva.",
-        "body": "We'll save your preferences for future arrangements and send order updates.",
-        "signature": "— Diva, NYC"
-      },
-      "name": "Full name",
-      "email": "Email",
-      "password": "Password",
-      "submit": "Create account",
-      "stub_title": "Account created.",
-      "stub_body": "Thank you for signing up. We'll send you an email when your account is fully ready.",
-      "stub_notice": "Stub — full auth not yet implemented"
     },
     "orders": {
       "empty_title": "No orders yet.",
       "empty_body": "When you place an order, it will appear here. Start by browsing our arrangements.",
       "empty_cta": "Shop now",
       "stub_notice": "Stub — order history coming soon"
+    },
+    "sign_in_sms": {
+      "intro": "Enter the phone number you order with and we will text you a code. No password.",
+      "phone_label": "Phone number",
+      "submit_phone": "Send me a code",
+      "code_sent": "If {phone} is on file, a six-digit code is on its way.",
+      "code_label": "Six-digit code",
+      "submit_code": "Sign in",
+      "change_number": "Use a different number",
+      "error_phone": "That does not look like a phone number.",
+      "error_code": "That code is not right. Check it and try again.",
+      "error_expired": "That code expired. Ask for a new one.",
+      "error_too_many": "Too many tries. Wait a few minutes and start again.",
+      "error_rate_limited": "Too many requests. Wait a few minutes.",
+      "error_generic": "Something went wrong. Try again."
+    },
+    "history": {
+      "title": "Your orders",
+      "sign_out": "Sign out",
+      "order_again": "Send this again",
+      "delivered_to": "Delivered to",
+      "picked_up": "Picked up at the shop"
     }
   },
   "journal": {
@@ -937,14 +962,27 @@
     },
     "reciprocity": {
       "referral_eyebrow": "Refer a friend",
-      "referral_title": "Send a friend $20.",
-      "referral_body": "Get $20 toward your next arrangement when they order.",
-      "referral_copy_cta": "Copy code",
-      "referral_copied": "Copied!",
+      "referral_title": "Give a friend $15.",
+      "referral_body": "Share this code. They get $15 off their first order of $75 or more, and we credit you $15 as soon as it is paid.",
       "subscription_eyebrow": "Stay in bloom",
       "subscription_title": "Loved sending this?",
       "subscription_body": "Weekly arrangements at her door, hand-built fresh every Thursday. Pause anytime. Skip a week. Cancel in two clicks.",
       "subscription_cta": "See subscriptions"
+    },
+    "welcome": {
+      "eyebrow": "First order",
+      "title": "10% off your first order.",
+      "body": "We text you a code, good for 30 days on any order of $75 or more. No emails, no newsletter — one message with your code.",
+      "phone_label": "Mobile number",
+      "consent": "Text me my code and the occasional offer from Diva Flowers. Message and data rates may apply; reply STOP to opt out.",
+      "submit": "Text me the code",
+      "dismiss": "No thanks",
+      "close": "Close",
+      "sent_title": "Check your phone.",
+      "sent_body": "Your code is on its way. It comes off any order of $75 or more, for the next 30 days.",
+      "error_phone": "That does not look like a mobile number.",
+      "error_rate_limited": "We already sent a code to that number. Check your messages.",
+      "error_generic": "Something went wrong. Try again."
     }
   },
   "subscriptions": {
@@ -1386,6 +1424,8 @@
     "subtotal": "Subtotal",
     "delivery": "Delivery",
     "tax": "Tax",
+    "discount": "Discount",
+    "tip": "Tip",
     "total": "Total",
     "status": "Status",
     "order_canceled": "Order canceled",
@@ -1454,6 +1494,7 @@
     "nav_run_sheet": "Deliveries today",
     "nav_ledger": "Order book",
     "nav_gift_cards": "Gift Cards",
+    "nav_promos": "Promos",
     "nav_customers": "Customers",
     "nav_occasions": "Occasions",
     "nav_metrics": "Metrics",
@@ -1727,5 +1768,64 @@
     "tpl_ready_for_pickup": "Ready for pickup",
     "tpl_delivered": "Delivered",
     "tpl_review_request": "Review request"
+  },
+  "admin_promos": {
+    "title": "Promo codes",
+    "subtitle": "Discount codes buyers enter at checkout. Deactivate one to stop it immediately.",
+    "field_code": "Code",
+    "field_kind": "Type",
+    "field_percent": "Percent",
+    "field_amount": "Amount ($)",
+    "field_min_subtotal": "Minimum order ($)",
+    "field_max_redemptions": "Max uses",
+    "field_note": "Note",
+    "field_first_order_only": "First order only",
+    "placeholder_optional": "Optional",
+    "placeholder_unlimited": "Unlimited",
+    "placeholder_note": "What this code is for",
+    "create_cta": "Create code",
+    "error_duplicate": "That code already exists.",
+    "error_generic": "Could not create the code. Check the values and try again.",
+    "col_code": "Code",
+    "col_value": "Value",
+    "col_rules": "Rules",
+    "col_used": "Used",
+    "col_discounted": "Discounted",
+    "col_status": "Status",
+    "rule_min": "min",
+    "rule_max": "max",
+    "rule_first_order": "first order",
+    "status_active": "Active",
+    "status_inactive": "Off",
+    "empty": "No codes yet."
+  },
+  "gift_cards": {
+    "eyebrow": "Gift cards",
+    "title": "Let them choose the flowers.",
+    "lead": "The card arrives by email with your message, and works on any order — delivery, pickup, or a subscription. It never expires within the year, and any unused balance stays on it.",
+    "how_title": "How it works",
+    "how_1": "Pick an amount and write a note.",
+    "how_2": "We email the card to your recipient with your message on it.",
+    "how_3": "They enter the code at checkout. Any balance left over stays on the card.",
+    "fine_print": "Valid for one year from purchase at our Albertson studio, online or in person. Not redeemable for cash.",
+    "form": {
+      "amount_label": "Amount",
+      "amount_custom": "Other",
+      "recipient_email": "Recipient's email",
+      "recipient_name": "Recipient's name",
+      "from_label": "From",
+      "purchaser_email": "Your email",
+      "purchaser_hint": "For your receipt.",
+      "message_label": "Message on the card",
+      "continue": "Continue to payment",
+      "pay": "Pay {amount}",
+      "paying": "Processing…",
+      "done_title": "On its way.",
+      "done_body": "We have emailed the card to {email}. Your receipt is on its way to you.",
+      "done_body_generic": "The card is on its way to your recipient, and your receipt is on its way to you.",
+      "error_amount": "Choose an amount of {min} or more.",
+      "error_amount_max": "For more than {max}, call the shop and we will set it up.",
+      "error_generic": "That did not go through. Check the details and try again."
+    }
   }
 }

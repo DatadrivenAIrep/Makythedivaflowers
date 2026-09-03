@@ -40,6 +40,14 @@ describe("MobileDrawer", () => {
     expect(screen.getByRole("link", { name: /events/i })).toBeInTheDocument();
   });
 
+  it("offers gift cards, which the studio sells and used to bury in the footer", () => {
+    render(<MobileDrawer isOpen={true} onClose={vi.fn()} locale="en" />);
+    expect(screen.getByRole("link", { name: /gift_cards/i })).toHaveAttribute(
+      "href",
+      "/en/gift-cards",
+    );
+  });
+
   it("renders category chips when open", () => {
     render(<MobileDrawer isOpen={true} onClose={vi.fn()} locale="en" />);
     expect(screen.getByRole("link", { name: /arrangements/i })).toBeInTheDocument();

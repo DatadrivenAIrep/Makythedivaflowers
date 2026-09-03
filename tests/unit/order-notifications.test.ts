@@ -8,7 +8,7 @@ const baseOrder: Order = {
   locale: "en",
   lines: [{ kind: "catalog", productId: "p-arr-m01", variantId: "standard", addOnIds: [], qty: 1 }],
   contact: { email: "buyer@example.com", phone: "5165551234" },
-  totals: { subtotalCents: 19100, deliveryCents: 0, taxCents: 1647, totalCents: 20747 },
+  totals: { subtotalCents: 19100, deliveryCents: 0, discountCents: 0, tipCents: 0, taxCents: 1647, totalCents: 20747 },
   status: "pending",
   paymentStatus: "paid",
   createdAt: "2026-05-07T15:30:00.000Z",

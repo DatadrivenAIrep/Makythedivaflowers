@@ -194,7 +194,7 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 20300, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["same-day"],
-    occasions: ["birthday", "congrats", "just-because"],
+    occasions: ["birthday", "congrats", "just-because", "thank-you", "graduation"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -305,7 +305,7 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 10100, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["same-day"],
-    occasions: ["just-because", "birthday"],
+    occasions: ["just-because", "birthday", "thank-you", "thinking-of-you", "get-well"],
     colorFamily: ["mixed", "pastel"],
     active: true,
     seo: {
@@ -380,7 +380,7 @@ export const PRODUCTS: Product[] = [
       { id: "candles", label: { en: "Add taper candle pair", es: "Añadir par de velas" }, priceCents: 2500 },
     ],
     tags: ["new", "same-day", "staff-pick", "seasonal"],
-    occasions: ["just-because", "congrats"],
+    occasions: ["just-because", "congrats", "thank-you"],
     colorFamily: ["mixed"],
     active: true,
     seasonMonths: [9, 10, 11],
@@ -483,7 +483,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["congrats", "just-because", "birthday"],
+    occasions: ["congrats", "just-because", "birthday", "new-baby"],
     colorFamily: ["pastel", "white"],
     active: true,
     seo: {
@@ -516,7 +516,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["mothers-day", "anniversary", "romance", "just-because", "sympathy"],
+    occasions: ["mothers-day", "anniversary", "romance", "just-because", "sympathy", "thinking-of-you"],
     colorFamily: ["white"],
     active: true,
     seo: {
@@ -549,7 +549,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day", "seasonal"],
-    occasions: ["just-because", "congrats"],
+    occasions: ["just-because", "congrats", "thank-you"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -684,7 +684,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["congrats", "birthday"],
+    occasions: ["congrats", "birthday", "graduation"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -717,7 +717,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 13500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday", "get-well"],
+    occasions: ["just-because", "birthday", "get-well", "new-baby", "thank-you"],
     colorFamily: ["mixed", "green"],
     active: true,
     seo: {
@@ -750,7 +750,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 14500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because", "mothers-day"],
+    occasions: ["birthday", "just-because", "mothers-day", "new-baby", "thinking-of-you", "get-well"],
     colorFamily: ["pastel"],
     active: true,
     seo: {
@@ -820,7 +820,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["congrats", "just-because"],
+    occasions: ["congrats", "just-because", "graduation"],
     colorFamily: ["white", "mixed"],
     active: true,
     seo: {
@@ -889,7 +889,7 @@ export const PRODUCTS: Product[] = [
       { id: "champagne", label: { en: "Add Veuve Clicquot", es: "Añadir Veuve Clicquot" }, priceCents: 8900 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["romance", "anniversary", "congrats", "just-because"],
+    occasions: ["romance", "anniversary", "congrats", "just-because", "new-baby"],
     colorFamily: ["white"],
     active: true,
     seo: {
@@ -922,7 +922,7 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 16900, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["just-because", "birthday", "congrats"],
+    occasions: ["just-because", "birthday", "congrats", "thank-you"],
     colorFamily: ["pink", "mixed"],
     active: true,
     seo: {
@@ -988,7 +988,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 13500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday", "mothers-day"],
+    occasions: ["just-because", "birthday", "mothers-day", "new-baby", "get-well"],
     colorFamily: ["pastel"],
     active: true,
     seo: {
@@ -1054,7 +1054,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["congrats", "just-because"],
+    occasions: ["congrats", "just-because", "thank-you"],
     colorFamily: ["white", "green"],
     active: true,
     seo: {
@@ -1291,7 +1291,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because", "congrats"],
+    occasions: ["birthday", "just-because", "congrats", "graduation"],
     colorFamily: ["mixed", "pink"],
     active: true,
     seo: {
@@ -1391,7 +1391,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday"],
+    occasions: ["just-because", "birthday", "new-baby"],
     colorFamily: ["pastel", "pink"],
     active: true,
     seo: {
@@ -1424,7 +1424,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15000 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["romance", "just-because", "anniversary"],
+    occasions: ["romance", "just-because", "anniversary", "thinking-of-you"],
     colorFamily: ["white", "green"],
     active: true,
     seo: {
@@ -1457,7 +1457,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["congrats", "just-because"],
+    occasions: ["congrats", "just-because", "thinking-of-you", "get-well"],
     colorFamily: ["green"],
     active: true,
     seo: {
@@ -1490,7 +1490,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["birthday", "just-because", "congrats"],
+    occasions: ["birthday", "just-because", "congrats", "graduation"],
     colorFamily: ["pink", "mixed"],
     active: true,
     seo: {
@@ -1556,7 +1556,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "congrats"],
+    occasions: ["just-because", "congrats", "thank-you"],
     colorFamily: ["white", "green"],
     active: true,
     seo: {
@@ -1622,7 +1622,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "congrats", "just-because"],
+    occasions: ["birthday", "congrats", "just-because", "graduation"],
     colorFamily: ["mixed", "pink"],
     active: true,
     seo: {
@@ -1688,7 +1688,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 14500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because"],
+    occasions: ["birthday", "just-because", "graduation"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -1724,7 +1724,7 @@ export const PRODUCTS: Product[] = [
       { id: "card", label: { en: "Handwritten card", es: "Tarjeta escrita a mano" }, priceCents: 500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "congrats", "birthday", "get-well"],
+    occasions: ["just-because", "congrats", "birthday", "get-well", "thank-you"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -1757,7 +1757,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday"],
+    occasions: ["just-because", "birthday", "thank-you"],
     colorFamily: ["mixed", "pastel"],
     active: true,
     seo: {
@@ -1827,7 +1827,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16000 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday"],
+    occasions: ["just-because", "birthday", "new-baby", "thinking-of-you", "get-well"],
     colorFamily: ["green", "pastel"],
     active: true,
     seo: {
@@ -1926,7 +1926,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday", "get-well", "sympathy"],
+    occasions: ["just-because", "birthday", "get-well", "sympathy", "new-baby", "thinking-of-you"],
     colorFamily: ["pastel", "white"],
     active: true,
     seo: {
@@ -2025,7 +2025,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["birthday", "just-because", "congrats"],
+    occasions: ["birthday", "just-because", "congrats", "graduation"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -2161,7 +2161,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
     tags: ["new", "seasonal", "same-day"],
-    occasions: ["just-because", "birthday"],
+    occasions: ["just-because", "birthday", "thank-you", "thinking-of-you"],
     colorFamily: ["white", "green"],
     active: true,
     seo: {
@@ -2194,7 +2194,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 16500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["sympathy", "congrats", "just-because", "birthday"],
+    occasions: ["sympathy", "congrats", "just-because", "birthday", "thinking-of-you"],
     colorFamily: ["green"],
     active: true,
     seo: {
@@ -2261,7 +2261,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "staff-pick"],
-    occasions: ["birthday", "congrats", "just-because"],
+    occasions: ["birthday", "congrats", "just-because", "graduation"],
     colorFamily: ["pink", "green", "mixed"],
     active: true,
     seo: {
@@ -2318,8 +2318,8 @@ export const PRODUCTS: Product[] = [
       es: "Una orquídea viva que florece dos o tres meses, no dos o tres días.",
     },
     description: {
-      en: "A phalaenopsis in a white ceramic pot, moss-topped, chosen from what's blooming best that morning. Cut flowers give you a week; this gives you eight to twelve weeks of bloom, and then it comes back next year if you let it. Choose one stem or two — the double is the one people notice from the doorway. Colors rotate with what's in: white, soft pink, fuchsia. Order before 2:00 pm for same-day delivery on Long Island. Care card included, and honestly the whole card comes down to: water once a week, never leave it sitting in a saucer.",
-      es: "Una phalaenopsis en maceta de cerámica blanca, con musgo, elegida entre las que mejor están floreciendo esa mañana. Las flores cortadas te dan una semana; esta te da de ocho a doce semanas de floración, y vuelve el año siguiente si la dejas. Elige un tallo o dos — la doble es la que se nota desde la puerta. Los colores rotan según lo que haya: blanca, rosa suave, fucsia. Pide antes de las 2:00 pm para entrega el mismo día en Long Island. Incluye tarjeta de cuidado, y la tarjeta entera se resume en: riega una vez por semana y nunca la dejes parada en el plato.",
+      en: "A phalaenopsis in a white ceramic pot or a moss-topped glass cube, chosen from what's blooming best that morning. Cut flowers give you a week; this gives you eight to twelve weeks of bloom, and then it comes back next year if you let it. Choose one stem or two — the double is the one people notice from the doorway. Colors rotate with what's in: white, soft pink, fuchsia. Order before 2:00 pm for same-day delivery on Long Island. Care card included, and honestly the whole card comes down to: water once a week, never leave it sitting in a saucer.",
+      es: "Una phalaenopsis en maceta de cerámica blanca o en cubo de cristal con musgo, elegida entre las que mejor están floreciendo esa mañana. Las flores cortadas te dan una semana; esta te da de ocho a doce semanas de floración, y vuelve el año siguiente si la dejas. Elige un tallo o dos — la doble es la que se nota desde la puerta. Los colores rotan según lo que haya: blanca, rosa suave, fucsia. Pide antes de las 2:00 pm para entrega el mismo día en Long Island. Incluye tarjeta de cuidado, y la tarjeta entera se resume en: riega una vez por semana y nunca la dejes parada en el plato.",
     },
     images: [
       {
@@ -2339,10 +2339,10 @@ export const PRODUCTS: Product[] = [
         aspect: "4/5",
       },
       {
-        src: "/products/phalaenopsis-pink-double.webp",
+        src: "/products/phalaenopsis-pink-double-glass.webp",
         alt: {
-          en: "Soft pink phalaenopsis orchid with two stems in a square white ceramic pot",
-          es: "Orquídea phalaenopsis rosa suave de dos tallos en maceta cuadrada de cerámica blanca",
+          en: "Soft pink phalaenopsis orchid with two stems in a glass cube topped with moss",
+          es: "Orquídea phalaenopsis rosa suave de dos tallos en cubo de cristal con musgo",
         },
         aspect: "4/5",
       },
@@ -2370,7 +2370,7 @@ export const PRODUCTS: Product[] = [
       },
     ],
     tags: ["same-day", "new", "staff-pick"],
-    occasions: ["just-because", "congrats", "birthday", "get-well"],
+    occasions: ["just-because", "congrats", "birthday", "get-well", "new-baby", "thinking-of-you"],
     colorFamily: ["white", "pink"],
     active: true,
     seo: {
@@ -2407,7 +2407,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["congrats", "just-because"],
+    occasions: ["congrats", "just-because", "graduation"],
     colorFamily: ["mixed", "green"],
     active: true,
     seo: {
@@ -2440,7 +2440,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday", "mothers-day"],
+    occasions: ["just-because", "birthday", "mothers-day", "new-baby", "thinking-of-you", "get-well"],
     colorFamily: ["pastel", "pink"],
     active: true,
     seo: {
@@ -2473,7 +2473,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 14500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because"],
+    occasions: ["birthday", "just-because", "thank-you", "get-well"],
     colorFamily: ["pastel", "mixed"],
     active: true,
     seo: {
@@ -2608,7 +2608,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because", "congrats"],
+    occasions: ["birthday", "just-because", "congrats", "graduation"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -2674,7 +2674,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15000 },
     ],
     tags: ["new", "seasonal", "same-day"],
-    occasions: ["just-because", "birthday"],
+    occasions: ["just-because", "birthday", "new-baby"],
     colorFamily: ["pastel", "mixed"],
     active: true,
     seo: {
@@ -2707,7 +2707,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 18500 },
     ],
     tags: ["new", "staff-pick"],
-    occasions: ["congrats", "just-because"],
+    occasions: ["congrats", "just-because", "graduation"],
     colorFamily: ["white", "green"],
     active: true,
     seo: {
@@ -2842,7 +2842,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 14000 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday", "get-well"],
+    occasions: ["just-because", "birthday", "get-well", "thank-you"],
     colorFamily: ["mixed", "white"],
     active: true,
     seo: {
@@ -3219,7 +3219,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["congrats", "birthday", "just-because"],
+    occasions: ["congrats", "birthday", "just-because", "graduation"],
     colorFamily: ["pink", "mixed"],
     active: true,
     seo: {
@@ -3285,7 +3285,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15000 },
     ],
     tags: ["new", "seasonal", "same-day"],
-    occasions: ["just-because", "birthday"],
+    occasions: ["just-because", "birthday", "new-baby", "thinking-of-you", "get-well"],
     colorFamily: ["pastel", "white"],
     active: true,
     seo: {
@@ -3318,7 +3318,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 13500 },
     ],
     tags: ["new", "same-day", "seasonal"],
-    occasions: ["just-because", "birthday", "mothers-day"],
+    occasions: ["just-because", "birthday", "mothers-day", "thank-you"],
     colorFamily: ["mixed", "pastel"],
     active: true,
     seo: {
@@ -3359,6 +3359,245 @@ export const PRODUCTS: Product[] = [
       description: {
         en: "Quiet winter arrangement with cedar, moss, and amaryllis. Same-day delivery on Long Island.",
         es: "Arreglo invernal sereno con cedro, musgo y amaryllis. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  // ─── Shot in the studio 2026-09-03 ─────────────────
+  {
+    id: "p-arr-b4-01",
+    slug: "soft-landing",
+    title: { en: "Soft Landing", es: "Aterrizaje Suave" },
+    category: "arrangements",
+    blurb: {
+      en: "White hydrangea, blush roses, and cymbidium orchids, built low and round for a table people sit around.",
+      es: "Hortensias blancas, rosas blush y orquídeas cymbidium, bajo y redondo para una mesa donde la gente se sienta.",
+    },
+    description: {
+      en: "For the friend who has had a long week and would never say so — white hydrangea packed close, blush roses, pink cymbidium orchids, lavender lisianthus, and green viburnum, built low and round in a clear glass bowl so it clears a coffee table and never blocks a conversation. Pastel without turning sweet: the white hydrangea carries the light, the lavender lisianthus keeps it from reading like a nursery, and the cymbidium orchids are the detail people lean in for. It lands at the door and reads again from across the room, which is the whole point of sending flowers instead of a text. Order before 2:00 pm and it goes out today across Long Island, built to the photo in the same palette with whatever came in freshest that morning.",
+      es: "Para la amiga que tuvo una semana larga y jamás lo diría — hortensias blancas bien juntas, rosas blush, orquídeas cymbidium rosadas, lisianthus lavanda y viburnum verde, armado bajo y redondo en un cuenco de vidrio transparente para que quepa en una mesa de centro y no tape la conversación. Pastel sin volverse dulzón: la hortensia blanca lleva la luz, el lisianthus lavanda evita que parezca cuarto de bebé, y las orquídeas cymbidium son el detalle por el que la gente se acerca. Llega en la puerta y se vuelve a leer desde el otro lado del cuarto, que es justamente para lo que uno manda flores en vez de un mensaje. Pídelo antes de las 2:00 pm y sale hoy mismo por Long Island, armado como la foto en la misma paleta con lo que haya entrado más fresco esa mañana.",
+    },
+    images: [
+      {
+        src: "/products/soft-landing.jpg",
+        alt: {
+          en: "Low round arrangement of white hydrangea, blush roses, pink cymbidium orchids, and lavender lisianthus in a clear glass bowl",
+          es: "Arreglo bajo y redondo de hortensias blancas, rosas blush, orquídeas cymbidium rosadas y lisianthus lavanda en cuenco de vidrio transparente",
+        },
+        aspect: "4/5",
+      },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9000 },
+    ],
+    tags: ["new", "same-day", "staff-pick"],
+    occasions: ["birthday", "get-well", "thinking-of-you", "new-baby", "congrats", "just-because"],
+    colorFamily: ["white", "pink", "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Soft Landing — Diva Flowers", es: "Aterrizaje Suave — Diva Flowers" },
+      description: {
+        en: "Low round arrangement of white hydrangea, blush roses, and cymbidium orchids in clear glass. Same-day delivery on Long Island.",
+        es: "Arreglo bajo y redondo de hortensias blancas, rosas blush y orquídeas cymbidium en vidrio transparente. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-arr-b4-02",
+    slug: "chantilly-cream",
+    title: { en: "Chantilly Cream", es: "Crema Chantilly" },
+    category: "arrangements",
+    blurb: {
+      en: "Butter-cream garden roses and cymbidium orchids, packed close with green hydrangea.",
+      es: "Rosas de jardín color mantequilla y orquídeas cymbidium, bien juntas con hortensia verde.",
+    },
+    description: {
+      en: "For the one who sets the table properly even on a Wednesday — cream and butter garden roses opened wide, blush cymbidium orchids, white spray roses, green hydrangea, pink stock, and lisianthus, gathered close in a low glass bowl with eucalyptus spilling over one side. It is the arrangement that reads expensive without announcing it: no bright color, nothing spiky, just layers of cream and green that hold their shape for the better part of a week. Send it for the promotion, the dinner party, the apology that deserves more than a text. Order before 2:00 pm and it goes out today across Long Island, built to the photo in the same palette with whatever came in freshest that morning.",
+      es: "Para quien pone bien la mesa hasta un miércoles — rosas de jardín crema y mantequilla abiertas de par en par, orquídeas cymbidium blush, mini-rosas blancas, hortensia verde, alhelí rosado y lisianthus, reunidas en un cuenco bajo de vidrio con eucalipto cayendo por un costado. Es el arreglo que se ve caro sin anunciarlo: nada de color estridente, nada puntiagudo, solo capas de crema y verde que aguantan la forma casi una semana. Mándalo por el ascenso, por la cena, por la disculpa que merece más que un mensaje. Pídelo antes de las 2:00 pm y sale hoy mismo por Long Island, armado como la foto en la misma paleta con lo que haya entrado más fresco esa mañana.",
+    },
+    images: [
+      {
+        src: "/products/chantilly-cream.jpg",
+        alt: {
+          en: "Low arrangement of cream garden roses, blush cymbidium orchids, and green hydrangea in a glass bowl",
+          es: "Arreglo bajo de rosas de jardín crema, orquídeas cymbidium blush y hortensia verde en cuenco de vidrio",
+        },
+        aspect: "4/5",
+      },
+      {
+        src: "/products/chantilly-cream-2.jpg",
+        alt: {
+          en: "Chantilly Cream arrangement seen from above, cream garden roses and cymbidium orchids",
+          es: "Arreglo Crema Chantilly visto desde arriba, rosas de jardín crema y orquídeas cymbidium",
+        },
+        aspect: "4/5",
+      },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 12000 },
+    ],
+    tags: ["new", "same-day", "staff-pick"],
+    occasions: ["anniversary", "congrats", "birthday", "thank-you", "just-because"],
+    colorFamily: ["white", "green", "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Chantilly Cream — Diva Flowers", es: "Crema Chantilly — Diva Flowers" },
+      description: {
+        en: "Cream garden roses, cymbidium orchids, and green hydrangea in a low glass bowl. Same-day delivery on Long Island.",
+        es: "Rosas de jardín crema, orquídeas cymbidium y hortensia verde en cuenco bajo de vidrio. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-arr-b4-03",
+    slug: "rose-quartz",
+    title: { en: "Rose Quartz", es: "Cuarzo Rosa" },
+    category: "arrangements",
+    blurb: {
+      en: "White lilies and mauve roses over antique-pink hydrangea — the quiet one that still fills a room.",
+      es: "Lirios blancos y rosas malva sobre hortensia rosa antiguo — el discreto que igual llena el cuarto.",
+    },
+    description: {
+      en: "For the one who reads the room before speaking — white lilies opening over mauve and cream garden roses, antique-pink hydrangea, white stock, calla lilies, and lavender lisianthus, with lily grass arching above the whole thing. Half the lilies arrive closed on purpose: they open across the week, so the arrangement is still becoming something on day five. The mauve keeps it out of nursery territory and the white stock brings the scent. Send it for the birthday that matters, the thank-you that has weight, the get-well that should not look cheerful. Order before 2:00 pm and it goes out today across Long Island, built to the photo in the same palette with whatever came in freshest that morning.",
+      es: "Para quien lee el cuarto antes de hablar — lirios blancos abriéndose sobre rosas de jardín malva y crema, hortensia rosa antiguo, alhelí blanco, callas y lisianthus lavanda, con lily grass arqueada por encima de todo. La mitad de los lirios llegan cerrados a propósito: abren a lo largo de la semana, así que al quinto día el arreglo todavía se está convirtiendo en algo. El malva lo saca del terreno de cuarto de bebé y el alhelí pone el aroma. Mándalo por el cumpleaños que importa, el gracias que pesa, el mejórate que no debería verse alegre. Pídelo antes de las 2:00 pm y sale hoy mismo por Long Island, armado como la foto en la misma paleta con lo que haya entrado más fresco esa mañana.",
+    },
+    images: [
+      {
+        src: "/products/rose-quartz.jpg",
+        alt: {
+          en: "Arrangement of white lilies, mauve roses, and antique-pink hydrangea in a clear glass bowl",
+          es: "Arreglo de lirios blancos, rosas malva y hortensia rosa antiguo en cuenco de vidrio transparente",
+        },
+        aspect: "4/5",
+      },
+      {
+        src: "/products/rose-quartz-2.jpg",
+        alt: {
+          en: "Rose Quartz arrangement from above, white lily open over pink hydrangea and mauve roses",
+          es: "Arreglo Cuarzo Rosa desde arriba, lirio blanco abierto sobre hortensia rosada y rosas malva",
+        },
+        aspect: "4/5",
+      },
+      {
+        src: "/products/rose-quartz-3.jpg",
+        alt: {
+          en: "Rose Quartz arrangement in a green ceramic cylinder with lilies, garden roses, and pink hydrangea",
+          es: "Arreglo Cuarzo Rosa en cilindro de cerámica verde con lirios, rosas de jardín y hortensia rosada",
+        },
+        aspect: "4/5",
+      },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 12500 },
+    ],
+    tags: ["new", "same-day", "staff-pick"],
+    occasions: ["birthday", "anniversary", "get-well", "thank-you", "thinking-of-you", "just-because"],
+    colorFamily: ["pink", "white", "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Rose Quartz — Diva Flowers", es: "Cuarzo Rosa — Diva Flowers" },
+      description: {
+        en: "White lilies, mauve garden roses, and antique-pink hydrangea, built low in glass. Same-day delivery on Long Island.",
+        es: "Lirios blancos, rosas de jardín malva y hortensia rosa antiguo, armado bajo en vidrio. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-arr-b4-04",
+    slug: "pink-persuasion",
+    title: { en: "Pink Persuasion", es: "Persuasión Rosa" },
+    category: "arrangements",
+    blurb: {
+      en: "Hot pink roses against green hydrangea in a deep green cylinder — colour with a spine.",
+      es: "Rosas fucsia contra hortensia verde en cilindro verde profundo — color con carácter.",
+    },
+    description: {
+      en: "For the friend who never needed the volume turned down — hot pink roses at full open, blush and cream spray roses, pink lisianthus, and green hydrangea packed tight in a deep green ceramic cylinder. The green is doing the work here: it keeps the fuchsia from going sweet and gives the whole thing a hedge-clipped, deliberate edge. Compact enough for a desk or a nightstand, loud enough that nobody has to ask who sent it. Send it for the birthday, the new job, the Tuesday that needed rescuing. Order before 2:00 pm and it goes out today across Long Island, built to the photo in the same palette with whatever came in freshest that morning.",
+      es: "Para la amiga que nunca necesitó que le bajaran el volumen — rosas fucsia bien abiertas, mini-rosas blush y crema, lisianthus rosado y hortensia verde apretadas en un cilindro de cerámica verde profundo. El verde es el que hace el trabajo: evita que el fucsia se vuelva dulzón y le da al conjunto un filo recortado, deliberado. Compacto para un escritorio o una mesa de noche, y lo bastante fuerte para que nadie tenga que preguntar quién lo mandó. Mándalo por el cumpleaños, por el trabajo nuevo, por el martes que había que rescatar. Pídelo antes de las 2:00 pm y sale hoy mismo por Long Island, armado como la foto en la misma paleta con lo que haya entrado más fresco esa mañana.",
+    },
+    images: [
+      {
+        src: "/products/pink-persuasion.jpg",
+        alt: {
+          en: "Hot pink roses and green hydrangea in a deep green ceramic cylinder",
+          es: "Rosas fucsia y hortensia verde en cilindro de cerámica verde profundo",
+        },
+        aspect: "4/5",
+      },
+      {
+        src: "/products/pink-persuasion-2.jpg",
+        alt: {
+          en: "Pink Persuasion arrangement seen at a distance on a studio surface",
+          es: "Arreglo Persuasión Rosa visto a distancia sobre una superficie de estudio",
+        },
+        aspect: "4/5",
+      },
+      {
+        src: "/products/pink-persuasion-3.jpg",
+        alt: {
+          en: "Pink Persuasion from above, hot pink roses ringed with spray roses and lisianthus",
+          es: "Persuasión Rosa desde arriba, rosas fucsia rodeadas de mini-rosas y lisianthus",
+        },
+        aspect: "4/5",
+      },
+      {
+        src: "/products/pink-persuasion-4.jpg",
+        alt: {
+          en: "Overhead view of the Pink Persuasion dome of pink roses and green hydrangea",
+          es: "Vista cenital de la cúpula de rosas rosadas y hortensia verde de Persuasión Rosa",
+        },
+        aspect: "4/5",
+      },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 11000 },
+    ],
+    tags: ["new", "same-day", "staff-pick"],
+    occasions: ["birthday", "congrats", "romance", "graduation", "just-because"],
+    colorFamily: ["pink", "green", "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Pink Persuasion — Diva Flowers", es: "Persuasión Rosa — Diva Flowers" },
+      description: {
+        en: "Hot pink roses with green hydrangea in a deep green ceramic cylinder. Same-day delivery on Long Island.",
+        es: "Rosas fucsia con hortensia verde en cilindro de cerámica verde profundo. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-arr-b4-05",
+    slug: "cotton-candy",
+    title: { en: "Cotton Candy", es: "Algodón de Azúcar" },
+    category: "arrangements",
+    blurb: {
+      en: "Fuchsia and peach roses in a cloud of baby's breath and blush lisianthus.",
+      es: "Rosas fucsia y durazno en una nube de paniculata y lisianthus blush.",
+    },
+    description: {
+      en: "For the one who still gets excited about her own birthday — fuchsia roses, peach and cream roses, blush lisianthus, and a cymbidium orchid tucked at the back, all of it drifting in baby's breath and variegated pittosporum. It is the sweetest thing we build and it is unapologetic about it: pink on pink on pink, held low and round so it sits on a kitchen island without anyone moving it. Send it for the birthday, the new baby, the friend who is having a week. Order before 2:00 pm and it goes out today across Long Island, built to the photo in the same palette with whatever came in freshest that morning.",
+      es: "Para la que todavía se emociona con su propio cumpleaños — rosas fucsia, rosas durazno y crema, lisianthus blush y una orquídea cymbidium metida al fondo, todo flotando en paniculata y pittosporum variegado. Es lo más dulce que armamos y no pide perdón por serlo: rosado sobre rosado sobre rosado, bajo y redondo para que se quede en la isla de la cocina sin que nadie lo mueva. Mándalo por el cumpleaños, por el bebé nuevo, por la amiga que está teniendo una semana. Pídelo antes de las 2:00 pm y sale hoy mismo por Long Island, armado como la foto en la misma paleta con lo que haya entrado más fresco esa mañana.",
+    },
+    images: [
+      {
+        src: "/products/cotton-candy.jpg",
+        alt: {
+          en: "Fuchsia and peach roses with baby's breath and blush lisianthus in a low bowl",
+          es: "Rosas fucsia y durazno con paniculata y lisianthus blush en cuenco bajo",
+        },
+        aspect: "4/5",
+      },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 11500 },
+    ],
+    tags: ["new", "same-day", "staff-pick"],
+    occasions: ["birthday", "new-baby", "congrats", "romance", "just-because"],
+    colorFamily: ["pink", "mixed", "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Cotton Candy — Diva Flowers", es: "Algodón de Azúcar — Diva Flowers" },
+      description: {
+        en: "Fuchsia and peach roses with baby's breath and blush lisianthus. Same-day delivery on Long Island.",
+        es: "Rosas fucsia y durazno con paniculata y lisianthus blush. Entrega el mismo día en Long Island.",
       },
     },
   },

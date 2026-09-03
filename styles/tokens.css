@@ -41,6 +41,10 @@
 
   /* Layout */
   --container-max: 1400px;
+  /* Fixed header = announcement bar (2.25rem) + nav row; content and sticky
+     elements clear it by --nav-offset. Change here, not at the call sites. */
+  --announce-h: 2.25rem;
+  --nav-offset: 6.25rem;
 
   /* Spacing — base-8 rhythm */
   --space-1: 0.5rem;

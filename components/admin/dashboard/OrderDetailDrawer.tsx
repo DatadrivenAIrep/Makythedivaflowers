@@ -260,7 +260,21 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
           <div className="grid grid-cols-2 gap-y-0.5">
             <span>{t("subtotal")}</span><span className="text-right">{money(order.totals.subtotalCents)}</span>
             <span>{t("delivery")}</span><span className="text-right">{money(order.totals.deliveryCents)}</span>
+            {order.totals.discountCents > 0 && (
+              <>
+                <span>{t("discount")}{order.promoCode ? ` · ${order.promoCode}` : ""}</span>
+                <span className="text-right">−{money(order.totals.discountCents)}</span>
+              </>
+            )}
             <span>{t("tax")}</span><span className="text-right">{money(order.totals.taxCents)}</span>
+            {order.totals.tipCents > 0 && (
+              <>
+                {/* Shown separately because it is not revenue — it is owed to
+                    the designer and the driver. */}
+                <span>{t("tip")}</span>
+                <span className="text-right">{money(order.totals.tipCents)}</span>
+              </>
+            )}
             <span className="font-semibold">{t("total")}</span><span className="text-right font-semibold">{money(order.totals.totalCents)}</span>
           </div>
         </section>

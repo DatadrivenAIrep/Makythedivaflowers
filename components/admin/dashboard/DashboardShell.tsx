@@ -21,6 +21,7 @@ export default function DashboardShell({ locale, children, lastUpdated, onRefres
   const isRunSheet = pathname.endsWith("/run-sheet");
   const isSettings = pathname.endsWith("/settings");
   const isGiftCards = pathname.includes("/admin/gift-cards");
+  const isPromos = pathname.includes("/admin/promos");
   const isCustomers = pathname.includes("/admin/customers");
   const isOccasions = pathname.includes("/admin/occasions");
   const isMetrics = pathname.includes("/admin/metrics");
@@ -28,7 +29,7 @@ export default function DashboardShell({ locale, children, lastUpdated, onRefres
   const isCampaigns = pathname.includes("/admin/campaigns");
   const isMessages = pathname.includes("/admin/messages");
   const isBandeja =
-    !isLedger && !isRunSheet && !isSettings && !isGiftCards && !isCustomers && !isOccasions && !isMetrics && !isPipeline && !isCampaigns && !isMessages;
+    !isLedger && !isRunSheet && !isSettings && !isGiftCards && !isPromos && !isCustomers && !isOccasions && !isMetrics && !isPipeline && !isCampaigns && !isMessages;
   const base = `/${locale}/admin/dashboard`;
 
   return (
@@ -56,6 +57,12 @@ export default function DashboardShell({ locale, children, lastUpdated, onRefres
               className={`flex min-h-11 items-center rounded-lg px-3 ${isGiftCards ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >
               {t("nav_gift_cards")}
+            </Link>
+            <Link
+              href={`/${locale}/admin/promos`}
+              className={`flex min-h-11 items-center rounded-lg px-3 ${isPromos ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
+            >
+              {t("nav_promos")}
             </Link>
             <Link
               href={`/${locale}/admin/customers`}

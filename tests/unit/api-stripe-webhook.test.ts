@@ -82,7 +82,7 @@ function makeOrder(
       window: { date: "2099-01-01", slot: "midday" },
     },
     contact: { email: "t@example.com", phone: "5555555555" },
-    totals: { subtotalCents: 1000, deliveryCents: 1000, taxCents: 173, totalCents: 2173 },
+    totals: { subtotalCents: 1000, deliveryCents: 1000, discountCents: 0, tipCents: 0, taxCents: 173, totalCents: 2173 },
     stripePaymentIntentId: piId,
     status: "pending",
     paymentStatus,

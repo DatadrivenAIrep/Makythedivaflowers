@@ -13,6 +13,8 @@ import { ContactStep } from "@/components/checkout/ContactStep";
 import { DeliveryStep } from "@/components/checkout/DeliveryStep";
 import { StripePaymentStep } from "@/components/checkout/StripePaymentStep";
 import GiftCardField from "@/components/checkout/GiftCardField";
+import { PromoCodeField, type AppliedPromo } from "@/components/checkout/PromoCodeField";
+import { TipField } from "@/components/checkout/TipField";
 import { FormShell } from "@/components/ui/form/shell/FormShell";
 import { OrderSummaryPanel } from "@/components/checkout/OrderSummaryPanel";
 import { FormSubmit } from "@/components/ui/form/FormSubmit";
@@ -45,6 +47,8 @@ async function createIntent(payload: {
   lines: CartLine[];
   form: CheckoutInput;
   giftCardCode?: string;
+  promoCode?: string;
+  tipCents?: number;
 }): Promise<{ clientSecret: string; orderId: string } | { paid: true; orderId: string } | { error: string }> {
   const res = await fetch("/api/checkout/intent", {
     method: "POST",
@@ -116,6 +120,8 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [intent, setIntent] = useState<IntentState>({ status: "idle" });
   const [giftCard, setGiftCard] = useState<{ code: string; appliedCents: number } | null>(null);
+  const [promo, setPromo] = useState<AppliedPromo | null>(null);
+  const [tipCents, setTipCents] = useState(0);
   const stripeRef = useRef<{ stripe: StripeJs; elements: StripeElements } | null>(null);
 
   const handleStripeReady = useCallback((stripe: StripeJs, elements: StripeElements) => {
@@ -127,9 +133,12 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
   const isPickup = method === "pickup";
   const zipFee = isPickup ? 0 : computeDeliveryCentsForZip(zipValue ?? "");
   const deliveryPending = !isPickup && zipFee === null;
+  const deliveryCents = isPickup ? 0 : (zipFee ?? 0);
+  // The server revalidates the code and recomputes the discount on every intent,
+  // so this is a preview for the buyer, never the price of record.
   const totals = useMemo(
-    () => computeOrderTotals(subtotal, isPickup ? 0 : (zipFee ?? 0)),
-    [subtotal, zipFee, isPickup],
+    () => computeOrderTotals(subtotal, deliveryCents, promo?.discountCents ?? 0, tipCents),
+    [subtotal, deliveryCents, promo, tipCents],
   );
   const payableCents = Math.max(0, totals.totalCents - (giftCard?.appliedCents ?? 0));
 
@@ -143,7 +152,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
     let cancelled = false;
     setIntent({ status: "creating" });
     (async () => {
-      const r = await createIntent({ locale, lines, form: form.getValues(), giftCardCode: giftCard?.code });
+      const r = await createIntent({ locale, lines, form: form.getValues(), giftCardCode: giftCard?.code, promoCode: promo?.code, tipCents });
       if (cancelled) return;
       if ("error" in r) {
         setIntent({ status: "error", message: r.error });
@@ -163,7 +172,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
     return () => {
       cancelled = true;
     };
-  }, [totals.totalCents, intent, locale, lines, form, giftCard]);
+  }, [totals.totalCents, intent, locale, lines, form, giftCard, promo, tipCents]);
 
   async function nextFrom(step: StepKey) {
     const fields: Record<StepKey, string[]> = {
@@ -203,7 +212,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
 
       // Create the PaymentIntent before showing step 3.
       setIntent({ status: "creating" });
-      const r = await createIntent({ locale, lines, form: form.getValues(), giftCardCode: giftCard?.code });
+      const r = await createIntent({ locale, lines, form: form.getValues(), giftCardCode: giftCard?.code, promoCode: promo?.code, tipCents });
       if ("error" in r) {
         setIntent({ status: "error", message: r.error });
         setTopError(t(errorKey(r.error)));
@@ -276,6 +285,8 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
       }))}
       subtotal={totals.subtotalCents}
       delivery={totals.deliveryCents}
+      discount={totals.discountCents}
+      tip={totals.tipCents}
       total={payableCents}
       deliveryPending={deliveryPending}
       isPickup={isPickup}
@@ -330,6 +341,16 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
           onHeaderClick={() => setOpen("payment")}
           reduce={!!reduce}
         >
+          <TipField value={tipCents} onChange={setTipCents} locale={locale} />
+          <PromoCodeField
+            subtotalCents={totals.subtotalCents}
+            deliveryCents={totals.deliveryCents}
+            locale={locale}
+            phone={form.watch("contact.phone")}
+            email={form.watch("contact.email")}
+            onApply={setPromo}
+            onClear={() => setPromo(null)}
+          />
           <GiftCardField
             totalCents={totals.totalCents}
             onApply={(a) => setGiftCard(a)}

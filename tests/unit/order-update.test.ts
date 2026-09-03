@@ -16,7 +16,7 @@ function baseOrder(id: string): Order {
     id, source: "walk-in", locale: "es", lines: [],
     fulfillment: { method: "in-store", recipient: { name: "R", phone: "555" } },
     contact: { phone: "555" },
-    totals: { subtotalCents: 5000, deliveryCents: 0, taxCents: 0, totalCents: 5000 },
+    totals: { subtotalCents: 5000, deliveryCents: 0, discountCents: 0, tipCents: 0, taxCents: 0, totalCents: 5000 },
     status: "pending", paymentStatus: "pending",
     createdAt: "2026-06-01T00:00:00Z", updatedAt: "2026-06-01T00:00:00Z",
   };

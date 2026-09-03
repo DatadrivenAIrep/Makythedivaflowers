@@ -20,13 +20,17 @@ const OCCASIONS = [
   "anniversary",
   "birthday",
   "congrats",
+  "graduation",
+  "new-baby",
+  "thank-you",
   "get-well",
+  "thinking-of-you",
   "sympathy",
   "just-because",
 ] as const;
 const COLORS = ["pink", "red", "white", "mixed", "green", "pastel"] as const;
 const SIZES = ["standard", "grand", "diva"] as const;
-const PRICES = ["under-200", "200-300", "300-plus"] as const;
+const PRICES = ["under-100", "100-150", "150-200", "200-plus"] as const;
 const SORT_VALUES = ["newest", "price-asc", "price-desc", "staff-pick"] as const;
 
 type Copy = { [k: string]: { en: string; es: string } };
@@ -43,6 +47,10 @@ const COPY: Copy = {
   sympathy: { en: "Sympathy", es: "Condolencias" },
   "just-because": { en: "Just because", es: "Sin razón" },
   "get-well": { en: "Get well", es: "Mejórate" },
+  graduation: { en: "Graduation", es: "Graduación" },
+  "new-baby": { en: "New baby", es: "Recién nacido" },
+  "thank-you": { en: "Thank you", es: "Gracias" },
+  "thinking-of-you": { en: "Thinking of you", es: "Pienso en ti" },
   pink: { en: "Pink", es: "Rosa" },
   red: { en: "Red", es: "Rojo" },
   white: { en: "White", es: "Blanco" },
@@ -52,9 +60,10 @@ const COPY: Copy = {
   standard: { en: "Standard", es: "Estándar" },
   grand: { en: "Grand", es: "Grandes" },
   diva: { en: "Diva", es: "Diva" },
-  "under-200": { en: "Under $200", es: "Menos de $200" },
-  "200-300": { en: "$200–$300", es: "$200–$300" },
-  "300-plus": { en: "$300+", es: "$300+" },
+  "under-100": { en: "Under $100", es: "Menos de $100" },
+  "100-150": { en: "$100–$150", es: "$100–$150" },
+  "150-200": { en: "$150–$200", es: "$150–$200" },
+  "200-plus": { en: "$200+", es: "$200+" },
   newest: { en: "Newest", es: "Más nuevos" },
   "price-asc": { en: "Price: low to high", es: "Precio: menor a mayor" },
   "price-desc": { en: "Price: high to low", es: "Precio: mayor a menor" },
@@ -112,7 +121,7 @@ function FilterBarImpl({
   const hasAny = Object.keys(filter).length > 0 || sort !== "newest";
 
   return (
-    <div className="sticky top-16 z-30 -mx-6 border-y border-[var(--border)] px-6 py-3 [background:var(--material-bg)] [backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] [-webkit-backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))]">
+    <div className="sticky top-[var(--nav-offset)] z-30 -mx-6 border-y border-[var(--border)] px-6 py-3 [background:var(--material-bg)] [backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] [-webkit-backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))]">
       <div className="mx-auto flex max-w-[var(--container-max)] flex-wrap items-center gap-x-6 gap-y-3">
         <span className="font-mono text-[10px] uppercase tracking-wider text-mute-500">
           {l("filter_label", locale)}

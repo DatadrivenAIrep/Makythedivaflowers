@@ -52,11 +52,21 @@ export async function BentoGrid({ locale }: { locale: Locale }) {
         <div className="md:col-span-1">
           <BentoSubscriptionsTile locale={locale} />
         </div>
+        {/* Designer's Choice — the "can't decide?" entry point every competitor
+            pins to the front page. Links straight to Maky's PDP. */}
+        <div className="md:col-span-1">
+          <BentoPromoTile
+            locale={locale}
+            namespace="home.bento.designers_choice"
+            imageSrc="/products/designers-choice-maky.jpg"
+            href={`/${locale}/product/designers-choice-maky`}
+          />
+        </div>
+        <div className="md:col-span-3">
+          <BentoPressTile />
+        </div>
         <div className="md:col-span-1">
           <BentoStudioClock />
-        </div>
-        <div className="md:col-span-4">
-          <BentoPressTile />
         </div>
       </div>
     </section>
