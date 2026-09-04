@@ -13,7 +13,7 @@ export const PRODUCTS: Product[] = [
     id: "p-arr-ie01",
     slug: "ivory-and-emerald",
     title: { en: "Ivory & Emerald", es: "Marfil y Esmeralda" },
-    category: "arrangements",
+    category: "sympathy",
     blurb: {
       en: "Our grandest white-and-green statement — cascading phalaenopsis orchids, green cymbidium, and calla lilies, built by hand into a piece that quiets the whole room.",
       es: "Nuestra pieza blanca y verde más imponente — orquídeas phalaenopsis en cascada, cymbidium verde y callas, armadas a mano en un arreglo que silencia la sala entera.",
@@ -41,7 +41,7 @@ export const PRODUCTS: Product[] = [
       },
     ],
     tags: ["new", "staff-pick"],
-    occasions: ["congrats", "anniversary", "sympathy"],
+    occasions: ["congrats", "sympathy"],
     colorFamily: ["white", "green"],
     active: true,
     quoteOnly: true,
@@ -83,7 +83,7 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 34400, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["same-day", "staff-pick"],
-    occasions: ["romance", "anniversary"],
+    occasions: ["anniversary", "romance", "mothers-day"],
     colorFamily: ["red", "pink"],
     active: true,
     seo: {
@@ -120,7 +120,7 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 14200, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["same-day"],
-    occasions: ["romance", "anniversary", "birthday", "congrats", "just-because"],
+    occasions: ["birthday", "anniversary", "romance", "congrats", "graduation"],
     colorFamily: ["red"],
     active: false,
     seo: {
@@ -157,7 +157,7 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 84900, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["staff-pick"],
-    occasions: ["romance", "anniversary"],
+    occasions: ["anniversary", "romance", "mothers-day"],
     colorFamily: ["red"],
     active: true,
     seo: {
@@ -194,7 +194,7 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 20300, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["same-day"],
-    occasions: ["birthday", "congrats", "just-because", "thank-you", "graduation"],
+    occasions: ["birthday", "anniversary", "congrats", "just-because", "graduation", "thank-you", "thinking-of-you"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -231,7 +231,7 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 44600, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["same-day", "staff-pick"],
-    occasions: ["romance", "anniversary", "just-because"],
+    occasions: ["birthday", "thank-you"],
     colorFamily: ["green", "mixed"],
     active: true,
     seo: {
@@ -268,7 +268,7 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 20300, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["same-day", "staff-pick"],
-    occasions: ["just-because", "congrats", "birthday"],
+    occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "get-well", "graduation", "new-baby", "thank-you", "thinking-of-you", "sympathy"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -305,7 +305,7 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 10100, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["same-day"],
-    occasions: ["just-because", "birthday", "thank-you", "thinking-of-you", "get-well"],
+    occasions: ["birthday", "anniversary", "congrats", "just-because", "graduation", "thank-you", "thinking-of-you"],
     colorFamily: ["mixed", "pastel"],
     active: true,
     seo: {
@@ -342,7 +342,7 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 25700, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["same-day", "new"],
-    occasions: ["romance", "anniversary", "just-because", "birthday", "congrats"],
+    occasions: ["birthday", "anniversary", "congrats", "just-because", "graduation", "thank-you", "thinking-of-you"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -380,7 +380,7 @@ export const PRODUCTS: Product[] = [
       { id: "candles", label: { en: "Add taper candle pair", es: "Añadir par de velas" }, priceCents: 2500 },
     ],
     tags: ["new", "same-day", "staff-pick", "seasonal"],
-    occasions: ["just-because", "congrats", "thank-you"],
+    occasions: ["thank-you"],
     colorFamily: ["mixed"],
     active: true,
     seasonMonths: [9, 10, 11],
@@ -417,7 +417,7 @@ export const PRODUCTS: Product[] = [
       { id: "champagne", label: { en: "Add Veuve Clicquot", es: "Añadir Veuve Clicquot" }, priceCents: 8900 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["anniversary", "romance", "birthday", "congrats", "just-because"],
+    occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["red"],
     active: true,
     seo: {
@@ -450,7 +450,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because", "congrats", "mothers-day"],
+    occasions: ["birthday", "congrats", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -483,7 +483,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["congrats", "just-because", "birthday", "new-baby"],
+    occasions: ["congrats", "mothers-day", "get-well", "thinking-of-you", "sympathy"],
     colorFamily: ["pastel", "white"],
     active: true,
     seo: {
@@ -516,7 +516,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["mothers-day", "anniversary", "romance", "just-because", "sympathy", "thinking-of-you"],
+    occasions: ["birthday", "congrats", "just-because", "mothers-day", "get-well", "thank-you", "thinking-of-you"],
     colorFamily: ["white"],
     active: true,
     seo: {
@@ -549,7 +549,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day", "seasonal"],
-    occasions: ["just-because", "congrats", "thank-you"],
+    occasions: ["thank-you"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -582,7 +582,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 18500 },
     ],
     tags: ["new", "seasonal"],
-    occasions: ["birthday", "congrats", "just-because"],
+    occasions: ["thank-you"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -618,7 +618,7 @@ export const PRODUCTS: Product[] = [
       { id: "chocolates", label: { en: "Add dark chocolate truffles", es: "Añadir trufas de chocolate" }, priceCents: 2500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday", "get-well"],
+    occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "get-well", "thinking-of-you"],
     colorFamily: ["red", "mixed"],
     active: true,
     seo: {
@@ -651,7 +651,7 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 16900, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["romance", "anniversary", "just-because", "mothers-day"],
+    occasions: ["birthday", "romance", "mothers-day", "get-well"],
     colorFamily: ["pink", "pastel"],
     active: true,
     seo: {
@@ -684,7 +684,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["congrats", "birthday", "graduation"],
+    occasions: ["birthday", "congrats", "just-because", "mothers-day", "get-well"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -717,7 +717,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 13500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday", "get-well", "new-baby", "thank-you"],
+    occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "get-well"],
     colorFamily: ["mixed", "green"],
     active: true,
     seo: {
@@ -750,7 +750,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 14500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because", "mothers-day", "new-baby", "thinking-of-you", "get-well"],
+    occasions: ["birthday", "romance", "mothers-day", "get-well"],
     colorFamily: ["pastel"],
     active: true,
     seo: {
@@ -783,7 +783,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand (triple stem)", es: "Grande (tres tallos)" }, priceCents: 15500 },
     ],
     tags: ["new", "staff-pick"],
-    occasions: ["just-because", "congrats", "birthday"],
+    occasions: ["birthday", "anniversary", "romance", "congrats", "mothers-day"],
     colorFamily: ["pastel"],
     // Retired 2026-08-18: the copy claims a Cattleya orchid but the photo is a
     // tropical arrangement and the prices were never real. Superseded by
@@ -820,7 +820,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["congrats", "just-because", "graduation"],
+    occasions: ["birthday", "romance", "mothers-day", "get-well"],
     colorFamily: ["white", "mixed"],
     active: true,
     seo: {
@@ -889,7 +889,7 @@ export const PRODUCTS: Product[] = [
       { id: "champagne", label: { en: "Add Veuve Clicquot", es: "Añadir Veuve Clicquot" }, priceCents: 8900 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["romance", "anniversary", "congrats", "just-because", "new-baby"],
+    occasions: ["thank-you"],
     colorFamily: ["white"],
     active: true,
     seo: {
@@ -904,7 +904,7 @@ export const PRODUCTS: Product[] = [
     id: "p-arr-b1-07",
     slug: "cottage-garden-charm",
     title: { en: "Cottage Garden Charm", es: "Encanto de Jardín de Cabaña" },
-    category: "arrangements",
+    category: "bouquets",
     blurb: {
       en: "Snapdragons, foxglove, and roses like an English back gate.",
       es: "Boca de dragón, dedalera y rosas como portón inglés.",
@@ -922,7 +922,7 @@ export const PRODUCTS: Product[] = [
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 16900, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["just-because", "birthday", "congrats", "thank-you"],
+    occasions: ["birthday", "anniversary", "congrats", "just-because", "mothers-day", "graduation"],
     colorFamily: ["pink", "mixed"],
     active: true,
     seo: {
@@ -955,7 +955,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["romance", "anniversary", "birthday", "just-because"],
+    occasions: ["romance", "mothers-day", "thank-you"],
     colorFamily: ["pink"],
     active: true,
     seo: {
@@ -988,7 +988,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 13500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday", "mothers-day", "new-baby", "get-well"],
+    occasions: ["birthday", "congrats", "get-well", "new-baby"],
     colorFamily: ["pastel"],
     active: true,
     seo: {
@@ -1021,7 +1021,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 19500 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["romance", "anniversary", "birthday", "congrats", "just-because"],
+    occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "get-well", "graduation", "new-baby", "thank-you", "thinking-of-you", "sympathy"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -1054,7 +1054,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["congrats", "just-because", "thank-you"],
+    occasions: ["mothers-day", "get-well"],
     colorFamily: ["white", "green"],
     active: true,
     seo: {
@@ -1087,7 +1087,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["romance", "anniversary", "birthday", "just-because"],
+    occasions: ["birthday", "congrats", "mothers-day", "new-baby", "thinking-of-you"],
     colorFamily: ["pink", "mixed"],
     active: true,
     seo: {
@@ -1120,7 +1120,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva (36 roses)", es: "Diva (36 rosas)" }, priceCents: 18500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because", "congrats"],
+    occasions: ["birthday", "anniversary", "romance", "congrats", "mothers-day", "thinking-of-you"],
     colorFamily: ["mixed"],
     active: false,
     seo: {
@@ -1156,7 +1156,7 @@ export const PRODUCTS: Product[] = [
       { id: "chocolates", label: { en: "Add chocolate truffles", es: "Añadir trufas de chocolate" }, priceCents: 2500 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["romance", "anniversary", "birthday", "congrats", "just-because"],
+    occasions: ["birthday", "anniversary", "romance", "congrats", "mothers-day", "thinking-of-you"],
     colorFamily: ["pink"],
     active: false,
     seo: {
@@ -1192,7 +1192,7 @@ export const PRODUCTS: Product[] = [
       { id: "champagne", label: { en: "Add Veuve Clicquot", es: "Añadir Veuve Clicquot" }, priceCents: 8900 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["romance", "anniversary", "birthday", "congrats", "just-because"],
+    occasions: ["birthday", "anniversary", "romance", "congrats", "mothers-day", "thinking-of-you"],
     colorFamily: ["red"],
     active: false,
     seo: {
@@ -1225,7 +1225,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva (36 roses)", es: "Diva (36 rosas)" }, priceCents: 18500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["romance", "anniversary", "congrats", "sympathy"],
+    occasions: ["birthday", "anniversary", "romance", "congrats", "mothers-day", "thinking-of-you", "sympathy"],
     colorFamily: ["white"],
     active: false,
     seo: {
@@ -1258,7 +1258,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva (36 roses)", es: "Diva (36 rosas)" }, priceCents: 18500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday", "congrats"],
+    occasions: ["birthday", "anniversary", "romance", "congrats", "mothers-day", "thinking-of-you"],
     colorFamily: ["mixed"],
     active: false,
     seo: {
@@ -1291,7 +1291,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because", "congrats", "graduation"],
+    occasions: ["birthday", "anniversary", "congrats", "mothers-day", "new-baby", "thinking-of-you"],
     colorFamily: ["mixed", "pink"],
     active: true,
     seo: {
@@ -1324,7 +1324,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["romance", "anniversary", "congrats", "just-because"],
+    occasions: ["anniversary", "graduation", "new-baby"],
     colorFamily: ["mixed", "pink"],
     active: true,
     seo: {
@@ -1358,7 +1358,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["romance", "anniversary", "birthday", "just-because"],
+    occasions: ["congrats", "get-well"],
     colorFamily: ["mixed", "red"],
     active: true,
     seo: {
@@ -1391,7 +1391,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday", "new-baby"],
+    occasions: ["birthday", "romance", "mothers-day"],
     colorFamily: ["pastel", "pink"],
     active: true,
     seo: {
@@ -1406,7 +1406,7 @@ export const PRODUCTS: Product[] = [
     id: "p-bou-b2-01",
     slug: "ethereal-charm",
     title: { en: "Ethereal Charm", es: "Encanto Etéreo" },
-    category: "bouquets",
+    category: "arrangements",
     blurb: {
       en: "Whisper-white blooms and trailing greens for the romantic who reads poetry on purpose.",
       es: "Flores blancas susurrantes y verdes que caen para la romántica que lee poesía a propósito.",
@@ -1424,7 +1424,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15000 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["romance", "just-because", "anniversary", "thinking-of-you"],
+    occasions: ["thank-you", "sympathy"],
     colorFamily: ["white", "green"],
     active: true,
     seo: {
@@ -1457,7 +1457,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["congrats", "just-because", "thinking-of-you", "get-well"],
+    occasions: ["thank-you"],
     colorFamily: ["green"],
     active: true,
     seo: {
@@ -1490,7 +1490,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["birthday", "just-because", "congrats", "graduation"],
+    occasions: ["birthday", "congrats", "just-because"],
     colorFamily: ["pink", "mixed"],
     active: true,
     seo: {
@@ -1523,7 +1523,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
     tags: ["new", "seasonal", "same-day"],
-    occasions: ["just-because", "birthday"],
+    occasions: ["thank-you"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -1538,7 +1538,7 @@ export const PRODUCTS: Product[] = [
     id: "p-arr-b2-05",
     slug: "farmhouse-fresh",
     title: { en: "Farmhouse Fresh", es: "Fresco de Granja" },
-    category: "arrangements",
+    category: "bouquets",
     blurb: {
       en: "White hydrangea and field greens in a stoneware crock for the one who keeps it grounded.",
       es: "Hortensia blanca y verdes de campo en jarra de gres para quien mantiene los pies en la tierra.",
@@ -1556,7 +1556,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "congrats", "thank-you"],
+    occasions: ["birthday", "congrats", "graduation", "thank-you"],
     colorFamily: ["white", "green"],
     active: true,
     seo: {
@@ -1589,7 +1589,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17000 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because"],
+    occasions: ["anniversary", "romance", "mothers-day"],
     colorFamily: ["pink", "mixed"],
     active: true,
     seo: {
@@ -1622,7 +1622,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "congrats", "just-because", "graduation"],
+    occasions: ["romance", "mothers-day", "thank-you"],
     colorFamily: ["mixed", "pink"],
     active: true,
     seo: {
@@ -1637,7 +1637,7 @@ export const PRODUCTS: Product[] = [
     id: "p-bou-b2-02",
     slug: "flores-dulces",
     title: { en: "Flores Dulces", es: "Flores Dulces" },
-    category: "bouquets",
+    category: "arrangements",
     blurb: {
       en: "Cotton candy roses and sweet pea for the one who still gets giddy about flowers.",
       es: "Rosas algodón de azúcar y guisantes de olor para la que aún se emociona con las flores.",
@@ -1655,7 +1655,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15000 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["romance", "anniversary", "birthday", "just-because"],
+    occasions: ["birthday", "get-well"],
     colorFamily: ["pink", "pastel"],
     active: true,
     seo: {
@@ -1688,7 +1688,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 14500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because", "graduation"],
+    occasions: ["birthday", "graduation"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -1724,7 +1724,7 @@ export const PRODUCTS: Product[] = [
       { id: "card", label: { en: "Handwritten card", es: "Tarjeta escrita a mano" }, priceCents: 500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "congrats", "birthday", "get-well", "thank-you"],
+    occasions: ["thank-you"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -1739,7 +1739,7 @@ export const PRODUCTS: Product[] = [
     id: "p-bou-b2-04",
     slug: "golden-hour",
     title: { en: "Golden Hour", es: "Hora Dorada" },
-    category: "bouquets",
+    category: "arrangements",
     blurb: {
       en: "Sunset-tone roses and ranunculus for the friend who deserves a Tuesday surprise.",
       es: "Rosas y ranúnculos en tonos de atardecer para la amiga que merece la sorpresa de un martes.",
@@ -1757,7 +1757,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday", "thank-you"],
+    occasions: ["birthday", "get-well"],
     colorFamily: ["mixed", "pastel"],
     active: true,
     seo: {
@@ -1794,7 +1794,7 @@ export const PRODUCTS: Product[] = [
       { id: "champagne", label: { en: "Champagne pairing", es: "Maridaje de champaña" }, priceCents: 6500 },
     ],
     tags: ["staff-pick", "same-day"],
-    occasions: ["anniversary", "romance"],
+    occasions: ["anniversary", "romance", "mothers-day"],
     colorFamily: ["red", "pink", "mixed"],
     active: true,
     seo: {
@@ -1827,7 +1827,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16000 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday", "new-baby", "thinking-of-you", "get-well"],
+    occasions: ["birthday", "romance", "mothers-day"],
     colorFamily: ["green", "pastel"],
     active: true,
     seo: {
@@ -1860,7 +1860,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 18500 },
     ],
     tags: ["new", "staff-pick"],
-    occasions: ["just-because", "birthday", "congrats"],
+    occasions: ["birthday", "mothers-day"],
     colorFamily: ["green", "mixed"],
     active: true,
     seo: {
@@ -1893,7 +1893,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because"],
+    occasions: ["birthday", "anniversary", "congrats", "thank-you", "thinking-of-you"],
     colorFamily: ["mixed", "green"],
     active: true,
     seo: {
@@ -1926,7 +1926,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday", "get-well", "sympathy", "new-baby", "thinking-of-you"],
+    occasions: ["birthday", "congrats", "mothers-day", "thinking-of-you"],
     colorFamily: ["pastel", "white"],
     active: true,
     seo: {
@@ -1941,7 +1941,7 @@ export const PRODUCTS: Product[] = [
     id: "p-sym-b2-01",
     slug: "lilies-for-lottie",
     title: { en: "Lilies for Lottie", es: "Lirios para Lottie" },
-    category: "arrangements",
+    category: "bouquets",
     blurb: {
       en: "White lilies and soft greens — the quiet presence a hard week needs.",
       es: "Lirios blancos y verdes suaves — la presencia callada que pide una semana dura.",
@@ -1959,7 +1959,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
     tags: ["same-day"],
-    occasions: ["sympathy"],
+    occasions: ["graduation"],
     colorFamily: ["white", "green"],
     active: true,
     seo: {
@@ -1992,7 +1992,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["romance", "anniversary", "congrats", "just-because"],
+    occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day"],
     colorFamily: ["green", "white"],
     active: true,
     seo: {
@@ -2025,7 +2025,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["birthday", "just-because", "congrats", "graduation"],
+    occasions: ["birthday", "get-well"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -2058,7 +2058,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 19500 },
     ],
     tags: ["new", "staff-pick"],
-    occasions: ["birthday", "anniversary", "romance"],
+    occasions: ["anniversary", "romance", "mothers-day"],
     colorFamily: ["pink", "mixed"],
     active: true,
     seo: {
@@ -2073,7 +2073,7 @@ export const PRODUCTS: Product[] = [
     id: "p-arr-b2-15",
     slug: "maison-de-diva",
     title: { en: "Maison de Diva", es: "Maison de Diva" },
-    category: "arrangements",
+    category: "bouquets",
     blurb: {
       en: "Our signature couture arrangement — for the recipient who already has the rest.",
       es: "Nuestro arreglo couture insignia — para quien ya tiene todo lo demás.",
@@ -2095,7 +2095,7 @@ export const PRODUCTS: Product[] = [
       { id: "champagne", label: { en: "Champagne pairing", es: "Maridaje de champaña" }, priceCents: 8500 },
     ],
     tags: ["staff-pick", "same-day"],
-    occasions: ["anniversary", "romance", "congrats"],
+    occasions: ["birthday", "graduation"],
     colorFamily: ["white", "pink", "mixed"],
     active: true,
     seo: {
@@ -2128,7 +2128,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because", "congrats", "mothers-day"],
+    occasions: ["birthday", "mothers-day"],
     colorFamily: ["mixed", "pink"],
     active: true,
     seo: {
@@ -2161,7 +2161,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
     tags: ["new", "seasonal", "same-day"],
-    occasions: ["just-because", "birthday", "thank-you", "thinking-of-you"],
+    occasions: ["thank-you"],
     colorFamily: ["white", "green"],
     active: true,
     seo: {
@@ -2194,7 +2194,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 16500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["sympathy", "congrats", "just-because", "birthday", "thinking-of-you"],
+    occasions: ["sympathy"],
     colorFamily: ["green"],
     active: true,
     seo: {
@@ -2227,7 +2227,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["same-day", "seasonal"],
-    occasions: ["sympathy"],
+    occasions: ["thank-you"],
     colorFamily: ["mixed", "white"],
     active: true,
     seasonMonths: [9, 10, 11],
@@ -2261,7 +2261,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "staff-pick"],
-    occasions: ["birthday", "congrats", "just-because", "graduation"],
+    occasions: ["thank-you"],
     colorFamily: ["pink", "green", "mixed"],
     active: true,
     seo: {
@@ -2294,7 +2294,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 18500 },
     ],
     tags: ["new", "staff-pick"],
-    occasions: ["romance", "anniversary", "congrats", "just-because"],
+    occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["white", "pastel"],
     // Retired 2026-08-18: the copy claims a double-stem phalaenopsis but the
     // photo is a mixed rose arrangement and the prices were never real.
@@ -2370,7 +2370,7 @@ export const PRODUCTS: Product[] = [
       },
     ],
     tags: ["same-day", "new", "staff-pick"],
-    occasions: ["just-because", "congrats", "birthday", "get-well", "new-baby", "thinking-of-you"],
+    occasions: ["birthday", "congrats", "sympathy"],
     colorFamily: ["white", "pink"],
     active: true,
     seo: {
@@ -2407,7 +2407,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["congrats", "just-because", "graduation"],
+    occasions: ["birthday", "romance", "mothers-day", "thank-you"],
     colorFamily: ["mixed", "green"],
     active: true,
     seo: {
@@ -2440,7 +2440,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday", "mothers-day", "new-baby", "thinking-of-you", "get-well"],
+    occasions: ["birthday", "graduation"],
     colorFamily: ["pastel", "pink"],
     active: true,
     seo: {
@@ -2473,7 +2473,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 14500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because", "thank-you", "get-well"],
+    occasions: ["birthday", "get-well"],
     colorFamily: ["pastel", "mixed"],
     active: true,
     seo: {
@@ -2488,7 +2488,7 @@ export const PRODUCTS: Product[] = [
     id: "p-arr-b3-04",
     slug: "petal-party",
     title: { en: "Petal Party", es: "Fiesta de Pétalos" },
-    category: "arrangements",
+    category: "bouquets",
     blurb: {
       en: "A loud, bright arrangement for the birthday that earned the cake.",
       es: "Un arreglo fuerte y brillante para el cumple que se ganó el pastel.",
@@ -2509,7 +2509,7 @@ export const PRODUCTS: Product[] = [
       { id: "balloons", label: { en: "Add birthday balloons", es: "Añadir globos de cumpleaños" }, priceCents: 1500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday"],
+    occasions: ["birthday", "new-baby"],
     colorFamily: ["pink", "mixed"],
     active: true,
     seo: {
@@ -2542,7 +2542,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 19500 },
     ],
     tags: ["new", "staff-pick"],
-    occasions: ["romance", "anniversary", "just-because"],
+    occasions: ["anniversary", "romance", "mothers-day", "new-baby"],
     colorFamily: ["pink"],
     active: true,
     seo: {
@@ -2557,7 +2557,7 @@ export const PRODUCTS: Product[] = [
     id: "p-bou-b3-06",
     slug: "purple-haze",
     title: { en: "Purple Haze", es: "Bruma Púrpura" },
-    category: "bouquets",
+    category: "arrangements",
     blurb: {
       en: "Lavender, lisianthus, and dark dahlia for the friend with the playlist.",
       es: "Lavanda, lisianthus y dalia oscura para la amiga con la playlist.",
@@ -2575,7 +2575,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["romance", "anniversary", "birthday", "just-because"],
+    occasions: ["mothers-day"],
     colorFamily: ["mixed", "pink"],
     active: true,
     seo: {
@@ -2590,7 +2590,7 @@ export const PRODUCTS: Product[] = [
     id: "p-bou-b3-07",
     slug: "rainbow-reverie",
     title: { en: "Rainbow Reverie", es: "Ensueño Arcoíris" },
-    category: "bouquets",
+    category: "arrangements",
     blurb: {
       en: "Every color, on purpose — for the friend who deserves the whole spectrum.",
       es: "Todos los colores, a propósito — para la amiga que merece el espectro entero.",
@@ -2608,7 +2608,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because", "congrats", "graduation"],
+    occasions: ["thank-you"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -2641,7 +2641,8 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "seasonal"],
-    occasions: ["congrats", "just-because"],
+    occasions: [],
+    seasonMonths: [11, 12],
     colorFamily: ["red", "green", "white"],
     active: true,
     seo: {
@@ -2674,7 +2675,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15000 },
     ],
     tags: ["new", "seasonal", "same-day"],
-    occasions: ["just-because", "birthday", "new-baby"],
+    occasions: ["birthday", "graduation"],
     colorFamily: ["pastel", "mixed"],
     active: true,
     seo: {
@@ -2689,7 +2690,7 @@ export const PRODUCTS: Product[] = [
     id: "p-bou-b3-10",
     slug: "stem-theory",
     title: { en: "Stem Theory", es: "Teoría del Tallo" },
-    category: "bouquets",
+    category: "arrangements",
     blurb: {
       en: "An architectural bouquet for the one who edits everything.",
       es: "Un ramo arquitectónico para quien todo lo edita.",
@@ -2707,7 +2708,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 18500 },
     ],
     tags: ["new", "staff-pick"],
-    occasions: ["congrats", "just-because", "graduation"],
+    occasions: ["birthday", "congrats", "get-well"],
     colorFamily: ["white", "green"],
     active: true,
     seo: {
@@ -2740,7 +2741,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 18500 },
     ],
     tags: ["new", "seasonal"],
-    occasions: ["romance", "anniversary", "birthday", "just-because"],
+    occasions: ["birthday", "mothers-day"],
     colorFamily: ["pink", "mixed"],
     active: true,
     seo: {
@@ -2773,7 +2774,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17000 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday"],
+    occasions: ["birthday", "thank-you"],
     colorFamily: ["mixed", "pastel"],
     active: true,
     seo: {
@@ -2788,7 +2789,7 @@ export const PRODUCTS: Product[] = [
     id: "p-arr-b3-13",
     slug: "sunset-estate",
     title: { en: "Sunset Estate", es: "Hacienda al Atardecer" },
-    category: "arrangements",
+    category: "bouquets",
     blurb: {
       en: "Coral, amber, and cream roses for the anniversary worth the long drive.",
       es: "Coral, ámbar y crema para el aniversario que vale el viaje largo.",
@@ -2809,7 +2810,7 @@ export const PRODUCTS: Product[] = [
       { id: "wine", label: { en: "Add bottle of red wine", es: "Añadir botella de vino tinto" }, priceCents: 4500 },
     ],
     tags: ["new", "staff-pick"],
-    occasions: ["anniversary", "romance"],
+    occasions: ["get-well", "graduation"],
     colorFamily: ["mixed", "pink"],
     active: true,
     seo: {
@@ -2842,7 +2843,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 14000 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["just-because", "birthday", "get-well", "thank-you"],
+    occasions: ["birthday", "congrats", "get-well"],
     colorFamily: ["mixed", "white"],
     active: true,
     seo: {
@@ -2875,7 +2876,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17000 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["romance", "anniversary", "just-because"],
+    occasions: ["romance", "sympathy"],
     colorFamily: ["pink", "white"],
     active: true,
     seo: {
@@ -2911,7 +2912,7 @@ export const PRODUCTS: Product[] = [
       { id: "chocolates", label: { en: "Add dark chocolate truffles", es: "Añadir trufas de chocolate oscuro" }, priceCents: 3500 },
     ],
     tags: ["new", "staff-pick", "same-day"],
-    occasions: ["romance", "anniversary", "just-because"],
+    occasions: ["anniversary", "romance", "just-because", "thinking-of-you"],
     colorFamily: ["red"],
     active: true,
     seo: {
@@ -2944,7 +2945,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["sympathy"],
+    occasions: ["birthday", "mothers-day"],
     colorFamily: ["white", "green"],
     active: true,
     seo: {
@@ -2981,7 +2982,7 @@ export const PRODUCTS: Product[] = [
       { id: "chocolates", label: { en: "Add dark chocolate truffles", es: "Añadir trufas de chocolate oscuro" }, priceCents: 3500 },
     ],
     tags: ["new", "staff-pick"],
-    occasions: ["anniversary", "romance", "birthday", "congrats", "just-because"],
+    occasions: ["anniversary", "romance", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["red"],
     active: true,
     seo: {
@@ -3017,7 +3018,7 @@ export const PRODUCTS: Product[] = [
       { id: "champagne", label: { en: "Add Veuve Clicquot", es: "Añadir Veuve Clicquot" }, priceCents: 8900 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["anniversary", "romance", "birthday", "congrats", "just-because"],
+    occasions: ["anniversary", "romance", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["pink", "white"],
     active: true,
     seo: {
@@ -3050,7 +3051,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "just-because", "congrats"],
+    occasions: ["birthday", "mothers-day", "thank-you"],
     colorFamily: ["pink", "red", "mixed"],
     active: true,
     seo: {
@@ -3083,7 +3084,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 18500 },
     ],
     tags: ["new", "staff-pick"],
-    occasions: ["congrats", "just-because"],
+    occasions: ["birthday", "mothers-day", "thank-you"],
     colorFamily: ["white", "pastel", "green"],
     active: true,
     seo: {
@@ -3120,7 +3121,7 @@ export const PRODUCTS: Product[] = [
       { id: "chocolates", label: { en: "Add dark chocolate truffles", es: "Añadir trufas de chocolate oscuro" }, priceCents: 3500 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["anniversary", "romance", "birthday", "congrats", "just-because"],
+    occasions: ["anniversary", "romance", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["red"],
     active: true,
     seo: {
@@ -3153,7 +3154,8 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
     tags: ["new", "seasonal", "same-day"],
-    occasions: ["romance", "anniversary", "just-because"],
+    occasions: [],
+    seasonMonths: [11, 12],
     colorFamily: ["red", "green"],
     active: true,
     seo: {
@@ -3186,7 +3188,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 19000 },
     ],
     tags: ["new", "staff-pick"],
-    occasions: ["romance", "anniversary"],
+    occasions: ["birthday", "mothers-day"],
     colorFamily: ["red", "mixed"],
     active: true,
     seo: {
@@ -3201,7 +3203,7 @@ export const PRODUCTS: Product[] = [
     id: "p-bou-b3-25",
     slug: "vibrant-vibes",
     title: { en: "Vibrant Vibes", es: "Vibras Vibrantes" },
-    category: "bouquets",
+    category: "arrangements",
     blurb: {
       en: "Hot color, no apology — for the friend who took the leap.",
       es: "Color fuerte, sin disculpa — para la amiga que se lanzó.",
@@ -3219,7 +3221,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["congrats", "birthday", "just-because", "graduation"],
+    occasions: ["birthday", "congrats", "get-well"],
     colorFamily: ["pink", "mixed"],
     active: true,
     seo: {
@@ -3252,7 +3254,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Designer Diva", es: "Diseñadora Diva" }, priceCents: 24500 },
     ],
     tags: ["new", "staff-pick"],
-    occasions: ["romance", "anniversary", "congrats", "just-because"],
+    occasions: ["birthday", "mothers-day"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -3267,7 +3269,7 @@ export const PRODUCTS: Product[] = [
     id: "p-bou-b3-27",
     slug: "whispers-of-spring",
     title: { en: "Whispers of Spring", es: "Susurros de Primavera" },
-    category: "bouquets",
+    category: "arrangements",
     blurb: {
       en: "Hyacinth, tulips, and lily of the valley for the first warm Saturday.",
       es: "Jacintos, tulipanes y lirios del valle para el primer sábado tibio.",
@@ -3285,7 +3287,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15000 },
     ],
     tags: ["new", "seasonal", "same-day"],
-    occasions: ["just-because", "birthday", "new-baby", "thinking-of-you", "get-well"],
+    occasions: ["get-well", "new-baby"],
     colorFamily: ["pastel", "white"],
     active: true,
     seo: {
@@ -3318,7 +3320,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 13500 },
     ],
     tags: ["new", "same-day", "seasonal"],
-    occasions: ["just-because", "birthday", "mothers-day", "thank-you"],
+    occasions: ["birthday", "mothers-day", "thinking-of-you"],
     colorFamily: ["mixed", "pastel"],
     active: true,
     seo: {
@@ -3351,7 +3353,7 @@ export const PRODUCTS: Product[] = [
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17000 },
     ],
     tags: ["new", "seasonal", "staff-pick"],
-    occasions: ["birthday", "congrats", "just-because"],
+    occasions: ["thank-you"],
     colorFamily: ["green", "white"],
     active: true,
     seo: {
@@ -3390,7 +3392,7 @@ export const PRODUCTS: Product[] = [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9000 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["birthday", "get-well", "thinking-of-you", "new-baby", "congrats", "just-because"],
+    occasions: ["anniversary", "congrats", "just-because", "get-well", "new-baby", "thinking-of-you"],
     colorFamily: ["white", "pink", "pastel"],
     active: true,
     seo: {
@@ -3436,7 +3438,7 @@ export const PRODUCTS: Product[] = [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 12000 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["anniversary", "congrats", "birthday", "thank-you", "just-because"],
+    occasions: ["birthday", "anniversary", "congrats", "just-because", "get-well", "new-baby", "thinking-of-you"],
     colorFamily: ["white", "green", "pastel"],
     active: true,
     seo: {
@@ -3552,7 +3554,7 @@ export const PRODUCTS: Product[] = [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 11000 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["birthday", "congrats", "romance", "graduation", "just-because"],
+    occasions: ["birthday", "just-because", "thinking-of-you"],
     colorFamily: ["pink", "green", "mixed"],
     active: true,
     seo: {
@@ -3590,7 +3592,7 @@ export const PRODUCTS: Product[] = [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 11500 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["birthday", "new-baby", "congrats", "romance", "just-because"],
+    occasions: ["birthday", "congrats", "just-because", "get-well"],
     colorFamily: ["pink", "mixed", "pastel"],
     active: true,
     seo: {
@@ -3622,7 +3624,7 @@ export const PRODUCTS: Product[] = [
     }],
     variants: [{ id: "default", label: { en: "Premium card", es: "Tarjeta premium" }, priceCents: 500 }],
     tags: ["same-day"],
-    occasions: ["just-because"],
+    occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "get-well", "graduation", "new-baby", "thank-you", "thinking-of-you", "sympathy"],
     colorFamily: ["white"],
     active: true,
     seo: {
@@ -3651,7 +3653,7 @@ export const PRODUCTS: Product[] = [
     }],
     variants: [{ id: "default", label: { en: "Glass vase", es: "Jarrón de vidrio" }, priceCents: 1500 }],
     tags: ["same-day"],
-    occasions: ["just-because"],
+    occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "get-well", "graduation", "new-baby", "thank-you", "thinking-of-you", "sympathy"],
     colorFamily: ["white"],
     active: true,
     seo: {
@@ -3709,7 +3711,7 @@ export const PRODUCTS: Product[] = [
     }],
     variants: [{ id: "default", label: { en: "Mini chocolates", es: "Mini chocolates" }, priceCents: 800 }],
     tags: ["same-day"],
-    occasions: ["just-because"],
+    occasions: [],
     colorFamily: ["white"],
     active: true,
     seo: {
@@ -3744,7 +3746,7 @@ export const PRODUCTS: Product[] = [
       { id: "ceramic-base", label: { en: "Add ceramic base", es: "Añadir base cerámica" }, priceCents: 1500 },
     ],
     tags: ["new", "same-day", "staff-pick"],
-    occasions: ["romance", "anniversary", "birthday", "congrats", "just-because"],
+    occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["red"],
     active: true,
     seo: {
@@ -3800,7 +3802,7 @@ export const PRODUCTS: Product[] = [
       { id: "ceramic-base", label: { en: "Add ceramic base", es: "Añadir base cerámica" }, priceCents: 1500 },
     ],
     tags: ["new", "same-day"],
-    occasions: ["birthday", "congrats", "just-because", "romance", "anniversary", "mothers-day"],
+    occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["pink", "white", "mixed"],
     active: true,
     seo: {
@@ -3845,7 +3847,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "American flag bouquet", es: "Ramo bandera americana" }, priceCents: 40000 },
     ],
     tags: ["new", "seasonal"],
-    occasions: ["congrats", "thank-you", "just-because"],
+    occasions: ["congrats", "graduation"],
     colorFamily: ["red", "white", "mixed"],
     active: true,
     seo: {
@@ -3890,7 +3892,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "100 roses", es: "100 rosas" }, priceCents: 50000 },
     ],
     tags: ["new"],
-    occasions: ["romance", "anniversary", "birthday", "congrats"],
+    occasions: ["birthday", "anniversary", "romance", "congrats", "mothers-day"],
     colorFamily: ["pink", "red", "mixed"],
     active: true,
     seo: {
