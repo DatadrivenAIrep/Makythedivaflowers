@@ -59,6 +59,15 @@ function shopPhoneFromSite(): string {
   return site.contact?.phone ?? site.phone ?? "(516) 484-3456";
 }
 
+/** The word before the window in order/payment SMS: "Delivery"/"Entrega" for a
+ *  delivery order, "Pickup"/"Recoger" for pickup/in-store — so a pickup buyer
+ *  isn't told "Delivery {time}". */
+function fulfillmentLabel(order: Order, locale: "en" | "es"): string {
+  const pickup = order.fulfillment.method !== "delivery";
+  if (locale === "es") return pickup ? "Recoger" : "Entrega";
+  return pickup ? "Pickup" : "Delivery";
+}
+
 export async function dispatchOrderReceived(order: Order, link?: string): Promise<void> {
   const customer = await getByPhone(order.contact.phone);
   const channel = customer?.messagingChannel ?? "sms";
@@ -77,6 +86,7 @@ export async function dispatchOrderReceived(order: Order, link?: string): Promis
       recipient_name: firstName(order.fulfillment.recipient.name),
       total: totalLabel(order.totals.totalCents),
       window: windowLabel(order, locale),
+      fulfillment_label: fulfillmentLabel(order, locale),
       link,
       shop_phone: shopPhoneFromSite(),
       order_number: order.orderNumber != null ? String(order.orderNumber) : undefined,
@@ -160,6 +170,7 @@ export async function dispatchPaymentConfirmed(order: Order): Promise<void> {
       recipient_name: firstName(order.fulfillment.recipient.name),
       total: totalLabel(order.totals.totalCents),
       window: windowLabel(order, locale),
+      fulfillment_label: fulfillmentLabel(order, locale),
       shop_phone: shopPhoneFromSite(),
       order_number: order.orderNumber != null ? String(order.orderNumber) : undefined,
     },

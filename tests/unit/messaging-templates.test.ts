@@ -24,6 +24,20 @@ describe("renderSmsBody", () => {
     expect(body).toContain("recibió tu pedido");
   });
 
+  it("uses the fulfillment_label word before the window (Pickup vs Delivery)", () => {
+    const pickupEs = renderSmsBody("order_received", "es", { ...vars, fulfillment_label: "Recoger" });
+    expect(pickupEs).toContain("Recoger");
+    expect(pickupEs).not.toContain("Entrega");
+    const pickupEn = renderSmsBody("payment_confirmed", "en", { ...vars, fulfillment_label: "Pickup" });
+    expect(pickupEn).toContain("Pickup");
+    expect(pickupEn).not.toContain("Delivery");
+  });
+
+  it("defaults to the delivery word when no fulfillment_label is passed", () => {
+    expect(renderSmsBody("order_received", "en", vars)).toContain("Delivery");
+    expect(renderSmsBody("order_received", "es", vars)).toContain("Entrega");
+  });
+
   it("greets the BUYER, not the flower recipient", () => {
     for (const tpl of ["order_received", "payment_confirmed", "out_for_delivery"] as const) {
       const es = renderSmsBody(tpl, "es", vars);

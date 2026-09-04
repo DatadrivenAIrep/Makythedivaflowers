@@ -24,6 +24,7 @@ function sampleVars(locale: "en" | "es"): TemplateVars {
     buyer_name: "Sofía",
     recipient_name: "Maria",
     total: "$89.50",
+    fulfillment_label: locale === "es" ? "Entrega" : "Delivery",
     window: locale === "es" ? "jue 21 ago · mañana (9–12)" : "Thu Aug 21 · morning (9–12)",
     link: "https://buy.stripe.com/test_sample",
     shop_phone: SITE.phoneDisplay,
