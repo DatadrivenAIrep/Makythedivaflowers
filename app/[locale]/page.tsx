@@ -45,9 +45,9 @@ export default async function Home({ params }: { params: Promise<{ locale: Local
           <GiftAssuranceBar size="md" surface="home" locale={locale} />
         </div>
       </section>
-      <CategoryStrip locale={locale} />
       <BentoGrid locale={locale} />
       <SocialProof locale={locale} />
+      <CategoryStrip locale={locale} />
       <SympathyShowcase locale={locale} />
       <Verticals locale={locale} />
       <EditorialSplit locale={locale} />
