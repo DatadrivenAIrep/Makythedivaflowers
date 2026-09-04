@@ -8,6 +8,7 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import { useTranslations, useLocale } from "next-intl";
 import { formatDateTime } from "@/lib/format-datetime";
+import { formatClock } from "@/lib/format";
 import { resolveLine } from "./product-lookup";
 import AdminButton from "./AdminButton";
 import OrderEditForm from "./OrderEditForm";
@@ -203,7 +204,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
         <section className="mb-3 rounded border border-ink/10 bg-bone p-3 text-sm">
           <div className="mb-1 text-xs uppercase tracking-wide text-ink/50">{t("delivery_section")}</div>
           <div>{f.method === "delivery" ? t("method_delivery") : f.method === "pickup" ? t("method_pickup") : t("method_in_store")}
-            {f.method !== "in-store" && <> · {f.window.date} · {t("slot." + f.window.slot)}</>}
+            {f.method !== "in-store" && <> · {f.window.date} · {formatClock(f.window.time, locale === "en" ? "en" : "es") ?? t("slot." + f.window.slot)}</>}
           </div>
           {f.method === "delivery" && addrLink && (
             <div className="mt-1">

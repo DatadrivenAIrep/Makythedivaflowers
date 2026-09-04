@@ -40,4 +40,17 @@ describe("formatDeliveryWindow", () => {
     expect(formatDeliveryWindow({ date: "2026-05-12", slot: "midday" }, "es"))
       .toMatch(/12(?:\s+de)?\s+may/i);
   });
+
+  it("shows the exact time instead of the slot range when a time is set", () => {
+    const out = formatDeliveryWindow({ date: "2026-05-12", slot: "midday", time: "14:30" }, "en");
+    expect(out).toMatch(/May 12/);
+    expect(out).toMatch(/2:30\s*PM/i);
+    // The broad slot range must not appear once an exact time is present.
+    expect(out).not.toMatch(/–.*PM.*–/);
+  });
+
+  it("ignores a malformed time and falls back to the slot range", () => {
+    expect(formatDeliveryWindow({ date: "2026-05-12", slot: "morning", time: "oops" }, "en"))
+      .toMatch(/9:00 AM.+12:00 PM/);
+  });
 });

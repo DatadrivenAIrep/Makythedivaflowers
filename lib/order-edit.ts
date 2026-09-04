@@ -92,7 +92,7 @@ export function diffOrders(before: Order, after: Order): FieldDiff[] {
 
   const bWin = before.fulfillment.method !== "in-store" ? before.fulfillment.window : null;
   const aWin = after.fulfillment.method !== "in-store" ? after.fulfillment.window : null;
-  const fmtWin = (w: DeliveryWindow | null) => w ? `${w.date} · ${w.slot}` : null;
+  const fmtWin = (w: DeliveryWindow | null) => w ? `${w.date} · ${w.time ?? w.slot}` : null;
   push("fulfillment.window", "Entrega", fmtWin(bWin), fmtWin(aWin));
 
   push("cardMessage", "Mensaje de tarjeta", before.fulfillment.cardMessage ?? null, after.fulfillment.cardMessage ?? null);

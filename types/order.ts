@@ -5,6 +5,12 @@ export type DeliverySlot = "morning" | "midday" | "afternoon" | "evening";
 export type DeliveryWindow = {
   date: string; // YYYY-MM-DD
   slot: DeliverySlot;
+  /**
+   * Optional exact requested time, "HH:MM" in 24h shop-local wall time. When the
+   * intake captures a precise time (e.g. "14:30"), `slot` is derived from it so the
+   * run sheet and TV board keep bucketing; when absent the order is a flexible slot.
+   */
+  time?: string;
 };
 
 export type Recipient = { name: string; phone: string };

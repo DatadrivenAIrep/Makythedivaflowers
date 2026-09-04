@@ -12,6 +12,26 @@ export const SLOT_START_MIN: Record<DeliverySlot, number> = {
 
 export const SLOT_ORDER: DeliverySlot[] = ["morning", "midday", "afternoon", "evening"];
 
+/** Parse an "HH:MM" (24h) string to minutes since midnight, or null if malformed. */
+export function parseHhmm(time: string | undefined): number | null {
+  if (!time) return null;
+  const m = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(time);
+  if (!m) return null;
+  return Number(m[1]) * 60 + Number(m[2]);
+}
+
+/** Bucket an exact "HH:MM" time into the slot whose start-time range contains it.
+ *  Uses the same SLOT_START_MIN thresholds that drive the board, so a derived slot
+ *  and its exact time never disagree. Malformed input falls back to "midday". */
+export function slotForTime(time: string): DeliverySlot {
+  const mins = parseHhmm(time);
+  if (mins == null) return "midday";
+  if (mins < SLOT_START_MIN.midday) return "morning";
+  if (mins < SLOT_START_MIN.afternoon) return "midday";
+  if (mins < SLOT_START_MIN.evening) return "afternoon";
+  return "evening";
+}
+
 export const SLOT_LABEL_ES: Record<DeliverySlot, string> = {
   morning: "Mañana", midday: "Mediodía", afternoon: "Tarde", evening: "Noche",
 };
@@ -61,14 +81,17 @@ export function dayDiff(fromDateStr: string, toDateStr: string): number {
   return Math.round((b - a) / 86_400_000);
 }
 
-/** Minutes until a window's slot start, in shop time. Negative => overdue.
- *  Note: a countdown spanning a DST switch (twice/year) may be off by 60 min. */
+/** Minutes until a window's target time, in shop time. Negative => overdue.
+ *  Counts down to the exact `time` ("HH:MM") when one is given and valid; otherwise
+ *  to the slot's start time. Note: a countdown spanning a DST switch (twice/year)
+ *  may be off by 60 min. */
 export function minutesUntilSlotStart(
-  now: Date, windowDate: string, slot: DeliverySlot, tz: string = SHOP_TZ,
+  now: Date, windowDate: string, slot: DeliverySlot, tz: string = SHOP_TZ, time?: string,
 ): number {
   const today = shopDateStr(now, tz);
   const nowMin = shopMinutesOfDay(now, tz);
-  return dayDiff(today, windowDate) * 24 * 60 + SLOT_START_MIN[slot] - nowMin;
+  const targetMin = parseHhmm(time) ?? SLOT_START_MIN[slot];
+  return dayDiff(today, windowDate) * 24 * 60 + targetMin - nowMin;
 }
 
 /** "1:45", "0:05", "-1:15". */

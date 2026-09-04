@@ -40,6 +40,8 @@ export function formatPhoneUS(digits: string): string {
 export type DeliveryWindow = {
   date: string;
   slot: "morning" | "midday" | "afternoon" | "evening";
+  /** Optional exact requested time, "HH:MM" (24h). When set, shown instead of the slot range. */
+  time?: string;
 };
 
 const SLOT_HOURS: Record<DeliveryWindow["slot"], { start: number; end: number }> = {
@@ -49,18 +51,33 @@ const SLOT_HOURS: Record<DeliveryWindow["slot"], { start: number; end: number }>
   evening: { start: 17, end: 20 },
 };
 
+/** Format an "HH:MM" (24h) string as a locale clock time, e.g. "2:30 PM". Returns
+ *  null if the string is missing or malformed, so callers can fall back cleanly. */
+export function formatClock(time: string | undefined, locale: Locale): string | null {
+  if (!time) return null;
+  const m = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(time);
+  if (!m) return null;
+  return new Intl.DateTimeFormat(locale === "es" ? "es-US" : "en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  }).format(new Date(2000, 0, 1, Number(m[1]), Number(m[2])));
+}
+
 export function formatDeliveryWindow(w: DeliveryWindow, locale: Locale): string {
-  const range = SLOT_HOURS[w.slot];
   const date = new Date(w.date + "T00:00:00");
   const dateStr = new Intl.DateTimeFormat(locale === "es" ? "es-US" : "en-US", {
     month: "short",
     day: "numeric",
   }).format(date);
-  const fmtTime = (h: number) =>
+  const exact = formatClock(w.time, locale);
+  if (exact) return `${dateStr} · ${exact}`;
+  const range = SLOT_HOURS[w.slot];
+  const fmtHour = (h: number) =>
     new Intl.DateTimeFormat(locale === "es" ? "es-US" : "en-US", {
       hour: "numeric",
       minute: "2-digit",
       hour12: true,
     }).format(new Date(2000, 0, 1, h));
-  return `${dateStr} · ${fmtTime(range.start)} – ${fmtTime(range.end)}`;
+  return `${dateStr} · ${fmtHour(range.start)} – ${fmtHour(range.end)}`;
 }

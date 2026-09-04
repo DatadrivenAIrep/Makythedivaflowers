@@ -51,7 +51,7 @@ function upsertSqlite(order: Order): void {
     `INSERT INTO orders (
        id, locale, source, customer_id, recipient_name, recipient_phone,
        contact_name, contact_email, contact_phone, fulfillment_method, address_json,
-       window_date, window_slot, card_message, lines_json,
+       window_date, window_slot, window_time, card_message, lines_json,
        subtotal_cents, delivery_cents, discount_cents, tip_cents, tax_cents, total_cents, amount_paid_cents,
        fulfillment_status, payment_status, payment_method, paid_at,
        stripe_payment_intent_id, taken_by, internal_notes, sms_consent, sms_marketing_consent,
@@ -61,7 +61,7 @@ function upsertSqlite(order: Order): void {
      ) VALUES (
        @id, @locale, @source, @customer_id, @recipient_name, @recipient_phone,
        @contact_name, @contact_email, @contact_phone, @fulfillment_method, @address_json,
-       @window_date, @window_slot, @card_message, @lines_json,
+       @window_date, @window_slot, @window_time, @card_message, @lines_json,
        @subtotal_cents, @delivery_cents, @discount_cents, @tip_cents, @tax_cents, @total_cents, @amount_paid_cents,
        @fulfillment_status, @payment_status, @payment_method, @paid_at,
        @stripe_payment_intent_id, @taken_by, @internal_notes, @sms_consent, @sms_marketing_consent,
@@ -82,6 +82,7 @@ function upsertSqlite(order: Order): void {
        address_json=excluded.address_json,
        window_date=excluded.window_date,
        window_slot=excluded.window_slot,
+       window_time=excluded.window_time,
        card_message=excluded.card_message,
        lines_json=excluded.lines_json,
        subtotal_cents=excluded.subtotal_cents,

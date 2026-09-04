@@ -21,6 +21,7 @@ export type TvCard = {
   zoneLabel: string | null;
   slot: DeliverySlot;
   windowDate: string;
+  windowTime?: string;
   hasCardMessage: boolean;
   hasDesignerNotes: boolean;
   minutesUntil: number;
@@ -46,7 +47,7 @@ export type ComputeDeps = {
 };
 
 type WindowOrder = Order & {
-  fulfillment: { method: "delivery" | "pickup"; window: { date: string; slot: DeliverySlot } };
+  fulfillment: { method: "delivery" | "pickup"; window: { date: string; slot: DeliverySlot; time?: string } };
 };
 
 function isWindowOrder(o: Order): o is WindowOrder {
@@ -91,7 +92,8 @@ export function computeBoard(orders: Order[], deps: ComputeDeps): TvBoardData {
 
   const todo: TvCard[] = todoOrders.map((o) => {
     const slot = o.fulfillment.window.slot;
-    const minutesUntil = minutesUntilSlotStart(now, o.fulfillment.window.date, slot, tz);
+    const time = o.fulfillment.window.time;
+    const minutesUntil = minutesUntilSlotStart(now, o.fulfillment.window.date, slot, tz, time);
     return {
       orderId: o.id,
       orderNumber: o.orderNumber ?? null,
@@ -104,6 +106,7 @@ export function computeBoard(orders: Order[], deps: ComputeDeps): TvBoardData {
       zoneLabel: zoneLabelOf(o),
       slot,
       windowDate: o.fulfillment.window.date,
+      ...(time ? { windowTime: time } : {}),
       hasCardMessage: !!o.fulfillment.cardMessage,
       hasDesignerNotes: hasDesignerNotes(o),
       minutesUntil,

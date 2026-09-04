@@ -19,6 +19,8 @@ const address = z.object({
 const window = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "date_invalid"),
   slot: z.enum(["morning", "midday", "afternoon", "evening"]),
+  // Optional exact requested time, "HH:MM" (24h). Absent = flexible slot.
+  time: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "time_invalid").optional(),
 });
 
 const recipient = z.object({ name: z.string().min(2).max(80), phone });

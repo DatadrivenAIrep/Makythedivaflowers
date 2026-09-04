@@ -2,15 +2,18 @@
 import { useTranslations } from "next-intl";
 import type { Address } from "@/types/address";
 import type { DeliverySlot, OrderFulfillment } from "@/types/order";
+import { slotForTime } from "@/lib/tv-slots";
 import AddressAutocomplete from "./AddressAutocomplete";
 
 type Method = "in-store" | "delivery" | "pickup";
+
+const SLOTS: DeliverySlot[] = ["morning", "midday", "afternoon", "evening"];
 
 export type FulfillmentState = {
   method: Method;
   recipient: { name: string; phone: string };
   address: Address;
-  window: { date: string; slot: DeliverySlot };
+  window: { date: string; slot: DeliverySlot; time?: string };
   cardMessage: string;
 };
 
@@ -21,6 +24,7 @@ type Props = {
 
 export default function FulfillmentBlock({ value, onChange }: Props) {
   const t = useTranslations("admin_intake");
+  const to = useTranslations("admin_orders");
   const segs: { id: Method; label: string }[] = [
     { id: "in-store", label: t("fulfillment_in_store") },
     { id: "delivery", label: t("fulfillment_delivery") },
@@ -110,16 +114,49 @@ export default function FulfillmentBlock({ value, onChange }: Props) {
               onChange={(e) => onChange({ ...value, window: { ...value.window, date: e.target.value } })}
               className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white"
             />
-            <select
-              value={value.window.slot}
-              onChange={(e) => onChange({ ...value, window: { ...value.window, slot: e.target.value as DeliverySlot } })}
-              className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white appearance-none"
-            >
-              <option value="morning">{t("slot_morning")}</option>
-              <option value="midday">{t("slot_midday")}</option>
-              <option value="afternoon">{t("slot_afternoon")}</option>
-              <option value="evening">{t("slot_evening")}</option>
-            </select>
+            <input
+              type="time"
+              value={value.window.time ?? ""}
+              onChange={(e) => {
+                const time = e.target.value; // "" when cleared, else "HH:MM"
+                onChange({
+                  ...value,
+                  window: {
+                    ...value.window,
+                    time: time || undefined,
+                    // Keep the slot in sync so the run sheet / TV board still bucket.
+                    slot: time ? slotForTime(time) : value.window.slot,
+                  },
+                });
+              }}
+              aria-label={t("delivery_time_label")}
+              className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white tabular-nums"
+            />
+          </div>
+          <div>
+            <div className="text-[11px] uppercase tracking-widest text-mute-400 mb-1.5">
+              {value.window.time ? t("slot_from_time_label") : t("slot_flexible_label")}
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {SLOTS.map((s) => {
+                const active = value.window.slot === s;
+                return (
+                  <button
+                    key={s}
+                    type="button"
+                    // Picking a window explicitly clears any exact time (goes flexible).
+                    onClick={() => onChange({ ...value, window: { ...value.window, slot: s, time: undefined } })}
+                    className={`px-3 py-1.5 rounded-full text-sm transition border ${
+                      active
+                        ? "bg-ink text-bone border-ink"
+                        : "bg-bone text-mute-600 border-mute-200 hover:border-ink/40"
+                    }`}
+                  >
+                    {to("slot." + s)}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}

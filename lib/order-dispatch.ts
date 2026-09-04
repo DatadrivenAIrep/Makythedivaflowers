@@ -4,6 +4,7 @@ import { getByPhone } from "@/lib/customer-storage";
 import { hasRecentSuccess } from "@/lib/message-storage";
 import { getSetting, SETTING_GOOGLE_REVIEW_URL } from "@/lib/settings-storage";
 import { SITE } from "@/data/site";
+import { formatClock } from "@/lib/format";
 import type { Order } from "@/types/order";
 
 export function windowLabel(order: Order, locale: "en" | "es"): string {
@@ -17,6 +18,9 @@ export function windowLabel(order: Order, locale: "en" | "es"): string {
     month: "short",
     day: "numeric",
   });
+  // An exact time, when set, is more useful in an SMS than the broad slot range.
+  const exact = formatClock(w.time, locale);
+  if (exact) return `${date} · ${exact}`;
   const slotEN: Record<string, string> = {
     morning: "morning (9–12)",
     midday: "midday (12–2)",
@@ -59,6 +63,15 @@ function shopPhoneFromSite(): string {
   return site.contact?.phone ?? site.phone ?? "(516) 484-3456";
 }
 
+/** The word before the window in order/payment SMS: "Delivery"/"Entrega" for a
+ *  delivery order, "Pickup"/"Recoger" for pickup/in-store — so a pickup buyer
+ *  isn't told "Delivery {time}". */
+function fulfillmentLabel(order: Order, locale: "en" | "es"): string {
+  const pickup = order.fulfillment.method !== "delivery";
+  if (locale === "es") return pickup ? "Recoger" : "Entrega";
+  return pickup ? "Pickup" : "Delivery";
+}
+
 export async function dispatchOrderReceived(order: Order, link?: string): Promise<void> {
   const customer = await getByPhone(order.contact.phone);
   const channel = customer?.messagingChannel ?? "sms";
@@ -77,6 +90,7 @@ export async function dispatchOrderReceived(order: Order, link?: string): Promis
       recipient_name: firstName(order.fulfillment.recipient.name),
       total: totalLabel(order.totals.totalCents),
       window: windowLabel(order, locale),
+      fulfillment_label: fulfillmentLabel(order, locale),
       link,
       shop_phone: shopPhoneFromSite(),
       order_number: order.orderNumber != null ? String(order.orderNumber) : undefined,
@@ -160,6 +174,7 @@ export async function dispatchPaymentConfirmed(order: Order): Promise<void> {
       recipient_name: firstName(order.fulfillment.recipient.name),
       total: totalLabel(order.totals.totalCents),
       window: windowLabel(order, locale),
+      fulfillment_label: fulfillmentLabel(order, locale),
       shop_phone: shopPhoneFromSite(),
       order_number: order.orderNumber != null ? String(order.orderNumber) : undefined,
     },
