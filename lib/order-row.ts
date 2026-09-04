@@ -15,6 +15,7 @@ export type OrderRow = {
   address_json: string | null;
   window_date: string | null;
   window_slot: string | null;
+  window_time: string | null;
   card_message: string | null;
   lines_json: string;
   subtotal_cents: number;
@@ -59,6 +60,7 @@ export function orderToRow(o: Order): OrderRow {
     address_json: f.method === "delivery" ? JSON.stringify(f.address) : null,
     window_date: f.method === "in-store" ? null : f.window.date,
     window_slot: f.method === "in-store" ? null : f.window.slot,
+    window_time: f.method === "in-store" ? null : (f.window.time ?? null),
     card_message: f.cardMessage ?? null,
     lines_json: JSON.stringify(o.lines),
     subtotal_cents: o.totals.subtotalCents,
@@ -92,20 +94,25 @@ export function rowToOrder(r: OrderRow): Order {
   const recipient = { name: r.recipient_name, phone: r.recipient_phone };
   const cardMessage = r.card_message ?? undefined;
   const slot = r.window_slot as "morning" | "midday" | "afternoon" | "evening";
+  const window = {
+    date: r.window_date as string,
+    slot,
+    ...(r.window_time ? { time: r.window_time } : {}),
+  };
   let fulfillment: OrderFulfillment;
   if (r.fulfillment_method === "delivery") {
     fulfillment = {
       method: "delivery",
       recipient,
       address: JSON.parse(r.address_json as string),
-      window: { date: r.window_date as string, slot },
+      window,
       cardMessage,
     };
   } else if (r.fulfillment_method === "pickup") {
     fulfillment = {
       method: "pickup",
       recipient,
-      window: { date: r.window_date as string, slot },
+      window,
       cardMessage,
     };
   } else {

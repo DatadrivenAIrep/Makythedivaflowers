@@ -41,6 +41,22 @@ describe("intakeSchema", () => {
     expect(r.success).toBe(true);
   });
 
+  it("accepts an optional exact delivery time", () => {
+    const r = intakeSchema.safeParse({
+      ...validDelivery,
+      fulfillment: { ...validDelivery.fulfillment, window: { date: "2099-01-01", slot: "midday", time: "14:30" } },
+    });
+    expect(r.success).toBe(true);
+  });
+
+  it("rejects a malformed exact time", () => {
+    const r = intakeSchema.safeParse({
+      ...validDelivery,
+      fulfillment: { ...validDelivery.fulfillment, window: { date: "2099-01-01", slot: "midday", time: "25:99" } },
+    });
+    expect(r.success).toBe(false);
+  });
+
   it("rejects empty lines", () => {
     const r = intakeSchema.safeParse({ ...validDelivery, lines: [] });
     expect(r.success).toBe(false);

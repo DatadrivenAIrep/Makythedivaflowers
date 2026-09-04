@@ -43,6 +43,31 @@ describe("order-row", () => {
     expect(back.stripeCheckoutSessionId).toBe("cs_123");
   });
 
+  it("round-trips an exact delivery time", () => {
+    const o: Order = {
+      ...sample,
+      fulfillment: {
+        method: "delivery",
+        recipient: { name: "Lola", phone: "5165550100" },
+        address: { street1: "1 Main", city: "Albertson", state: "NY", zip: "11507", country: "US" },
+        window: { date: "2099-01-01", slot: "midday", time: "14:30" },
+        cardMessage: "Hi",
+      },
+    };
+    const row = orderToRow(o);
+    expect(row.window_time).toBe("14:30");
+    const back = rowToOrder(row);
+    expect(back.fulfillment.method !== "in-store" && back.fulfillment.window.time).toBe("14:30");
+    expect(back).toEqual(o);
+  });
+
+  it("leaves window_time null when no exact time is set", () => {
+    expect(orderToRow(sample).window_time).toBeNull();
+    // A flexible (no-time) window round-trips without a stray `time` key.
+    const back = rowToOrder(orderToRow(sample));
+    expect(back.fulfillment.method !== "in-store" && "time" in back.fulfillment.window).toBe(false);
+  });
+
   it("serializes in-store fulfillment without address or window", () => {
     const inStore: Order = {
       ...sample,

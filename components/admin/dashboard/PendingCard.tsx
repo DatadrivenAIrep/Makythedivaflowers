@@ -5,8 +5,9 @@ import {
   WhatsappLogo, ArrowsClockwise, Check, CheckCircle,
   Package, Truck, ArrowRight, Phone,
 } from "@phosphor-icons/react/dist/ssr";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { resolveLine, firstThumb } from "./product-lookup";
+import { formatClock } from "@/lib/format";
 import AdminButton from "./AdminButton";
 import type { Order } from "@/types/order";
 
@@ -53,12 +54,13 @@ function recipientText(o: Order, t: Translator): string {
   return t("in_store");
 }
 
-function whenText(o: Order, t: Translator, to: Translator): string {
+function whenText(o: Order, t: Translator, to: Translator, locale: string): string {
   if (o.fulfillment.method === "in-store") return t("now");
   const today = new Date().toISOString().slice(0, 10);
-  const d = o.fulfillment.window.date;
-  const prefix = d === today ? t("today") : d;
-  return `${prefix} · ${to("slot." + o.fulfillment.window.slot)}`;
+  const w = o.fulfillment.window;
+  const prefix = w.date === today ? t("today") : w.date;
+  const when = formatClock(w.time, locale === "en" ? "en" : "es") ?? to("slot." + w.slot);
+  return `${prefix} · ${when}`;
 }
 
 type ActionDef = {
@@ -90,6 +92,7 @@ function actionsFor(reason: PendingReason, t: Translator): ActionDef[] {
 export default function PendingCard({ order, reason, onOpen, onAction }: Props) {
   const t = useTranslations("admin_dashboard");
   const to = useTranslations("admin_orders");
+  const locale = useLocale();
   const badge = SOURCE_BADGE[order.source] ?? { label: order.source.toUpperCase(), cls: "bg-stone-100 text-stone-700" };
   const actions = actionsFor(reason, t);
   const thumb = firstThumb(order);
@@ -126,7 +129,7 @@ export default function PendingCard({ order, reason, onOpen, onAction }: Props) 
               <p className="mt-0.5 text-xs text-emerald-700">+ {itemAddOns.join(", ")}</p>
             )}
             <p className="mt-1 text-xs text-ink/60">
-              {order.paymentStatus === "paid" ? t("paid_dot") : t("payment_pending_dot")} · → {whenText(order, t, to)} · {recipientText(order, t)}
+              {order.paymentStatus === "paid" ? t("paid_dot") : t("payment_pending_dot")} · → {whenText(order, t, to, locale)} · {recipientText(order, t)}
             </p>
             {recipientPhone && (
               <p className="mt-0.5 flex items-center gap-1 text-xs text-ink/60">

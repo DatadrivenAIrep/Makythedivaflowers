@@ -5,6 +5,7 @@ import AdminButton from "./AdminButton";
 import { resolveLine } from "./product-lookup";
 import { deliveryZoneRank, findDeliveryZoneByZip } from "@/lib/delivery-zones";
 import { mapsDirectionsUrl } from "@/lib/maps-url";
+import { formatClock } from "@/lib/format";
 import type { Order } from "@/types/order";
 
 const SLOT_ORDER = ["morning", "midday", "afternoon", "evening"] as const;
@@ -71,6 +72,11 @@ export default function RunSheetList({ orders, locale, onOpen, onAdvance }: Prop
                       <div className="flex items-center gap-2">
                         <span className="font-semibold">{f.recipient.name}</span>
                         <span className="text-xs text-ink/40">#{o.id.slice(-6)}</span>
+                        {f.window.time && (
+                          <span className="rounded bg-ink/10 px-1.5 py-0.5 text-[10px] font-semibold text-ink/80 tabular-nums">
+                            🕐 {formatClock(f.window.time, lang)}
+                          </span>
+                        )}
                         {zone && (
                           <span className="rounded bg-ink/10 px-1.5 py-0.5 text-[10px] text-ink/70">{zone.label[lang]}</span>
                         )}

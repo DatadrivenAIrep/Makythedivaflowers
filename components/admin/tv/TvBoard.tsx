@@ -4,6 +4,7 @@ import type { TvCard } from "@/lib/tv-board";
 import {
   SLOT_LABEL_ES, SLOT_ICON, minutesUntilSlotStart, urgencyLevel, formatCountdown,
 } from "@/lib/tv-slots";
+import { formatClock } from "@/lib/format";
 import { useTvPolling } from "./useTvPolling";
 import { useTvSound } from "./useTvSound";
 import { paginate } from "./tv-detect";
@@ -192,7 +193,7 @@ function Counter({ n, label, color }: { n: number; label: string; color: string 
 }
 
 function CardRow({ card, now, isNew }: { card: TvCard; now: Date; isNew: boolean }) {
-  const mins = minutesUntilSlotStart(now, card.windowDate, card.slot);
+  const mins = minutesUntilSlotStart(now, card.windowDate, card.slot, undefined, card.windowTime);
   const urg = urgencyLevel(mins);
   const urgVar = URGENCY_VAR[urg];
   const src = SOURCE[card.source] ?? { icon: "•", label: card.source, color: "#6F685B" };
@@ -233,7 +234,7 @@ function CardRow({ card, now, isNew }: { card: TvCard; now: Date; isNew: boolean
         <div className="text-4xl font-extrabold tabular-nums" style={{ color: urgVar }}>
           {mins < 0 ? "Vencida" : formatCountdown(mins)}
         </div>
-        <div className="text-xs text-mute-400 mt-1 capitalize">hoy · {SLOT_LABEL_ES[card.slot]}</div>
+        <div className="text-xs text-mute-400 mt-1 capitalize">hoy · {card.windowTime ? formatClock(card.windowTime, "es") : SLOT_LABEL_ES[card.slot]}</div>
       </div>
     </div>
   );

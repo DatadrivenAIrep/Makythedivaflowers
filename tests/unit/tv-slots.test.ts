@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   shopDateStr, shopMinutesOfDay, addDaysStr, dayDiff,
-  minutesUntilSlotStart, urgencyLevel, formatCountdown,
+  minutesUntilSlotStart, urgencyLevel, formatCountdown, slotForTime,
 } from "@/lib/tv-slots";
 
 const TZ = "America/New_York";
@@ -31,6 +31,27 @@ describe("tv-slots", () => {
     expect(minutesUntilSlotStart(now, "2026-07-20", "midday", TZ)).toBe(105);   // 12:00 - 10:15
     expect(minutesUntilSlotStart(now, "2026-07-20", "morning", TZ)).toBe(-75);  // 09:00 - 10:15
     expect(minutesUntilSlotStart(now, "2026-07-21", "morning", TZ)).toBe(1365); // +1 day
+  });
+
+  it("minutesUntilSlotStart counts down to an exact time when given, not the slot start", () => {
+    const now = new Date("2026-07-20T14:15:00Z"); // 10:15 ET
+    // Exact 11:00 overrides the "midday" slot start of 12:00.
+    expect(minutesUntilSlotStart(now, "2026-07-20", "midday", TZ, "11:00")).toBe(45);
+    // A malformed time is ignored — falls back to the slot start (12:00).
+    expect(minutesUntilSlotStart(now, "2026-07-20", "midday", TZ, "oops")).toBe(105);
+  });
+
+  it("slotForTime buckets an HH:MM into a delivery slot", () => {
+    expect(slotForTime("08:30")).toBe("morning");
+    expect(slotForTime("11:59")).toBe("morning");
+    expect(slotForTime("12:00")).toBe("midday");
+    expect(slotForTime("14:30")).toBe("midday");
+    expect(slotForTime("15:00")).toBe("afternoon");
+    expect(slotForTime("17:59")).toBe("afternoon");
+    expect(slotForTime("18:00")).toBe("evening");
+    expect(slotForTime("21:00")).toBe("evening");
+    // Malformed input falls back to midday rather than throwing.
+    expect(slotForTime("nope")).toBe("midday");
   });
 
   it("urgencyLevel buckets on 60 / 180 boundaries", () => {

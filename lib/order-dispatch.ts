@@ -4,6 +4,7 @@ import { getByPhone } from "@/lib/customer-storage";
 import { hasRecentSuccess } from "@/lib/message-storage";
 import { getSetting, SETTING_GOOGLE_REVIEW_URL } from "@/lib/settings-storage";
 import { SITE } from "@/data/site";
+import { formatClock } from "@/lib/format";
 import type { Order } from "@/types/order";
 
 export function windowLabel(order: Order, locale: "en" | "es"): string {
@@ -17,6 +18,9 @@ export function windowLabel(order: Order, locale: "en" | "es"): string {
     month: "short",
     day: "numeric",
   });
+  // An exact time, when set, is more useful in an SMS than the broad slot range.
+  const exact = formatClock(w.time, locale);
+  if (exact) return `${date} · ${exact}`;
   const slotEN: Record<string, string> = {
     morning: "morning (9–12)",
     midday: "midday (12–2)",
