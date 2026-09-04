@@ -3811,6 +3811,96 @@ export const PRODUCTS: Product[] = [
       },
     },
   },
+  {
+    id: "p-bou-flag-roses",
+    slug: "american-flag-roses",
+    title: { en: "American Flag Roses", es: "Rosas Bandera Americana" },
+    category: "bouquets",
+    blurb: {
+      en: "A hand-built American flag in red, white, and blue roses — stars and stripes, stem by stem.",
+      es: "Una bandera americana hecha a mano en rosas rojas, blancas y azules — barras y estrellas, tallo a tallo.",
+    },
+    description: {
+      en: "Dozens of roses arranged into the Stars and Stripes: royal-blue roses set with white stars for the union, red and white roses laid in stripes, all cradled in crisp white wrap and finished with a red-white-and-blue ribbon. A showpiece for the Fourth of July, Memorial Day, Veterans Day, or a proud welcome home. Made to order — reserve at least 24 hours ahead so we can source the blue roses. Hand-delivered on Long Island.",
+      es: "Docenas de rosas dispuestas como la bandera de Estados Unidos: rosas azul rey con estrellas blancas para el cantón, y rosas rojas y blancas en franjas, todo envuelto en papel blanco impecable y rematado con un listón rojo, blanco y azul. Una pieza estrella para el 4 de Julio, Memorial Day, el Día de los Veteranos o una bienvenida a casa. Hecho por encargo — reserva con al menos 24 horas para poder conseguir las rosas azules. Entrega a mano en Long Island.",
+    },
+    images: [
+      {
+        src: "/products/american-flag-roses.jpg",
+        alt: { en: "American flag bouquet of red, white, and blue roses wrapped in white paper", es: "Ramo bandera americana de rosas rojas, blancas y azules envuelto en papel blanco" },
+        aspect: "4/5",
+      },
+      {
+        src: "/products/american-flag-roses-2.jpg",
+        alt: { en: "American flag rose bouquet, front view", es: "Ramo bandera americana de rosas, vista frontal" },
+        aspect: "4/5",
+      },
+      {
+        src: "/products/american-flag-roses-3.jpg",
+        alt: { en: "American flag rose bouquet seen from above", es: "Ramo bandera americana de rosas visto desde arriba" },
+        aspect: "4/5",
+      },
+    ],
+    variants: [
+      { id: "grand", label: { en: "American flag bouquet", es: "Ramo bandera americana" }, priceCents: 40000 },
+    ],
+    tags: ["new", "seasonal"],
+    occasions: ["congrats", "thank-you", "just-because"],
+    colorFamily: ["red", "white", "mixed"],
+    active: true,
+    seo: {
+      title: { en: "American Flag Roses — Red, White & Blue Bouquet | Diva Flowers", es: "Rosas Bandera Americana — Ramo Rojo, Blanco y Azul | Diva Flowers" },
+      description: {
+        en: "A hand-built American flag in red, white, and blue roses. Made to order for the Fourth of July, Memorial Day, and Veterans Day. Hand-delivered on Long Island.",
+        es: "Una bandera americana hecha a mano en rosas rojas, blancas y azules. Por encargo para el 4 de Julio, Memorial Day y el Día de los Veteranos. Entrega a mano en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-bou-100-roses",
+    slug: "100-roses",
+    title: { en: "100 Roses", es: "100 Rosas" },
+    category: "bouquets",
+    blurb: {
+      en: "One hundred roses in reds, pinks, and creams — crowned with a crystal tiara and gold butterflies.",
+      es: "Cien rosas en rojos, rosados y cremas — coronadas con una tiara de cristales y mariposas doradas.",
+    },
+    description: {
+      en: "A hundred roses in every shade from deep red to blush and cream, hand-tied into one enormous domed bouquet, wrapped in blush-and-gold paper and finished with a satin bow. We crown it with a crystal tiara and set gold butterflies among the blooms — the grand gesture for a quinceañera, an anniversary, a proposal, or a birthday no one forgets. Made to order — reserve at least 24 hours ahead. Hand-delivered on Long Island.",
+      es: "Cien rosas en todos los tonos, del rojo intenso al rosa empolvado y el crema, atadas a mano en un enorme ramo abovedado, envuelto en papel rosa y dorado y rematado con un moño de satín. Lo coronamos con una tiara de cristales y colocamos mariposas doradas entre las flores — el gesto grande para unos quince, un aniversario, una propuesta o un cumpleaños inolvidable. Hecho por encargo — reserva con al menos 24 horas. Entrega a mano en Long Island.",
+    },
+    images: [
+      {
+        src: "/products/hundred-roses.jpg",
+        alt: { en: "Bouquet of 100 pink, red, and cream roses with a crystal tiara and gold butterflies", es: "Ramo de 100 rosas rosadas, rojas y crema con tiara de cristales y mariposas doradas" },
+        aspect: "4/5",
+      },
+      {
+        src: "/products/hundred-roses-2.jpg",
+        alt: { en: "100-rose bouquet, front view", es: "Ramo de 100 rosas, vista frontal" },
+        aspect: "16/9",
+      },
+      {
+        src: "/products/hundred-roses-3.jpg",
+        alt: { en: "100-rose bouquet seen from above", es: "Ramo de 100 rosas visto desde arriba" },
+        aspect: "4/5",
+      },
+    ],
+    variants: [
+      { id: "grand", label: { en: "100 roses", es: "100 rosas" }, priceCents: 50000 },
+    ],
+    tags: ["new"],
+    occasions: ["romance", "anniversary", "birthday", "congrats"],
+    colorFamily: ["pink", "red", "mixed"],
+    active: true,
+    seo: {
+      title: { en: "100 Roses — Grand Bouquet with Crystal Tiara | Diva Flowers", es: "100 Rosas — Ramo Gigante con Tiara de Cristales | Diva Flowers" },
+      description: {
+        en: "One hundred roses in reds, pinks, and creams, crowned with a crystal tiara and gold butterflies. Made to order for quinceañeras, anniversaries, and proposals. Long Island.",
+        es: "Cien rosas en rojos, rosados y cremas, coronadas con una tiara de cristales y mariposas doradas. Por encargo para quinceañeras, aniversarios y propuestas. Long Island.",
+      },
+    },
+  },
   // ─── TEST PRODUCT — $1 for end-to-end checkout validation. DELETE AFTER TESTING. ─────
   {
     id: "p-test-1usd",
