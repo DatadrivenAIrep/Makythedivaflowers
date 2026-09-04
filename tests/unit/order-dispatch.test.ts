@@ -12,7 +12,7 @@ vi.mock("@/lib/settings-storage", () => ({
   SETTING_GOOGLE_REVIEW_URL: "google_review_url",
 }));
 
-import { dispatchOutForDelivery, dispatchDelivered, dispatchReviewRequest } from "@/lib/order-dispatch";
+import { dispatchOutForDelivery, dispatchDelivered, dispatchReviewRequest, dispatchOrderReceived } from "@/lib/order-dispatch";
 import type { Order } from "@/types/order";
 
 function order(method: "delivery" | "pickup"): Order {
@@ -76,6 +76,26 @@ describe("dispatchOutForDelivery", () => {
     hasRecentSuccessMock.mockReturnValue(true);
     await dispatchOutForDelivery(order("delivery"));
     expect(sendMessageMock).not.toHaveBeenCalled();
+  });
+});
+
+describe("dispatchOrderReceived fulfillment label", () => {
+  it("labels a pickup order 'Recoger' (es), not 'Entrega'", async () => {
+    await dispatchOrderReceived(order("pickup"));
+    expect(sendMessageMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        template: "order_received",
+        vars: expect.objectContaining({ fulfillment_label: "Recoger" }),
+      }),
+    );
+  });
+  it("labels a delivery order 'Entrega' (es)", async () => {
+    await dispatchOrderReceived(order("delivery"));
+    expect(sendMessageMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        vars: expect.objectContaining({ fulfillment_label: "Entrega" }),
+      }),
+    );
   });
 });
 
