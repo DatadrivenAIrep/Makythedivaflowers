@@ -92,6 +92,9 @@ export const intakeSchema = z.object({
     .optional(),
   internalNotes: z.string().max(400).optional(),
   giftCardCode: z.string().min(1).max(50).optional(),
+  // Only the code travels from the client. The discount is always recomputed on
+  // the server from the live promo, so a tampered request cannot set its price.
+  promoCode: z.string().min(1).max(50).optional(),
   payment,
 })
   .superRefine((data, ctx) => {

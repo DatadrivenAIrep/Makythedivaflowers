@@ -14,6 +14,7 @@ const draftPayloadSchema = z
     lines: z.array(z.unknown()).max(200).default([]),
     override: z.record(z.string(), z.unknown()).optional(),
     giftCardCode: z.string().max(50_000).optional(),
+    promoCode: z.string().max(50_000).optional(),
     payment: z.record(z.string(), z.unknown()),
   })
   .passthrough();

@@ -1,22 +1,28 @@
 import { NextResponse } from "next/server";
 import { intakeSchema, type IntakeInput } from "@/schemas/intake";
-import { resolveOrderTotals } from "@/lib/totals";
+import { resolveOrderTotals, computeDeliveryCentsForAddress } from "@/lib/totals";
+import { cartSubtotalCents } from "@/lib/cart-helpers";
+import { PRODUCTS } from "@/data/products";
 import { saveOrder, listOrders, type ListOrdersFilters } from "@/lib/order-storage";
 import { enqueuePrintJob } from "@/lib/print-queue";
 import { upsertOnOrder } from "@/lib/customer-storage";
 import { createCheckoutSession } from "@/lib/stripe-payment-link";
 import { dispatchOrderReceived } from "@/lib/order-dispatch";
 import { validateForRedemption, redeem } from "@/lib/gift-card-storage";
+import { validatePromo, redeemPromo } from "@/lib/promo";
+import { buyerHasPaidOrder } from "@/lib/buyer-history";
 import type { Order, OrderFulfillment, CartLine } from "@/types/order";
 
 export const runtime = "nodejs";
 
-function computeTotals(input: IntakeInput): Order["totals"] {
+function computeTotals(input: IntakeInput, discountCents = 0): Order["totals"] {
   return resolveOrderTotals({
     lines: input.lines as CartLine[],
     fulfillmentMethod: input.fulfillment.method,
     address: input.fulfillment.method === "delivery" ? input.fulfillment.address : undefined,
-    override: input.totalsOverride,
+    // The promo discount is authoritative from the server; a client-sent
+    // discountCents in totalsOverride is stripped by intakeSchema and ignored.
+    override: discountCents > 0 ? { ...input.totalsOverride, discountCents } : input.totalsOverride,
   });
 }
 
@@ -54,6 +60,38 @@ export async function POST(req: Request) {
     buyerAddress: input.customer.buyerAddress,
   });
 
+  // --- Promo code (optional) ---
+  // Only the code arrives from the client; the discount is recomputed here from
+  // the live promo, gated by the same rules as web checkout (window, minimum,
+  // first-order, assigned phone, redemption cap). Mirrors /api/checkout/intent.
+  let promoId: string | undefined;
+  let promoCode: string | undefined;
+  let promoDiscountCents = 0;
+  if (input.promoCode) {
+    const address =
+      input.fulfillment.method === "delivery" ? input.fulfillment.address : undefined;
+    const promoSubtotal =
+      input.totalsOverride?.subtotalCents ?? cartSubtotalCents(input.lines as CartLine[], PRODUCTS);
+    const promoDelivery =
+      input.totalsOverride?.deliveryCents ??
+      (address ? computeDeliveryCentsForAddress(address) ?? 0 : 0);
+    const check = validatePromo(input.promoCode, {
+      subtotalCents: promoSubtotal,
+      deliveryCents: promoDelivery,
+      buyerHasOrdered: buyerHasPaidOrder({ phone: contactPhone, email: input.customer.email }),
+      buyerPhone: contactPhone,
+    });
+    if (!check.ok) {
+      return NextResponse.json(
+        { errors: { formErrors: ["promo_invalid"], promoReason: check.reason } },
+        { status: 400 },
+      );
+    }
+    promoId = check.promo.id;
+    promoCode = check.promo.code;
+    promoDiscountCents = check.discountCents;
+  }
+
   // For in-store ("Take it now") the buyer takes the order, so the buyer is the
   // recipient. Populate it from the resolved contact (buyer is required for in-store).
   const fulfillment: OrderFulfillment =
@@ -72,7 +110,9 @@ export async function POST(req: Request) {
       email: input.customer.email && input.customer.email !== "" ? input.customer.email : undefined,
       phone: contactPhone,
     },
-    totals: computeTotals(input),
+    promoId,
+    promoCode,
+    totals: computeTotals(input, promoDiscountCents),
     status: "pending",
     paymentStatus: input.payment.status,
     paymentMethod: input.payment.status === "paid" ? input.payment.method : undefined,
@@ -122,6 +162,17 @@ export async function POST(req: Request) {
       redeem(giftCardId, order.id, giftCardCents);
     } catch (e) {
       console.error("[gift-card] intake redeem failed for order", order.id, e);
+    }
+  }
+
+  // Burn the promo only once the order is actually paid, mirroring web checkout.
+  // Pending orders redeem later — via the Stripe webhook (payment link) or the
+  // manual "mark paid" mutation. redeemPromo is idempotent per order.
+  if (promoId && order.paymentStatus === "paid" && order.totals.discountCents > 0) {
+    try {
+      redeemPromo(promoId, order.id, order.totals.discountCents);
+    } catch (e) {
+      console.error("[promo] intake redeem failed for order", order.id, e);
     }
   }
 

@@ -132,6 +132,15 @@ export async function POST(req: Request) {
         if (csOrder.paymentStatus === "paid") break; // idempotent
 
         await updateOrderPaidByCheckoutSession(session.id);
+        // Payment-link orders (intake, and web resend) redeem the promo here —
+        // the payment_intent.succeeded branch above never fires for them.
+        if (csOrder.promoId && csOrder.totals.discountCents > 0) {
+          try {
+            redeemPromo(csOrder.promoId, csOrder.id, csOrder.totals.discountCents);
+          } catch (e) {
+            console.error("[promo] redeem on checkout session failed for order", csOrder.id, e);
+          }
+        }
         if (csOrder.source === "web") {
           // Web order paid via the admin payment-link/resend flow: route through
           // the consent-aware hook so messagingChannel reflects the checkout

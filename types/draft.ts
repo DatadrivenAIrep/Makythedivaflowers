@@ -12,6 +12,8 @@ export type DraftPayload = {
   lines: CartLine[];
   override: Partial<OrderTotals>;
   giftCardCode: string;
+  /** Applied promo code, if any. The discount amount rides in `override.discountCents`. */
+  promoCode?: string;
   payment: PaymentState;
 };
 

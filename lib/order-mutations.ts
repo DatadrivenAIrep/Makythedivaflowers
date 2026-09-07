@@ -4,6 +4,7 @@ import { runMigrations } from "@/lib/db-migrate";
 import { rowToOrder, orderToRow, type OrderRow } from "@/lib/order-row";
 import type { Order, PaymentMethod, FulfillmentStatus } from "@/types/order";
 import { recordOrderChange } from "@/lib/order-history";
+import { redeemPromo } from "@/lib/promo";
 
 function money(c: number): string { return `$${(c / 100).toFixed(2)}`; }
 
@@ -43,6 +44,16 @@ export async function markPaidManual(
     orderId, actor: "maky", kind: "payment",
     summary: `Pagado en ${args.method} · ${money(cur.totals.totalCents)}`,
   });
+
+  // A promo on a pending order is only burned once payment actually lands.
+  // Idempotent per order, so a re-mark or a Stripe race never double-counts.
+  if (cur.promoId && cur.totals.discountCents > 0) {
+    try {
+      redeemPromo(cur.promoId, orderId, cur.totals.discountCents);
+    } catch (e) {
+      console.error(JSON.stringify({ event: "promo_redeem_failed", orderId, error: String(e) }));
+    }
+  }
 
   // Mirror the Stripe webhook side-effects so customers get the same paid-order
   // confirmation regardless of whether payment landed via Stripe or manual.

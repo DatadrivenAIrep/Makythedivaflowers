@@ -8,10 +8,14 @@ import FulfillmentBlock, { type FulfillmentState } from "./FulfillmentBlock";
 import ProductPicker from "./ProductPicker";
 import CartLines from "./CartLines";
 import CartTotals from "./CartTotals";
+import PromoField, { type AppliedPromo } from "./PromoField";
 import PaymentBlock, { type PaymentState } from "./PaymentBlock";
 import { toOrderFulfillment } from "./FulfillmentBlock";
 import DraftsDrawer from "./DraftsDrawer";
 import type { DraftPayload } from "@/types/draft";
+import { PRODUCTS } from "@/data/products";
+import { cartSubtotalCents } from "@/lib/cart-helpers";
+import { computeDeliveryCentsForAddress } from "@/lib/totals";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatDateTime } from "@/lib/format-datetime";
 import {
@@ -46,6 +50,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
   const [fulfillment, setFulfillment] = useState<FulfillmentState>(makeInitialFulfillment);
   const [lines, setLines] = useState<CartLine[]>([]);
   const [override, setOverride] = useState<Partial<OrderTotals>>({});
+  const [promo, setPromo] = useState<AppliedPromo | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
   const okOrderId = searchParams.get("ok");
@@ -120,6 +125,21 @@ export default function IntakeForm({ products }: { products: Product[] }) {
     });
   }
 
+  // The applied discount rides in `override.discountCents` so it flows through
+  // CartTotals and the draft; `promo` holds the code for the submit body.
+  function applyPromo(p: AppliedPromo) {
+    setPromo(p);
+    setOverride((o) => ({ ...o, discountCents: p.discountCents }));
+  }
+  function clearPromo() {
+    setPromo(null);
+    setOverride((o) => {
+      const next = { ...o };
+      delete next.discountCents;
+      return next;
+    });
+  }
+
   function resetForm() {
     const init = makeInitialFormState();
     setChannel(init.channel);
@@ -127,6 +147,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
     setFulfillment(init.fulfillment);
     setLines(init.lines);
     setOverride(init.override);
+    setPromo(null);
     setGiftCardCode(init.giftCardCode);
     setPayment(init.payment);
     setDraftId(null);
@@ -135,7 +156,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
   }
 
   function currentPayload(): DraftPayload {
-    return { version: 1, channel, customer, fulfillment, lines, override, giftCardCode, payment };
+    return { version: 1, channel, customer, fulfillment, lines, override, giftCardCode, promoCode: promo?.code ?? "", payment };
   }
 
   function draftLabel(): string {
@@ -211,6 +232,11 @@ export default function IntakeForm({ products }: { products: Product[] }) {
     setFulfillment(payload.fulfillment ?? makeInitialFulfillment());
     setLines(payload.lines ?? []);
     setOverride(payload.override ?? {});
+    setPromo(
+      payload.promoCode
+        ? { code: payload.promoCode, discountCents: payload.override?.discountCents ?? 0 }
+        : null,
+    );
     setGiftCardCode(payload.giftCardCode ?? "");
     setPayment(payload.payment ?? { ...INITIAL_PAYMENT });
     setDraftId(id);
@@ -235,6 +261,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
         lines,
         totalsOverride: override,
         giftCardCode: giftCardCode || undefined,
+        promoCode: promo?.code || undefined,
         payment,
       };
       const res = await fetch("/api/admin/orders", {
@@ -257,6 +284,15 @@ export default function IntakeForm({ products }: { products: Product[] }) {
       setSubmitting(false);
     }
   }
+
+  // Price context for the promo, resolved the same way the server does: a manual
+  // subtotal/delivery override wins, else the live cart + address.
+  const promoSubtotalCents = override.subtotalCents ?? cartSubtotalCents(lines, PRODUCTS);
+  const promoDeliveryCents =
+    override.deliveryCents ??
+    (fulfillment.method === "delivery"
+      ? computeDeliveryCentsForAddress({ zip: fulfillment.address.zip, city: fulfillment.address.city }) ?? 0
+      : 0);
 
   return (
     <main className="max-w-[1180px] mx-auto p-6">
@@ -375,6 +411,18 @@ export default function IntakeForm({ products }: { products: Product[] }) {
                 override={override}
                 onOverride={setOverride}
               />
+              <div className="mt-4">
+                <PromoField
+                  subtotalCents={promoSubtotalCents}
+                  deliveryCents={promoDeliveryCents}
+                  locale={locale}
+                  phone={customer.phone || undefined}
+                  email={customer.email || undefined}
+                  applied={promo}
+                  onApply={applyPromo}
+                  onClear={clearPromo}
+                />
+              </div>
               <div className="mt-4"><PaymentBlock value={payment} onChange={setPayment} /></div>
               <label className="block mt-4">
                 <span className="mb-1 block text-xs font-semibold">{t("gift_card_label")}</span>

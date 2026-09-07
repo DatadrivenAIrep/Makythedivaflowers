@@ -118,6 +118,12 @@ export default function CartTotals({ lines, fulfillmentMethod, deliveryZip, deli
           <p className="text-[11.5px] text-rouge/80 mt-0.5">{t("totals_delivery_unresolved_hint")}</p>
         </div>
       ) : row(t("totals_delivery"), "deliveryCents")}
+      {discountCents > 0 && (
+        <div className="flex justify-between items-center text-rouge py-1">
+          <span>{t("totals_discount")}</span>
+          <span className="tabular-nums">−${(discountCents / 100).toFixed(2)}</span>
+        </div>
+      )}
       {row(t("totals_tax"), "taxCents")}
       <div className="flex justify-between items-center border-t border-mute-100 mt-2 pt-2.5 font-display text-base">
         <span>{t("totals_total")}</span>

@@ -1300,6 +1300,7 @@
     "totals_subtotal": "Subtotal",
     "totals_delivery": "Delivery",
     "totals_tax": "Tax",
+    "totals_discount": "Descuento",
     "totals_total": "Total",
     "totals_prompt": "{label} $",
     "totals_delivery_unresolved": "Ingresar",
