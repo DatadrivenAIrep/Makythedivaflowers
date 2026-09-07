@@ -3603,6 +3603,75 @@ export const PRODUCTS: Product[] = [
       },
     },
   },
+  // ─── Studio shoot 2026-09-06 ─────────────────
+  {
+    id: "p-bou-royal-01",
+    slug: "birthday-queen",
+    title: { en: "Birthday Queen", es: "Reina de Cumpleaños" },
+    category: "bouquets",
+    blurb: {
+      en: "Sixty roses in pink, fuchsia and lavender, hand-tied with a crown, gold butterflies and a Happy Birthday topper.",
+      es: "Sesenta rosas en rosa, fucsia y lavanda, atadas a mano con corona, mariposas doradas y topper de Happy Birthday.",
+    },
+    description: {
+      en: "For the birthday that deserves an entrance — sixty roses in every shade of pink, fuchsia, lavender and red, built into a full round dome and hand-wrapped in shimmering gold mesh and blush paper, finished in a pink keepsake box with a satin ribbon. We top it with gold filigree butterflies, a little crown, and a Happy Birthday pick, so it announces itself before the card is opened. This is the one you send when sixty roses is the message: the milestone birthday, the grand gesture, the person who is used to being celebrated properly. Made to order on Long Island; reserve at least a day ahead so we can source sixty roses at their peak and build it the morning it ships.",
+      es: "Para el cumpleaños que merece una entrada — sesenta rosas en todos los tonos de rosa, fucsia, lavanda y rojo, armadas en un domo redondo y envueltas a mano en malla dorada brillante y papel blush, rematadas en una caja rosa de recuerdo con lazo de satén. Le ponemos mariposas doradas en filigrana, una corona y un pick de Happy Birthday, para que se anuncie solo antes de abrir la tarjeta. Este es el que mandas cuando el mensaje son sesenta rosas: el cumpleaños importante, el gesto en grande, la persona acostumbrada a que la celebren como se debe. Hecho por encargo en Long Island; reserva con al menos un día para conseguir las sesenta rosas en su punto y armarlo la mañana del envío.",
+    },
+    images: [
+      { src: "/products/birthday-queen.jpg", alt: { en: "Sixty-rose birthday bouquet in pink and fuchsia with gold butterflies and a Happy Birthday topper in a pink box", es: "Ramo de sesenta rosas en rosa y fucsia con mariposas doradas y topper de Happy Birthday en caja rosa" }, aspect: "4/5" },
+      { src: "/products/birthday-queen-2.jpg", alt: { en: "Overhead view of the sixty-rose dome with gold butterflies", es: "Vista cenital del domo de sesenta rosas con mariposas doradas" }, aspect: "4/5" },
+      { src: "/products/birthday-queen-3.jpg", alt: { en: "Birthday Queen rose bouquet seen from above", es: "Ramo Reina de Cumpleaños visto desde arriba" }, aspect: "4/5" },
+      { src: "/products/birthday-queen-4.jpg", alt: { en: "Birthday Queen bouquet in its pink box with red ribbon", es: "Ramo Reina de Cumpleaños en su caja rosa con lazo rojo" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Sixty roses", es: "Sesenta rosas" }, priceCents: 35000 },
+    ],
+    tags: ["new", "staff-pick"],
+    occasions: ["birthday", "romance", "anniversary", "congrats"],
+    colorFamily: ["pink", "red", "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Birthday Queen — Diva Flowers", es: "Reina de Cumpleaños — Diva Flowers" },
+      description: {
+        en: "A sixty-rose birthday bouquet in pink and fuchsia with gold butterflies, a crown and a Happy Birthday topper. Made to order on Long Island.",
+        es: "Ramo de sesenta rosas de cumpleaños en rosa y fucsia con mariposas doradas, corona y topper de Happy Birthday. Hecho por encargo en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-arr-royal-01",
+    slug: "peaches-and-cream",
+    title: { en: "Peaches & Cream", es: "Duraznos y Crema" },
+    category: "arrangements",
+    blurb: {
+      en: "Peach cymbidium orchids, yellow and blush roses and cream hydrangea, low and round in clear glass.",
+      es: "Orquídeas cymbidium durazno, rosas amarillas y blush y hortensia crema, bajo y redondo en vidrio transparente.",
+    },
+    description: {
+      en: "For the morning that should feel like sunlight — peach and blush cymbidium orchids, buttercup-yellow and soft-pink roses, cream and green hydrangea, lisianthus, white stock and a pop of green dianthus, built low and round in a clear glass cube. It is warm without being loud: the peach orchids and yellow roses carry the sun, the cream hydrangea keeps it soft, and the green trick dianthus gives it a garden edge. Low enough for a breakfast table or a bedside, generous enough to read from across the room. Send it for the birthday, the new baby, the thank-you that wants to feel like spring. Order before 2:00 pm and it goes out today across Long Island, built to the photo in the same palette with whatever came in freshest that morning.",
+      es: "Para la mañana que debería sentirse como luz de sol — orquídeas cymbidium durazno y blush, rosas amarillo mantequilla y rosa suave, hortensia crema y verde, lisianthus, alhelí blanco y un toque de dianthus verde, armado bajo y redondo en un cubo de vidrio transparente. Es cálido sin ser estridente: las orquídeas durazno y las rosas amarillas ponen el sol, la hortensia crema lo mantiene suave, y el dianthus verde le da filo de jardín. Bajo para una mesa de desayuno o una mesa de noche, y generoso para leerse desde el otro lado del cuarto. Mándalo por el cumpleaños, por el bebé nuevo, por el gracias que quiere sentirse a primavera. Pídelo antes de las 2:00 pm y sale hoy mismo por Long Island, armado como la foto en la misma paleta con lo que haya entrado más fresco esa mañana.",
+    },
+    images: [
+      { src: "/products/peaches-and-cream.jpg", alt: { en: "Low pastel arrangement of peach cymbidium orchids, yellow and blush roses and cream hydrangea in a glass cube", es: "Arreglo pastel bajo de orquídeas cymbidium durazno, rosas amarillas y blush y hortensia crema en cubo de vidrio" }, aspect: "4/5" },
+      { src: "/products/peaches-and-cream-2.jpg", alt: { en: "Peaches & Cream arrangement seen from above", es: "Arreglo Duraznos y Crema visto desde arriba" }, aspect: "4/5" },
+      { src: "/products/peaches-and-cream-3.jpg", alt: { en: "Peaches & Cream arrangement with yellow roses and cream hydrangea", es: "Arreglo Duraznos y Crema con rosas amarillas y hortensia crema" }, aspect: "4/5" },
+      { src: "/products/peaches-and-cream-4.jpg", alt: { en: "Peaches & Cream pastel arrangement in a clear glass cube with trailing foliage", es: "Arreglo pastel Duraznos y Crema en cubo de vidrio con follaje colgante" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 12000 },
+    ],
+    tags: ["new", "same-day", "staff-pick"],
+    occasions: ["birthday", "new-baby", "thank-you", "get-well", "just-because", "congrats"],
+    colorFamily: ["pastel", "pink", "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Peaches & Cream — Diva Flowers", es: "Duraznos y Crema — Diva Flowers" },
+      description: {
+        en: "A low pastel arrangement of peach cymbidium orchids, yellow and blush roses and cream hydrangea in clear glass. Same-day delivery on Long Island.",
+        es: "Arreglo pastel bajo de orquídeas cymbidium durazno, rosas amarillas y blush y hortensia crema en vidrio transparente. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
   {
     id: "x-card-premium",
     slug: "premium-card",
