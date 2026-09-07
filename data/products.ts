@@ -258,7 +258,7 @@ export const PRODUCTS: Product[] = [
     images: [
       {
         src: "/products/designers-choice.png",
-        alt: { en: "Diva Flowers logo on a light background — designer's choice placeholder", es: "Logotipo de Diva Flowers sobre fondo claro — marcador a elección de la florista" },
+        alt: { en: "Maky the Diva Flowers & Events logo on a light background — designer's choice placeholder", es: "Logotipo de Maky the Diva Flowers & Events sobre fondo claro — marcador a elección de la florista" },
         aspect: "4/5",
       },
     ],
