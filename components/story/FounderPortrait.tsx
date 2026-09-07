@@ -12,11 +12,11 @@ export async function FounderPortrait({ locale }: { locale: Locale }) {
         <Reveal className="grid lg:grid-cols-2 gap-16 items-center">
           <div className="aspect-[3/4] overflow-hidden rounded-2xl bg-bone relative">
             <Image
-              src="https://picsum.photos/seed/diva-founder/1200/1600"
+              src="/story/maky.webp"
               alt={t("portrait_alt")}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover"
+              className="object-cover object-top"
             />
           </div>
           <div className="space-y-6">
