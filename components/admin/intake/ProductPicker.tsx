@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
-import type { Product } from "@/types/product";
+import type { Product, ProductVariant } from "@/types/product";
 import type { CartLine, CustomCartLine } from "@/types/order";
 
 type Props = {
@@ -26,6 +26,10 @@ export default function ProductPicker({ products, onAdd }: Props) {
     const q = query.toLowerCase();
     return p.title.en.toLowerCase().includes(q) || p.title.es.toLowerCase().includes(q);
   });
+
+  function addCatalog(p: Product, variant: ProductVariant) {
+    onAdd({ kind: "catalog", productId: p.id, variantId: variant.id, addOnIds: [], qty: 1 });
+  }
 
   function addCustom() {
     if (!custom.title.trim() || custom.priceCents <= 0) return;
@@ -92,33 +96,63 @@ export default function ProductPicker({ products, onAdd }: Props) {
 
       <div className="grid grid-cols-3 gap-2.5 mb-4 max-h-[400px] overflow-y-auto pr-1">
         {filtered.map((p) => {
-          const variant = p.variants[0];
           const img = p.images[0];
+          const cover = (
+            <div className="aspect-[4/5] rounded-xl bg-mute-100 overflow-hidden relative">
+              {img && (
+                <Image
+                  src={img.src}
+                  alt={img.alt[locale]}
+                  fill
+                  sizes="(max-width: 1180px) 18vw, 220px"
+                  className="object-cover"
+                />
+              )}
+            </div>
+          );
+
+          // One size: the whole card is the tap target, as before.
+          if (p.variants.length === 1) {
+            const variant = p.variants[0];
+            return (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => addCatalog(p, variant)}
+                className="text-left bg-white border border-mute-100 hover:border-mute-300 rounded-2xl p-1.5 transition"
+              >
+                {cover}
+                <div className="px-1 pt-1.5 pb-1.5">
+                  <div className="font-display text-sm leading-tight">{p.title[locale]}</div>
+                  <div className="text-xs text-mute-500 tabular-nums">${(variant.priceCents / 100).toFixed(0)}</div>
+                </div>
+              </button>
+            );
+          }
+
+          // Several sizes: the card itself does nothing — each size is its own
+          // tap target, so a multi-size piece can never be added at the smallest
+          // size by accident.
           return (
-            <button
-              key={p.id}
-              type="button"
-              onClick={() =>
-                onAdd({ kind: "catalog", productId: p.id, variantId: variant.id, addOnIds: [], qty: 1 })
-              }
-              className="text-left bg-white border border-mute-100 hover:border-mute-300 rounded-2xl p-1.5 transition"
-            >
-              <div className="aspect-[4/5] rounded-xl bg-mute-100 overflow-hidden relative">
-                {img && (
-                  <Image
-                    src={img.src}
-                    alt={img.alt[locale]}
-                    fill
-                    sizes="(max-width: 1180px) 18vw, 220px"
-                    className="object-cover"
-                  />
-                )}
-              </div>
-              <div className="px-1 pt-1.5 pb-1.5">
+            <div key={p.id} className="bg-white border border-mute-100 rounded-2xl p-1.5">
+              {cover}
+              <div className="px-1 pt-1.5">
                 <div className="font-display text-sm leading-tight">{p.title[locale]}</div>
-                <div className="text-xs text-mute-500 tabular-nums">${(variant.priceCents / 100).toFixed(0)}</div>
               </div>
-            </button>
+              <div className="grid gap-1 px-1 pt-1.5 pb-0.5">
+                {p.variants.map((v) => (
+                  <button
+                    key={v.id}
+                    type="button"
+                    onClick={() => addCatalog(p, v)}
+                    className="flex items-center justify-between gap-2 rounded-lg border border-mute-200 px-2 py-2 text-xs text-left hover:border-rouge hover:text-rouge transition"
+                  >
+                    <span className="truncate">{v.label[locale]}</span>
+                    <span className="tabular-nums text-mute-500">${(v.priceCents / 100).toFixed(0)}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
           );
         })}
       </div>

@@ -16,6 +16,16 @@ describe("CartLines", () => {
     expect(onChange).toHaveBeenCalledWith([]);
   });
 
+  it("shows which size a multi-size catalog line was added at", () => {
+    const lines: CartLine[] = [
+      { kind: "catalog", productId: "p-bou-b3-15", variantId: "grand", addOnIds: [], qty: 1 },
+    ];
+    render(<CartLines lines={lines} onChangeLines={() => {}} />);
+    expect(screen.getByText(/El Ramo de Talita/)).toBeInTheDocument();
+    expect(screen.getByText(/Grande/)).toBeInTheDocument();
+    expect(screen.getByText("$125.00")).toBeInTheDocument();
+  });
+
   it("shows an empty state with no lines", () => {
     render(<CartLines lines={[]} onChangeLines={() => {}} />);
     expect(screen.getByText(/Sin productos/)).toBeInTheDocument();
