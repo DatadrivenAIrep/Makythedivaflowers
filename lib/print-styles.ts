@@ -173,19 +173,27 @@ export function getPrintStyles(): string {
       font-variation-settings: "opsz" 60;
     }
     .ws-items table { width: 100%; font-size: 9pt; border-collapse: collapse; }
-    .ws-items td { padding: 4pt 0; vertical-align: top; }
+    .ws-items td { padding: 3pt 0; vertical-align: top; }
     .ws-items td.thumb-cell { width: 80pt; padding-right: 8pt; }
     .ws-items .item-thumb {
-      width: 80pt; height: 80pt; object-fit: cover; border-radius: 4pt;
+      width: 68pt; height: 68pt; object-fit: cover; border-radius: 4pt;
       border: 1px solid var(--mute-200); display: block;
     }
+    /* Density tiers — see itemsDensity() in print-render-html.tsx. */
+    .ws-items.dense .item-thumb { width: 44pt; height: 44pt; }
     .ws-items td.qty { width: 18pt; font-weight: 700; }
     .ws-items td.price { text-align: right; font-variant-numeric: tabular-nums; width: 50pt; }
     .ws-items .addon { font-size: 8pt; color: var(--mute-600); padding-left: 8pt; }
-    .ws-items tr.subtotal td { border-top: 1px solid var(--mute-200); padding-top: 4pt; font-size: 8pt; color: var(--mute-600); }
+    /* Itemised money lines. Tight leading so a fully loaded order (discount,
+       tip, gift card, balance) still fits the fixed-height sheet. */
+    .ws-items tr.totline td { padding: 0.5pt 0; font-size: 8.5pt; line-height: 1.15; color: var(--mute-600); }
+    .ws-items tr.totline.first td { border-top: 1px solid var(--mute-200); padding-top: 3pt; }
+    .ws-items tr.totline.neg td.price { color: var(--rouge); }
+    .ws-items tr.totline.balance td { color: var(--rouge); font-weight: 700; }
+    .ws-items tr.totline.method td { font-style: italic; }
     /* Grand total — relocated here from the delivery-window box. */
-    .ws-items tr.grand-total td { border-top: 1.5px solid var(--ink); padding-top: 5pt; font-size: 12pt; font-weight: 700; color: var(--ink); }
-    .ws-buyer { margin-top: auto; padding-top: 5pt; border-top: 1px solid var(--mute-200); font-size: 8pt; color: var(--mute-600); line-height: 1.5; }
+    .ws-items tr.grand-total td { border-top: 1.5px solid var(--ink); padding-top: 3pt; padding-bottom: 2pt; font-size: 12pt; line-height: 1.15; font-weight: 700; color: var(--ink); }
+    .ws-buyer { margin-top: auto; padding-top: 4pt; border-top: 1px solid var(--mute-200); font-size: 8pt; color: var(--mute-600); line-height: 1.35; }
     .ws-buyer strong { color: var(--ink); font-size: 7pt; letter-spacing: 1.5px; text-transform: uppercase; }
 
     /* === Card row (bottom half) — tri-fold === */
@@ -233,10 +241,20 @@ export function getPrintStyles(): string {
       border-radius: 4pt;
       padding: 6pt 8pt;
     }
+    /* Name left, order number right on one baseline. */
+    .cover-recipient .cr-head {
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: 6pt; margin-bottom: 3pt;
+    }
     .cover-recipient .cr-name {
       font-family: var(--font-sans);
       font-weight: 700; font-size: 13pt; color: var(--ink);
-      line-height: 1.2; margin-bottom: 3pt;
+      line-height: 1.2;
+    }
+    .cover-recipient .cr-order {
+      font-family: var(--font-sans);
+      font-weight: 700; font-size: 9pt; color: var(--rouge);
+      font-variant-numeric: tabular-nums; white-space: nowrap;
     }
     .cover-recipient .cr-line {
       font-family: var(--font-sans);

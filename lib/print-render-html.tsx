@@ -14,6 +14,8 @@ import { PRODUCTS } from "@/data/products";
 import { SITE } from "@/data/site";
 import { resolveCartLine } from "@/lib/cart-helpers";
 import { formatMoneyCents, formatPhoneUS, formatDeliveryWindow } from "@/lib/format";
+import { formatDateTime } from "@/lib/format-datetime";
+import { orderBalanceCents } from "@/lib/order-balance";
 import { getPrintStyles, getCardBgDataUri, getLogoDataUri, getProductImageDataUri, getQrWebsiteDataUri } from "@/lib/print-styles";
 
 type Locale = "en" | "es";
@@ -24,6 +26,7 @@ const T = {
     order: "Order",
     paid: "Paid",
     deliveryWindow: "Delivery window",
+    deliveryTime: "Delivery time",
     total: "Total",
     deliverTo: "Deliver to",
     pickUp: "Pick up at shop",
@@ -31,13 +34,27 @@ const T = {
     buyer: "Buyer",
     cardMessage: "Card message",
     internalNotes: "Internal notes",
-    subtotalRow: "Subt · Ship · Tax",
+    subtotal: "Subtotal",
+    discount: "Discount",
+    delivery: "Delivery",
+    tax: "Tax",
+    tip: "Tip",
+    giftCard: "Gift card",
+    paidAmount: "Paid",
+    balanceDue: "Balance due",
+    credit: "Credit",
+    payment: "Payment",
+    methods: {
+      cash: "Cash", zelle: "Zelle", "card-terminal": "Card terminal",
+      ach: "ACH", stripe: "Stripe", "gift-card": "Gift card",
+    },
   },
   es: {
     eyebrow: "Maky · The Diva Flowers",
     order: "Orden",
     paid: "Pagada",
     deliveryWindow: "Ventana de entrega",
+    deliveryTime: "Hora de entrega",
     total: "Total",
     deliverTo: "Entrega",
     pickUp: "Recoger en tienda",
@@ -45,15 +62,41 @@ const T = {
     buyer: "Comprador",
     cardMessage: "Mensaje de tarjeta",
     internalNotes: "Notas internas",
-    subtotalRow: "Subt · Env · Tax",
+    subtotal: "Subtotal",
+    discount: "Descuento",
+    delivery: "Envío",
+    tax: "Tax",
+    tip: "Propina",
+    giftCard: "Gift card",
+    paidAmount: "Pagado",
+    balanceDue: "Saldo pendiente",
+    credit: "Saldo a favor",
+    payment: "Pago",
+    methods: {
+      cash: "Efectivo", zelle: "Zelle", "card-terminal": "Terminal",
+      ach: "ACH", stripe: "Stripe", "gift-card": "Gift card",
+    },
   },
 } as const;
+
+/** The sheet is a fixed 11×8.5in with no room to spill, so a long order trades
+ *  photo size — and past four lines, the photos themselves — for the money block
+ *  and the buyer block staying on the page. Dropping the photo also keeps the
+ *  inlined base64 out of the document rather than merely hiding it. */
+type Density = "roomy" | "dense" | "no-photos";
+function itemsDensity(lineCount: number): Density {
+  if (lineCount >= 4) return "no-photos";
+  if (lineCount >= 2) return "dense";
+  return "roomy";
+}
 
 function Worksheet({ order }: { order: Order }) {
   const locale: Locale = order.locale;
   const t = T[locale];
   const m = (cents: number) => formatMoneyCents(cents, locale);
   const notes = order.internalNotes?.trim();
+  const balanceCents = orderBalanceCents(order);
+  const density = itemsDensity(order.lines.length);
 
   return (
     <section className="worksheet">
@@ -63,7 +106,7 @@ function Worksheet({ order }: { order: Order }) {
           <div className="ws-brand">{t.eyebrow}</div>
           <h1 className="ws-title">{t.order} #{order.orderNumber ?? order.id}</h1>
           <div className="ws-paid">
-            <strong>{t.paid}:</strong> {order.createdAt}<br />
+            <strong>{t.paid}:</strong> {formatDateTime(order.createdAt, locale)}<br />
             {order.stripePaymentIntentId ? <span style={{ opacity: 0.7 }}>Stripe {order.stripePaymentIntentId}</span> : null}
           </div>
         </div>
@@ -94,7 +137,9 @@ function Worksheet({ order }: { order: Order }) {
         )}
         {order.fulfillment.method !== "in-store" ? (
           <div className="ws-window">
-            <div className="lbl">{t.deliveryWindow}</div>
+            {/* An exact requested time is a commitment, a slot is a range —
+                label them differently so the driver can tell them apart. */}
+            <div className="lbl">{order.fulfillment.window.time ? t.deliveryTime : t.deliveryWindow}</div>
             <div className="val-time">{formatDeliveryWindow(order.fulfillment.window, locale)}</div>
           </div>
         ) : null}
@@ -119,7 +164,7 @@ function Worksheet({ order }: { order: Order }) {
       {/* Col 3 — items + buyer */}
       <div className="ws-col">
         <div className="ws-section-label">{t.items}</div>
-        <div className="ws-items">
+        <div className={`ws-items ${density}`}>
           <table>
             <tbody>
               {order.lines.map((line, i) => {
@@ -141,7 +186,7 @@ function Worksheet({ order }: { order: Order }) {
                 }
                 const r = resolveCartLine(line, PRODUCTS);
                 if (!r) return null;
-                const thumb = getProductImageDataUri(r.product.images[0]?.src);
+                const thumb = density === "no-photos" ? null : getProductImageDataUri(r.product.images[0]?.src);
                 return (
                   <tr key={`${line.productId}-${line.variantId}-${i}`}>
                     <td className="qty">{r.line.qty}×</td>
@@ -156,18 +201,72 @@ function Worksheet({ order }: { order: Order }) {
                   </tr>
                 );
               })}
-              <tr className="subtotal">
+              <tr className="totline first">
                 <td></td>
-                <td>{t.subtotalRow}</td>
-                <td className="price">
-                  {m(order.totals.subtotalCents)} · {m(order.totals.deliveryCents)} · {m(order.totals.taxCents)}
-                </td>
+                <td>{t.subtotal}</td>
+                <td className="price">{m(order.totals.subtotalCents)}</td>
               </tr>
+              {order.totals.discountCents > 0 ? (
+                <tr className="totline neg">
+                  <td></td>
+                  <td>{t.discount}{order.promoCode ? ` · ${order.promoCode}` : ""}</td>
+                  <td className="price">−{m(order.totals.discountCents)}</td>
+                </tr>
+              ) : null}
+              {order.fulfillment.method === "delivery" ? (
+                <tr className="totline">
+                  <td></td>
+                  <td>{t.delivery}</td>
+                  <td className="price">{m(order.totals.deliveryCents)}</td>
+                </tr>
+              ) : null}
+              <tr className="totline">
+                <td></td>
+                <td>{t.tax}</td>
+                <td className="price">{m(order.totals.taxCents)}</td>
+              </tr>
+              {order.totals.tipCents > 0 ? (
+                <tr className="totline">
+                  <td></td>
+                  <td>{t.tip}</td>
+                  <td className="price">{m(order.totals.tipCents)}</td>
+                </tr>
+              ) : null}
               <tr className="grand-total">
                 <td></td>
                 <td>{t.total}</td>
                 <td className="price">{m(order.totals.totalCents)}</td>
               </tr>
+              {/* Below the total: how the money actually came in. A gift card
+                  is a payment, not a discount — the total never subtracts it. */}
+              {order.giftCardCents && order.giftCardCents > 0 ? (
+                <tr className="totline neg">
+                  <td></td>
+                  <td>{t.giftCard}</td>
+                  <td className="price">−{m(order.giftCardCents)}</td>
+                </tr>
+              ) : null}
+              {balanceCents !== 0 ? (
+                <>
+                  <tr className="totline">
+                    <td></td>
+                    <td>{t.paidAmount}</td>
+                    <td className="price">{m(order.amountPaidCents ?? 0)}</td>
+                  </tr>
+                  <tr className="totline balance">
+                    <td></td>
+                    <td>{balanceCents > 0 ? t.balanceDue : t.credit}</td>
+                    <td className="price">{m(Math.abs(balanceCents))}</td>
+                  </tr>
+                </>
+              ) : null}
+              {order.paymentMethod ? (
+                <tr className="totline method">
+                  <td></td>
+                  <td>{t.payment}</td>
+                  <td className="price">{t.methods[order.paymentMethod]}</td>
+                </tr>
+              ) : null}
             </tbody>
           </table>
         </div>
@@ -186,11 +285,19 @@ function Worksheet({ order }: { order: Order }) {
 function CoverRecipient({ order }: { order: Order }) {
   const f = order.fulfillment;
   const phone = formatPhoneUS(f.recipient.phone);
+  // The card is cut off the sheet and travels with the flowers, so it carries
+  // the order number too — a stack of cards is otherwise unidentifiable.
+  const head = (
+    <div className="cr-head">
+      <div className="cr-name">{f.recipient.name}</div>
+      <div className="cr-order">#{order.orderNumber ?? order.id}</div>
+    </div>
+  );
   if (f.method === "delivery") {
     const a = f.address;
     return (
       <div className="cover-recipient">
-        <div className="cr-name">{f.recipient.name}</div>
+        {head}
         <div className="cr-line">
           {a.street1}{a.street2 ? `, ${a.street2}` : ""}
         </div>
@@ -202,7 +309,7 @@ function CoverRecipient({ order }: { order: Order }) {
   // pickup / in-store: no delivery address — recipient name + phone only.
   return (
     <div className="cover-recipient">
-      <div className="cr-name">{f.recipient.name}</div>
+      {head}
       <div className="cr-line">{phone}</div>
     </div>
   );
