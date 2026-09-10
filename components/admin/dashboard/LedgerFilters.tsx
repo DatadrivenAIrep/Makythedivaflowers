@@ -11,6 +11,9 @@ export type LedgerFilterValue = {
   fulfillmentStatus?: string[];
   source?: string[];
   fulfillmentMethod?: string[];
+  /** Off by default: cancelled orders and unpaid web checkouts stay out of the
+   *  list until the user asks for them. */
+  showHidden?: boolean;
 };
 
 type Props = {

@@ -1486,6 +1486,8 @@
     "empty": "No matching orders.",
     "clear_filters": "Clear filters",
     "showing": "Showing {shown} of ~{total}",
+    "hidden_count": "{count} hidden (cancelled or never paid) · show",
+    "hide_inactive": "Hide cancelled and unpaid",
     "load_more": "Load 50 more",
     "more": "more",
     "remove_filter": "Remove {label}",

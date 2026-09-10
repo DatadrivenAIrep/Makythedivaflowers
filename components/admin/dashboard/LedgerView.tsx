@@ -20,7 +20,7 @@ function ledgerItemSummary(order: Order, t: Translator): string {
   return first.name + variantLabel + suffix;
 }
 
-type ListResp = { orders: Order[]; nextCursor: string | null; approxTotal: number };
+type ListResp = { orders: Order[]; nextCursor: string | null; approxTotal: number; hiddenCount: number };
 
 function paramsToValue(sp: URLSearchParams): LedgerFilterValue {
   const list = (k: string) => {
@@ -35,6 +35,7 @@ function paramsToValue(sp: URLSearchParams): LedgerFilterValue {
     fulfillmentStatus: list("fulfillmentStatus"),
     source: list("source"),
     fulfillmentMethod: list("fulfillmentMethod"),
+    showHidden: sp.get("showHidden") === "1" ? true : undefined,
   };
 }
 
@@ -46,6 +47,7 @@ function valueToParams(v: LedgerFilterValue): URLSearchParams {
   for (const k of ["paymentStatus", "fulfillmentStatus", "source", "fulfillmentMethod"] as const) {
     for (const item of v[k] ?? []) sp.append(k, item);
   }
+  if (v.showHidden) sp.set("showHidden", "1");
   return sp;
 }
 
@@ -97,6 +99,7 @@ export default function LedgerView({ locale }: { locale: string }) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [approxTotal, setApproxTotal] = useState(0);
+  const [hiddenCount, setHiddenCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [drawerOrderId, setDrawerOrderId] = useState<string | null>(null);
 
@@ -106,6 +109,11 @@ export default function LedgerView({ locale }: { locale: string }) {
     setLoading(true);
     try {
       const sp = new URLSearchParams(queryKey);
+      // "showHidden" is a view preference, not a query the API knows about: it
+      // simply turns the noise filter off.
+      const showHidden = sp.get("showHidden") === "1";
+      sp.delete("showHidden");
+      if (!showHidden) sp.set("hideInactive", "1");
       sp.set("limit", "50");
       if (cursor) sp.set("cursor", cursor);
       const res = await fetch(`/api/admin/orders?${sp.toString()}`, { cache: "no-store" });
@@ -113,6 +121,7 @@ export default function LedgerView({ locale }: { locale: string }) {
       setOrders((prev) => cursor ? [...prev, ...body.orders] : body.orders);
       setNextCursor(body.nextCursor);
       setApproxTotal(body.approxTotal);
+      setHiddenCount(body.hiddenCount ?? 0);
     } finally { setLoading(false); }
   }, [queryKey]);
 
@@ -143,6 +152,16 @@ export default function LedgerView({ locale }: { locale: string }) {
         )}
         <footer className="mt-4 flex items-center justify-center gap-3 text-xs text-ink/60">
           <span>{t("showing", { shown: orders.length, total: approxTotal })}</span>
+          {!value.showHidden && hiddenCount > 0 && (
+            <button onClick={() => onChange({ ...value, showHidden: true })} className="underline">
+              {t("hidden_count", { count: hiddenCount })}
+            </button>
+          )}
+          {value.showHidden && (
+            <button onClick={() => onChange({ ...value, showHidden: undefined })} className="underline">
+              {t("hide_inactive")}
+            </button>
+          )}
           {nextCursor && (
             <AdminButton variant="secondary" onClick={() => fetchPage(nextCursor)} disabled={loading}>
               {t("load_more")}

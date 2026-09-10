@@ -1486,6 +1486,8 @@
     "empty": "Sin órdenes que coincidan.",
     "clear_filters": "Limpiar filtros",
     "showing": "Mostrando {shown} de ~{total}",
+    "hidden_count": "{count} ocultas (canceladas o sin pagar) · ver",
+    "hide_inactive": "Ocultar canceladas y sin pagar",
     "load_more": "Cargar 50 más",
     "more": "más",
     "remove_filter": "Quitar {label}",

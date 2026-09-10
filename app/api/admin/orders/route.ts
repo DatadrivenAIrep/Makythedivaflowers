@@ -234,6 +234,7 @@ export async function GET(req: Request): Promise<Response> {
     fulfillmentMethod: parseList(sp, "fulfillmentMethod"),
     limit: sp.get("limit") ? Number(sp.get("limit")) : undefined,
     cursor: sp.get("cursor") ?? undefined,
+    hideInactive: sp.get("hideInactive") === "1",
   };
   const result = await listOrders(filters);
   return NextResponse.json(result);

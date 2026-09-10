@@ -262,12 +262,23 @@ export type ListOrdersFilters = {
   fulfillmentMethod?: string[];
   limit?: number;
   cursor?: string; // base64url(`${createdAt}|${id}`)
+  /**
+   * Drop rows that need no action and only crowd the ledger: cancelled orders,
+   * and web checkouts that were never paid — an abandoned or failed card entry
+   * leaves a pending row behind, which is why order-queue already ignores them.
+   * Opt-in, so every other caller still gets the full list. Unpaid *intake*
+   * orders are never dropped: those are real work awaiting a payment link.
+   */
+  hideInactive?: boolean;
 };
 
 export type ListOrdersResult = {
   orders: import("@/types/order").Order[];
   nextCursor: string | null;
   approxTotal: number;
+  /** How many rows `hideInactive` held back, so the view can offer them rather
+   *  than dropping them silently. Zero when the flag is off. */
+  hiddenCount: number;
 };
 
 function encodeCursor(createdAt: string, id: string): string {
@@ -315,11 +326,34 @@ export async function listOrders(filters: ListOrdersFilters): Promise<ListOrders
     params.push(like, like, like, like, like);
   }
 
+  // Held back before the counts so both reflect what the caller will actually
+  // see. An explicit filter for either state wins — asking for "cancelled"
+  // should show cancelled, not an empty page.
+  const unhiddenWhere = [...where];
+  const unhiddenParams = [...params];
+  if (filters.hideInactive) {
+    if (!filters.fulfillmentStatus?.includes("canceled")) {
+      where.push("fulfillment_status != 'canceled'");
+    }
+    if (!filters.paymentStatus?.includes("pending")) {
+      where.push("NOT (source = 'web' AND payment_status = 'pending')");
+    }
+  }
+
   const baseWhere = where.length ? `WHERE ${where.join(" AND ")}` : "";
 
   // total (no cursor)
   const totalRow = db.prepare(`SELECT COUNT(*) AS n FROM orders ${baseWhere}`).get(...params) as { n: number };
   const approxTotal = totalRow.n;
+
+  let hiddenCount = 0;
+  if (filters.hideInactive) {
+    const unhiddenSql = unhiddenWhere.length ? `WHERE ${unhiddenWhere.join(" AND ")}` : "";
+    const all = db
+      .prepare(`SELECT COUNT(*) AS n FROM orders ${unhiddenSql}`)
+      .get(...unhiddenParams) as { n: number };
+    hiddenCount = all.n - approxTotal;
+  }
 
   // page (with cursor)
   const limit = Math.min(Math.max(filters.limit ?? 50, 1), 200);
@@ -345,7 +379,7 @@ export async function listOrders(filters: ListOrdersFilters): Promise<ListOrders
   const last = page[page.length - 1];
   const nextCursor = hasMore && last ? encodeCursor(last.created_at, last.id) : null;
 
-  return { orders: page.map(rowToOrder), nextCursor, approxTotal };
+  return { orders: page.map(rowToOrder), nextCursor, approxTotal, hiddenCount };
 }
 
 export function listOrdersByCustomer(customerId: string): Order[] {
