@@ -31,7 +31,7 @@ const sampleOrder: Order = {
 };
 
 beforeEach(() => {
-  vi.stubEnv("SITE_URL", "https://example.com");
+  vi.stubEnv("NEXT_PUBLIC_SITE_URL", "https://example.com");
 });
 
 describe("buildCheckoutSessionParams", () => {
@@ -61,6 +61,16 @@ describe("buildCheckoutSessionParams", () => {
     const p = buildCheckoutSessionParams(sampleOrder, "es");
     expect(p.success_url).toBe("https://example.com/es/order/do_test_abc/confirmation");
     expect(p.cancel_url).toBe("https://example.com/es/admin/intake");
+  });
+
+  it("still emits absolute URLs when no site env var is set", () => {
+    // Production never defined the site URL, so the URLs went out relative
+    // ("/es/order/...") and Stripe refused every session with url_invalid —
+    // breaking every payment link. Absolute is the only thing Stripe accepts.
+    vi.stubEnv("NEXT_PUBLIC_SITE_URL", undefined);
+    const p = buildCheckoutSessionParams(sampleOrder, "es");
+    expect(p.success_url).toMatch(/^https:\/\/[^/]+\/es\/order\/do_test_abc\/confirmation$/);
+    expect(p.cancel_url).toMatch(/^https:\/\/[^/]+\/es\/admin\/intake$/);
   });
 
   it("pre-fills customer_email when available", () => {

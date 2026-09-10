@@ -123,6 +123,15 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
   const [promo, setPromo] = useState<AppliedPromo | null>(null);
   const [tipCents, setTipCents] = useState(0);
   const stripeRef = useRef<{ stripe: StripeJs; elements: StripeElements } | null>(null);
+  // Whether a PaymentIntent exists yet (i.e. the buyer reached step 3) and the
+  // amount the live one was created for. Held in refs so the sync effect below
+  // never lists `intent` as a dependency: doing so made the effect re-run the
+  // instant it called setIntent({status:"creating"}), and the re-run's cleanup
+  // cancelled the request it had just fired. The result was discarded, the state
+  // stayed "creating" forever, and the card form never came back — so the buyer
+  // could not pay while an orphan PaymentIntent sat in Stripe untouched.
+  const hasIntentRef = useRef(false);
+  const syncedAmountRef = useRef<number | null>(null);
 
   const handleStripeReady = useCallback((stripe: StripeJs, elements: StripeElements) => {
     stripeRef.current = { stripe, elements };
@@ -142,19 +151,27 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
   );
   const payableCents = Math.max(0, totals.totalCents - (giftCard?.appliedCents ?? 0));
 
-  // Recreate the PaymentIntent if the amount changes after we already have one.
-  // Transition to "creating" first so <StripePaymentStep> unmounts and the user
-  // can't submit against the stale clientSecret while the new one is in flight.
+  // Keep the PaymentIntent in step with the amount actually being charged: tip,
+  // promo, gift card and delivery zone can all change it after step 3. Transition
+  // to "creating" first so <StripePaymentStep> unmounts and the buyer can't
+  // submit against a stale clientSecret while the new one is in flight.
+  //
+  // Compares payableCents (net of the gift card) rather than the order total, so
+  // applying a gift card here re-prices the intent instead of leaving one that
+  // silently charges the full amount.
   useEffect(() => {
-    if (intent.status !== "ready") return;
-    if (totals.totalCents === intent.amountCents) return;
+    if (!hasIntentRef.current) return;
     if (totals.totalCents <= 0) return;
+    if (syncedAmountRef.current === payableCents) return;
+    syncedAmountRef.current = payableCents;
     let cancelled = false;
     setIntent({ status: "creating" });
     (async () => {
       const r = await createIntent({ locale, lines, form: form.getValues(), giftCardCode: giftCard?.code, promoCode: promo?.code, tipCents });
       if (cancelled) return;
       if ("error" in r) {
+        // Unpin the amount so a later change retries instead of being skipped.
+        syncedAmountRef.current = null;
         setIntent({ status: "error", message: r.error });
       } else if ("paid" in r && r.paid) {
         clear();
@@ -165,14 +182,14 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
           status: "ready",
           clientSecret: r.clientSecret,
           orderId: r.orderId,
-          amountCents: totals.totalCents,
+          amountCents: payableCents,
         });
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [totals.totalCents, intent, locale, lines, form, giftCard, promo, tipCents]);
+  }, [payableCents, totals.totalCents, locale, lines, form, giftCard, promo, tipCents, clear, closeDrawer, router]);
 
   async function nextFrom(step: StepKey) {
     const fields: Record<StepKey, string[]> = {
@@ -210,8 +227,11 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
       trackRecipientInfoCompleted(cardMessage.trim().length > 0);
       trackAddPaymentInfo("card", items);
 
-      // Create the PaymentIntent before showing step 3.
+      // Create the PaymentIntent before showing step 3. Pin the amount now so the
+      // sync effect doesn't fire a duplicate request while this one is in flight;
+      // it stays disabled until hasIntentRef flips on success below.
       setIntent({ status: "creating" });
+      syncedAmountRef.current = payableCents;
       const r = await createIntent({ locale, lines, form: form.getValues(), giftCardCode: giftCard?.code, promoCode: promo?.code, tipCents });
       if ("error" in r) {
         setIntent({ status: "error", message: r.error });
@@ -225,11 +245,12 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
         return;
       }
       if ("clientSecret" in r) {
+        hasIntentRef.current = true;
         setIntent({
           status: "ready",
           clientSecret: r.clientSecret,
           orderId: r.orderId,
-          amountCents: totals.totalCents,
+          amountCents: payableCents,
         });
       }
     }

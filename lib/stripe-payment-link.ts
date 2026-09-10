@@ -10,7 +10,12 @@ export function buildCheckoutSessionParams(
   order: Order,
   locale: "en" | "es",
 ): Stripe.Checkout.SessionCreateParams {
-  const siteUrl = process.env.SITE_URL ?? "";
+  // NEXT_PUBLIC_SITE_URL is the name the rest of the app uses (sitemap, gift-card
+  // notifications) and the only one that is actually set. Reading a bare SITE_URL
+  // here left this empty in production, so success_url went out as a relative
+  // path and Stripe rejected every session with url_invalid. The literal fallback
+  // keeps payment links working even when no env var is configured.
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://makythedivaflowers.com";
   const windowDate =
     order.fulfillment.method !== "in-store" && "window" in order.fulfillment
       ? order.fulfillment.window.date
