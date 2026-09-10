@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { closeDb, getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
-import { audit } from "@/scripts/audit-buyer-names";
+import { audit, enrichFromStripe, formatReport, type Finding } from "@/scripts/audit-buyer-names";
 
 // audit() opens its own READ-ONLY connection to a path, so this cannot use the
 // ":memory:" database the other script tests share — it needs a real file.
@@ -102,5 +102,126 @@ describe("audit-buyer-names", () => {
     const { findings } = audit(file);
     expect(findings).toHaveLength(1);
     expect(findings[0].verdict).toBe("sin-registro-crm");
+  });
+});
+
+describe("enrichFromStripe", () => {
+  // The card that paid carries the buyer's real name. Stripe is the only place
+  // that name survived for orders whose checkout never asked for one, so this is
+  // what turns the audit from "ask them" into "we already know".
+  const contaminado = (over: Partial<Finding> = {}): Finding => ({
+    verdict: "contaminado",
+    order: "#1194",
+    date: "2026-09-08",
+    total: "$151.21",
+    buyerPhone: "5165550001",
+    recipientName: "Michelle Neumann",
+    recipientPhone: "5165559999",
+    crmCustomerId: "cus_robyn",
+    crmNameNow: "Michelle Neumann",
+    paymentIntentId: "pi_123",
+    ...over,
+  });
+
+  it("puts the cardholder name on a contaminated finding", async () => {
+    const lookup = vi.fn().mockResolvedValue("Robyn Vega");
+    const [f] = await enrichFromStripe([contaminado()], lookup);
+    expect(f.stripeName).toBe("Robyn Vega");
+    expect(lookup).toHaveBeenCalledWith({ paymentIntentId: "pi_123", checkoutSessionId: undefined });
+  });
+
+  it("only spends calls on findings worth repairing", async () => {
+    const lookup = vi.fn().mockResolvedValue("Someone");
+    await enrichFromStripe(
+      [
+        contaminado(),
+        { ...contaminado(), verdict: "probablemente-ok" },
+        { ...contaminado(), verdict: "sin-registro-crm" },
+      ],
+      lookup,
+    );
+    expect(lookup).toHaveBeenCalledTimes(1);
+  });
+
+  it("skips a finding with no Stripe reference at all", async () => {
+    const lookup = vi.fn();
+    const [f] = await enrichFromStripe(
+      [contaminado({ paymentIntentId: undefined, checkoutSessionId: undefined })],
+      lookup,
+    );
+    expect(lookup).not.toHaveBeenCalled();
+    expect(f.stripeName).toBeUndefined();
+  });
+
+  it("records a lookup failure without losing the rest of the report", async () => {
+    const lookup = vi
+      .fn()
+      .mockRejectedValueOnce(new Error("No such payment_intent"))
+      .mockResolvedValueOnce("Dana Gil");
+    const out = await enrichFromStripe(
+      [contaminado(), contaminado({ order: "#1188", paymentIntentId: "pi_456" })],
+      lookup,
+    );
+    expect(out[0].stripeError).toContain("No such payment_intent");
+    expect(out[0].stripeName).toBeUndefined();
+    expect(out[1].stripeName).toBe("Dana Gil");
+  });
+
+  it("notes when the card name matches what the CRM already has", async () => {
+    // Not a gift after all, or the recipient paid with their own card: nothing
+    // to correct, and the report should not tell the shop to change it.
+    const lookup = vi.fn().mockResolvedValue("Michelle Neumann");
+    const [f] = await enrichFromStripe([contaminado()], lookup);
+    expect(f.stripeName).toBe("Michelle Neumann");
+    expect(f.stripeConfirmsCrm).toBe(true);
+  });
+});
+
+describe("formatReport", () => {
+  const totals = { ordenes: 2, ordenesWeb: 2, webSinNombreDeComprador: 1, registrosCrm: 1 };
+  const base: Finding = {
+    verdict: "contaminado",
+    order: "#1194",
+    date: "2026-09-08",
+    total: "$151.21",
+    buyerPhone: "5165550001",
+    recipientName: "Michelle Neumann",
+    recipientPhone: "5165559999",
+    crmCustomerId: "cus_robyn",
+    crmNameNow: "Michelle Neumann",
+  };
+
+  it("leads with the cardholder name when Stripe found one", () => {
+    const text = formatReport({
+      file: "x.sqlite", totals, useStripe: true,
+      findings: [{ ...base, stripeName: "Robyn Vega", stripeConfirmsCrm: false }],
+    });
+    expect(text).toContain('NOMBRE REAL ...... "Robyn Vega"');
+    expect(text).toContain("Nombres recuperados de Stripe ..... 1 de 1");
+  });
+
+  it("tells the shop NOT to change a record Stripe agrees with", () => {
+    const text = formatReport({
+      file: "x.sqlite", totals, useStripe: true,
+      findings: [{ ...base, stripeName: "Michelle Neumann", stripeConfirmsCrm: true }],
+    });
+    expect(text).toContain("NO lo cambies");
+    expect(text).not.toContain("NOMBRE REAL");
+    expect(text).toContain("Nombres recuperados de Stripe ..... 0 de 1");
+  });
+
+  it("suggests --stripe when it was not used and no name is known", () => {
+    const text = formatReport({ file: "x.sqlite", totals, useStripe: false, findings: [base] });
+    expect(text).toContain("prueba con --stripe");
+  });
+
+  it("says the offline report still stands when Stripe could not be reached", () => {
+    const text = formatReport({
+      file: "x.sqlite", totals, useStripe: true, stripeFailed: "STRIPE_SECRET_KEY no está definida",
+      findings: [base],
+    });
+    expect(text).toContain("Stripe no respondió: STRIPE_SECRET_KEY no está definida");
+    expect(text).toContain("Sigo con el reporte offline.");
+    expect(text).toContain("Orden #1194");
   });
 });

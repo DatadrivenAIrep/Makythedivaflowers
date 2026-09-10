@@ -12,7 +12,10 @@
  * even if something here is wrong. Repair is a human decision, made in the admin.
  *
  * Usage:
- *   SQLITE_FILE=/path/to/diva.sqlite npx tsx --tsconfig scripts/tsconfig.json scripts/audit-buyer-names.ts
+ *   SQLITE_FILE=/path/to/diva.sqlite pnpm audit:buyer-names
+ *   ... --stripe  also ask Stripe for the name on the card that paid — the only
+ *                 place the buyer's real name survived for these orders. Needs
+ *                 STRIPE_SECRET_KEY; read-only retrievals.
  *   ... --json    machine-readable output
  */
 import path from "node:path";
@@ -53,6 +56,8 @@ type OrderRow = {
   recipient_phone: string;
   customer_id: string | null;
   total_cents: number;
+  stripe_payment_intent_id: string | null;
+  stripe_checkout_session_id: string | null;
 };
 
 type CustomerRow = {
@@ -81,12 +86,21 @@ export type Finding = {
   /** A real name for this phone found on another order (usually one taken by
    *  staff at the intake, where the name was always asked for). */
   repairCandidate?: string;
+  paymentIntentId?: string;
+  checkoutSessionId?: string;
+  /** Name on the card that paid, from Stripe. Only filled by --stripe. */
+  stripeName?: string;
+  /** Stripe agrees with the name already on the CRM row, so there is nothing to
+   *  correct — the recipient paid with their own card, or it was not a gift. */
+  stripeConfirmsCrm?: boolean;
+  stripeError?: string;
 };
 
 export function audit(file: string) {
   const db = openReadOnly(file);
   const orders = db.prepare(`SELECT id, order_number, source, created_at, contact_name,
-    contact_phone, recipient_name, recipient_phone, customer_id, total_cents
+    contact_phone, recipient_name, recipient_phone, customer_id, total_cents,
+    stripe_payment_intent_id, stripe_checkout_session_id
     FROM orders ORDER BY created_at ASC`).all() as unknown as OrderRow[];
   const customers = db.prepare(
     `SELECT id, name, phone, order_count, first_seen_at FROM customers`,
@@ -117,6 +131,8 @@ export function audit(file: string) {
       buyerPhone: o.contact_phone,
       recipientName: o.recipient_name,
       recipientPhone: o.recipient_phone,
+      paymentIntentId: o.stripe_payment_intent_id ?? undefined,
+      checkoutSessionId: o.stripe_checkout_session_id ?? undefined,
     };
     if (!customer) {
       // The SMS still greeted the wrong name, but nothing was persisted.
@@ -147,51 +163,194 @@ export function audit(file: string) {
   };
 }
 
-function main(): void {
-  const file = process.env.SQLITE_FILE ?? path.join(process.cwd(), "data", "diva.sqlite");
-  const report = audit(file);
-  if (process.argv.includes("--json")) {
-    console.log(JSON.stringify({ file, ...report }, null, 2));
-    return;
-  }
+/** Asks Stripe for the name on whatever paid. Injected so the enrichment can be
+ *  tested without a network or a key. */
+export type StripeLookup = (ref: {
+  paymentIntentId?: string;
+  checkoutSessionId?: string;
+}) => Promise<string | null>;
 
-  const { totals, findings } = report;
+/**
+ * Fills in the buyer's real name from the card that paid.
+ *
+ * For an order whose checkout never asked who was buying, Stripe is the only
+ * place the name survived: the cardholder is the person who paid, which is
+ * exactly the person the CRM row should be named after. Strong evidence, not
+ * proof — someone can pay with a spouse's card — so the report presents it for
+ * a human to accept, and nothing is written.
+ *
+ * Only "contaminado" findings are looked up: the others have either nothing to
+ * repair or no record to repair. Failures are recorded per finding so one dead
+ * payment intent cannot sink the run.
+ */
+export async function enrichFromStripe(
+  findings: Finding[],
+  lookup: StripeLookup,
+): Promise<Finding[]> {
+  const out: Finding[] = [];
+  for (const f of findings) {
+    const worthAsking =
+      f.verdict === "contaminado" && (f.paymentIntentId || f.checkoutSessionId);
+    if (!worthAsking) {
+      out.push(f);
+      continue;
+    }
+    try {
+      const name = await lookup({
+        paymentIntentId: f.paymentIntentId,
+        checkoutSessionId: f.checkoutSessionId,
+      });
+      const clean = name?.trim();
+      out.push(
+        clean
+          ? { ...f, stripeName: clean, stripeConfirmsCrm: norm(clean) === norm(f.crmNameNow) }
+          : f,
+      );
+    } catch (e) {
+      out.push({ ...f, stripeError: e instanceof Error ? e.message : String(e) });
+    }
+  }
+  return out;
+}
+
+/** The real lookup. Built lazily: the plain offline audit must run with no
+ *  Stripe key present, and lib/stripe-server throws at import when it is unset. */
+export async function makeStripeLookup(): Promise<StripeLookup> {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) throw new Error("STRIPE_SECRET_KEY no está definida — no puedo consultar Stripe.");
+  const { default: Stripe } = await import("stripe");
+  const stripe = new Stripe(key, { typescript: true });
+
+  return async ({ paymentIntentId, checkoutSessionId }) => {
+    if (paymentIntentId) {
+      const pi = await stripe.paymentIntents.retrieve(paymentIntentId, {
+        expand: ["latest_charge", "payment_method"],
+      });
+      const charge = pi.latest_charge;
+      if (charge && typeof charge !== "string" && charge.billing_details?.name) {
+        return charge.billing_details.name;
+      }
+      const pm = pi.payment_method;
+      if (pm && typeof pm !== "string" && pm.billing_details?.name) {
+        return pm.billing_details.name;
+      }
+      return null;
+    }
+    if (checkoutSessionId) {
+      const cs = await stripe.checkout.sessions.retrieve(checkoutSessionId);
+      return cs.customer_details?.name ?? null;
+    }
+    return null;
+  };
+}
+
+export type ReportInput = {
+  file: string;
+  totals: ReturnType<typeof audit>["totals"];
+  findings: Finding[];
+  useStripe: boolean;
+  stripeFailed?: string | null;
+};
+
+/** The report as text. Split out from main() because this is the deliverable —
+ *  the shop reads it to decide which records to retype by hand. */
+export function formatReport({ file, totals, findings, useStripe, stripeFailed }: ReportInput): string {
   const bad = findings.filter((f) => f.verdict === "contaminado");
   const maybe = findings.filter((f) => f.verdict === "probablemente-ok");
   const orphan = findings.filter((f) => f.verdict === "sin-registro-crm");
+  const out: string[] = [];
+  const say = (line = "") => out.push(line);
 
-  console.log(`\nBase de datos: ${file}  (solo lectura)\n`);
-  console.log(`  Órdenes totales ................... ${totals.ordenes}`);
-  console.log(`  Órdenes web ....................... ${totals.ordenesWeb}`);
-  console.log(`  Web sin nombre de comprador ....... ${totals.webSinNombreDeComprador}`);
-  console.log(`  Registros en CRM .................. ${totals.registrosCrm}\n`);
+  say();
+  say(`Base de datos: ${file}  (solo lectura)`);
+  say();
+  say(`  Órdenes totales ................... ${totals.ordenes}`);
+  say(`  Órdenes web ....................... ${totals.ordenesWeb}`);
+  say(`  Web sin nombre de comprador ....... ${totals.webSinNombreDeComprador}`);
+  say(`  Registros en CRM .................. ${totals.registrosCrm}`);
+  if (useStripe && !stripeFailed) {
+    const got = bad.filter((f) => f.stripeName && !f.stripeConfirmsCrm).length;
+    say(`  Nombres recuperados de Stripe ..... ${got} de ${bad.length}`);
+  }
+  say();
+  if (stripeFailed) {
+    say(`Stripe no respondió: ${stripeFailed}`);
+    say("Sigo con el reporte offline.");
+    say();
+  }
 
   if (bad.length) {
-    console.log(`CONTAMINADOS — el CRM tiene el nombre del destinatario bajo el teléfono del comprador (${bad.length}):\n`);
+    say(`CONTAMINADOS — el CRM tiene el nombre del destinatario bajo el teléfono del comprador (${bad.length}):`);
+    say();
     for (const f of bad) {
-      console.log(`  Orden ${f.order}  ${f.date}  ${f.total}`);
-      console.log(`    CRM dice ......... "${f.crmNameNow}"  (tel ${f.buyerPhone} — es del COMPRADOR)`);
-      console.log(`    pero ese nombre es del destinatario, que está en el tel ${f.recipientPhone}`);
-      console.log(`    nombre real ...... ${f.repairCandidate ? `"${f.repairCandidate}" (visto en otra orden del mismo teléfono)` : "no lo tenemos — hay que preguntarle"}`);
-      console.log(`    registro CRM ..... ${f.crmCustomerId}\n`);
+      say(`  Orden ${f.order}  ${f.date}  ${f.total}`);
+      say(`    CRM dice ......... "${f.crmNameNow}"  (tel ${f.buyerPhone} — es del COMPRADOR)`);
+      say(`    pero ese nombre es del destinatario, que está en el tel ${f.recipientPhone}`);
+      if (f.stripeConfirmsCrm) {
+        say(`    Stripe ........... la tarjeta dice lo mismo — pagó el destinatario, NO lo cambies`);
+      } else if (f.stripeName) {
+        say(`    NOMBRE REAL ...... "${f.stripeName}"  ← titular de la tarjeta que pagó (Stripe)`);
+      } else if (f.stripeError) {
+        say(`    Stripe ........... falló: ${f.stripeError}`);
+      }
+      if (f.repairCandidate) {
+        say(`    otra orden ....... "${f.repairCandidate}" (mismo teléfono, nombre tomado por el equipo)`);
+      }
+      if (!f.stripeName && !f.repairCandidate) {
+        say(`    nombre real ...... no lo tenemos${useStripe ? "" : " — prueba con --stripe"}, hay que preguntarle`);
+      }
+      say(`    registro CRM ..... ${f.crmCustomerId}`);
+      say();
+    }
+    if (!useStripe) {
+      say("Corre con --stripe para sacar el nombre del titular de la tarjeta que pagó.");
+      say();
     }
   } else {
-    console.log("CONTAMINADOS: ninguno.\n");
+    say("CONTAMINADOS: ninguno.");
+    say();
   }
 
   if (maybe.length) {
-    console.log(`Probablemente OK (${maybe.length}) — el CRM tomó el nombre del destinatario, pero comprador y destinatario comparten teléfono, así que se lo mandó a sí mismo:`);
-    for (const f of maybe) console.log(`  ${f.order}  ${f.date}  "${f.crmNameNow}"  tel ${f.buyerPhone}`);
-    console.log("");
+    say(`Probablemente OK (${maybe.length}) — el CRM tomó el nombre del destinatario, pero comprador y destinatario comparten teléfono, así que se lo mandó a sí mismo:`);
+    for (const f of maybe) say(`  ${f.order}  ${f.date}  "${f.crmNameNow}"  tel ${f.buyerPhone}`);
+    say();
   }
 
   if (orphan.length) {
-    console.log(`Sin registro en CRM (${orphan.length}) — el SMS saludó con el nombre equivocado, pero no quedó nada guardado:`);
-    for (const f of orphan) console.log(`  ${f.order}  ${f.date}  destinatario "${f.recipientName}"  tel comprador ${f.buyerPhone}`);
-    console.log("");
+    say(`Sin registro en CRM (${orphan.length}) — el SMS saludó con el nombre equivocado, pero no quedó nada guardado:`);
+    for (const f of orphan) say(`  ${f.order}  ${f.date}  destinatario "${f.recipientName}"  tel comprador ${f.buyerPhone}`);
+    say();
   }
 
-  console.log("Nada fue modificado. La corrección se hace a mano desde el admin.\n");
+  say("Nada fue modificado. La corrección se hace a mano desde el admin.");
+  say();
+  return out.join("\n");
 }
 
-if (process.argv[1] && process.argv[1].includes("audit-buyer-names")) main();
+async function main(): Promise<void> {
+  const file = process.env.SQLITE_FILE ?? path.join(process.cwd(), "data", "diva.sqlite");
+  const useStripe = process.argv.includes("--stripe");
+  const report = audit(file);
+
+  let findings = report.findings;
+  let stripeFailed: string | null = null;
+  if (useStripe) {
+    try {
+      findings = await enrichFromStripe(findings, await makeStripeLookup());
+    } catch (e) {
+      // A missing key or an unreachable Stripe must not cost the offline report.
+      stripeFailed = e instanceof Error ? e.message : String(e);
+    }
+  }
+
+  if (process.argv.includes("--json")) {
+    console.log(JSON.stringify({ file, totals: report.totals, findings, stripeFailed }, null, 2));
+    return;
+  }
+  console.log(formatReport({ file, totals: report.totals, findings, useStripe, stripeFailed }));
+}
+
+if (process.argv[1] && process.argv[1].includes("audit-buyer-names")) {
+  void main();
+}
