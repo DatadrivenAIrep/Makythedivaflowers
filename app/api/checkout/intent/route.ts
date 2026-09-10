@@ -5,8 +5,9 @@ import { computeOrderTotals, computeDeliveryCentsForZip } from "@/lib/totals";
 import { cartSubtotalCents } from "@/lib/cart-helpers";
 import { PRODUCTS } from "@/data/products";
 import { getAllPriceOverrides, applyPriceOverrides } from "@/lib/product-prices";
-import { saveOrder, updateOrderPaymentIntent } from "@/lib/order-storage";
+import { saveOrder, updateOrderPaymentIntent, getOrder } from "@/lib/order-storage";
 import { stripe } from "@/lib/stripe-server";
+import type Stripe from "stripe";
 import { validateForRedemption, redeem } from "@/lib/gift-card-storage";
 import { validatePromo, redeemPromo } from "@/lib/promo";
 import { buyerHasPaidOrder } from "@/lib/buyer-history";
@@ -35,7 +36,23 @@ const requestSchema = z.object({
   // Capped rather than open-ended: a typo turning $10 into $1,000 should be
   // refused, not charged. Staff can take a larger tip over the phone.
   tipCents: z.number().int().min(0).max(20000).optional(),
+  // The order this checkout already opened, echoed back by the client. Lets a
+  // buyer who changes the tip or fixes an address re-price that row instead of
+  // leaving another pending order — and another Stripe intent — behind.
+  // Ignored unless it names an unpaid web order belonging to the same buyer.
+  orderId: z.string().min(1).max(64).optional(),
 });
+
+/** Same buyer when either the email or the last 10 phone digits match. */
+function sameBuyer(
+  a: { email?: string; phone?: string },
+  b: { email?: string; phone?: string },
+): boolean {
+  const mail = (s?: string) => (s ?? "").trim().toLowerCase();
+  const digits = (s?: string) => (s ?? "").replace(/\D/g, "").slice(-10);
+  if (mail(a.email) && mail(a.email) === mail(b.email)) return true;
+  return digits(a.phone).length === 10 && digits(a.phone) === digits(b.phone);
+}
 
 export async function POST(req: Request) {
   const json = await req.json().catch(() => null);
@@ -101,7 +118,27 @@ export async function POST(req: Request) {
 
   const tipCents = parsed.data.tipCents ?? 0;
   const totals = computeOrderTotals(subtotal, deliveryCents, discountCents, tipCents);
-  const orderId = `do_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+
+  // Take over the row this checkout already opened, when there is one. Guarded
+  // so a guessed id cannot rewrite a stranger's order: it has to still be an
+  // unpaid web order, and the buyer has to match. Anything else quietly starts
+  // a new order rather than failing the checkout.
+  let existing: Order | null = null;
+  if (parsed.data.orderId) {
+    const candidate = await getOrder(parsed.data.orderId);
+    if (
+      candidate &&
+      candidate.source === "web" &&
+      candidate.paymentStatus === "pending" &&
+      candidate.status !== "canceled" &&
+      sameBuyer(candidate.contact, form.contact)
+    ) {
+      existing = candidate;
+    }
+  }
+  const orderId = existing?.id ?? `do_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+  // Read before saveOrder below, which rewrites the row from this request.
+  const existingPaymentIntentId = existing?.stripePaymentIntentId;
 
   const fulfillment: OrderFulfillment =
     form.delivery.method === "delivery"
@@ -134,7 +171,8 @@ export async function POST(req: Request) {
     totals,
     status: "pending",
     paymentStatus: "pending",
-    createdAt: now,
+    // Keep the moment the buyer actually started, not the last re-price.
+    createdAt: existing?.createdAt ?? now,
     updatedAt: now,
   };
 
@@ -186,24 +224,40 @@ export async function POST(req: Request) {
   }
 
   try {
-    const paymentIntent = await stripe.paymentIntents.create(
-      {
-        amount: amountToCharge,
-        currency: "usd",
-        automatic_payment_methods: { enabled: true },
-        metadata: {
-          orderId,
-          locale,
-          fulfillmentMethod: fulfillment.method,
-          ...(giftCardId ? { giftCardId, giftCardCents: String(giftCardCents) } : {}),
-          ...(promoId
-            ? { promoId, promoCode: promoCode ?? "", promoDiscountCents: String(discountCents) }
-            : {}),
-        },
-        receipt_email: form.contact.email,
+    const shared = {
+      amount: amountToCharge,
+      metadata: {
+        orderId,
+        locale,
+        fulfillmentMethod: fulfillment.method,
+        ...(giftCardId ? { giftCardId, giftCardCents: String(giftCardCents) } : {}),
+        ...(promoId
+          ? { promoId, promoCode: promoCode ?? "", promoDiscountCents: String(discountCents) }
+          : {}),
       },
-      { idempotencyKey: orderId },
-    );
+      receipt_email: form.contact.email,
+    };
+
+    // Re-price the intent the buyer is already looking at. Opening a new one per
+    // change is what left a trail of "incomplete" intents in Stripe.
+    let paymentIntent: Stripe.PaymentIntent | null = null;
+    if (existingPaymentIntentId) {
+      try {
+        paymentIntent = await stripe.paymentIntents.update(existingPaymentIntentId, shared);
+      } catch (e) {
+        // Confirmed, cancelled or otherwise frozen: open a fresh one instead of
+        // failing a checkout the buyer is standing in front of.
+        console.error("[stripe] paymentIntents.update failed", existingPaymentIntentId, e);
+      }
+    }
+    if (!paymentIntent) {
+      paymentIntent = await stripe.paymentIntents.create(
+        { ...shared, currency: "usd", automatic_payment_methods: { enabled: true } },
+        // Keyed on the amount as well: a retried request stays idempotent, but a
+        // re-priced checkout must not be handed back the intent for the old total.
+        { idempotencyKey: `${orderId}:${amountToCharge}` },
+      );
+    }
     if (!paymentIntent.client_secret) {
       console.error("[stripe] paymentIntent.client_secret is null", paymentIntent.id);
       return NextResponse.json(

@@ -82,6 +82,9 @@ beforeEach(() => {
     } as Response);
   });
   vi.stubGlobal("fetch", fetchMock);
+  // The shell remembers its order id here; a leftover would make the next test
+  // start by reusing the previous one's order.
+  try { sessionStorage.clear(); } catch { /* jsdom without storage */ }
 });
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -157,5 +160,21 @@ describe("CheckoutShell payment step", () => {
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(screen.getByTestId("payment-element")).toBeInTheDocument();
+  });
+
+  it("re-prices the order it already opened instead of starting another", async () => {
+    // The server writes a row per intent, so the client has to hand back the id
+    // it was given — otherwise every tip change strands another pending order.
+    const user = userEvent.setup();
+    render(<CheckoutShell locale="en" />);
+    await reachPaymentStep(user);
+
+    await user.click(screen.getByRole("button", { name: "$10" }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+
+    const first = JSON.parse((fetchMock.mock.calls[0][1] as { body: string }).body);
+    const second = JSON.parse((fetchMock.mock.calls[1][1] as { body: string }).body);
+    expect(first.orderId).toBeUndefined();
+    expect(second.orderId).toBe("do_1");
   });
 });

@@ -104,14 +104,17 @@ describe("POST /api/checkout/intent", () => {
     expect(json.orderId).toMatch(/^do_/);
   });
 
-  it("passes idempotencyKey = orderId to PaymentIntents.create", async () => {
+  it("keys PaymentIntents.create on the order and its amount", async () => {
+    // The amount is part of the key on purpose: a checkout that gets re-priced
+    // reuses the same order id, and keying on the id alone would hand it back
+    // the intent for the previous total.
     createPI.mockResolvedValue({ id: "pi_test_123", client_secret: "secret" });
     const { POST } = await import("@/app/api/checkout/intent/route");
     const res = await POST(makeReq(validBody));
     const json = await res.json();
     expect(createPI).toHaveBeenCalledTimes(1);
-    const [_params, options] = createPI.mock.calls[0];
-    expect(options.idempotencyKey).toBe(json.orderId);
+    const [params, options] = createPI.mock.calls[0];
+    expect(options.idempotencyKey).toBe(`${json.orderId}:${params.amount}`);
   });
 
   it("returns 502 with payment_init_failed if Stripe throws", async () => {

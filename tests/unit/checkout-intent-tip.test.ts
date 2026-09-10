@@ -96,10 +96,9 @@ describe("POST /api/checkout/intent with a tip", () => {
   });
 
   it("stores the tip on the order so the ledger can pay it out", async () => {
-    await post({ ...validBody, tipCents: 1500 });
+    const res = await post({ ...validBody, tipCents: 1500 });
+    const { orderId } = await res.json();
     const { getOrder } = await import("@/lib/order-storage");
-    const [, opts] = createPI.mock.calls[0];
-    const orderId = (opts as { idempotencyKey: string }).idempotencyKey;
     const order = await getOrder(orderId);
     expect(order?.totals.tipCents).toBe(1500);
   });

@@ -42,6 +42,9 @@ type IntentState =
   | { status: "ready"; clientSecret: string; orderId: string; amountCents: number }
   | { status: "error"; message: string };
 
+/** Survives a reload so a returning buyer continues the same order. */
+const CHECKOUT_ORDER_KEY = "dv_checkout_order";
+
 async function createIntent(payload: {
   locale: Locale;
   lines: CartLine[];
@@ -49,6 +52,7 @@ async function createIntent(payload: {
   giftCardCode?: string;
   promoCode?: string;
   tipCents?: number;
+  orderId?: string;
 }): Promise<{ clientSecret: string; orderId: string } | { paid: true; orderId: string } | { error: string }> {
   const res = await fetch("/api/checkout/intent", {
     method: "POST",
@@ -132,6 +136,27 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
   // could not pay while an orphan PaymentIntent sat in Stripe untouched.
   const hasIntentRef = useRef(false);
   const syncedAmountRef = useRef<number | null>(null);
+  // The order this checkout opened. Echoed back on every re-price so the server
+  // updates that row instead of writing another pending order per change, and
+  // kept in sessionStorage so a reload continues the same order rather than
+  // starting a second one. The server re-checks it (still unpaid, same buyer)
+  // before honouring it, so a stale value simply starts a fresh order.
+  const orderIdRef = useRef<string | null>(null);
+  useEffect(() => {
+    try {
+      orderIdRef.current = sessionStorage.getItem(CHECKOUT_ORDER_KEY);
+    } catch {
+      // Private mode or blocked storage: fall back to one order per page load.
+    }
+  }, []);
+  const rememberOrder = useCallback((id: string) => {
+    orderIdRef.current = id;
+    try { sessionStorage.setItem(CHECKOUT_ORDER_KEY, id); } catch { /* see above */ }
+  }, []);
+  const forgetOrder = useCallback(() => {
+    orderIdRef.current = null;
+    try { sessionStorage.removeItem(CHECKOUT_ORDER_KEY); } catch { /* see above */ }
+  }, []);
 
   const handleStripeReady = useCallback((stripe: StripeJs, elements: StripeElements) => {
     stripeRef.current = { stripe, elements };
@@ -185,6 +210,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
         giftCardCode: l.giftCard?.code,
         promoCode: l.promo?.code,
         tipCents: l.tipCents,
+        orderId: orderIdRef.current ?? undefined,
       });
       if (cancelled) return;
       if ("error" in r) {
@@ -192,10 +218,12 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
         syncedAmountRef.current = null;
         setIntent({ status: "error", message: r.error });
       } else if ("paid" in r && r.paid) {
+        forgetOrder();
         l.clear();
         l.closeDrawer();
         l.router.push(`/${l.locale}/order/${r.orderId}/confirmation`);
       } else if ("clientSecret" in r) {
+        rememberOrder(r.orderId);
         setIntent({
           status: "ready",
           clientSecret: r.clientSecret,
@@ -250,13 +278,14 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
       // it stays disabled until hasIntentRef flips on success below.
       setIntent({ status: "creating" });
       syncedAmountRef.current = payableCents;
-      const r = await createIntent({ locale, lines, form: form.getValues(), giftCardCode: giftCard?.code, promoCode: promo?.code, tipCents });
+      const r = await createIntent({ locale, lines, form: form.getValues(), giftCardCode: giftCard?.code, promoCode: promo?.code, tipCents, orderId: orderIdRef.current ?? undefined });
       if ("error" in r) {
         setIntent({ status: "error", message: r.error });
         setTopError(t(errorKey(r.error)));
         return;
       }
       if ("paid" in r && r.paid) {
+        forgetOrder();
         clear();
         closeDrawer();
         router.push(`/${locale}/order/${r.orderId}/confirmation`);
@@ -264,6 +293,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
       }
       if ("clientSecret" in r) {
         hasIntentRef.current = true;
+        rememberOrder(r.orderId);
         setIntent({
           status: "ready",
           clientSecret: r.clientSecret,
@@ -307,7 +337,9 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
       return;
     }
 
-    // Success without redirect: navigate manually.
+    // Success without redirect: navigate manually. Drop the stored order so the
+    // buyer's next visit starts a new one rather than trying to reuse this.
+    forgetOrder();
     clear();
     closeDrawer();
     router.push(`/${locale}/order/${intent.orderId}/confirmation`);
