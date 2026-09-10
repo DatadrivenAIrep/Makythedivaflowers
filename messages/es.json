@@ -1633,7 +1633,11 @@
     "occasions_title": "Ocasiones",
     "occasions_next_7": "Próximos 7 días",
     "occasions_next_30": "Próximos 30 días",
-    "no_occasions": "No hay ocasiones en este rango."
+    "no_occasions": "No hay ocasiones en este rango.",
+    "edit_name": "Editar nombre",
+    "name_label": "Nombre",
+    "save_name": "Guardar nombre",
+    "cancel": "Cancelar"
   },
   "admin_metrics": {
     "title": "Métricas",

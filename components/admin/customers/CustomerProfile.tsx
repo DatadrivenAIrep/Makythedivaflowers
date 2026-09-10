@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Plus, WhatsappLogo, Phone, X } from "@phosphor-icons/react/dist/ssr";
+import { Plus, WhatsappLogo, Phone, X, PencilSimple } from "@phosphor-icons/react/dist/ssr";
 import { formatDate } from "@/lib/format-datetime";
 import type { CustomerProfileData } from "@/lib/customer-profile";
 import type { Address } from "@/types/address";
@@ -30,6 +30,9 @@ export default function CustomerProfile({ locale, initial, suggestions }: Props)
   const [savingNotes, setSavingNotes] = useState(false);
   const [notesSaved, setNotesSaved] = useState(false);
   const [tagDraft, setTagDraft] = useState("");
+  const [editingName, setEditingName] = useState(false);
+  const [nameDraft, setNameDraft] = useState(initial.customer.name);
+  const [savingName, setSavingName] = useState(false);
   const [openOrderId, setOpenOrderId] = useState<string | null>(null);
   const [error, setError] = useState(false);
 
@@ -66,6 +69,36 @@ export default function CustomerProfile({ locale, initial, suggestions }: Props)
       setError(true);
     } finally {
       setSavingNotes(false);
+    }
+  }
+
+  /** Correcting the name on a record — the CRM used to file a web buyer under
+   *  the name of whoever received the flowers. */
+  async function saveName() {
+    const next = nameDraft.trim();
+    // The API rejects an empty name. Keep the editor open rather than closing on
+    // a mistake the shop is in the middle of fixing.
+    if (!next) return;
+    if (next === customer.name) {
+      setEditingName(false);
+      return;
+    }
+    setSavingName(true);
+    try {
+      const res = await fetch(`/api/admin/customers/${customer.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: next }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      const body = (await res.json()) as { customer: CustomerProfileData["customer"] };
+      setData((d) => ({ ...d, customer: body.customer }));
+      setEditingName(false);
+      setError(false);
+    } catch {
+      setError(true);
+    } finally {
+      setSavingName(false);
     }
   }
 
@@ -117,7 +150,46 @@ export default function CustomerProfile({ locale, initial, suggestions }: Props)
 
       <header className="mb-3 rounded border border-ink/10 bg-bone p-4">
         <div className="flex flex-wrap items-center gap-2">
-          <h1 className="text-xl font-semibold">{customer.name}</h1>
+          {editingName ? (
+            <form
+              onSubmit={(e) => { e.preventDefault(); void saveName(); }}
+              className="flex flex-wrap items-center gap-2"
+            >
+              <input
+                aria-label={t("name_label")}
+                value={nameDraft}
+                onChange={(e) => setNameDraft(e.target.value)}
+                autoFocus
+                className="h-9 rounded border border-ink/20 bg-bone px-2 text-lg font-semibold"
+              />
+              <button
+                type="submit"
+                disabled={savingName}
+                className="min-h-9 rounded-lg bg-rouge px-3 text-sm text-bone disabled:opacity-50"
+              >
+                {t("save_name")}
+              </button>
+              <button
+                type="button"
+                onClick={() => { setEditingName(false); setNameDraft(customer.name); }}
+                className="min-h-9 rounded-lg border border-ink/20 px-3 text-sm hover:bg-ink/5"
+              >
+                {t("cancel")}
+              </button>
+            </form>
+          ) : (
+            <>
+              <h1 className="text-xl font-semibold">{customer.name}</h1>
+              <button
+                type="button"
+                aria-label={t("edit_name")}
+                onClick={() => { setNameDraft(customer.name); setEditingName(true); }}
+                className="text-ink/40 hover:text-ink"
+              >
+                <PencilSimple size={14} weight="bold" />
+              </button>
+            </>
+          )}
           <SegmentBadge segment={metrics.segment} />
           {metrics.isVip && metrics.segment !== "vip" && <SegmentBadge segment="vip" />}
         </div>

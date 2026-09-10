@@ -1,5 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
 import esMessages from "@/messages/es.json";
 import CustomerProfile from "@/components/admin/customers/CustomerProfile";
@@ -59,6 +60,64 @@ describe("CustomerProfile", () => {
     expect(screen.getByText("Fechas importantes")).toBeDefined();
     expect(screen.getByText("Sin fechas guardadas.")).toBeDefined();
     expect(screen.getByText("Preferencias")).toBeDefined();
+  });
+
+  describe("renaming a customer", () => {
+    // The CRM used to name a web buyer after the person they sent flowers to, so
+    // the shop needs to be able to put the right name on the record. The API has
+    // always accepted it; the profile screen never offered it.
+    let fetchMock: ReturnType<typeof vi.fn>;
+    beforeEach(() => {
+      fetchMock = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ customer: { ...profile.customer, name: "Robyn Vega" } }),
+      });
+      vi.stubGlobal("fetch", fetchMock);
+    });
+    afterEach(() => vi.unstubAllGlobals());
+
+    it("saves a corrected name and shows it", async () => {
+      const user = userEvent.setup();
+      wrap(<CustomerProfile locale="es" initial={profile} suggestions={emptyPrefs} />);
+
+      await user.click(screen.getByRole("button", { name: "Editar nombre" }));
+      const input = screen.getByRole("textbox", { name: "Nombre" });
+      expect(input).toHaveValue("Ana Flores");
+      await user.clear(input);
+      await user.type(input, "Robyn Vega");
+      await user.click(screen.getByRole("button", { name: "Guardar nombre" }));
+
+      await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+      const [url, init] = fetchMock.mock.calls[0];
+      expect(url).toBe("/api/admin/customers/c1");
+      expect(init.method).toBe("PATCH");
+      expect(JSON.parse(init.body)).toEqual({ name: "Robyn Vega" });
+      expect(await screen.findByText("Robyn Vega")).toBeDefined();
+    });
+
+    it("cancels without touching the record", async () => {
+      const user = userEvent.setup();
+      wrap(<CustomerProfile locale="es" initial={profile} suggestions={emptyPrefs} />);
+
+      await user.click(screen.getByRole("button", { name: "Editar nombre" }));
+      await user.clear(screen.getByRole("textbox", { name: "Nombre" }));
+      await user.type(screen.getByRole("textbox", { name: "Nombre" }), "Equivocado");
+      await user.click(screen.getByRole("button", { name: "Cancelar" }));
+
+      expect(fetchMock).not.toHaveBeenCalled();
+      expect(screen.getByText("Ana Flores")).toBeDefined();
+    });
+
+    it("refuses to save an empty name", async () => {
+      const user = userEvent.setup();
+      wrap(<CustomerProfile locale="es" initial={profile} suggestions={emptyPrefs} />);
+
+      await user.click(screen.getByRole("button", { name: "Editar nombre" }));
+      await user.clear(screen.getByRole("textbox", { name: "Nombre" }));
+      await user.click(screen.getByRole("button", { name: "Guardar nombre" }));
+
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
   });
 
   it("quick action links to intake with the phone prefilled", () => {
