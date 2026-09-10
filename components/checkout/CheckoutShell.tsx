@@ -101,7 +101,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
     resolver: zodResolver(checkoutSchema),
     mode: "onBlur",
     defaultValues: {
-      contact: { email: "", phone: "" },
+      contact: { name: "", email: "", phone: "" },
       smsConsent: false,
       smsMarketingConsent: false,
       delivery: {
@@ -211,7 +211,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
 
   async function nextFrom(step: StepKey) {
     const fields: Record<StepKey, string[]> = {
-      contact: ["contact.email", "contact.phone"],
+      contact: ["contact.name", "contact.email", "contact.phone"],
       delivery: isPickup
         ? [
             "delivery.method",

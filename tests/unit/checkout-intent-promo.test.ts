@@ -44,7 +44,7 @@ const validBody = {
   locale: "en",
   lines: [{ productId: "p-arr-m01", variantId: "standard", addOnIds: [], qty: 1 }],
   form: {
-    contact: { email: "buyer@example.com", phone: "5165551234" },
+    contact: { name: "Robyn Buyer", email: "buyer@example.com", phone: "5165551234" },
     delivery: {
       method: "delivery",
       recipient: { name: "Recipient Name", phone: "5165551234" },

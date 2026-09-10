@@ -10,6 +10,27 @@ const vars: TemplateVars = {
   shop_phone: "(516) 484-3456",
 };
 
+describe("renderSmsBody with no buyer name", () => {
+  // Every web order placed before checkout asked for a buyer name has none.
+  // Greeting them by the recipient's name told Robyn she was Michelle.
+  const nameless: TemplateVars = { ...vars, buyer_name: "" };
+
+  it("greets without a name rather than leaving a dangling space", () => {
+    expect(renderSmsBody("payment_confirmed", "en", nameless)).toContain("Thanks! Diva Flowers received your payment.");
+    expect(renderSmsBody("payment_confirmed", "es", nameless)).toContain("¡Gracias! Diva Flowers recibió tu pago.");
+    expect(renderSmsBody("order_received", "en", nameless)).toContain("Hi, Diva Flowers got your order.");
+    expect(renderSmsBody("out_for_delivery", "en", nameless)).toContain("Hi! Your Diva Flowers order is on the way");
+  });
+
+  it("never falls back to the recipient's name in a buyer-facing message", () => {
+    for (const tpl of ["order_received", "payment_link", "payment_confirmed", "out_for_delivery", "ready_for_pickup", "review_request"] as const) {
+      for (const loc of ["en", "es"] as const) {
+        expect(renderSmsBody(tpl, loc, nameless)).not.toContain("Lola");
+      }
+    }
+  });
+});
+
 describe("renderSmsBody", () => {
   it("renders order_received in English", () => {
     const body = renderSmsBody("order_received", "en", vars);

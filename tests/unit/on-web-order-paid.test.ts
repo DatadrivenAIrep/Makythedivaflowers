@@ -49,6 +49,22 @@ const ORDER: Order = {
   updatedAt: "2026-08-17T15:00:00Z",
 };
 
+describe("buyer name", () => {
+  it("names the CRM customer after the buyer, not the recipient", async () => {
+    await onWebOrderPaid("do_1");
+    expect(upsertOnOrderMock).toHaveBeenCalledWith(expect.objectContaining({ name: "Bob Buyer" }));
+  });
+
+  it("leaves the name blank rather than borrowing the recipient's when the buyer gave none", async () => {
+    // Legacy web orders (checkout used to collect no buyer name). The phone
+    // belongs to the buyer, so filing it under the recipient's name is wrong.
+    getOrderMock.mockResolvedValue({ ...ORDER, contact: { ...ORDER.contact, name: undefined } });
+    await onWebOrderPaid("do_1");
+    const arg = upsertOnOrderMock.mock.calls[0][0] as { name: string };
+    expect(arg.name).not.toBe("Ana Recipient");
+  });
+});
+
 beforeEach(() => {
   upsertOnOrderMock.mockReset().mockReturnValue({ id: "cus_1" });
   addTagMock.mockReset();
@@ -85,11 +101,13 @@ describe("onWebOrderPaid", () => {
     );
   });
 
-  it("falls back to the recipient name when the buyer left theirs blank", async () => {
+  it("does NOT fall back to the recipient name when the buyer left theirs blank", async () => {
+    // The record is keyed by the BUYER's phone. Naming it after the recipient
+    // makes the shop greet a gift buyer as the person she sent flowers to.
     getOrderMock.mockResolvedValue({ ...ORDER, contact: { ...ORDER.contact, name: "  " } });
     await onWebOrderPaid("do_1");
     expect(upsertOnOrderMock).toHaveBeenCalledWith(
-      expect.objectContaining({ name: "Ana Recipient" }),
+      expect.objectContaining({ name: "" }),
     );
   });
 

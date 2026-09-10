@@ -56,6 +56,10 @@ const pickupFulfillment = z.object({
 
 export const checkoutSchema = z.object({
   contact: z.object({
+    // Who is PAYING — not who receives the flowers. Required: every buyer-facing
+    // SMS greets this name and it is what names the CRM record behind this phone,
+    // so without it the shop ends up addressing the buyer as the recipient.
+    name: z.string().min(2, "name_too_short").max(80),
     email: z.string().email("email_invalid"),
     phone,
   }),

@@ -31,7 +31,7 @@ function body(code: string) {
     lines: [{ productId: "p-arr-m01", variantId: "standard", addOnIds: [], qty: 1 }],
     giftCardCode: code,
     form: {
-      contact: { email: "a@b.com", phone: "5165550100" },
+      contact: { name: "Robyn Buyer", email: "a@b.com", phone: "5165550100" },
       delivery: {
         method: "pickup",
         recipient: { name: "María", phone: "5165550100" },

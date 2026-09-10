@@ -15,6 +15,12 @@ export function ContactStep({ form }: Props) {
   const errors = formState.errors.contact;
   return (
     <div className="space-y-5 max-w-md">
+      <FormField label={t("your_name")} htmlFor="ck-name" required
+        error={errors?.name ? t(`errors.${errors.name.message ?? "name_too_short"}`) : undefined}>
+        <TextInput id="ck-name" autoComplete="name"
+          aria-invalid={!!errors?.name || undefined}
+          {...register("contact.name")} />
+      </FormField>
       <FormField label={t("email")} htmlFor="ck-email" required
         error={errors?.email ? t(`errors.${errors.email.message ?? "email_invalid"}`) : undefined}>
         <TextInput id="ck-email" type="email" autoComplete="email"

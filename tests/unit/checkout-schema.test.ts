@@ -2,18 +2,28 @@
 import { describe, it, expect } from "vitest";
 import { checkoutSchema } from "@/schemas/checkout";
 
+// Kept in the future relative to the run: the schema rejects past dates, so a
+// hardcoded date silently rots the whole fixture.
+const futureDate = new Date(Date.now() + 7 * 864e5).toISOString().slice(0, 10);
+
 const valid = {
-  contact: { email: "lola@example.com", phone: "5164843456" },
+  contact: { name: "Robyn Buyer", email: "lola@example.com", phone: "5164843456" },
   delivery: {
     method: "delivery" as const,
     recipient: { name: "Lola Cardona", phone: "5165550101" },
     address: { street1: "1077 Hempstead Tpke", city: "Franklin Square", state: "NY", zip: "11010", country: "US" as const },
-    window: { date: "2026-05-15", slot: "midday" as const },
+    window: { date: futureDate, slot: "midday" as const },
     cardMessage: "Happy birthday",
   },
 };
 
 describe("checkoutSchema", () => {
+  it("requires the name of whoever is paying", () => {
+    const { name, ...noName } = valid.contact;
+    const res = checkoutSchema.safeParse({ ...valid, contact: noName });
+    expect(res.success).toBe(false);
+  });
+
   it("accepts a valid payload", () => {
     expect(checkoutSchema.safeParse(valid).success).toBe(true);
   });
@@ -58,7 +68,7 @@ describe("checkoutSchema", () => {
       delivery: {
         method: "pickup" as const,
         recipient: { name: "Lola Cardona", phone: "5165550101" },
-        window: { date: "2026-05-15", slot: "midday" as const },
+        window: { date: futureDate, slot: "midday" as const },
         cardMessage: "",
       },
     };
@@ -96,7 +106,7 @@ describe("checkoutSchema", () => {
 
   it("defaults smsConsent to false when omitted", () => {
     const base = {
-      contact: { email: "a@x.com", phone: "5165550100" },
+      contact: { name: "Ana Buyer", email: "a@x.com", phone: "5165550100" },
       delivery: {
         method: "pickup",
         recipient: { name: "Ana", phone: "5165550100" },
@@ -110,7 +120,7 @@ describe("checkoutSchema", () => {
   it("accepts smsConsent true", () => {
     const base = {
       smsConsent: true,
-      contact: { email: "a@x.com", phone: "5165550100" },
+      contact: { name: "Ana Buyer", email: "a@x.com", phone: "5165550100" },
       delivery: {
         method: "pickup",
         recipient: { name: "Ana", phone: "5165550100" },

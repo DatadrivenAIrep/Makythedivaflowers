@@ -6,12 +6,13 @@ import { notifyOwner } from "@/lib/notify-owner";
 import { rewardsOnOrderPaid } from "@/lib/promo-rewards";
 import type { Order } from "@/types/order";
 
-/** The buyer names the customer record. Web checkout lets the buyer leave their
- *  own name blank, in which case the recipient is the only name we have. */
+/** The buyer names the customer record — the record keyed by the BUYER's phone.
+ *  Never the recipient's name: filing a gift buyer under the name of the person
+ *  she sent flowers to means every later order greets her as someone else.
+ *  Orders that predate the checkout asking for a buyer name get no name; the shop
+ *  can fill it in from the admin. */
 function buyerName(order: Order): string {
-  const fromContact = order.contact.name?.trim();
-  if (fromContact) return fromContact;
-  return order.fulfillment.recipient.name.trim();
+  return order.contact.name?.trim() ?? "";
 }
 
 /**

@@ -20,6 +20,14 @@ export type TemplateVars = {
 /** "Orden #1042, total $89.50." — or just "Total $89.50." when the order predates
  *  sequential numbering. Capitalisation differs between the two, so this cannot
  *  be a simple optional suffix. */
+/** " Robyn" when the buyer gave a name, "" when they didn't. Orders taken before
+ *  checkout asked for a buyer name have none; greeting those by the recipient's
+ *  name addresses the wrong person, so they are greeted by no name at all. */
+function named(v: TemplateVars): string {
+  const n = v.buyer_name?.trim();
+  return n ? ` ${n}` : "";
+}
+
 function totalSentence(v: TemplateVars, locale: "en" | "es"): string {
   const label = locale === "es" ? "Orden" : "Order";
   return v.order_number
@@ -30,35 +38,35 @@ function totalSentence(v: TemplateVars, locale: "en" | "es"): string {
 const BODIES: Record<"en" | "es", Record<MessageTemplate, (v: TemplateVars) => string>> = {
   en: {
     order_received: (v) =>
-      `Hi ${v.buyer_name}, Diva Flowers got your order. Total ${v.total}. ${v.fulfillment_label ?? "Delivery"} ${v.window ?? ""}. Thanks! — Maky · ${v.shop_phone}`,
+      `Hi${named(v)}, Diva Flowers got your order. Total ${v.total}. ${v.fulfillment_label ?? "Delivery"} ${v.window ?? ""}. Thanks! — Maky · ${v.shop_phone}`,
     payment_link: (v) =>
-      `Hi ${v.buyer_name}, your Diva Flowers order is reserved. Total ${v.total}. Pay here: ${v.link ?? ""}. We'll confirm once paid. — Maky`,
+      `Hi${named(v)}, your Diva Flowers order is reserved. Total ${v.total}. Pay here: ${v.link ?? ""}. We'll confirm once paid. — Maky`,
     payment_confirmed: (v) =>
-      `Thanks ${v.buyer_name}! Diva Flowers received your payment. ${totalSentence(v, "en")} ${v.fulfillment_label ?? "Delivery"} ${v.window ?? ""}. — Maky`,
+      `Thanks${named(v)}! Diva Flowers received your payment. ${totalSentence(v, "en")} ${v.fulfillment_label ?? "Delivery"} ${v.window ?? ""}. — Maky`,
     out_for_delivery: (v) =>
-      `Hi ${v.buyer_name}! Your Diva Flowers order is on the way, arriving ${v.window ?? ""}. — Maky`,
+      `Hi${named(v)}! Your Diva Flowers order is on the way, arriving ${v.window ?? ""}. — Maky`,
     ready_for_pickup: (v) =>
-      `Hi ${v.buyer_name}! Your Diva Flowers order is ready for pickup. See you soon! — Maky · ${v.shop_phone}`,
+      `Hi${named(v)}! Your Diva Flowers order is ready for pickup. See you soon! — Maky · ${v.shop_phone}`,
     delivered: (v) =>
       `Delivered! Your Diva Flowers order has arrived. Thank you! — Maky · ${v.shop_phone}`,
     review_request: (v) =>
-      `Hi ${v.buyer_name}, thanks for choosing Diva Flowers! Would you leave us a quick Google review? ${v.link ?? ""} — Maky`,
+      `Hi${named(v)}, thanks for choosing Diva Flowers! Would you leave us a quick Google review? ${v.link ?? ""} — Maky`,
   },
   es: {
     order_received: (v) =>
-      `Hola ${v.buyer_name}, Diva Flowers recibió tu pedido. Total ${v.total}. ${v.fulfillment_label ?? "Entrega"} ${v.window ?? ""}. ¡Gracias! — Maky · ${v.shop_phone}`,
+      `Hola${named(v)}, Diva Flowers recibió tu pedido. Total ${v.total}. ${v.fulfillment_label ?? "Entrega"} ${v.window ?? ""}. ¡Gracias! — Maky · ${v.shop_phone}`,
     payment_link: (v) =>
-      `Hola ${v.buyer_name}, tu pedido en Diva Flowers está reservado. Total ${v.total}. Paga aquí: ${v.link ?? ""}. Lo confirmamos al recibir el pago. — Maky`,
+      `Hola${named(v)}, tu pedido en Diva Flowers está reservado. Total ${v.total}. Paga aquí: ${v.link ?? ""}. Lo confirmamos al recibir el pago. — Maky`,
     payment_confirmed: (v) =>
-      `¡Gracias ${v.buyer_name}! Diva Flowers recibió tu pago. ${totalSentence(v, "es")} ${v.fulfillment_label ?? "Entrega"} ${v.window ?? ""}. — Maky`,
+      `¡Gracias${named(v)}! Diva Flowers recibió tu pago. ${totalSentence(v, "es")} ${v.fulfillment_label ?? "Entrega"} ${v.window ?? ""}. — Maky`,
     out_for_delivery: (v) =>
-      `¡Hola ${v.buyer_name}! Tu pedido de Diva Flowers va en camino, llega ${v.window ?? ""}. — Maky`,
+      `¡Hola${named(v)}! Tu pedido de Diva Flowers va en camino, llega ${v.window ?? ""}. — Maky`,
     ready_for_pickup: (v) =>
-      `¡Hola ${v.buyer_name}! Tu pedido de Diva Flowers está listo para recoger. ¡Te esperamos! — Maky · ${v.shop_phone}`,
+      `¡Hola${named(v)}! Tu pedido de Diva Flowers está listo para recoger. ¡Te esperamos! — Maky · ${v.shop_phone}`,
     delivered: (v) =>
       `¡Entregado! Tu pedido de Diva Flowers ya llegó. ¡Gracias por tu compra! — Maky · ${v.shop_phone}`,
     review_request: (v) =>
-      `¡Hola ${v.buyer_name}! Gracias por elegir Diva Flowers 🌸 ¿Nos dejas una reseña en Google? ${v.link ?? ""} — Maky`,
+      `¡Hola${named(v)}! Gracias por elegir Diva Flowers 🌸 ¿Nos dejas una reseña en Google? ${v.link ?? ""} — Maky`,
   },
 };
 

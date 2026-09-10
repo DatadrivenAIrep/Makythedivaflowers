@@ -50,11 +50,13 @@ function firstName(full: string): string {
 }
 
 /** The buyer (order.contact) is who paid and who every customer SMS is sent to.
- *  Web checkout lets the buyer leave their name blank, so fall back to the
- *  recipient's name — the only name we have — rather than greeting no one. */
+ *  Never falls back to the recipient: on a gift order those are two different
+ *  people, and borrowing the recipient's name greeted the buyer as someone else.
+ *  Orders that predate the checkout asking for a buyer name return "", and the
+ *  templates greet them without a name. */
 function buyerFirstName(order: Order): string {
   const buyer = order.contact.name?.trim();
-  return firstName(buyer && buyer.length ? buyer : order.fulfillment.recipient.name);
+  return buyer ? firstName(buyer) : "";
 }
 
 function shopPhoneFromSite(): string {

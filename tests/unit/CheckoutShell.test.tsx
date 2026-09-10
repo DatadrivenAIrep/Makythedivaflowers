@@ -97,6 +97,7 @@ function field(id: string): HTMLElement {
 
 /** Walks the buyer to step 3 via pickup, which needs no address. */
 async function reachPaymentStep(user: ReturnType<typeof userEvent.setup>) {
+  await user.type(field("ck-name"), "Robyn Buyer");
   await user.type(field("ck-email"), "buyer@example.com");
   await user.type(field("ck-phone"), "5165551234");
   await user.click(screen.getByRole("button", { name: "continue" }));
