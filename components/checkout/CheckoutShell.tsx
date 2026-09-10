@@ -159,6 +159,16 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
   // Compares payableCents (net of the gift card) rather than the order total, so
   // applying a gift card here re-prices the intent instead of leaving one that
   // silently charges the full amount.
+  // Everything the request needs, refreshed after each render but never a
+  // dependency of the effect below. Declared first so it is up to date before
+  // that effect runs. A dependency that changes identity every render (a store
+  // callback, a router object) would re-run the effect and cancel the request it
+  // had just fired — the exact failure this section replaced.
+  const latestRef = useRef({ locale, lines, form, giftCard, promo, tipCents, clear, closeDrawer, router });
+  useEffect(() => {
+    latestRef.current = { locale, lines, form, giftCard, promo, tipCents, clear, closeDrawer, router };
+  });
+
   useEffect(() => {
     if (!hasIntentRef.current) return;
     if (totals.totalCents <= 0) return;
@@ -167,16 +177,24 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
     let cancelled = false;
     setIntent({ status: "creating" });
     (async () => {
-      const r = await createIntent({ locale, lines, form: form.getValues(), giftCardCode: giftCard?.code, promoCode: promo?.code, tipCents });
+      const l = latestRef.current;
+      const r = await createIntent({
+        locale: l.locale,
+        lines: l.lines,
+        form: l.form.getValues(),
+        giftCardCode: l.giftCard?.code,
+        promoCode: l.promo?.code,
+        tipCents: l.tipCents,
+      });
       if (cancelled) return;
       if ("error" in r) {
         // Unpin the amount so a later change retries instead of being skipped.
         syncedAmountRef.current = null;
         setIntent({ status: "error", message: r.error });
       } else if ("paid" in r && r.paid) {
-        clear();
-        closeDrawer();
-        router.push(`/${locale}/order/${r.orderId}/confirmation`);
+        l.clear();
+        l.closeDrawer();
+        l.router.push(`/${l.locale}/order/${r.orderId}/confirmation`);
       } else if ("clientSecret" in r) {
         setIntent({
           status: "ready",
@@ -189,7 +207,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
     return () => {
       cancelled = true;
     };
-  }, [payableCents, totals.totalCents, locale, lines, form, giftCard, promo, tipCents, clear, closeDrawer, router]);
+  }, [payableCents, totals.totalCents]);
 
   async function nextFrom(step: StepKey) {
     const fields: Record<StepKey, string[]> = {

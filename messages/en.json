@@ -132,7 +132,10 @@
     "tip": {
       "label": "Tip the team (optional)",
       "body": "Every dollar goes to the designer who built it and the driver who took it.",
-      "none": "No tip"
+      "none": "No tip",
+      "custom": "Other",
+      "custom_label": "Choose your own amount",
+      "max_note": "The most we can add is {amount}."
     }
   },
   "confirmation": {

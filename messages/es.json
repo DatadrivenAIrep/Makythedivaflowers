@@ -132,7 +132,10 @@
     "tip": {
       "label": "Propina para el equipo (opcional)",
       "body": "Cada dólar va para quien lo armó y quien lo llevó.",
-      "none": "Sin propina"
+      "none": "Sin propina",
+      "custom": "Otro",
+      "custom_label": "Elige el monto",
+      "max_note": "El máximo que podemos agregar es {amount}."
     }
   },
   "confirmation": {
