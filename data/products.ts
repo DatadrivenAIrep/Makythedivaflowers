@@ -3927,6 +3927,37 @@ export const PRODUCTS: Product[] = [
     },
   },
   {
+    id: "p-arr-royal-10",
+    slug: "blue-lagoon",
+    title: { en: "Blue Lagoon", es: "Laguna Azul" },
+    category: "arrangements",
+    blurb: {
+      en: "A low oval centerpiece — blue-tinted and peach roses, purple dendrobium orchids, blue and green hydrangea, white lisianthus and snapdragons over fern and ruscus.",
+      es: "Un centro de mesa ovalado y bajo — rosas teñidas de azul y durazno, orquídeas dendrobium moradas, hortensia azul y verde, lisianthus blanco y bocas de dragón sobre helecho y ruscus.",
+    },
+    description: {
+      en: "For the table that wants a little surprise in the middle — a low oval centerpiece in blue, peach and lavender, built to sit down the center of a dining table without blocking a single conversation. Blue-tinted roses and a peach rose lead it, purple dendrobium orchids sit at either end, blue and green hydrangea fill the body, white lisianthus and snapdragons give it lift, and pink snowberry and waxflower scatter the small details over variegated pittosporum, ruscus and leatherleaf fern. The blue roses are tinted, not painted on: they are the reason people lean in, and the peach rose beside them is what keeps the whole thing warm. Long enough for a dinner for eight, low enough for a coffee table. Send it for the birthday, the baby shower, the graduation dinner, the thank-you to the host who always has everyone over. Order before 2:00 pm and it goes out today across Long Island, built to the photo in the same palette with whatever came in freshest that morning.",
+      es: "Para la mesa que quiere una pequeña sorpresa en el medio — un centro de mesa ovalado y bajo en azul, durazno y lavanda, hecho para ir por el centro de un comedor sin bloquear una sola conversación. Rosas teñidas de azul y una rosa durazno lo encabezan, orquídeas dendrobium moradas van en cada extremo, hortensia azul y verde llena el cuerpo, lisianthus blanco y bocas de dragón le dan altura, y snowberry rosa y waxflower reparten los detalles pequeños sobre pittosporum variegado, ruscus y helecho. Las rosas azules son teñidas, no pintadas: son la razón por la que la gente se acerca, y la rosa durazno al lado es lo que mantiene todo cálido. Largo para una cena de ocho, bajo para una mesa de centro. Mándalo por el cumpleaños, el baby shower, la cena de graduación, el gracias a quien siempre recibe a todos en su casa. Pídelo antes de las 2:00 pm y sale hoy mismo por Long Island, armado como la foto en la misma paleta con lo que haya entrado más fresco esa mañana.",
+    },
+    images: [
+      { src: "/products/blue-lagoon.jpg", alt: { en: "Low oval centerpiece of blue-tinted and peach roses, purple dendrobium orchids, blue and green hydrangea, white lisianthus and snapdragons over fern and ruscus", es: "Centro de mesa ovalado y bajo de rosas teñidas de azul y durazno, orquídeas dendrobium moradas, hortensia azul y verde, lisianthus blanco y bocas de dragón sobre helecho y ruscus" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 10000 },
+    ],
+    tags: ["new", "same-day", "staff-pick"],
+    occasions: ["birthday", "new-baby", "congrats", "graduation", "thank-you", "just-because"],
+    colorFamily: ["mixed", "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Blue Lagoon — Diva Flowers", es: "Laguna Azul — Diva Flowers" },
+      description: {
+        en: "A low oval centerpiece of blue-tinted and peach roses, purple dendrobium orchids, blue hydrangea, lisianthus and snapdragons over fern, built for the table. Same-day delivery on Long Island.",
+        es: "Centro de mesa ovalado y bajo de rosas teñidas de azul y durazno, orquídeas dendrobium moradas, hortensia azul, lisianthus y bocas de dragón sobre helecho, hecho para la mesa. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
     id: "x-card-premium",
     slug: "premium-card",
     title: { en: "Premium handwritten card", es: "Tarjeta escrita a mano premium" },
