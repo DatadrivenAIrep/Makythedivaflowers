@@ -3736,6 +3736,39 @@ export const PRODUCTS: Product[] = [
     },
   },
   {
+    id: "p-arr-royal-04",
+    slug: "sunflower-parade",
+    title: { en: "Sunflower Parade", es: "Desfile de Girasoles" },
+    category: "arrangements",
+    blurb: {
+      en: "A set of sunflower bowls for the table — three or five leaf-lined glass bubbles of sunflowers, eucalyptus and looped bear grass.",
+      es: "Un set de bowls de girasoles para la mesa — tres o cinco esferas de vidrio forradas con hoja, con girasoles, eucalipto y bear grass en lazo.",
+    },
+    description: {
+      en: "For the table that needs the sun in more than one place — a matching set of low glass bubble bowls, each lined with a folded green leaf and filled with three to four sunflowers, seeded eucalyptus, a curled aspidistra leaf and a loop of bear grass drawn over the top. One bowl is a cheerful arrangement; three down a dinner table, or five across a long one, and the whole room reads as a party before anyone sits down. That is what these are built for: the brunch, the shower, the graduation lunch, the office lobby, the family dinner that deserves a little more than a single vase. Choose the set of three or the set of five; every bowl is built to match the others in size, greenery and palette, so they read as one design when they are spread out. Order before 2:00 pm and it goes out today across Long Island, built to the photo with the freshest sunflowers of that morning.",
+      es: "Para la mesa que necesita el sol en más de un lugar — un set a juego de esferas bajas de vidrio, cada una forrada con una hoja verde doblada y llena de tres o cuatro girasoles, eucalipto, una hoja de aspidistra enrollada y un lazo de bear grass trazado por encima. Un bowl es un arreglo alegre; tres a lo largo de un comedor, o cinco en una mesa larga, y el salón entero se lee como fiesta antes de que alguien se siente. Para eso están hechos: el brunch, el baby shower, el almuerzo de graduación, el lobby de la oficina, la cena familiar que merece algo más que un solo jarrón. Elige el set de tres o el de cinco; cada bowl se arma igual que los demás en tamaño, follaje y paleta, para que se lean como un solo diseño cuando se reparten. Pídelo antes de las 2:00 pm y sale hoy mismo por Long Island, armado como la foto con los girasoles más frescos de esa mañana.",
+    },
+    images: [
+      { src: "/products/sunflower-parade.jpg", alt: { en: "Set of three leaf-lined glass bubble bowls of sunflowers with eucalyptus and looped bear grass", es: "Set de tres esferas de vidrio forradas con hoja con girasoles, eucalipto y bear grass en lazo" }, aspect: "4/5" },
+      { src: "/products/sunflower-parade-2.jpg", alt: { en: "Set of five sunflower bubble bowls spread across a table", es: "Set de cinco bowls de girasoles repartidos sobre una mesa" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "set-3", label: { en: "Set of 3", es: "Set de 3" }, priceCents: 15000, subtitle: { en: "Three matching bowls", es: "Tres bowls a juego" } },
+      { id: "set-5", label: { en: "Set of 5", es: "Set de 5" }, priceCents: 25000, subtitle: { en: "Five matching bowls", es: "Cinco bowls a juego" } },
+    ],
+    tags: ["new", "same-day", "staff-pick"],
+    occasions: ["congrats", "birthday", "graduation", "thank-you", "get-well", "just-because"],
+    colorFamily: ["mixed", "green"],
+    active: true,
+    seo: {
+      title: { en: "Sunflower Parade — Diva Flowers", es: "Desfile de Girasoles — Diva Flowers" },
+      description: {
+        en: "A matching set of three or five leaf-lined glass bowls of sunflowers, eucalyptus and bear grass, built for the table. Same-day delivery on Long Island.",
+        es: "Set a juego de tres o cinco esferas de vidrio forradas con hoja con girasoles, eucalipto y bear grass, hecho para la mesa. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
     id: "x-card-premium",
     slug: "premium-card",
     title: { en: "Premium handwritten card", es: "Tarjeta escrita a mano premium" },
