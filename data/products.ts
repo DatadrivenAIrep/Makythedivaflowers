@@ -3989,6 +3989,37 @@ export const PRODUCTS: Product[] = [
     },
   },
   {
+    id: "p-sym-royal-01",
+    slug: "serene-lavender",
+    title: { en: "Serene Lavender", es: "Lavanda Serena" },
+    category: "sympathy",
+    blurb: {
+      en: "White roses and lavender hydrangea with blue delphinium, white lilies, snapdragon and stock — a standing tribute in lavender, white and green.",
+      es: "Rosas blancas y hortensia lavanda con delphinium azul, lirios blancos, boca de dragón y alhelí — un homenaje vertical en lavanda, blanco y verde.",
+    },
+    description: {
+      en: "For the family who asked for something soft — a standing tribute in lavender, white and green: cream white roses and two heads of lavender hydrangea at the center, blue delphinium and white snapdragon rising tall behind, open white lilies, a pale green football mum and white stock filling the base, and burgundy chrysanthemum buttons scattered through for depth, framed by an aspidistra leaf, palm, ruscus and leatherleaf fern with eucalyptus trailing off the front. Lavender says what plain white sometimes cannot: that this was a person with a favourite colour, not just a loss. Tall enough for a funeral home or a service, gentle enough to come back to the house afterwards and sit on a side table for the week that follows. We deliver to funeral homes across Nassau, Queens and western Suffolk, and we call ahead to confirm the service time before the driver leaves. Order before 2:00 pm and it goes out today, built to the photo in the same palette with whatever came in freshest that morning.",
+      es: "Para la familia que pidió algo suave — un homenaje vertical en lavanda, blanco y verde: rosas blancas crema y dos cabezas de hortensia lavanda al centro, delphinium azul y boca de dragón blanca subiendo por detrás, lirios blancos abiertos, un crisantemo verde pálido y alhelí blanco llenando la base, y botones de crisantemo borgoña repartidos para dar profundidad, enmarcado por una hoja de aspidistra, palma, ruscus y helecho con eucalipto cayendo al frente. La lavanda dice lo que el blanco solo a veces no alcanza a decir: que esta fue una persona con un color favorito, no solamente una pérdida. Alto para una funeraria o un servicio, y suave para volver después a la casa y quedarse en una mesa lateral la semana siguiente. Entregamos en funerarias de Nassau, Queens y el oeste de Suffolk, y llamamos antes para confirmar la hora del servicio antes de que salga el chofer. Pídelo antes de las 2:00 pm y sale hoy mismo, armado como la foto en la misma paleta con lo que haya entrado más fresco esa mañana.",
+    },
+    images: [
+      { src: "/products/serene-lavender.jpg", alt: { en: "Standing sympathy tribute of white roses, lavender hydrangea, blue delphinium, white lilies, snapdragon and stock with burgundy chrysanthemum buttons", es: "Homenaje vertical de condolencia con rosas blancas, hortensia lavanda, delphinium azul, lirios blancos, boca de dragón y alhelí con botones de crisantemo borgoña" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 15000 },
+    ],
+    tags: ["new", "same-day", "staff-pick"],
+    occasions: ["sympathy", "thinking-of-you"],
+    colorFamily: ["white", "pastel", "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Serene Lavender — Diva Flowers", es: "Lavanda Serena — Diva Flowers" },
+      description: {
+        en: "A standing sympathy tribute of white roses, lavender hydrangea, blue delphinium, white lilies and stock. Delivered to Long Island funeral homes, same day.",
+        es: "Homenaje vertical de condolencia con rosas blancas, hortensia lavanda, delphinium azul, lirios blancos y alhelí. Entrega el mismo día en funerarias de Long Island.",
+      },
+    },
+  },
+  {
     id: "x-card-premium",
     slug: "premium-card",
     title: { en: "Premium handwritten card", es: "Tarjeta escrita a mano premium" },

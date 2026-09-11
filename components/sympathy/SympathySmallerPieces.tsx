@@ -22,7 +22,7 @@ const COPY = {
   view: { en: "View", es: "Ver" },
 } as const;
 
-const SMALLER_SLUGS = ["celestial-peace", "monstera-mood"];
+const SMALLER_SLUGS = ["serene-lavender", "celestial-peace", "monstera-mood"];
 
 export function SympathySmallerPieces({ locale }: { locale: Locale }) {
   const items = SMALLER_SLUGS.map((slug) => PRODUCTS.find((p) => p.slug === slug)).filter(
