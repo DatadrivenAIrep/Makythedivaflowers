@@ -3865,6 +3865,37 @@ export const PRODUCTS: Product[] = [
     },
   },
   {
+    id: "p-arr-royal-08",
+    slug: "garden-party",
+    title: { en: "Garden Party", es: "Fiesta de Jardín" },
+    category: "arrangements",
+    blurb: {
+      en: "A long, low oval centerpiece — peach and blush roses, green cymbidium and white dendrobium orchids, white hydrangea and snapdragons over glossy leaves.",
+      es: "Un centro de mesa ovalado, largo y bajo — rosas durazno y blush, orquídeas cymbidium verde y dendrobium blancas, hortensia blanca y bocas de dragón sobre hojas brillantes.",
+    },
+    description: {
+      en: "For the table that should look like the garden came inside — a long, low oval centerpiece in peach, blush, white and green, built to run down the middle of a dining table without blocking a single conversation. Peach and blush roses sit at the heart with a green cymbidium orchid beside them, white dendrobium orchids and snapdragons reach out to either end, white and green hydrangea fill the body, and pink snowberry and waxflower add the small details, all over folded aspidistra leaves, eucalyptus, ruscus and fern. Soft enough for a bridal luncheon, fresh enough for a spring brunch, generous enough for the head of a holiday table: the peach roses give it warmth, the green orchid keeps it from going sweet, and the white hydrangea makes it read as one long piece instead of many small ones. Send it for the anniversary dinner, the shower, the engagement party, the thank-you to a host. Order before 2:00 pm and it goes out today across Long Island, built to the photo in the same palette with whatever came in freshest that morning.",
+      es: "Para la mesa que debería verse como si el jardín hubiera entrado a la casa — un centro de mesa ovalado, largo y bajo, en durazno, blush, blanco y verde, hecho para correr por el medio de un comedor sin bloquear una sola conversación. Rosas durazno y blush en el corazón con una orquídea cymbidium verde al lado, orquídeas dendrobium blancas y bocas de dragón estiradas hacia cada extremo, hortensia blanca y verde llenando el cuerpo, y snowberry rosa y waxflower poniendo los detalles pequeños, todo sobre hojas de aspidistra dobladas, eucalipto, ruscus y helecho. Suave para un almuerzo de novia, fresco para un brunch de primavera, y generoso para la cabecera de una mesa de fiestas: las rosas durazno le dan calidez, la orquídea verde evita que se vuelva empalagoso, y la hortensia blanca hace que se lea como una sola pieza larga y no como muchas pequeñas. Mándalo por la cena de aniversario, el shower, la fiesta de compromiso, el gracias a quien recibió en su casa. Pídelo antes de las 2:00 pm y sale hoy mismo por Long Island, armado como la foto en la misma paleta con lo que haya entrado más fresco esa mañana.",
+    },
+    images: [
+      { src: "/products/garden-party.jpg", alt: { en: "Long low oval centerpiece of peach and blush roses, green cymbidium and white dendrobium orchids, white hydrangea and snapdragons over aspidistra leaves and eucalyptus", es: "Centro de mesa ovalado largo y bajo de rosas durazno y blush, orquídeas cymbidium verde y dendrobium blancas, hortensia blanca y bocas de dragón sobre hojas de aspidistra y eucalipto" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 15000 },
+    ],
+    tags: ["new", "same-day", "staff-pick"],
+    occasions: ["anniversary", "congrats", "thank-you", "birthday", "new-baby", "just-because"],
+    colorFamily: ["pastel", "pink", "white", "green"],
+    active: true,
+    seo: {
+      title: { en: "Garden Party — Diva Flowers", es: "Fiesta de Jardín — Diva Flowers" },
+      description: {
+        en: "A long, low oval centerpiece of peach and blush roses, green cymbidium orchids, white hydrangea and snapdragons, built for the dining table. Same-day delivery on Long Island.",
+        es: "Centro de mesa ovalado, largo y bajo, de rosas durazno y blush, orquídeas cymbidium verde, hortensia blanca y bocas de dragón, hecho para el comedor. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
     id: "x-card-premium",
     slug: "premium-card",
     title: { en: "Premium handwritten card", es: "Tarjeta escrita a mano premium" },
