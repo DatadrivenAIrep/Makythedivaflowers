@@ -3673,6 +3673,38 @@ export const PRODUCTS: Product[] = [
     },
   },
   {
+    id: "p-arr-royal-02",
+    slug: "island-sunrise",
+    title: { en: "Island Sunrise", es: "Amanecer Isleño" },
+    category: "arrangements",
+    blurb: {
+      en: "Orange heliconia and red ginger over yellow roses, lavender hydrangea and purple dendrobium orchids, tall in a leaf-lined glass cube.",
+      es: "Heliconia naranja y jengibre rojo sobre rosas amarillas, hortensia lavanda y orquídeas dendrobium moradas, alto en un cubo de vidrio forrado con hoja.",
+    },
+    description: {
+      en: "For the day that needs colour before coffee — a tall, sun-struck arrangement of orange heliconia and red ginger rising over yellow and red roses, orange spray roses and lavender hydrangea, with a spray of purple dendrobium orchids spilling off the front and blue delphinium and white lilies coming up behind, framed by broad tropical leaves in a leaf-lined glass cube. It reads like a Caribbean morning: the heliconia and ginger give it height and heat, the roses and hydrangea keep it full and soft underneath, and the orchids get the last word. Tall enough for an entry table or a counter, wild enough that nobody mistakes it for the usual. Send it for the birthday that deserves some noise, the promotion, the welcome home, the thank-you that should feel like a holiday. Order before 2:00 pm and it goes out today across Long Island, built to the photo in the same palette with whatever came in freshest that morning.",
+      es: "Para el día que necesita color antes del café — un arreglo alto y soleado de heliconia naranja y jengibre rojo elevándose sobre rosas amarillas y rojas, rosas spray naranja y hortensia lavanda, con una vara de orquídeas dendrobium moradas que cae al frente y delphinium azul y lirios blancos asomando detrás, enmarcado por anchas hojas tropicales en un cubo de vidrio forrado con hoja. Se lee como una mañana caribeña: la heliconia y el jengibre le dan altura y calor, las rosas y la hortensia lo mantienen lleno y suave por debajo, y las orquídeas dicen la última palabra. Alto para una mesa de entrada o un mostrador, y lo bastante salvaje para que nadie lo confunda con lo de siempre. Mándalo por el cumpleaños que merece ruido, el ascenso, la bienvenida a casa, el gracias que debería sentirse a vacaciones. Pídelo antes de las 2:00 pm y sale hoy mismo por Long Island, armado como la foto en la misma paleta con lo que haya entrado más fresco esa mañana.",
+    },
+    images: [
+      { src: "/products/island-sunrise.jpg", alt: { en: "Tall tropical arrangement of orange heliconia, red ginger, yellow and red roses, lavender hydrangea and purple dendrobium orchids in a leaf-lined glass cube", es: "Arreglo tropical alto de heliconia naranja, jengibre rojo, rosas amarillas y rojas, hortensia lavanda y orquídeas dendrobium moradas en cubo de vidrio forrado con hoja" }, aspect: "4/5" },
+      { src: "/products/island-sunrise-2.jpg", alt: { en: "Island Sunrise arrangement, closer view of the orchid spray, roses and hydrangea under the heliconia", es: "Arreglo Amanecer Isleño, vista cercana de la vara de orquídeas, rosas y hortensia bajo la heliconia" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 15000 },
+    ],
+    tags: ["new", "same-day", "staff-pick"],
+    occasions: ["birthday", "congrats", "thank-you", "get-well", "anniversary", "just-because"],
+    colorFamily: ["mixed", "red"],
+    active: true,
+    seo: {
+      title: { en: "Island Sunrise — Diva Flowers", es: "Amanecer Isleño — Diva Flowers" },
+      description: {
+        en: "A tall tropical arrangement of orange heliconia, red ginger, yellow roses, lavender hydrangea and purple dendrobium orchids in a leaf-lined glass cube. Same-day delivery on Long Island.",
+        es: "Arreglo tropical alto de heliconia naranja, jengibre rojo, rosas amarillas, hortensia lavanda y orquídeas dendrobium moradas en cubo de vidrio forrado con hoja. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
     id: "x-card-premium",
     slug: "premium-card",
     title: { en: "Premium handwritten card", es: "Tarjeta escrita a mano premium" },
