@@ -3800,6 +3800,37 @@ export const PRODUCTS: Product[] = [
     },
   },
   {
+    id: "p-arr-royal-06",
+    slug: "sunday-morning",
+    title: { en: "Sunday Morning", es: "Mañana de Domingo" },
+    category: "arrangements",
+    blurb: {
+      en: "Blue hydrangea, pink gerbera, white football mums, lisianthus and baby's breath, low and round in a leaf-lined glass cube.",
+      es: "Hortensia azul, gerbera rosa, crisantemos blancos, lisianthus y paniculata, bajo y redondo en un cubo de vidrio forrado con hoja.",
+    },
+    description: {
+      en: "For the morning that should start gently — a low, round arrangement of soft blue hydrangea, pink gerbera daisies, white football mums, pink and white lisianthus and a stem of white dendrobium orchid, with green trick dianthus for texture and a cloud of baby's breath over glossy leaves in a leaf-lined glass cube. It is the palette of a nursery, a breakfast table, a hospital windowsill that needs something kind to look at: the blue hydrangea keeps it cool, the gerbera and lisianthus warm it up, and the baby's breath makes it feel bigger than it is. Small enough for a desk or a bedside, generous enough to be the thing people notice when they walk in. Send it for the new baby, the get-well, the thank-you, the just-because that lands on a Tuesday. Order before 2:00 pm and it goes out today across Long Island, built to the photo in the same palette with whatever came in freshest that morning.",
+      es: "Para la mañana que debería empezar suave — un arreglo bajo y redondo de hortensia azul, gerberas rosas, crisantemos blancos, lisianthus rosa y blanco y una vara de orquídea dendrobium blanca, con dianthus verde para dar textura y una nube de paniculata sobre hojas brillantes en un cubo de vidrio forrado con hoja. Es la paleta de un cuarto de bebé, una mesa de desayuno, la ventana de un hospital que necesita algo amable que mirar: la hortensia azul lo mantiene fresco, la gerbera y el lisianthus lo entibian, y la paniculata lo hace sentir más grande de lo que es. Pequeño para un escritorio o una mesa de noche, y generoso para ser lo que la gente nota al entrar. Mándalo por el bebé nuevo, la pronta mejoría, el gracias, el porque sí que cae un martes. Pídelo antes de las 2:00 pm y sale hoy mismo por Long Island, armado como la foto en la misma paleta con lo que haya entrado más fresco esa mañana.",
+    },
+    images: [
+      { src: "/products/sunday-morning.jpg", alt: { en: "Low round arrangement of blue hydrangea, pink gerbera, white football mums, lisianthus and baby's breath in a leaf-lined glass cube", es: "Arreglo bajo y redondo de hortensia azul, gerbera rosa, crisantemos blancos, lisianthus y paniculata en cubo de vidrio forrado con hoja" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 7000 },
+    ],
+    tags: ["new", "same-day"],
+    occasions: ["new-baby", "get-well", "birthday", "thank-you", "thinking-of-you", "just-because"],
+    colorFamily: ["pastel", "pink", "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Sunday Morning — Diva Flowers", es: "Mañana de Domingo — Diva Flowers" },
+      description: {
+        en: "A low, round pastel arrangement of blue hydrangea, pink gerbera, white football mums, lisianthus and baby's breath in a leaf-lined glass cube. Same-day delivery on Long Island.",
+        es: "Arreglo pastel bajo y redondo de hortensia azul, gerbera rosa, crisantemos blancos, lisianthus y paniculata en cubo de vidrio forrado con hoja. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
     id: "x-card-premium",
     slug: "premium-card",
     title: { en: "Premium handwritten card", es: "Tarjeta escrita a mano premium" },
