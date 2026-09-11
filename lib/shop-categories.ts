@@ -33,6 +33,8 @@ export function isRoseProduct(p: Product): boolean {
 }
 
 const EXOTIC_SLUGS = new Set([
+  "carnival",
+  "island-sunrise",
   "lush-horizons",
   "jungle-whirl",
   "paradise-found",

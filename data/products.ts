@@ -3958,6 +3958,37 @@ export const PRODUCTS: Product[] = [
     },
   },
   {
+    id: "p-arr-royal-11",
+    slug: "carnival",
+    title: { en: "Carnival", es: "Carnaval" },
+    category: "arrangements",
+    blurb: {
+      en: "Bird of paradise and heliconia over red ginger, a sunflower, blue hydrangea, coral garden rose and purple dendrobium orchids, in a leaf-lined glass cube.",
+      es: "Ave del paraíso y heliconia sobre jengibre rojo, un girasol, hortensia azul, rosa de jardín coral y orquídeas dendrobium moradas, en un cubo de vidrio forrado con hoja.",
+    },
+    description: {
+      en: "For the person who has never once done anything quietly — a sculptural tropical piece with an orange bird of paradise and red heliconia claws thrown out to one side, hot pink red ginger standing behind, and a looped ti leaf and striped dracaena blade cutting across the front. Underneath it goes soft and strange in the best way: a blue hydrangea head, a coral garden rose, a single sunflower, a spray of purple dendrobium orchid reaching right out of the frame, pink snowberry on tall stems, and trailing eucalyptus falling off the edge of a leaf-lined glass cube. Tropical and cottage garden in the same vase, which is the joke and the reason it works. Send it for the birthday that gets talked about, the promotion, the housewarming, the friend who sends memes at 2am. Order before 2:00 pm and it goes out today across Long Island, built to the photo in the same palette with whatever came in freshest that morning.",
+      es: "Para la persona que nunca en su vida ha hecho nada en silencio — una pieza tropical escultórica con un ave del paraíso naranja y garras de heliconia roja lanzadas hacia un lado, jengibre rojo fucsia parado atrás, y una hoja de ti enrollada y una hoja rayada de dracaena cruzando el frente. Por debajo se pone suave y raro en el mejor sentido: una cabeza de hortensia azul, una rosa de jardín coral, un girasol solo, una vara de orquídea dendrobium morada que se sale del cuadro, snowberry rosa en tallos altos, y eucalipto colgante cayendo por el borde de un cubo de vidrio forrado con hoja. Tropical y jardín de casa de campo en el mismo jarrón, que es el chiste y la razón por la que funciona. Mándalo por el cumpleaños del que se habla después, el ascenso, la casa nueva, la amiga que manda memes a las 2am. Pídelo antes de las 2:00 pm y sale hoy mismo por Long Island, armado como la foto en la misma paleta con lo que haya entrado más fresco esa mañana.",
+    },
+    images: [
+      { src: "/products/carnival.jpg", alt: { en: "Sculptural tropical arrangement of bird of paradise, red heliconia, pink ginger, sunflower, blue hydrangea, coral garden rose and purple dendrobium orchids in a leaf-lined glass cube", es: "Arreglo tropical escultórico de ave del paraíso, heliconia roja, jengibre rosa, girasol, hortensia azul, rosa de jardín coral y orquídeas dendrobium moradas en cubo de vidrio forrado con hoja" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 12000 },
+    ],
+    tags: ["new", "same-day", "staff-pick"],
+    occasions: ["birthday", "congrats", "graduation", "thank-you", "get-well", "just-because"],
+    colorFamily: ["mixed", "pink", "green"],
+    active: true,
+    seo: {
+      title: { en: "Carnival — Diva Flowers", es: "Carnaval — Diva Flowers" },
+      description: {
+        en: "A sculptural tropical arrangement of bird of paradise, red heliconia, pink ginger, sunflower, blue hydrangea and purple dendrobium orchids. Same-day delivery on Long Island.",
+        es: "Arreglo tropical escultórico de ave del paraíso, heliconia roja, jengibre rosa, girasol, hortensia azul y orquídeas dendrobium moradas. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
     id: "x-card-premium",
     slug: "premium-card",
     title: { en: "Premium handwritten card", es: "Tarjeta escrita a mano premium" },
