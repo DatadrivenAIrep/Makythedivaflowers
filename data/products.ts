@@ -3896,6 +3896,37 @@ export const PRODUCTS: Product[] = [
     },
   },
   {
+    id: "p-arr-royal-09",
+    slug: "summer-confetti",
+    title: { en: "Summer Confetti", es: "Confeti de Verano" },
+    category: "arrangements",
+    blurb: {
+      en: "Hot pink and coral garden roses, orange gerbera, purple dendrobium orchids, white lilies and stock with red berries, in a leaf-lined glass cube.",
+      es: "Rosas fucsia y rosas de jardín coral, gerbera naranja, orquídeas dendrobium moradas, lirios blancos y alhelí con bayas rojas, en un cubo de vidrio forrado con hoja.",
+    },
+    description: {
+      en: "For the day that deserves confetti — a bright, full arrangement that throws every summer colour at once: a hot pink rose and a coral garden rose up front, orange gerbera daisies and orange spray roses on either side, a spray of purple dendrobium orchid rising through the middle, white stock and white lilies for height, yellow hydrangea underneath and a cluster of red hypericum berries for punctuation, with a loop of bear grass drawn over the top and glossy ruscus spilling out of a leaf-lined glass cube. Nothing in it is shy, and that is the point: this is the arrangement for the person who walks into a room and turns the music up. Send it for the birthday, the promotion, the graduation, the get-well that needs to make someone laugh, the thank-you that should not be quiet. Order before 2:00 pm and it goes out today across Long Island, built to the photo in the same palette with whatever came in freshest that morning.",
+      es: "Para el día que merece confeti — un arreglo brillante y lleno que lanza todos los colores del verano a la vez: una rosa fucsia y una rosa de jardín coral al frente, gerberas naranjas y rosas spray naranja a cada lado, una vara de orquídea dendrobium morada que sube por el medio, alhelí blanco y lirios blancos para la altura, hortensia amarilla por debajo y un racimo de bayas rojas de hypericum como puntuación, con un lazo de bear grass trazado por encima y ruscus brillante derramándose de un cubo de vidrio forrado con hoja. Nada en él es tímido, y ese es el punto: este es el arreglo para la persona que entra a un cuarto y sube la música. Mándalo por el cumpleaños, el ascenso, la graduación, la pronta mejoría que necesita hacer reír a alguien, el gracias que no debería ser callado. Pídelo antes de las 2:00 pm y sale hoy mismo por Long Island, armado como la foto en la misma paleta con lo que haya entrado más fresco esa mañana.",
+    },
+    images: [
+      { src: "/products/summer-confetti.jpg", alt: { en: "Bright arrangement of hot pink and coral garden roses, orange gerbera, purple dendrobium orchids, white lilies and stock with red berries in a leaf-lined glass cube", es: "Arreglo brillante de rosas fucsia y rosas de jardín coral, gerbera naranja, orquídeas dendrobium moradas, lirios blancos y alhelí con bayas rojas en cubo de vidrio forrado con hoja" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 15000 },
+    ],
+    tags: ["new", "same-day", "staff-pick"],
+    occasions: ["birthday", "congrats", "graduation", "get-well", "thank-you", "just-because"],
+    colorFamily: ["mixed", "pink", "red"],
+    active: true,
+    seo: {
+      title: { en: "Summer Confetti — Diva Flowers", es: "Confeti de Verano — Diva Flowers" },
+      description: {
+        en: "A bright arrangement of hot pink and coral roses, orange gerbera, purple dendrobium orchids, white lilies and stock with red berries in a leaf-lined glass cube. Same-day delivery on Long Island.",
+        es: "Arreglo brillante de rosas fucsia y coral, gerbera naranja, orquídeas dendrobium moradas, lirios blancos y alhelí con bayas rojas en cubo de vidrio forrado con hoja. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
     id: "x-card-premium",
     slug: "premium-card",
     title: { en: "Premium handwritten card", es: "Tarjeta escrita a mano premium" },
