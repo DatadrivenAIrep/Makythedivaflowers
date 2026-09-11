@@ -3769,6 +3769,37 @@ export const PRODUCTS: Product[] = [
     },
   },
   {
+    id: "p-arr-royal-05",
+    slug: "white-linen",
+    title: { en: "White Linen", es: "Lino Blanco" },
+    category: "arrangements",
+    blurb: {
+      en: "A long, low all-white centerpiece — roses, dendrobium orchids, hydrangea, stock, snapdragon and a football mum over glossy greens.",
+      es: "Un centro de mesa largo, bajo y todo blanco — rosas, orquídeas dendrobium, hortensia, alhelí, boca de dragón y un crisantemo grande sobre verdes brillantes.",
+    },
+    description: {
+      en: "For the table that has to look finished before the first guest sits down — a long, low centerpiece in white and green, built to run down the middle of a dining table without blocking a single conversation. White roses and spray roses sit in the center with a single football mum for weight, white dendrobium orchids and snapdragons stretch out to either end, white hydrangea, stock and lisianthus fill the body, and baby's breath softens the edges over folded aspidistra leaves, ruscus and fern. All white reads as calm from across the room and as detail up close, which is why this is the piece for the rehearsal dinner, the anniversary table, the memorial luncheon, the holiday dinner and the office reception. Order before 2:00 pm and it goes out today across Long Island, built to the photo in the same palette with whatever came in freshest that morning.",
+      es: "Para la mesa que tiene que verse terminada antes de que se siente el primer invitado — un centro de mesa largo y bajo en blanco y verde, hecho para correr por el medio de un comedor sin bloquear una sola conversación. Rosas y rosas spray blancas en el centro con un crisantemo grande que le da peso, orquídeas dendrobium y bocas de dragón blancas estiradas hacia cada extremo, hortensia, alhelí y lisianthus blancos llenando el cuerpo, y paniculata suavizando los bordes sobre hojas de aspidistra dobladas, ruscus y helecho. Todo blanco se lee como calma desde el otro lado del salón y como detalle de cerca, y por eso es la pieza para la cena de ensayo, la mesa de aniversario, el almuerzo en memoria, la cena de fiestas y la recepción de la oficina. Pídelo antes de las 2:00 pm y sale hoy mismo por Long Island, armado como la foto en la misma paleta con lo que haya entrado más fresco esa mañana.",
+    },
+    images: [
+      { src: "/products/white-linen.jpg", alt: { en: "Long low all-white centerpiece of roses, dendrobium orchids, hydrangea, stock, snapdragon and a football mum over aspidistra leaves and fern", es: "Centro de mesa largo y bajo todo blanco de rosas, orquídeas dendrobium, hortensia, alhelí, boca de dragón y crisantemo grande sobre hojas de aspidistra y helecho" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 15000 },
+    ],
+    tags: ["new", "same-day", "staff-pick"],
+    occasions: ["anniversary", "sympathy", "congrats", "thank-you", "thinking-of-you", "just-because"],
+    colorFamily: ["white", "green"],
+    active: true,
+    seo: {
+      title: { en: "White Linen — Diva Flowers", es: "Lino Blanco — Diva Flowers" },
+      description: {
+        en: "A long, low all-white centerpiece of roses, dendrobium orchids, hydrangea, stock and snapdragon over glossy greens, built for the dining table. Same-day delivery on Long Island.",
+        es: "Centro de mesa largo y bajo todo blanco de rosas, orquídeas dendrobium, hortensia, alhelí y boca de dragón sobre verdes brillantes, hecho para el comedor. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
     id: "x-card-premium",
     slug: "premium-card",
     title: { en: "Premium handwritten card", es: "Tarjeta escrita a mano premium" },
