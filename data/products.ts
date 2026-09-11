@@ -3831,6 +3831,37 @@ export const PRODUCTS: Product[] = [
     },
   },
   {
+    id: "p-arr-royal-07",
+    slug: "ballet-slipper",
+    title: { en: "Ballet Slipper", es: "Zapatilla de Ballet" },
+    category: "arrangements",
+    blurb: {
+      en: "Blush hydrangea, cream roses, pink lisianthus and pink dendrobium orchids with snowberry and eucalyptus, low in a glass cube.",
+      es: "Hortensia blush, rosas crema, lisianthus rosa y orquídeas dendrobium rosas con snowberry y eucalipto, bajo en un cubo de vidrio.",
+    },
+    description: {
+      en: "For the gift that should feel like a whisper — a low, soft arrangement in blush and cream: pale pink hydrangea and cream roses at the heart, blush spray roses and pink lisianthus tucked between them, and sprays of pink dendrobium orchid rising above it all, the orchid included, not an add-on. Pink snowberry adds a little sparkle, and trailing eucalyptus spills over the edge of a clear glass cube. It is the palette of a ballet slipper, of tissue paper, of the first morning with a new baby: quiet from across the room and full of detail up close, with nothing loud in it anywhere. Low enough for a nightstand or a breakfast tray, pretty enough for the center of a bridal luncheon. Send it for the new baby, the bridal shower, the anniversary, the birthday of the person who prefers soft to bright. Order before 2:00 pm and it goes out today across Long Island, built to the photo in the same palette with whatever came in freshest that morning.",
+      es: "Para el regalo que debería sentirse como un susurro — un arreglo bajo y suave en blush y crema: hortensia rosa pálido y rosas crema en el corazón, rosas spray blush y lisianthus rosa metidos entre ellas, y varas de orquídea dendrobium rosa que suben por encima de todo, con la orquídea incluida, no como extra. El snowberry rosa le da un poco de brillo, y el eucalipto colgante se derrama por el borde de un cubo de vidrio transparente. Es la paleta de una zapatilla de ballet, del papel de seda, de la primera mañana con un bebé nuevo: silencioso desde el otro lado del cuarto y lleno de detalle de cerca, sin nada estridente en ninguna parte. Bajo para una mesa de noche o una bandeja de desayuno, y bonito para el centro de un almuerzo de novia. Mándalo por el bebé nuevo, el bridal shower, el aniversario, el cumpleaños de quien prefiere lo suave a lo brillante. Pídelo antes de las 2:00 pm y sale hoy mismo por Long Island, armado como la foto en la misma paleta con lo que haya entrado más fresco esa mañana.",
+    },
+    images: [
+      { src: "/products/ballet-slipper.jpg", alt: { en: "Low blush arrangement of pale pink hydrangea, cream roses, pink lisianthus and pink dendrobium orchids with snowberry and trailing eucalyptus in a glass cube", es: "Arreglo blush bajo de hortensia rosa pálido, rosas crema, lisianthus rosa y orquídeas dendrobium rosas con snowberry y eucalipto colgante en cubo de vidrio" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 11000 },
+    ],
+    tags: ["new", "same-day", "staff-pick"],
+    occasions: ["new-baby", "anniversary", "birthday", "romance", "thank-you", "just-because"],
+    colorFamily: ["pink", "pastel", "white"],
+    active: true,
+    seo: {
+      title: { en: "Ballet Slipper — Diva Flowers", es: "Zapatilla de Ballet — Diva Flowers" },
+      description: {
+        en: "A low blush arrangement of pale pink hydrangea, cream roses, pink lisianthus and pink dendrobium orchids with snowberry and eucalyptus in a glass cube. Same-day delivery on Long Island.",
+        es: "Arreglo blush bajo de hortensia rosa pálido, rosas crema, lisianthus rosa y orquídeas dendrobium rosas con snowberry y eucalipto en cubo de vidrio. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
     id: "x-card-premium",
     slug: "premium-card",
     title: { en: "Premium handwritten card", es: "Tarjeta escrita a mano premium" },
