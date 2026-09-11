@@ -3705,6 +3705,37 @@ export const PRODUCTS: Product[] = [
     },
   },
   {
+    id: "p-arr-royal-03",
+    slug: "lavender-serenade",
+    title: { en: "Lavender Serenade", es: "Serenata Lavanda" },
+    category: "arrangements",
+    blurb: {
+      en: "Lavender and red roses, purple dendrobium orchids, white lilies and blush hydrangea, tall in a leaf-lined glass vase.",
+      es: "Rosas lavanda y rojas, orquídeas dendrobium moradas, lirios blancos y hortensia blush, alto en un jarrón de vidrio forrado con hoja.",
+    },
+    description: {
+      en: "For the evening that should feel like a slow song — a tall, romantic arrangement of lavender and red roses, purple dendrobium orchids, open white lilies and blush hydrangea, with blue delphinium climbing behind and a loop of bear grass drawn through the middle, framed by broad tropical leaves and a palm frond in a leaf-lined glass vase. The lavender roses set the mood, the red ones raise the temperature, the lilies open wider every day, and the orchid sprays give it the movement of something still growing. Tall enough for an entry table or a dining room, soft enough for a bedside. Send it for the anniversary, the apology that has to land, the birthday of the person who loves purple, the thank-you that should feel like a gift and not a gesture. Order before 2:00 pm and it goes out today across Long Island, built to the photo in the same palette with whatever came in freshest that morning.",
+      es: "Para la noche que debería sentirse como una canción lenta — un arreglo alto y romántico de rosas lavanda y rojas, orquídeas dendrobium moradas, lirios blancos abiertos y hortensia blush, con delphinium azul subiendo por detrás y un lazo de bear grass trazado por el medio, enmarcado por anchas hojas tropicales y una hoja de palma en un jarrón de vidrio forrado con hoja. Las rosas lavanda ponen el tono, las rojas suben la temperatura, los lirios se abren más cada día, y las varas de orquídea le dan el movimiento de algo que sigue creciendo. Alto para una mesa de entrada o un comedor, y suave para una mesa de noche. Mándalo por el aniversario, la disculpa que tiene que llegar, el cumpleaños de quien ama el morado, el gracias que debería sentirse a regalo y no a gesto. Pídelo antes de las 2:00 pm y sale hoy mismo por Long Island, armado como la foto en la misma paleta con lo que haya entrado más fresco esa mañana.",
+    },
+    images: [
+      { src: "/products/lavender-serenade.jpg", alt: { en: "Tall arrangement of lavender and red roses, purple dendrobium orchids, white lilies and blush hydrangea with tropical leaves in a leaf-lined glass vase", es: "Arreglo alto de rosas lavanda y rojas, orquídeas dendrobium moradas, lirios blancos y hortensia blush con hojas tropicales en jarrón de vidrio forrado con hoja" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 16500 },
+    ],
+    tags: ["new", "same-day", "staff-pick"],
+    occasions: ["romance", "anniversary", "birthday", "thank-you", "get-well", "just-because"],
+    colorFamily: ["pink", "red", "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Lavender Serenade — Diva Flowers", es: "Serenata Lavanda — Diva Flowers" },
+      description: {
+        en: "A tall romantic arrangement of lavender and red roses, purple dendrobium orchids, white lilies and blush hydrangea in a leaf-lined glass vase. Same-day delivery on Long Island.",
+        es: "Arreglo alto y romántico de rosas lavanda y rojas, orquídeas dendrobium moradas, lirios blancos y hortensia blush en jarrón de vidrio forrado con hoja. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
     id: "x-card-premium",
     slug: "premium-card",
     title: { en: "Premium handwritten card", es: "Tarjeta escrita a mano premium" },
