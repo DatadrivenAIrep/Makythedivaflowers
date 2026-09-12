@@ -6,7 +6,6 @@ import { PRODUCTS } from "@/data/products";
 import { saveOrder, listOrders, type ListOrdersFilters } from "@/lib/order-storage";
 import { enqueuePrintJob } from "@/lib/print-queue";
 import { upsertOnOrder } from "@/lib/customer-storage";
-import { createCheckoutSession } from "@/lib/stripe-payment-link";
 import { dispatchOrderReceived } from "@/lib/order-dispatch";
 import { validateForRedemption, redeem } from "@/lib/gift-card-storage";
 import { validatePromo, redeemPromo } from "@/lib/promo";
@@ -178,30 +177,14 @@ export async function POST(req: Request) {
 
   const job = await enqueuePrintJob(order);
 
-  // Generate a Stripe Checkout Session for pending orders that will be messaged
-  // via SMS or WhatsApp. Skip when the customer prefers email/none — they pay
-  // through the existing email flow or manually.
-  let paymentLinkUrl: string | undefined;
-  const channel = customer.messagingChannel ?? "sms";
-  const shouldCreateLink =
-    order.paymentStatus === "pending" &&
-    (channel === "sms" || channel === "whatsapp");
-
-  if (shouldCreateLink) {
-    try {
-      const session = await createCheckoutSession(order, customer.locale ?? order.locale);
-      paymentLinkUrl = session.url;
-      order.stripeCheckoutSessionId = session.id;
-    } catch (e) {
-      console.error(
-        JSON.stringify({ event: "checkout_session_failed", orderId: order.id, error: String(e) }),
-      );
-    }
-  }
-
-  // Dispatch the right message. order_received OR payment_link is chosen
-  // internally by dispatchOrderReceived based on order.paymentStatus + link presence.
-  await dispatchOrderReceived(order, paymentLinkUrl);
+  // Pending-payment orders are NOT auto-sent a Stripe payment link: many walk-in
+  // customers pay at pickup with the in-store terminal. The owner sends the pay
+  // link on demand from the order panel (the resend / payment-link routes, which
+  // create a Checkout Session and pass it to dispatchOrderReceived). So intake
+  // only ever sends the plain order_received confirmation — dispatchOrderReceived
+  // falls back to it when no link is passed — so the customer still knows their
+  // order was registered without being pushed to pay online.
+  await dispatchOrderReceived(order);
 
   // Fire-and-forget email when the order is paid AND there's an email on file.
   // Phase 1 reuses `notifyOrderPaid` from the existing web pipeline.

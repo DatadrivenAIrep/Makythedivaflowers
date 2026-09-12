@@ -92,7 +92,11 @@ describe("POST /api/admin/orders", () => {
     expect(order.payment_status).toBe("pending");
   });
 
-  it("creates a checkout session and dispatches payment_link for pending orders with SMS channel", async () => {
+  it("does NOT auto-send the Stripe payment link for pending orders; sends a plain order_received instead", async () => {
+    // Many walk-in customers pay at pickup with the in-store terminal, so intake
+    // must not push a pay-now link. The owner sends the link on demand from the
+    // order panel (resend / payment-link routes). A plain confirmation still goes
+    // out so the customer knows their order was registered.
     const res = await POST(req({
       ...body,
       payment: { status: "pending" },
@@ -103,13 +107,13 @@ describe("POST /api/admin/orders", () => {
 
     const order = getDb()
       .prepare("SELECT stripe_checkout_session_id FROM orders WHERE id = ?")
-      .get(out.orderId) as { stripe_checkout_session_id: string };
-    expect(order.stripe_checkout_session_id).toBe("cs_test");
+      .get(out.orderId) as { stripe_checkout_session_id: string | null };
+    expect(order.stripe_checkout_session_id).toBeFalsy();
 
     const msg = getDb()
       .prepare("SELECT template, status FROM messages WHERE order_id = ?")
       .get(out.orderId) as { template: string; status: string };
-    expect(msg.template).toBe("payment_link");
+    expect(msg.template).toBe("order_received");
     expect(msg.status).toBe("sent");
   });
 
