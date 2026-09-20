@@ -122,10 +122,37 @@ export const deliveryZones: DeliveryZone[] = [
       // Oyster Bay, Syosset, Woodbury — a checkout was being refused here.
       "11042", "11560", "11709", "11732", "11753", "11765", "11771",
       "11791", "11797",
+      // Central Nassau (2026-09-20): Uniondale, East Meadow, Bethpage,
+      // Levittown, Hicksville, Plainview, Old Bethpage — closer to the shop
+      // than towns already covered above.
+      "11553", "11554", "11714", "11756", "11801", "11803", "11804",
+      // South-shore Nassau (2026-09-20, owner-confirmed): Inwood, Baldwin,
+      // Cedarhurst, East Rockaway, Freeport, Lawrence, Lynbrook, Merrick,
+      // Rockville Centre, Roosevelt, Valley Stream (N. Woodmere), Bellmore,
+      // Farmingdale, Massapequa, Massapequa Park, Seaford, Wantagh.
+      "11096", "11510", "11516", "11518", "11520", "11559", "11563",
+      "11566", "11570", "11575", "11581", "11710", "11735", "11758",
+      "11762", "11783", "11793",
       // Queens
       "11354", "11355", "11356", "11357", "11358", "11361", "11364",
       "11365", "11366", "11375", "11385", "11411", "11412", "11422",
       "11427", "11428", "11429",
+      // Jamaica + the rest of eastern / central Queens (2026-09-20, owner:
+      // "entregamos en Jamaica, Queens"): Glen Oaks, North Shore Towers,
+      // Bay Terrace, Little Neck, Douglaston, Kew Gardens Hills, Rego Park,
+      // Springfield Gardens, Kew Gardens, Richmond Hill, South Ozone Park,
+      // Hollis, Bellerose, Jamaica.
+      "11004", "11005", "11360", "11362", "11363", "11367", "11374",
+      "11413", "11415", "11418", "11419", "11420", "11423", "11426",
+      "11432", "11433", "11434", "11435", "11436",
+      // Western Queens + the Rockaways (2026-09-20, owner-confirmed): Long
+      // Island City, Astoria, Sunnyside, Corona, East Elmhurst, Jackson
+      // Heights, Elmhurst, Woodside, Maspeth, Middle Village, Howard Beach,
+      // Ozone Park, Woodhaven, Far Rockaway → Breezy Point.
+      "11101", "11102", "11103", "11104", "11105", "11106", "11109",
+      "11368", "11369", "11370", "11372", "11373", "11377", "11378",
+      "11379", "11414", "11416", "11417", "11421",
+      "11691", "11692", "11693", "11694", "11697",
       // Western Suffolk
       "11704", "11717", "11722", "11729", "11738", "11740", "11743",
       "11746", "11747", "11754",

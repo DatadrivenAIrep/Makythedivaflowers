@@ -88,6 +88,94 @@ describe("findDeliveryZoneByZip", () => {
     }
   });
 
+  it("covers the central Nassau towns at the further rate", () => {
+    const centralNassau = [
+      "11553", // Uniondale
+      "11554", // East Meadow
+      "11714", // Bethpage
+      "11756", // Levittown
+      "11801", // Hicksville
+      "11803", // Plainview
+      "11804", // Old Bethpage
+    ];
+    for (const zip of centralNassau) {
+      const zone = findDeliveryZoneByZip(zip);
+      expect(zone?.id, zip).toBe("further");
+      expect(zone?.priceCents, zip).toBe(2500);
+    }
+  });
+
+  it("covers Jamaica and the rest of eastern / central Queens at the further rate", () => {
+    const queens = [
+      "11432", "11433", "11434", "11435", "11436", // Jamaica
+      "11423", // Hollis
+      "11413", // Springfield Gardens
+      "11426", // Bellerose
+      "11004", // Glen Oaks
+      "11005", // Floral Park (Queens) / North Shore Towers
+      "11362", // Little Neck
+      "11363", // Douglaston
+      "11360", // Bayside (Bay Terrace)
+      "11367", // Kew Gardens Hills
+      "11415", // Kew Gardens
+      "11374", // Rego Park
+      "11418", // Richmond Hill
+      "11419", // South Richmond Hill
+      "11420", // South Ozone Park
+    ];
+    for (const zip of queens) {
+      const zone = findDeliveryZoneByZip(zip);
+      expect(zone?.id, zip).toBe("further");
+      expect(zone?.priceCents, zip).toBe(2500);
+    }
+  });
+
+  it("covers western Queens, the Rockaways and south-shore Nassau at the further rate", () => {
+    const zips = [
+      // Western Queens
+      "11101", "11109", // Long Island City
+      "11102", "11103", "11105", "11106", // Astoria
+      "11104", // Sunnyside
+      "11377", // Woodside
+      "11372", // Jackson Heights
+      "11369", "11370", // East Elmhurst
+      "11373", // Elmhurst
+      "11368", // Corona
+      "11378", // Maspeth
+      "11379", // Middle Village
+      "11421", // Woodhaven
+      "11416", "11417", // Ozone Park
+      "11414", // Howard Beach
+      // The Rockaways
+      "11691", "11692", "11693", "11694", "11697",
+      // South-shore Nassau
+      "11570", // Rockville Centre
+      "11563", // Lynbrook
+      "11518", // East Rockaway
+      "11510", // Baldwin
+      "11575", // Roosevelt
+      "11520", // Freeport
+      "11566", // Merrick
+      "11710", // Bellmore
+      "11793", // Wantagh
+      "11783", // Seaford
+      "11758", "11762", // Massapequa / Massapequa Park
+      "11735", // Farmingdale
+      "11581", // Valley Stream (North Woodmere)
+      "11559", "11516", "11096", // Five Towns: Lawrence, Cedarhurst, Inwood
+    ];
+    for (const zip of zips) {
+      const zone = findDeliveryZoneByZip(zip);
+      expect(zone?.id, zip).toBe("further");
+      expect(zone?.priceCents, zip).toBe(2500);
+    }
+  });
+
+  it("keeps every ZIP in exactly one zone", () => {
+    const all = deliveryZones.flatMap((z) => z.zips);
+    expect(new Set(all).size).toBe(all.length);
+  });
+
   it("returns null for an out-of-zone ZIP", () => {
     expect(findDeliveryZoneByZip("90210")).toBeNull();
   });
