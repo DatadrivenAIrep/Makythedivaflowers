@@ -117,6 +117,11 @@ export const deliveryZones: DeliveryZone[] = [
       // Nassau (not in named cities above)
       "11010", "11040", "11501", "11530", "11542", "11550", "11552",
       "11557", "11558", "11561", "11565", "11572", "11580", "11598",
+      // North Shore past the named zones (2026-09-20): Lake Success,
+      // Locust Valley, Bayville, East Norwich, Jericho, Mill Neck,
+      // Oyster Bay, Syosset, Woodbury — a checkout was being refused here.
+      "11042", "11560", "11709", "11732", "11753", "11765", "11771",
+      "11791", "11797",
       // Queens
       "11354", "11355", "11356", "11357", "11358", "11361", "11364",
       "11365", "11366", "11375", "11385", "11411", "11412", "11422",
@@ -124,6 +129,9 @@ export const deliveryZones: DeliveryZone[] = [
       // Western Suffolk
       "11704", "11717", "11722", "11729", "11738", "11740", "11743",
       "11746", "11747", "11754",
+      // Huntington-township North Shore: Centerport, Cold Spring Harbor,
+      // East Northport, Northport
+      "11721", "11724", "11731", "11768",
     ],
     priceCents: 2500,
     priceCentsMax: 3000,

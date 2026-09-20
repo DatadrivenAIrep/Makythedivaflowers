@@ -83,8 +83,8 @@ ZIPs (1):
 
 REGION: Nassau / Queens / W. Suffolk
 MERCHANT CENTER RATE: $30   (checkout $25–$30; use the max)
-ZIPs (41):
-11010, 11040, 11501, 11530, 11542, 11550, 11552, 11557, 11558, 11561, 11565, 11572, 11580, 11598, 11354, 11355, 11356, 11357, 11358, 11361, 11364, 11365, 11366, 11375, 11385, 11411, 11412, 11422, 11427, 11428, 11429, 11704, 11717, 11722, 11729, 11738, 11740, 11743, 11746, 11747, 11754
+ZIPs (54):
+11010, 11040, 11501, 11530, 11542, 11550, 11552, 11557, 11558, 11561, 11565, 11572, 11580, 11598, 11042, 11560, 11709, 11732, 11753, 11765, 11771, 11791, 11797, 11721, 11724, 11731, 11768, 11354, 11355, 11356, 11357, 11358, 11361, 11364, 11365, 11366, 11375, 11385, 11411, 11412, 11422, 11427, 11428, 11429, 11704, 11717, 11722, 11729, 11738, 11740, 11743, 11746, 11747, 11754
 
 ================================================================
 FLAT CSV  (zip,region,merchant_center_rate_usd)
@@ -150,3 +150,16 @@ zip,region,rate_usd
 11746,Nassau / Queens / W. Suffolk,30
 11747,Nassau / Queens / W. Suffolk,30
 11754,Nassau / Queens / W. Suffolk,30
+11042,Nassau / Queens / W. Suffolk,30
+11560,Nassau / Queens / W. Suffolk,30
+11709,Nassau / Queens / W. Suffolk,30
+11732,Nassau / Queens / W. Suffolk,30
+11753,Nassau / Queens / W. Suffolk,30
+11765,Nassau / Queens / W. Suffolk,30
+11771,Nassau / Queens / W. Suffolk,30
+11791,Nassau / Queens / W. Suffolk,30
+11797,Nassau / Queens / W. Suffolk,30
+11721,Nassau / Queens / W. Suffolk,30
+11724,Nassau / Queens / W. Suffolk,30
+11731,Nassau / Queens / W. Suffolk,30
+11768,Nassau / Queens / W. Suffolk,30

@@ -66,6 +66,28 @@ describe("findDeliveryZoneByZip", () => {
     expect(findDeliveryZoneByZip("11717")?.id).toBe("further");
   });
 
+  it("covers the North Shore towns past the named zones at the further rate", () => {
+    const northShore = [
+      "11560", // Locust Valley / Lattingtown / Matinecock
+      "11771", // Oyster Bay / Oyster Bay Cove / Cove Neck
+      "11709", // Bayville
+      "11765", // Mill Neck
+      "11732", // East Norwich
+      "11791", // Syosset / Muttontown / Laurel Hollow
+      "11797", // Woodbury
+      "11753", // Jericho
+      "11724", // Cold Spring Harbor
+      "11721", // Centerport
+      "11768", // Northport
+      "11731", // East Northport
+    ];
+    for (const zip of northShore) {
+      const zone = findDeliveryZoneByZip(zip);
+      expect(zone?.id, zip).toBe("further");
+      expect(zone?.priceCents, zip).toBe(2500);
+    }
+  });
+
   it("returns null for an out-of-zone ZIP", () => {
     expect(findDeliveryZoneByZip("90210")).toBeNull();
   });
