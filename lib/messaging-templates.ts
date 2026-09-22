@@ -28,6 +28,11 @@ function named(v: TemplateVars): string {
   return n ? ` ${n}` : "";
 }
 
+/** " #1042" when the order has a sequential number, "" for older orders. */
+function numbered(v: TemplateVars): string {
+  return v.order_number ? ` #${v.order_number}` : "";
+}
+
 function totalSentence(v: TemplateVars, locale: "en" | "es"): string {
   const label = locale === "es" ? "Orden" : "Order";
   return v.order_number
@@ -38,7 +43,7 @@ function totalSentence(v: TemplateVars, locale: "en" | "es"): string {
 const BODIES: Record<"en" | "es", Record<MessageTemplate, (v: TemplateVars) => string>> = {
   en: {
     order_received: (v) =>
-      `Hi${named(v)}, Diva Flowers got your order. Total ${v.total}. ${v.fulfillment_label ?? "Delivery"} ${v.window ?? ""}. Thanks! — Maky · ${v.shop_phone}`,
+      `Hi${named(v)}, Diva Flowers got your order${numbered(v)}. Total ${v.total}. ${v.fulfillment_label ?? "Delivery"} ${v.window ?? ""}. Thanks! — Maky · ${v.shop_phone}`,
     payment_link: (v) =>
       `Hi${named(v)}, your Diva Flowers order is reserved. Total ${v.total}. Pay here: ${v.link ?? ""}. We'll confirm once paid. — Maky`,
     payment_confirmed: (v) =>
@@ -46,7 +51,7 @@ const BODIES: Record<"en" | "es", Record<MessageTemplate, (v: TemplateVars) => s
     out_for_delivery: (v) =>
       `Hi${named(v)}! Your Diva Flowers order is on the way, arriving ${v.window ?? ""}. — Maky`,
     ready_for_pickup: (v) =>
-      `Hi${named(v)}! Your Diva Flowers order is ready for pickup. See you soon! — Maky · ${v.shop_phone}`,
+      `Hi${named(v)}! Your Diva Flowers order${numbered(v)} is ready for pickup. See you soon! — Maky · ${v.shop_phone}`,
     delivered: (v) =>
       `Delivered! Your Diva Flowers order has arrived. Thank you! — Maky · ${v.shop_phone}`,
     review_request: (v) =>
@@ -54,7 +59,7 @@ const BODIES: Record<"en" | "es", Record<MessageTemplate, (v: TemplateVars) => s
   },
   es: {
     order_received: (v) =>
-      `Hola${named(v)}, Diva Flowers recibió tu pedido. Total ${v.total}. ${v.fulfillment_label ?? "Entrega"} ${v.window ?? ""}. ¡Gracias! — Maky · ${v.shop_phone}`,
+      `Hola${named(v)}, Diva Flowers recibió tu pedido${numbered(v)}. Total ${v.total}. ${v.fulfillment_label ?? "Entrega"} ${v.window ?? ""}. ¡Gracias! — Maky · ${v.shop_phone}`,
     payment_link: (v) =>
       `Hola${named(v)}, tu pedido en Diva Flowers está reservado. Total ${v.total}. Paga aquí: ${v.link ?? ""}. Lo confirmamos al recibir el pago. — Maky`,
     payment_confirmed: (v) =>
@@ -62,7 +67,7 @@ const BODIES: Record<"en" | "es", Record<MessageTemplate, (v: TemplateVars) => s
     out_for_delivery: (v) =>
       `¡Hola${named(v)}! Tu pedido de Diva Flowers va en camino, llega ${v.window ?? ""}. — Maky`,
     ready_for_pickup: (v) =>
-      `¡Hola${named(v)}! Tu pedido de Diva Flowers está listo para recoger. ¡Te esperamos! — Maky · ${v.shop_phone}`,
+      `¡Hola${named(v)}! Tu pedido${numbered(v)} de Diva Flowers está listo para recoger. ¡Te esperamos! — Maky · ${v.shop_phone}`,
     delivered: (v) =>
       `¡Entregado! Tu pedido de Diva Flowers ya llegó. ¡Gracias por tu compra! — Maky · ${v.shop_phone}`,
     review_request: (v) =>

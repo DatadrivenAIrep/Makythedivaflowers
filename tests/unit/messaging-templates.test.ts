@@ -126,6 +126,20 @@ describe("renderSmsBody", () => {
     expect(es).toContain(vars.shop_phone);
   });
 
+  it("includes the order number in ready_for_pickup when there is one", () => {
+    const withNum = { ...vars, order_number: "1042" };
+    expect(renderSmsBody("ready_for_pickup", "en", withNum)).toContain("order #1042 is ready for pickup");
+    expect(renderSmsBody("ready_for_pickup", "es", withNum)).toContain("Tu pedido #1042 de Diva Flowers");
+    const without = { ...vars, order_number: undefined };
+    expect(renderSmsBody("ready_for_pickup", "en", without)).toContain("Your Diva Flowers order is ready");
+  });
+
+  it("includes the order number in order_received when there is one", () => {
+    const withNum = { ...vars, order_number: "1042" };
+    expect(renderSmsBody("order_received", "en", withNum)).toContain("got your order #1042. Total");
+    expect(renderSmsBody("order_received", "es", withNum)).toContain("recibió tu pedido #1042. Total");
+  });
+
   it("renders review_request with the review link in both locales", () => {
     const en = renderSmsBody("review_request", "en", vars);
     const es = renderSmsBody("review_request", "es", vars);
