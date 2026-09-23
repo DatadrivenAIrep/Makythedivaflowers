@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
   WhatsappLogo, ArrowsClockwise, Check, CheckCircle,
-  Package, Truck, XCircle, X, Pencil, Eye, Printer, Storefront, Star,
+  Package, Truck, XCircle, X, Pencil, Eye, Printer, FileText, Storefront, Star,
 } from "@phosphor-icons/react/dist/ssr";
 import { useTranslations, useLocale } from "next-intl";
 import { formatDateTime } from "@/lib/format-datetime";
@@ -157,6 +157,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
               <>
                 <AdminButton variant="secondary" icon={Pencil} disabled={busy} onClick={() => setEditing(true)}>{t("edit")}</AdminButton>
                 <AdminButton variant="secondary" icon={Eye} href={`/api/admin/orders/${order.id}/sheet`} target="_blank" rel="noreferrer">{t("preview")}</AdminButton>
+                <AdminButton variant="secondary" icon={FileText} href={`/api/admin/orders/${order.id}/invoice`} target="_blank" rel="noreferrer">{t("invoice")}</AdminButton>
                 <AdminButton variant="secondary" icon={Printer} disabled={busy} onClick={reprint}>{t("reprint")}</AdminButton>
               </>
             )}

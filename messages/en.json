@@ -1413,6 +1413,7 @@
     },
     "edit": "Edit",
     "preview": "Preview",
+    "invoice": "Invoice",
     "reprint": "Re-print",
     "close": "Close",
     "reprint_confirm": "Re-print this order?",
