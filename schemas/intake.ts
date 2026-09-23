@@ -66,7 +66,14 @@ const payment = z.discriminatedUnion("status", [
     status: z.literal("paid"),
     method: z.enum(["cash", "zelle", "card-terminal", "ach", "stripe"]),
   }),
-  z.object({ status: z.literal("pending") }),
+  z.object({
+    status: z.literal("pending"),
+    // Optional down payment collected when the order is taken.
+    deposit: z.object({
+      amountCents: z.number().int().positive(),
+      method: z.enum(["cash", "zelle", "card-terminal", "ach"]),
+    }).optional(),
+  }),
 ]);
 
 export const intakeSchema = z.object({

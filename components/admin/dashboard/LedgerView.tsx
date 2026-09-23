@@ -80,7 +80,9 @@ function LedgerRow({ order, onOpen, t, to, locale }: {
       <div className="mt-0.5 text-xs text-ink/60">{ledgerItemSummary(order, t)}</div>
       <div className="mt-1 flex items-center gap-2 text-xs text-ink/60">
         <span className={`rounded px-1.5 py-0.5 text-[10px] ${PAY_BADGE[order.paymentStatus] ?? ""}`}>
-          {to(`payment_status.${order.paymentStatus}`)}
+          {order.paymentStatus === "pending" && (order.amountPaidCents ?? 0) > 0
+            ? to("payment_status_deposit")
+            : to(`payment_status.${order.paymentStatus}`)}
         </span>
         <span>· {to(`fulfillment_status.${order.status}`)}</span>
         <span>· {formatDate(order.createdAt, locale)}</span>

@@ -28,7 +28,9 @@ export function buildCheckoutSessionParams(
       {
         price_data: {
           currency: "usd",
-          unit_amount: order.totals.totalCents,
+          // A deposit already collected is not charged again — the link asks
+          // only for the remaining balance.
+          unit_amount: order.totals.totalCents - (order.amountPaidCents ?? 0),
           product_data: {
             name: `Diva Flowers · pedido ${order.id}`,
             description,

@@ -1345,7 +1345,12 @@
     "banner_message_skipped": "{channel} not sent ({reason})",
     "banner_message_failed": "{channel} to {phone} failed",
     "banner_retry": "Retry",
-    "banner_dismiss": "Dismiss"
+    "banner_dismiss": "Dismiss",
+    "deposit_label": "Deposit / down payment (optional)",
+    "deposit_amount_placeholder": "0.00",
+    "deposit_method": "Deposit paid with",
+    "deposit_hint": "Balance due: {amount}",
+    "deposit_too_big": "The deposit must be less than the total — mark it as paid instead."
   },
   "admin_gift_cards": {
     "title": "Gift Cards",
@@ -1474,7 +1479,17 @@
     "email": "Email",
     "saving": "Saving…",
     "save_changes": "Save changes",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "deposit": "Deposit",
+    "record_deposit": "Record deposit",
+    "deposit_amount": "Amount",
+    "save_deposit": "Save deposit",
+    "deposit_summary": "Deposit {paid} · balance {balance}",
+    "deposit_error_exceeds": "Amount is more than the balance due.",
+    "deposit_error_generic": "Could not record the deposit.",
+    "payment_status_deposit": "Deposit",
+    "card_terminal": "Card terminal",
+    "ach": "ACH"
   },
   "admin_ledger": {
     "date": "Date",
@@ -1545,7 +1560,9 @@
     "no_deliveries": "No deliveries for this date.",
     "deliveries_count": "deliveries",
     "completed_count": "completed",
-    "collect": "Collect"
+    "collect": "Collect",
+    "collect_amount": "Collect {amount}",
+    "deposit_dot": "● Deposit {amount}"
   },
   "admin_customers": {
     "title": "Customers",

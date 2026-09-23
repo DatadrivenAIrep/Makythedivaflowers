@@ -41,6 +41,7 @@ const T = {
     tip: "Tip",
     giftCard: "Gift card",
     paidAmount: "Paid",
+    deposit: "Deposit",
     balanceDue: "Balance due",
     credit: "Credit",
     payment: "Payment",
@@ -69,6 +70,7 @@ const T = {
     tip: "Propina",
     giftCard: "Gift card",
     paidAmount: "Pagado",
+    deposit: "Depósito",
     balanceDue: "Saldo pendiente",
     credit: "Saldo a favor",
     payment: "Pago",
@@ -250,7 +252,7 @@ function Worksheet({ order }: { order: Order }) {
                 <>
                   <tr className="totline">
                     <td></td>
-                    <td>{t.paidAmount}</td>
+                    <td>{order.paymentStatus === "pending" ? t.deposit : t.paidAmount}</td>
                     <td className="price">{m(order.amountPaidCents ?? 0)}</td>
                   </tr>
                   <tr className="totline balance">

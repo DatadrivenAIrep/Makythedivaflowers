@@ -81,7 +81,9 @@ export default function RunSheetList({ orders, locale, onOpen, onAdvance }: Prop
                           <span className="rounded bg-ink/10 px-1.5 py-0.5 text-[10px] text-ink/70">{zone.label[lang]}</span>
                         )}
                         <span className={`rounded px-1.5 py-0.5 text-[10px] ${o.paymentStatus === "paid" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
-                          {o.paymentStatus === "paid" ? to("payment_status.paid") : t("collect")}
+                          {o.paymentStatus === "paid" ? to("payment_status.paid")
+                            : (o.amountPaidCents ?? 0) > 0 ? t("collect_amount", { amount: money(o.totals.totalCents - (o.amountPaidCents ?? 0)) })
+                            : t("collect")}
                         </span>
                         <span className="ml-auto text-xs text-ink/60">{to("fulfillment_status." + o.status)} · {money(o.totals.totalCents)}</span>
                       </div>

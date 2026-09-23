@@ -129,7 +129,9 @@ export default function PendingCard({ order, reason, onOpen, onAction }: Props) 
               <p className="mt-0.5 text-xs text-emerald-700">+ {itemAddOns.join(", ")}</p>
             )}
             <p className="mt-1 text-xs text-ink/60">
-              {order.paymentStatus === "paid" ? t("paid_dot") : t("payment_pending_dot")} · → {whenText(order, t, to, locale)} · {recipientText(order, t)}
+              {order.paymentStatus === "paid" ? t("paid_dot")
+                : (order.amountPaidCents ?? 0) > 0 ? t("deposit_dot", { amount: money(order.amountPaidCents ?? 0) })
+                : t("payment_pending_dot")} · → {whenText(order, t, to, locale)} · {recipientText(order, t)}
             </p>
             {recipientPhone && (
               <p className="mt-0.5 flex items-center gap-1 text-xs text-ink/60">

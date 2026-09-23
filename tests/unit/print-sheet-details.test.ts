@@ -141,9 +141,9 @@ describe("itemised totals on the work sheet", () => {
     expect(worksheet).not.toContain("Gift card");
   });
 
-  it("shows what was paid and what is still owed when partially paid", async () => {
+  it("shows the deposit and what is still owed when partially paid", async () => {
     const { worksheet } = parts(await buildSheetHtml(loaded({ amountPaidCents: 10000, paymentStatus: "pending" })));
-    expect(worksheet).toContain("Pagado");
+    expect(worksheet).toContain("Depósito");
     expect(worksheet).toContain("$100");
     expect(worksheet).toContain("Saldo pendiente");
     expect(worksheet).toContain("$312.20");

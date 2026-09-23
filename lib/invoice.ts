@@ -19,7 +19,7 @@ export type InvoiceStrings = {
   billTo: string; deliverTo: string; pickup: string; inStore: string;
   item: string; qty: string; unit: string; amount: string;
   subtotal: string; delivery: string; discount: string; tax: string; tip: string; total: string;
-  giftCard: string; paid: string; balanceDue: string; credit: string;
+  giftCard: string; paid: string; deposit: string; balanceDue: string; credit: string;
   status: Record<InvoiceStatus, string>;
   methods: Record<PaymentMethod, string>;
   thanks: string; print: string;
@@ -31,7 +31,7 @@ export const INVOICE_STRINGS: Record<"en" | "es", InvoiceStrings> = {
     billTo: "Bill to", deliverTo: "Deliver to", pickup: "Pickup", inStore: "In-store",
     item: "Item", qty: "Qty", unit: "Unit price", amount: "Amount",
     subtotal: "Subtotal", delivery: "Delivery", discount: "Discount", tax: "Sales tax (NY)", tip: "Tip", total: "Total",
-    giftCard: "Gift card", paid: "Paid", balanceDue: "Balance due", credit: "Credit",
+    giftCard: "Gift card", paid: "Paid", deposit: "Deposit", balanceDue: "Balance due", credit: "Credit",
     status: { paid: "Paid", refunded: "Refunded", balance_due: "Balance due", canceled: "Canceled" },
     methods: { cash: "Cash", zelle: "Zelle", "card-terminal": "Card", ach: "ACH", stripe: "Card (online)", "gift-card": "Gift card" },
     thanks: "Thank you for choosing Maky The Diva Flowers.", print: "Print / Save PDF",
@@ -41,7 +41,7 @@ export const INVOICE_STRINGS: Record<"en" | "es", InvoiceStrings> = {
     billTo: "Facturar a", deliverTo: "Entregar a", pickup: "Recogida", inStore: "En tienda",
     item: "Artículo", qty: "Cant.", unit: "Precio unitario", amount: "Importe",
     subtotal: "Subtotal", delivery: "Envío", discount: "Descuento", tax: "Impuesto (NY)", tip: "Propina", total: "Total",
-    giftCard: "Tarjeta de regalo", paid: "Pagado", balanceDue: "Saldo pendiente", credit: "Saldo a favor",
+    giftCard: "Tarjeta de regalo", paid: "Pagado", deposit: "Depósito", balanceDue: "Saldo pendiente", credit: "Saldo a favor",
     status: { paid: "Pagada", refunded: "Reembolsada", balance_due: "Saldo pendiente", canceled: "Cancelada" },
     methods: { cash: "Efectivo", zelle: "Zelle", "card-terminal": "Tarjeta", ach: "ACH", stripe: "Tarjeta (en línea)", "gift-card": "Tarjeta de regalo" },
     thanks: "Gracias por elegir Maky The Diva Flowers.", print: "Imprimir / Guardar PDF",
@@ -133,7 +133,8 @@ export function buildInvoiceModel(
   }
   const paidCents = paid - gc;
   if (paidCents > 0 && order.paymentMethod !== "gift-card") {
-    const parts = [s.paid];
+    // Money in on a still-pending order is a deposit, not a settled payment.
+    const parts = [order.paymentStatus === "pending" ? s.deposit : s.paid];
     if (order.paymentMethod) parts.push(s.methods[order.paymentMethod]);
     if (order.paidAt) parts.push(formatDateShopTz(order.paidAt, locale));
     payments.push({ label: parts.join(" · "), cents: paidCents });

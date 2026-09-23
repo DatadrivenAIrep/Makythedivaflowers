@@ -1345,7 +1345,12 @@
     "banner_message_skipped": "{channel} no enviado ({reason})",
     "banner_message_failed": "{channel} a {phone} falló",
     "banner_retry": "Reintentar",
-    "banner_dismiss": "Cerrar"
+    "banner_dismiss": "Cerrar",
+    "deposit_label": "Depósito / abono (opcional)",
+    "deposit_amount_placeholder": "0.00",
+    "deposit_method": "Depósito pagado con",
+    "deposit_hint": "Saldo pendiente: {amount}",
+    "deposit_too_big": "El depósito debe ser menor que el total — márcala como pagada."
   },
   "admin_gift_cards": {
     "title": "Gift Cards",
@@ -1474,7 +1479,17 @@
     "email": "Email",
     "saving": "Guardando…",
     "save_changes": "Guardar cambios",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "deposit": "Depósito",
+    "record_deposit": "Registrar depósito",
+    "deposit_amount": "Monto",
+    "save_deposit": "Guardar depósito",
+    "deposit_summary": "Depósito {paid} · saldo {balance}",
+    "deposit_error_exceeds": "El monto es mayor que el saldo pendiente.",
+    "deposit_error_generic": "No se pudo registrar el depósito.",
+    "payment_status_deposit": "Depósito",
+    "card_terminal": "Terminal",
+    "ach": "ACH"
   },
   "admin_ledger": {
     "date": "Fecha",
@@ -1545,7 +1560,9 @@
     "no_deliveries": "Sin entregas para esta fecha.",
     "deliveries_count": "entregas",
     "completed_count": "completadas",
-    "collect": "Cobrar"
+    "collect": "Cobrar",
+    "collect_amount": "Cobrar {amount}",
+    "deposit_dot": "● Depósito {amount}"
   },
   "admin_customers": {
     "title": "Clientes",

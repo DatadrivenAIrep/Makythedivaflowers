@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
   WhatsappLogo, ArrowsClockwise, Check, CheckCircle,
-  Package, Truck, XCircle, X, Pencil, Eye, Printer, FileText, Storefront, Star,
+  Package, Truck, XCircle, X, Pencil, Eye, Printer, FileText, Storefront, Star, HandCoins,
 } from "@phosphor-icons/react/dist/ssr";
 import { useTranslations, useLocale } from "next-intl";
 import { formatDateTime } from "@/lib/format-datetime";
@@ -37,6 +37,12 @@ type Props = {
 
 function money(c: number) { return `$${(c / 100).toFixed(2)}`; }
 
+const DEPOSIT_METHODS = ["cash", "zelle", "card-terminal", "ach"] as const;
+type DepositMethod = (typeof DEPOSIT_METHODS)[number];
+const DEPOSIT_METHOD_LABEL: Record<DepositMethod, string> = {
+  cash: "cash", zelle: "zelle", "card-terminal": "card_terminal", ach: "ach",
+};
+
 const FULFILLMENT_STEP_IDS = ["pending", "preparing", "out-for-delivery", "delivered"] as const;
 
 export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props) {
@@ -50,6 +56,10 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
   const [refundChecked, setRefundChecked] = useState(false);
   const [editing, setEditing] = useState(false);
   const [reviewMsg, setReviewMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [depositOpen, setDepositOpen] = useState(false);
+  const [depositText, setDepositText] = useState("");
+  const [depositMethod, setDepositMethod] = useState<DepositMethod>("zelle");
+  const [depositErr, setDepositErr] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -109,6 +119,29 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
     }
   }
 
+  async function saveDeposit() {
+    const amountCents = Math.round(parseFloat(depositText) * 100);
+    if (!Number.isFinite(amountCents) || amountCents <= 0) return;
+    setBusy(true);
+    setDepositErr(null);
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}/payment`, {
+        method: "PATCH", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ deposit: { amountCents, method: depositMethod } }),
+      });
+      if (!res.ok) {
+        const d = (await res.json().catch(() => ({}))) as { error?: string };
+        setDepositErr(d.error === "deposit_exceeds_balance" ? t("deposit_error_exceeds") : t("deposit_error_generic"));
+        return;
+      }
+      const refreshed = await fetch(`/api/admin/orders/${orderId}`, { cache: "no-store" });
+      setData((await refreshed.json()) as DetailResp);
+      onChanged();
+      setDepositOpen(false);
+      setDepositText("");
+    } finally { setBusy(false); }
+  }
+
   async function saveEdit(patch: OrderEditPatch) {
     setBusy(true);
     try {
@@ -146,6 +179,10 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
     ? `https://maps.google.com/?q=${encodeURIComponent(`${f.address.street1}, ${f.address.city}, ${f.address.state} ${f.address.zip}`)}`
     : null;
   const currentStepIdx = FULFILLMENT_STEP_IDS.findIndex((id) => id === order.status);
+  const amountPaid = order.amountPaidCents ?? 0;
+  const balance = data.balanceCents ?? order.totals.totalCents - amountPaid;
+  // A pending order with money already collected carries a deposit.
+  const hasDeposit = order.paymentStatus === "pending" && amountPaid > 0;
 
   return (
     <div className="fixed inset-0 z-20 flex" onClick={onClose}>
@@ -169,11 +206,16 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
           <div className={`mb-3 flex items-center justify-between gap-2 rounded px-3 py-2 text-sm font-semibold ${
             (data.balanceCents ?? 0) > 0 ? "bg-amber-50 text-amber-800" : "bg-sky-50 text-sky-800"
           }`}>
-            <span>{(data.balanceCents ?? 0) > 0 ? t("balance_due") : t("balance_credit")}: {money(Math.abs(data.balanceCents ?? 0))}</span>
-            <AdminButton variant="secondary" disabled={busy}
-              onClick={() => call("PATCH", `/api/admin/orders/${order.id}/payment`, { settleBalance: true })}>
-              {t("mark_settled")}
-            </AdminButton>
+            <span>
+              {(data.balanceCents ?? 0) > 0 ? t("balance_due") : t("balance_credit")}: {money(Math.abs(data.balanceCents ?? 0))}
+              {hasDeposit && <span className="ml-2 font-normal">· {t("deposit")} {money(amountPaid)}</span>}
+            </span>
+            {!hasDeposit && (
+              <AdminButton variant="secondary" disabled={busy}
+                onClick={() => call("PATCH", `/api/admin/orders/${order.id}/payment`, { settleBalance: true })}>
+                {t("mark_settled")}
+              </AdminButton>
+            )}
           </div>
         )}
 
@@ -278,6 +320,14 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
               </>
             )}
             <span className="font-semibold">{t("total")}</span><span className="text-right font-semibold">{money(order.totals.totalCents)}</span>
+            {hasDeposit && (
+              <>
+                <span className="text-ink/70">{t("deposit")}{order.paymentMethod ? ` · ${t(DEPOSIT_METHOD_LABEL[order.paymentMethod as DepositMethod] ?? "cash")}` : ""}</span>
+                <span className="text-right text-ink/70">−{money(amountPaid)}</span>
+                <span className="font-semibold text-amber-800">{t("balance_due")}</span>
+                <span className="text-right font-semibold text-amber-800">{money(balance)}</span>
+              </>
+            )}
           </div>
         </section>
 
@@ -298,7 +348,9 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
           )}
           <div className="mt-2 text-xs text-ink/60">
             {t("payment_label")}: {order.paymentStatus === "paid" ? t("paid_with", { method: order.paymentMethod ?? "?" })
-              : order.paymentStatus === "refunded" ? t("payment_status.refunded") : t("payment_status.pending")}
+              : order.paymentStatus === "refunded" ? t("payment_status.refunded")
+              : hasDeposit ? t("deposit_summary", { paid: money(amountPaid), balance: money(balance) })
+              : t("payment_status.pending")}
             {order.paidAt && order.paymentStatus !== "refunded" && ` · ${formatDateTime(order.paidAt, locale)}`}
           </div>
         </section>
@@ -347,6 +399,10 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
 
         <footer className="sticky bottom-0 -mx-4 -mb-4 border-t border-ink/10 bg-bone p-3">
           <div className="flex flex-wrap gap-2">
+            {order.paymentStatus === "pending" && order.status !== "canceled" && !depositOpen && (
+              <AdminButton variant="secondary" icon={HandCoins} disabled={busy}
+                onClick={() => { setDepositErr(null); setDepositOpen(true); }}>{t("record_deposit")}</AdminButton>
+            )}
             {order.paymentStatus !== "paid" && (
               <>
                 <AdminButton variant="secondary" icon={ArrowsClockwise} disabled={busy}
@@ -383,6 +439,41 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
           </div>
           {reviewMsg && (
             <p className={`mt-2 text-xs ${reviewMsg.ok ? "text-success" : "text-error"}`}>{reviewMsg.text}</p>
+          )}
+          {depositOpen && (
+            <div className="mt-2 rounded border border-amber-300 bg-amber-50 p-3 text-xs">
+              <div className="mb-2 font-semibold text-amber-900">
+                {t("record_deposit")} · {t("balance_due")} {money(balance)}
+              </div>
+              <div className="mb-2 flex flex-wrap items-center gap-2">
+                <div className="relative w-28">
+                  <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-ink/50">$</span>
+                  <input
+                    autoFocus
+                    inputMode="decimal"
+                    value={depositText}
+                    placeholder="0.00"
+                    aria-label={t("deposit_amount")}
+                    onChange={(e) => setDepositText(e.target.value.replace(/[^0-9.]/g, ""))}
+                    onKeyDown={(e) => { if (e.key === "Enter") void saveDeposit(); }}
+                    className="w-full rounded border border-amber-200 bg-bone py-1 pl-5 pr-2 text-sm tabular-nums"
+                  />
+                </div>
+                {DEPOSIT_METHODS.map((m) => (
+                  <button key={m} type="button" aria-pressed={depositMethod === m}
+                    onClick={() => setDepositMethod(m)}
+                    className={`rounded-full border px-2.5 py-1 ${depositMethod === m ? "border-ink bg-ink text-bone" : "border-amber-300 bg-bone text-ink/70 hover:border-ink"}`}>
+                    {t(DEPOSIT_METHOD_LABEL[m])}
+                  </button>
+                ))}
+              </div>
+              {depositErr && <p className="mb-2 text-error">{depositErr}</p>}
+              <div className="flex gap-2">
+                <AdminButton variant="primary" icon={Check}
+                  disabled={busy || !(parseFloat(depositText) > 0)} onClick={saveDeposit}>{t("save_deposit")}</AdminButton>
+                <AdminButton variant="secondary" disabled={busy} onClick={() => setDepositOpen(false)}>{t("back")}</AdminButton>
+              </div>
+            </div>
           )}
           {cancelOpen && (
             <div className="mt-2 rounded border border-red-300 bg-red-50 p-3 text-xs">

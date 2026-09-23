@@ -146,6 +146,20 @@ export async function POST(req: Request) {
     order.amountPaidCents = order.totals.totalCents;
   }
 
+  // A down payment on a pending order: record it as collected so the balance
+  // due is total − deposit. A deposit covering the whole total is a full
+  // payment and should be taken as "paid" instead.
+  const deposit = input.payment.status === "pending" ? input.payment.deposit : undefined;
+  if (deposit && order.paymentStatus === "pending") {
+    if (deposit.amountCents >= order.totals.totalCents) {
+      return NextResponse.json({ errors: { formErrors: ["deposit_exceeds_total"] } }, { status: 400 });
+    }
+    order.amountPaidCents = deposit.amountCents;
+    order.paymentMethod = deposit.method;
+    const noteLine = `[${now}] [deposit $${(deposit.amountCents / 100).toFixed(2)} via ${deposit.method}]`;
+    order.internalNotes = order.internalNotes ? `${order.internalNotes}\n${noteLine}` : noteLine;
+  }
+
   await saveOrder(order);
 
   {
@@ -154,6 +168,12 @@ export async function POST(req: Request) {
       orderId: order.id, actor: order.takenBy ?? "maky", kind: "created",
       summary: `Orden creada · ${order.source}`,
     });
+    if (deposit && order.paymentStatus === "pending") {
+      await recordOrderChange({
+        orderId: order.id, actor: order.takenBy ?? "maky", kind: "payment",
+        summary: `Depósito $${(deposit.amountCents / 100).toFixed(2)} · ${deposit.method} · saldo $${((order.totals.totalCents - deposit.amountCents) / 100).toFixed(2)}`,
+      });
+    }
   }
 
   if (giftCardId && order.paymentStatus === "paid") {

@@ -42,7 +42,9 @@ export async function markPaidManual(
   upsert(next);
   await recordOrderChange({
     orderId, actor: "maky", kind: "payment",
-    summary: `Pagado en ${args.method} · ${money(cur.totals.totalCents)}`,
+    summary: (cur.amountPaidCents ?? 0) > 0
+      ? `Saldo pagado en ${args.method} · ${money(cur.totals.totalCents - (cur.amountPaidCents ?? 0))}`
+      : `Pagado en ${args.method} · ${money(cur.totals.totalCents)}`,
   });
 
   // A promo on a pending order is only burned once payment actually lands.
@@ -74,6 +76,53 @@ export async function markPaidManual(
     }
   }
 
+  return next;
+}
+
+const DEPOSIT_METHODS = ["cash", "zelle", "card-terminal", "ach"] as const;
+export type DepositMethod = (typeof DEPOSIT_METHODS)[number];
+
+// Records a partial payment (deposit / down payment) on a pending order. It adds
+// to amount_paid so the balance due shrinks; the order stays pending until the
+// rest is collected. A deposit that covers the whole remaining balance is just a
+// full payment, so it goes through markPaidManual (confirmations, promo burn).
+export async function recordDeposit(
+  orderId: string,
+  args: { amountCents: number; method: DepositMethod; note?: string },
+  actor: string,
+): Promise<Order> {
+  runMigrations();
+  const db = getDb();
+  const row = db.prepare("SELECT * FROM orders WHERE id = ?").get(orderId) as OrderRow | undefined;
+  if (!row) throw new Error(`order not found: ${orderId}`);
+  const cur = rowToOrder(row);
+  if (cur.paymentStatus !== "pending" || cur.status === "canceled") throw new Error("not_pending");
+  if (!DEPOSIT_METHODS.includes(args.method)) throw new Error(`unsupported deposit method: ${args.method}`);
+  if (!Number.isInteger(args.amountCents) || args.amountCents <= 0) throw new Error("invalid_amount");
+
+  const alreadyPaid = cur.amountPaidCents ?? 0;
+  const remaining = cur.totals.totalCents - alreadyPaid;
+  if (args.amountCents > remaining) throw new Error("deposit exceeds balance");
+  if (args.amountCents === remaining) {
+    return markPaidManual(orderId, { method: args.method, note: args.note });
+  }
+
+  const now = new Date().toISOString();
+  const noteLine = `[${now}] [deposit ${money(args.amountCents)} via ${args.method}]${args.note ? " " + args.note : ""}`;
+  const internalNotes = cur.internalNotes ? `${cur.internalNotes}\n${noteLine}` : noteLine;
+  const paid = alreadyPaid + args.amountCents;
+  const next: Order = {
+    ...cur,
+    paymentMethod: args.method,
+    amountPaidCents: paid,
+    internalNotes,
+    updatedAt: now,
+  };
+  upsert(next);
+  await recordOrderChange({
+    orderId, actor, kind: "payment",
+    summary: `Depósito ${money(args.amountCents)} · ${args.method} · saldo ${money(cur.totals.totalCents - paid)}`,
+  });
   return next;
 }
 

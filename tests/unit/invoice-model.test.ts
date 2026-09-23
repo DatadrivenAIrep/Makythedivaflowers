@@ -93,6 +93,13 @@ describe("buildInvoiceModel", () => {
     expect(m.payments.at(-1)).toEqual({ label: "Balance due", cents: 27034, kind: "balance" });
   });
 
+  it("labels money on a pending order as a deposit and shows the balance", () => {
+    const m = buildInvoiceModel(order({ paymentStatus: "pending", paidAt: undefined, amountPaidCents: 20000 }), { now: NOW });
+    expect(m.status).toBe("balance_due");
+    expect(m.payments).toContainEqual({ label: "Deposit · Zelle", cents: 20000 });
+    expect(m.payments).toContainEqual({ label: "Balance due", cents: 27034, kind: "balance" });
+  });
+
   it("shows a credit when overpaid", () => {
     const m = buildInvoiceModel(order({ amountPaidCents: 50000 }), { now: NOW });
     expect(m.payments.at(-1)).toEqual({ label: "Credit", cents: 2966, kind: "balance" });

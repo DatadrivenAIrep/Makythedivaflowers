@@ -42,6 +42,11 @@ describe("buildCheckoutSessionParams", () => {
     expect(p.payment_intent_data?.metadata?.orderId).toBe("do_test_abc");
   });
 
+  it("charges only the remaining balance when a deposit was collected", () => {
+    const p = buildCheckoutSessionParams({ ...sampleOrder, amountPaidCents: 5000 }, "en");
+    expect(p.line_items![0].price_data!.unit_amount).toBe(6791);
+  });
+
   it("uses the order total in unit_amount", () => {
     const p = buildCheckoutSessionParams(sampleOrder, "en");
     const item = p.line_items![0];

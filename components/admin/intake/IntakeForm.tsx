@@ -15,7 +15,7 @@ import DraftsDrawer from "./DraftsDrawer";
 import type { DraftPayload } from "@/types/draft";
 import { PRODUCTS } from "@/data/products";
 import { cartSubtotalCents } from "@/lib/cart-helpers";
-import { computeDeliveryCentsForAddress } from "@/lib/totals";
+import { computeDeliveryCentsForAddress, resolveOrderTotals } from "@/lib/totals";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatDateTime } from "@/lib/format-datetime";
 import {
@@ -100,6 +100,8 @@ export default function IntakeForm({ products }: { products: Product[] }) {
 
   const [giftCardCode, setGiftCardCode] = useState("");
   const [payment, setPayment] = useState<PaymentState>(() => ({ ...INITIAL_PAYMENT }));
+  // Remounts PaymentBlock (and its typed deposit text) on reset / draft load.
+  const [paymentKey, setPaymentKey] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [draftId, setDraftId] = useState<string | null>(null);
@@ -150,6 +152,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
     setPromo(null);
     setGiftCardCode(init.giftCardCode);
     setPayment(init.payment);
+    setPaymentKey((k) => k + 1);
     setDraftId(null);
     draftGenRef.current++;
     setDraftSaveState("idle");
@@ -239,12 +242,17 @@ export default function IntakeForm({ products }: { products: Product[] }) {
     );
     setGiftCardCode(payload.giftCardCode ?? "");
     setPayment(payload.payment ?? { ...INITIAL_PAYMENT });
+    setPaymentKey((k) => k + 1);
     setDraftId(id);
     setDraftsOpen(false);
   }
 
   async function onSubmit() {
     setError(null);
+    if (payment.status === "pending" && payment.deposit && payment.deposit.amountCents >= liveTotalCents) {
+      setError(t("deposit_too_big"));
+      return;
+    }
     setSubmitting(true);
     try {
       const body = {
@@ -293,6 +301,15 @@ export default function IntakeForm({ products }: { products: Product[] }) {
     (fulfillment.method === "delivery"
       ? computeDeliveryCentsForAddress({ zip: fulfillment.address.zip, city: fulfillment.address.city }) ?? 0
       : 0);
+
+  // Live order total, resolved like the server does — feeds the deposit's
+  // "balance due" hint.
+  const liveTotalCents = resolveOrderTotals({
+    lines,
+    fulfillmentMethod: fulfillment.method,
+    address: fulfillment.method === "delivery" ? fulfillment.address : undefined,
+    override,
+  }).totalCents;
 
   return (
     <main className="max-w-[1180px] mx-auto p-6">
@@ -423,7 +440,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
                   onClear={clearPromo}
                 />
               </div>
-              <div className="mt-4"><PaymentBlock value={payment} onChange={setPayment} /></div>
+              <div className="mt-4"><PaymentBlock key={paymentKey} value={payment} onChange={setPayment} totalCents={liveTotalCents} /></div>
               <label className="block mt-4">
                 <span className="mb-1 block text-xs font-semibold">{t("gift_card_label")}</span>
                 <input value={giftCardCode} onChange={(e) => setGiftCardCode(e.target.value)} placeholder="DIVA-XXXX-XXXX" className="w-full rounded-lg border border-ink/20 px-3 py-2 font-mono" />
