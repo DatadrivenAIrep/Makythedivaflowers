@@ -82,9 +82,9 @@ describe("buildInvoiceModel", () => {
   it("marks a fully paid order as paid with method and date", () => {
     const m = buildInvoiceModel(order(), { now: NOW });
     expect(m.status).toBe("paid");
+    expect(m.payments).toHaveLength(1);
     expect(m.payments[0].label).toMatch(/^Paid · Zelle · /);
     expect(m.payments[0].cents).toBe(47034);
-    expect(m.payments[1]).toEqual({ label: "Balance due", cents: 0, kind: "balance" });
   });
 
   it("shows balance due on a partial payment", () => {
@@ -99,12 +99,50 @@ describe("buildInvoiceModel", () => {
   });
 
   it("marks refunded orders", () => {
-    expect(buildInvoiceModel(order({ paymentStatus: "refunded" }), { now: NOW }).status).toBe("refunded");
+    const m = buildInvoiceModel(order({ paymentStatus: "refunded" }), { now: NOW });
+    expect(m.status).toBe("refunded");
+    expect(m.payments.some((p) => p.kind === "balance")).toBe(false);
   });
 
-  it("lists the gift card as a payment", () => {
-    const m = buildInvoiceModel(order({ giftCardCents: 5000 }), { now: NOW });
-    expect(m.payments[0]).toEqual({ label: "Gift card", cents: 5000, kind: "negative" });
+  it("marks canceled unrefunded orders, with no balance row", () => {
+    const m = buildInvoiceModel(order({ status: "canceled", paymentStatus: "pending", amountPaidCents: undefined, paidAt: undefined }), { now: NOW });
+    expect(m.status).toBe("canceled");
+    expect(m.payments.some((p) => p.kind === "balance")).toBe(false);
+    const es = buildInvoiceModel(order({ locale: "es", status: "canceled", paymentStatus: "pending", amountPaidCents: undefined, paidAt: undefined }), { now: NOW });
+    expect(es.strings.status.canceled).toBe("Cancelada");
+  });
+
+  it("counts the gift card once: paid card order with a partial gift card", () => {
+    const m = buildInvoiceModel(order({ giftCardCents: 5000, amountPaidCents: 47034, paymentMethod: "stripe" }), { now: NOW });
+    expect(m.status).toBe("paid");
+    expect(m.payments).toEqual([
+      { label: "Gift card", cents: 5000, kind: "negative" },
+      { label: expect.stringMatching(/^Paid · Card \(online\) · /), cents: 42034 },
+    ]);
+  });
+
+  it("shows only the gift card row for a fully gift-card-paid intake order", () => {
+    const m = buildInvoiceModel(order({
+      giftCardCents: 47034, amountPaidCents: 47034, paymentMethod: "gift-card",
+    }), { now: NOW });
+    expect(m.status).toBe("paid");
+    expect(m.payments).toEqual([{ label: "Gift card", cents: 47034, kind: "negative" }]);
+  });
+
+  it("shows only the gift card row for a fully gift-card-paid web order (amountPaidCents unset)", () => {
+    const m = buildInvoiceModel(order({
+      giftCardCents: 47034, amountPaidCents: undefined, paymentMethod: "gift-card",
+    }), { now: NOW });
+    expect(m.status).toBe("paid");
+    expect(m.payments).toEqual([{ label: "Gift card", cents: 47034, kind: "negative" }]);
+  });
+
+  it("shows balance due on a pending order with a partial gift card", () => {
+    const m = buildInvoiceModel(order({
+      paymentStatus: "pending", giftCardCents: 5000, amountPaidCents: undefined, paidAt: undefined,
+    }), { now: NOW });
+    expect(m.status).toBe("balance_due");
+    expect(m.payments.at(-1)).toEqual({ label: "Balance due", cents: 42034, kind: "balance" });
   });
 
   it("describes delivery, pickup and in-store fulfillment", () => {
@@ -141,6 +179,31 @@ describe("buildInvoiceModel", () => {
     expect(m.strings.title).toBe("Factura");
     expect(m.lines[0].title).toBe("Mesa Abundante — Clásico");
     expect(m.fulfillment.heading).toBe("Entregar a");
+  });
+
+  it("hides the Delivery row for pickup/in-store with zero delivery cents, keeps it for a delivery order with zero cents", () => {
+    const pickup = buildInvoiceModel(order({
+      fulfillment: { method: "pickup", recipient: { name: "Lola", phone: "5165550101" }, window: { date: "2026-09-25", slot: "morning" } },
+      totals: { subtotalCents: 41800, deliveryCents: 0, discountCents: 0, tipCents: 0, taxCents: 3734, totalCents: 45534 },
+    }), { now: NOW });
+    expect(pickup.totals.some((r) => r.label === "Delivery")).toBe(false);
+
+    const inStore = buildInvoiceModel(order({
+      fulfillment: { method: "in-store", recipient: { name: "Lola", phone: "" } },
+      totals: { subtotalCents: 41800, deliveryCents: 0, discountCents: 0, tipCents: 0, taxCents: 3734, totalCents: 45534 },
+    }), { now: NOW });
+    expect(inStore.totals.some((r) => r.label === "Delivery")).toBe(false);
+
+    const delivery = buildInvoiceModel(order({
+      totals: { subtotalCents: 41800, deliveryCents: 0, discountCents: 0, tipCents: 0, taxCents: 3734, totalCents: 45534 },
+    }), { now: NOW });
+    expect(delivery.totals.some((r) => r.label === "Delivery")).toBe(true);
+  });
+
+  it("formats dates in the shop's timezone, not UTC", () => {
+    const m = buildInvoiceModel(order({ createdAt: "2026-09-22T02:30:00Z" }), { now: NOW });
+    expect(m.orderedOn).toContain("21");
+    expect(m.orderedOn).toBe("Sep 21, 2026");
   });
 
   it("never carries internal or card data", () => {

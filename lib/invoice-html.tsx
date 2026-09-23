@@ -31,7 +31,7 @@ header img{height:56px}
 .meta dt{color:#6b635b}
 .meta dd{margin:0;font-weight:600}
 .stamp{display:inline-block;margin-top:10px;padding:4px 10px;border:2px solid;border-radius:6px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:12px}
-.stamp.paid{color:#1f7a4d}.stamp.balance_due{color:#a15c00}.stamp.refunded{color:#6b635b}
+.stamp.paid{color:#1f7a4d}.stamp.balance_due{color:#a15c00}.stamp.refunded{color:#6b635b}.stamp.canceled{color:#6b635b}
 .parties{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:20px 0}
 .parties h2{margin:0 0 4px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6b635b}
 .parties p{margin:0}
