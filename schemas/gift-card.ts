@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { GIFT_CARD_PARTNER_IDS } from "@/data/gift-card-partners";
 
 // Quick-pick denominations for staff; any whole-dollar amount inside the band is
 // also accepted so a one-off (e.g. an apology for $35) doesn't need a code change.
@@ -18,6 +19,7 @@ export const issueGiftCardSchema = z.object({
   fromLabel: z.string().max(80).optional(),
   personalMessage: z.string().max(400).optional(),
   headline: z.string().trim().max(90).optional(),
+  partner: z.enum(GIFT_CARD_PARTNER_IDS).optional(),
   reason: z.enum(["loyalty", "apology", "prize", "marketing", "other"]).optional(),
 });
 

@@ -1381,6 +1381,7 @@
     "form_message": "Personal message",
     "form_headline": "Email headline",
     "form_headline_placeholder": "Default: “Name, someone sent you flowers”",
+    "form_partner": "Co-brand partner (logo in the email)",
     "form_reason": "Reason (internal)",
     "form_optional": "optional",
     "form_submit": "Issue and email",

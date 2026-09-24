@@ -86,3 +86,21 @@ describe("gift card email headline", () => {
     expect(body.split("\n")[0]).toBe("A gift for The Shelter Connection");
   });
 });
+
+describe("gift card email co-brand partner", () => {
+  it("shows the partner logo and name when the card has one", () => {
+    const html = buildHtml({ ...card, partner: "the-shelter-connection" }, "en");
+    expect(html).toContain("/partners/the-shelter-connection.png");
+    expect(html).toContain('alt="The Shelter Connection"');
+    expect(html).toContain("In partnership with");
+  });
+
+  it("renders no partner block without one", () => {
+    expect(buildHtml(card, "en")).not.toContain("/partners/");
+  });
+
+  it("names the partner in the plain-text body", () => {
+    const body = buildBody({ ...card, partner: "the-shelter-connection" }, "en");
+    expect(body).toContain("In partnership with The Shelter Connection");
+  });
+});

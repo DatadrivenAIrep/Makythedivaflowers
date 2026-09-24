@@ -1,3 +1,5 @@
+import type { GiftCardPartnerId } from "@/data/gift-card-partners";
+
 export type GiftCardStatus = "active" | "void";
 
 // "purchase" = bought by a customer on the site, "referral" = credit earned by
@@ -23,6 +25,8 @@ export type GiftCard = {
   personalMessage?: string;
   /** Replaces the email's default "someone sent you flowers" headline. */
   headline?: string;
+  /** Co-brand partner shown in the email; see data/gift-card-partners.ts. */
+  partner?: GiftCardPartnerId;
   reason?: GiftCardReason;
   issuedBy?: string;
   /** Set when a customer bought the card on the site rather than staff issuing it. */

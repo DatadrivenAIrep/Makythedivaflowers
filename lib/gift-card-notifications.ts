@@ -1,6 +1,7 @@
 import "server-only";
 import { Resend } from "resend";
 import type { GiftCard } from "@/types/gift-card";
+import { GIFT_CARD_PARTNERS } from "@/data/gift-card-partners";
 
 const COLORS = {
   ink: "#2A2320",
@@ -64,8 +65,12 @@ export function __buildGiftCardBody(card: GiftCard, locale: "en" | "es"): string
     : locale === "es"
       ? "Hola,"
       : "Hi,";
+  const partner = card.partner ? GIFT_CARD_PARTNERS[card.partner] : undefined;
   const lines = [
     ...(card.headline ? [card.headline, ""] : []),
+    ...(partner
+      ? [locale === "es" ? `En alianza con ${partner.name}` : `In partnership with ${partner.name}`, ""]
+      : []),
     hi,
     "",
     locale === "es"
@@ -117,6 +122,14 @@ export function __buildGiftCardHtml(card: GiftCard, locale: "en" | "es"): string
       : "",
   };
 
+  const partner = card.partner ? GIFT_CARD_PARTNERS[card.partner] : undefined;
+  const partnerBlock = partner
+    ? `<div style="padding:22px 30px 0;text-align:center;">
+      <div style="font-size:10px;letter-spacing:0.24em;text-transform:uppercase;color:${COLORS.inkSoft};">${locale === "es" ? "En alianza con" : "In partnership with"}</div>
+      <img src="${BASE_URL}${partner.logo}" alt="${escapeHtml(partner.name)}" width="${partner.width}" height="${partner.height}" style="display:block;margin:10px auto 0;width:${partner.width}px;max-width:70%;height:auto;border:0;" />
+    </div>`
+    : "";
+
   const message = card.personalMessage
     ? `<p style="font-family:${FONT_DISPLAY};font-style:italic;font-size:16px;line-height:1.55;color:${COLORS.ink};margin:0 26px 4px;">&ldquo;${escapeHtml(card.personalMessage)}&rdquo;${
         card.fromLabel
@@ -132,6 +145,8 @@ export function __buildGiftCardHtml(card: GiftCard, locale: "en" | "es"): string
 
     <!-- Branded header banner (logo + bouquet, integrated cream background) -->
     <img src="${HEADER_SRC}" alt="Maky the Diva — Flowers &amp; Events" width="600" style="display:block;width:100%;max-width:600px;height:auto;border:0;" />
+
+    ${partnerBlock}
 
     <!-- Intro + denomination -->
     <div style="padding:28px 30px 6px;text-align:center;">

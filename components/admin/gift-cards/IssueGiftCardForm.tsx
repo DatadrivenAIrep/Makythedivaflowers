@@ -9,6 +9,7 @@ import {
   ADMIN_GIFT_CARD_MAX_CENTS,
 } from "@/schemas/gift-card";
 import type { Locale } from "@/types/locale";
+import { GIFT_CARD_PARTNERS, GIFT_CARD_PARTNER_IDS } from "@/data/gift-card-partners";
 
 export default function IssueGiftCardForm({ onIssued }: { onIssued: () => void }) {
   const t = useTranslations("admin_gift_cards");
@@ -21,6 +22,7 @@ export default function IssueGiftCardForm({ onIssued }: { onIssued: () => void }
   const [from, setFrom] = useState("");
   const [message, setMessage] = useState("");
   const [headline, setHeadline] = useState("");
+  const [partner, setPartner] = useState("");
   const [reason, setReason] = useState<string>("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -54,6 +56,7 @@ export default function IssueGiftCardForm({ onIssued }: { onIssued: () => void }
         fromLabel: from || undefined,
         personalMessage: message || undefined,
         headline: headline.trim() || undefined,
+        partner: partner || undefined,
         reason: reason || undefined,
       }),
     });
@@ -145,6 +148,15 @@ export default function IssueGiftCardForm({ onIssued }: { onIssued: () => void }
       <label className="block">
         <span className="mb-1 block text-xs font-semibold">{t("form_message")} <em className="opacity-50">({t("form_optional")})</em></span>
         <textarea value={message} onChange={(e) => setMessage(e.target.value)} className="min-h-[60px] w-full rounded-lg border border-ink/20 px-3 py-2" />
+      </label>
+      <label className="block">
+        <span className="mb-1 block text-xs font-semibold">{t("form_partner")} <em className="opacity-50">({t("form_optional")})</em></span>
+        <select value={partner} onChange={(e) => setPartner(e.target.value)} className="w-full rounded-lg border border-ink/20 px-3 py-2">
+          <option value="">—</option>
+          {GIFT_CARD_PARTNER_IDS.map((id) => (
+            <option key={id} value={id}>{GIFT_CARD_PARTNERS[id].name}</option>
+          ))}
+        </select>
       </label>
       <label className="block">
         <span className="mb-1 block text-xs font-semibold">{t("form_reason")} <em className="opacity-50">({t("form_optional")})</em></span>

@@ -1,5 +1,6 @@
 import { getDb } from "@/lib/db";
 import { generateGiftCardCode, normalizeCode } from "@/lib/gift-card-code";
+import { GIFT_CARD_PARTNERS, type GiftCardPartnerId } from "@/data/gift-card-partners";
 import type {
   GiftCard,
   GiftCardDisplayStatus,
@@ -18,6 +19,7 @@ type GiftCardRow = {
   from_label: string | null;
   personal_message: string | null;
   headline: string | null;
+  partner: string | null;
   reason: string | null;
   issued_by: string | null;
   purchase_payment_intent_id: string | null;
@@ -39,6 +41,9 @@ function rowToCard(r: GiftCardRow): GiftCard {
     fromLabel: r.from_label ?? undefined,
     personalMessage: r.personal_message ?? undefined,
     headline: r.headline ?? undefined,
+    // A partner later removed from the registry just drops out of the email.
+    partner:
+      r.partner && r.partner in GIFT_CARD_PARTNERS ? (r.partner as GiftCardPartnerId) : undefined,
     reason: (r.reason as GiftCardReason | null) ?? undefined,
     issuedBy: r.issued_by ?? undefined,
     purchasePaymentIntentId: r.purchase_payment_intent_id ?? undefined,
@@ -60,6 +65,7 @@ export type IssueGiftCardInput = {
   fromLabel?: string;
   personalMessage?: string;
   headline?: string;
+  partner?: GiftCardPartnerId;
   reason?: GiftCardReason;
   issuedBy?: string;
 };
@@ -74,9 +80,9 @@ export function issueGiftCard(input: IssueGiftCardInput): GiftCard {
   const insert = db.prepare(
     `INSERT INTO gift_cards (
        id, code, initial_cents, balance_cents, status,
-       recipient_email, recipient_name, from_label, personal_message, headline,
+       recipient_email, recipient_name, from_label, personal_message, headline, partner,
        reason, issued_by, expires_at, created_at, updated_at
-     ) VALUES (?, ?, ?, ?, 'active', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+     ) VALUES (?, ?, ?, ?, 'active', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   );
 
   // Retry on the (astronomically unlikely) UNIQUE(code) collision.
@@ -87,7 +93,8 @@ export function issueGiftCard(input: IssueGiftCardInput): GiftCard {
       insert.run(
         id, code, input.initialCents, input.initialCents,
         input.recipientEmail, input.recipientName ?? null, input.fromLabel ?? null,
-        input.personalMessage ?? null, input.headline || null, input.reason ?? null,
+        input.personalMessage ?? null, input.headline || null, input.partner ?? null,
+        input.reason ?? null,
         input.issuedBy ?? null, expires.toISOString(), nowIso, nowIso,
       );
       return getGiftCardById(id)!;

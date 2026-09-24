@@ -58,6 +58,22 @@ describe("POST /api/admin/gift-cards", () => {
     expect(data.card.headline).toBe("A gift for The Shelter Connection");
   });
 
+  it("stores the co-brand partner and rejects an unknown one", async () => {
+    const { POST } = await importRoute();
+    const post = (partner: string) =>
+      POST(
+        new Request("http://t/api/admin/gift-cards", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ amountCents: 10000, recipientEmail: "hello@example.org", partner }),
+        }),
+      );
+    const ok = await post("the-shelter-connection");
+    expect(ok.status).toBe(200);
+    expect((await ok.json()).card.partner).toBe("the-shelter-connection");
+    expect((await post("acme-inc")).status).toBe(400);
+  });
+
   it("rejects a bad payload with 400", async () => {
     const { POST } = await importRoute();
     const req = new Request("http://t/api/admin/gift-cards", {

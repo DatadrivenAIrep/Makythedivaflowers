@@ -1381,6 +1381,7 @@
     "form_message": "Mensaje personal",
     "form_headline": "Titular del email",
     "form_headline_placeholder": "Por defecto: “Nombre, te regalaron flores”",
+    "form_partner": "Aliado (logo en el email)",
     "form_reason": "Motivo (interno)",
     "form_optional": "opcional",
     "form_submit": "Emitir y enviar por email",
