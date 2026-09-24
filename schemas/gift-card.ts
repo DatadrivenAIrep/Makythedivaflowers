@@ -17,6 +17,7 @@ export const issueGiftCardSchema = z.object({
   recipientName: z.string().max(80).optional(),
   fromLabel: z.string().max(80).optional(),
   personalMessage: z.string().max(400).optional(),
+  headline: z.string().trim().max(90).optional(),
   reason: z.enum(["loyalty", "apology", "prize", "marketing", "other"]).optional(),
 });
 

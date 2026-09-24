@@ -21,6 +21,8 @@ export type GiftCard = {
   recipientName?: string;
   fromLabel?: string;
   personalMessage?: string;
+  /** Replaces the email's default "someone sent you flowers" headline. */
+  headline?: string;
   reason?: GiftCardReason;
   issuedBy?: string;
   /** Set when a customer bought the card on the site rather than staff issuing it. */

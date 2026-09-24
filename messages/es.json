@@ -1379,6 +1379,8 @@
     "form_recipient_name": "Nombre del destinatario",
     "form_from": "De parte de",
     "form_message": "Mensaje personal",
+    "form_headline": "Titular del email",
+    "form_headline_placeholder": "Por defecto: “Nombre, te regalaron flores”",
     "form_reason": "Motivo (interno)",
     "form_optional": "opcional",
     "form_submit": "Emitir y enviar por email",

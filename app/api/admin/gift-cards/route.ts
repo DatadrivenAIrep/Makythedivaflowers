@@ -23,6 +23,7 @@ export async function POST(req: Request) {
     recipientName: input.recipientName,
     fromLabel: input.fromLabel,
     personalMessage: input.personalMessage,
+    headline: input.headline,
     reason: input.reason,
     issuedBy: "maky", // matches the hardcoded operator used by intake (takenBy)
   });

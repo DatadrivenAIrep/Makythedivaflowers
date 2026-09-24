@@ -46,3 +46,43 @@ describe("gift card email html", () => {
     expect(html).not.toContain("<b>hi</b>");
   });
 });
+
+describe("gift card email styling", () => {
+  // A double quote inside style="..." ends the attribute early, so every
+  // declaration after the font stack is silently dropped by the mail client.
+  it("never puts a double quote inside a style attribute", () => {
+    const html = buildHtml(card, "en");
+    for (const m of html.matchAll(/style="([^"]*)"/g)) {
+      const after = html.slice((m.index ?? 0) + m[0].length, (m.index ?? 0) + m[0].length + 1);
+      expect(after, `style attribute cut short: ${m[1]}`).toMatch(/[\s>/]/);
+    }
+  });
+});
+
+describe("gift card email headline", () => {
+  it("uses the custom headline instead of the default greeting", () => {
+    const html = buildHtml({ ...card, headline: "A gift for The Shelter Connection" }, "en");
+    expect(html).toContain("A gift for The Shelter Connection");
+    expect(html).not.toContain("someone sent you flowers");
+  });
+
+  it("escapes the custom headline", () => {
+    const html = buildHtml({ ...card, headline: "<i>x</i>" }, "en");
+    expect(html).toContain("&lt;i&gt;x&lt;/i&gt;");
+  });
+
+  it("escapes the recipient name exactly once", () => {
+    const html = buildHtml({ ...card, recipientName: "O'Brien" }, "en");
+    expect(html).toContain("O&#39;Brien, someone sent you flowers");
+    expect(html).not.toContain("&amp;#39;");
+  });
+
+  it("falls back to the default greeting without one", () => {
+    expect(buildHtml(card, "en")).toContain("María, someone sent you flowers");
+  });
+
+  it("leads the plain-text body with the custom headline", () => {
+    const body = buildBody({ ...card, headline: "A gift for The Shelter Connection" }, "en");
+    expect(body.split("\n")[0]).toBe("A gift for The Shelter Connection");
+  });
+});

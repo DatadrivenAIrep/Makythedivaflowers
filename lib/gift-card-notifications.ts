@@ -10,9 +10,11 @@ const COLORS = {
   rouge: "#B8345E",
   gold: "#B0894B",
 };
-const FONT_DISPLAY = `Georgia, "Times New Roman", serif`;
-const FONT_BODY = `-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif`;
-const FONT_MONO = `"SF Mono", Menlo, Consolas, monospace`;
+// Single quotes only: these stacks go inside style="..." attributes, where a
+// double quote would end the attribute and drop every declaration after it.
+const FONT_DISPLAY = `Georgia, 'Times New Roman', serif`;
+const FONT_BODY = `-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif`;
+const FONT_MONO = `'SF Mono', Menlo, Consolas, monospace`;
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://makythedivaflowers.com";
 // Brand "email marketing header" asset (logo + bouquet on cream) — full-width banner.
@@ -63,6 +65,7 @@ export function __buildGiftCardBody(card: GiftCard, locale: "en" | "es"): string
       ? "Hola,"
       : "Hi,";
   const lines = [
+    ...(card.headline ? [card.headline, ""] : []),
     hi,
     "",
     locale === "es"
@@ -88,11 +91,13 @@ export function __buildGiftCardBody(card: GiftCard, locale: "en" | "es"): string
 }
 
 export function __buildGiftCardHtml(card: GiftCard, locale: "en" | "es"): string {
-  const name = card.recipientName ? escapeHtml(card.recipientName) : "";
+  // Raw here: the <h1> escapes the headline once, whichever branch built it.
+  const name = card.recipientName ?? "";
   const t = {
     eyebrow: locale === "es" ? "Un regalo para ti" : "A gift for you",
-    headline:
-      locale === "es"
+    headline: card.headline
+      ? card.headline
+      : locale === "es"
         ? name
           ? `${name}, te regalaron flores`
           : "Te regalaron flores"

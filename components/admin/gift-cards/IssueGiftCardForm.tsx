@@ -20,6 +20,7 @@ export default function IssueGiftCardForm({ onIssued }: { onIssued: () => void }
   const [name, setName] = useState("");
   const [from, setFrom] = useState("");
   const [message, setMessage] = useState("");
+  const [headline, setHeadline] = useState("");
   const [reason, setReason] = useState<string>("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -52,6 +53,7 @@ export default function IssueGiftCardForm({ onIssued }: { onIssued: () => void }
         recipientName: name || undefined,
         fromLabel: from || undefined,
         personalMessage: message || undefined,
+        headline: headline.trim() || undefined,
         reason: reason || undefined,
       }),
     });
@@ -131,6 +133,14 @@ export default function IssueGiftCardForm({ onIssued }: { onIssued: () => void }
       <label className="block">
         <span className="mb-1 block text-xs font-semibold">{t("form_from")} <em className="opacity-50">({t("form_optional")})</em></span>
         <input value={from} onChange={(e) => setFrom(e.target.value)} className="w-full rounded-lg border border-ink/20 px-3 py-2" />
+      </label>
+      <label className="block">
+        <span className="mb-1 block text-xs font-semibold">{t("form_headline")} <em className="opacity-50">({t("form_optional")})</em></span>
+        <input
+          value={headline} onChange={(e) => setHeadline(e.target.value)} maxLength={90}
+          placeholder={t("form_headline_placeholder")}
+          className="w-full rounded-lg border border-ink/20 px-3 py-2"
+        />
       </label>
       <label className="block">
         <span className="mb-1 block text-xs font-semibold">{t("form_message")} <em className="opacity-50">({t("form_optional")})</em></span>

@@ -17,6 +17,7 @@ type GiftCardRow = {
   recipient_name: string | null;
   from_label: string | null;
   personal_message: string | null;
+  headline: string | null;
   reason: string | null;
   issued_by: string | null;
   purchase_payment_intent_id: string | null;
@@ -37,6 +38,7 @@ function rowToCard(r: GiftCardRow): GiftCard {
     recipientName: r.recipient_name ?? undefined,
     fromLabel: r.from_label ?? undefined,
     personalMessage: r.personal_message ?? undefined,
+    headline: r.headline ?? undefined,
     reason: (r.reason as GiftCardReason | null) ?? undefined,
     issuedBy: r.issued_by ?? undefined,
     purchasePaymentIntentId: r.purchase_payment_intent_id ?? undefined,
@@ -57,6 +59,7 @@ export type IssueGiftCardInput = {
   recipientName?: string;
   fromLabel?: string;
   personalMessage?: string;
+  headline?: string;
   reason?: GiftCardReason;
   issuedBy?: string;
 };
@@ -71,9 +74,9 @@ export function issueGiftCard(input: IssueGiftCardInput): GiftCard {
   const insert = db.prepare(
     `INSERT INTO gift_cards (
        id, code, initial_cents, balance_cents, status,
-       recipient_email, recipient_name, from_label, personal_message,
+       recipient_email, recipient_name, from_label, personal_message, headline,
        reason, issued_by, expires_at, created_at, updated_at
-     ) VALUES (?, ?, ?, ?, 'active', ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+     ) VALUES (?, ?, ?, ?, 'active', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   );
 
   // Retry on the (astronomically unlikely) UNIQUE(code) collision.
@@ -84,8 +87,8 @@ export function issueGiftCard(input: IssueGiftCardInput): GiftCard {
       insert.run(
         id, code, input.initialCents, input.initialCents,
         input.recipientEmail, input.recipientName ?? null, input.fromLabel ?? null,
-        input.personalMessage ?? null, input.reason ?? null, input.issuedBy ?? null,
-        expires.toISOString(), nowIso, nowIso,
+        input.personalMessage ?? null, input.headline || null, input.reason ?? null,
+        input.issuedBy ?? null, expires.toISOString(), nowIso, nowIso,
       );
       return getGiftCardById(id)!;
     } catch (e) {

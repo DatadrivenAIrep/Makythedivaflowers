@@ -1379,6 +1379,8 @@
     "form_recipient_name": "Recipient name",
     "form_from": "From",
     "form_message": "Personal message",
+    "form_headline": "Email headline",
+    "form_headline_placeholder": "Default: “Name, someone sent you flowers”",
     "form_reason": "Reason (internal)",
     "form_optional": "optional",
     "form_submit": "Issue and email",

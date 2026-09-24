@@ -40,6 +40,24 @@ describe("POST /api/admin/gift-cards", () => {
     expect(notifyGiftCardIssued).toHaveBeenCalledOnce();
   });
 
+  it("stores the optional email headline on the card", async () => {
+    const { POST } = await importRoute();
+    const res = await POST(
+      new Request("http://t/api/admin/gift-cards", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          amountCents: 10000,
+          recipientEmail: "hello@example.org",
+          headline: "A gift for The Shelter Connection",
+        }),
+      }),
+    );
+    expect(res.status).toBe(200);
+    const data = await res.json();
+    expect(data.card.headline).toBe("A gift for The Shelter Connection");
+  });
+
   it("rejects a bad payload with 400", async () => {
     const { POST } = await importRoute();
     const req = new Request("http://t/api/admin/gift-cards", {
