@@ -17,8 +17,15 @@ describe("issueGiftCardSchema", () => {
   it("requires a valid recipient email", () => {
     expect(issueGiftCardSchema.safeParse({ ...valid, recipientEmail: "nope" }).success).toBe(false);
   });
-  it("rejects amounts other than 15000 in phase 1", () => {
-    expect(issueGiftCardSchema.safeParse({ ...valid, amountCents: 10000 }).success).toBe(false);
+  it("accepts other whole-dollar amounts inside the band", () => {
+    for (const amountCents of [500, 2500, 3500, 10000, 50000, 100000]) {
+      expect(issueGiftCardSchema.safeParse({ ...valid, amountCents }).success).toBe(true);
+    }
+  });
+  it("rejects amounts outside the band or with cents", () => {
+    for (const amountCents of [0, 499, 100100, 7550]) {
+      expect(issueGiftCardSchema.safeParse({ ...valid, amountCents }).success).toBe(false);
+    }
   });
   it("allows optional fields to be omitted", () => {
     expect(

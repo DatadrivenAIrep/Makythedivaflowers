@@ -1,9 +1,21 @@
 "use client";
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { formatMoneyCents } from "@/lib/format";
+import { cn } from "@/lib/cn";
+import {
+  GIFT_CARD_AMOUNTS,
+  ADMIN_GIFT_CARD_MIN_CENTS,
+  ADMIN_GIFT_CARD_MAX_CENTS,
+} from "@/schemas/gift-card";
+import type { Locale } from "@/types/locale";
 
 export default function IssueGiftCardForm({ onIssued }: { onIssued: () => void }) {
   const t = useTranslations("admin_gift_cards");
+  const locale = useLocale() as Locale;
+  const [amountCents, setAmountCents] = useState<number>(15000);
+  const [isCustom, setIsCustom] = useState(false);
+  const [customAmount, setCustomAmount] = useState("");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [from, setFrom] = useState("");
@@ -14,13 +26,28 @@ export default function IssueGiftCardForm({ onIssued }: { onIssued: () => void }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    setBusy(true);
     setError(null);
+    const cents = isCustom ? Math.round(Number(customAmount.replace(",", ".")) * 100) : amountCents;
+    if (
+      !Number.isFinite(cents) ||
+      cents % 100 !== 0 ||
+      cents < ADMIN_GIFT_CARD_MIN_CENTS ||
+      cents > ADMIN_GIFT_CARD_MAX_CENTS
+    ) {
+      setError(
+        t("form_amount_invalid", {
+          min: formatMoneyCents(ADMIN_GIFT_CARD_MIN_CENTS, locale),
+          max: formatMoneyCents(ADMIN_GIFT_CARD_MAX_CENTS, locale),
+        }),
+      );
+      return;
+    }
+    setBusy(true);
     const res = await fetch("/api/admin/gift-cards", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        amountCents: 15000,
+        amountCents: cents,
         recipientEmail: email,
         recipientName: name || undefined,
         fromLabel: from || undefined,
@@ -40,7 +67,55 @@ export default function IssueGiftCardForm({ onIssued }: { onIssued: () => void }
     <form onSubmit={submit} className="max-w-md space-y-4">
       <div>
         <label className="mb-1 block text-xs font-semibold">{t("form_amount")}</label>
-        <span className="inline-block rounded-lg bg-rouge px-4 py-2 font-bold text-bone">$150</span>
+        <div className="flex flex-wrap gap-2">
+          {GIFT_CARD_AMOUNTS.map((c) => (
+            <button
+              key={c}
+              type="button"
+              aria-pressed={!isCustom && amountCents === c}
+              onClick={() => {
+                setIsCustom(false);
+                setAmountCents(c);
+              }}
+              className={cn(
+                "rounded-lg border px-4 py-2 font-bold",
+                !isCustom && amountCents === c
+                  ? "border-transparent bg-rouge text-bone"
+                  : "border-ink/20 text-ink hover:border-ink/50",
+              )}
+            >
+              {formatMoneyCents(c, locale)}
+            </button>
+          ))}
+          <button
+            type="button"
+            aria-pressed={isCustom}
+            onClick={() => setIsCustom(true)}
+            className={cn(
+              "rounded-lg border px-4 py-2 font-bold",
+              isCustom ? "border-transparent bg-rouge text-bone" : "border-ink/20 text-ink hover:border-ink/50",
+            )}
+          >
+            {t("form_amount_custom")}
+          </button>
+        </div>
+        {isCustom && (
+          <label className="mt-2 block max-w-[10rem]">
+            <span className="sr-only">{t("form_amount_custom")}</span>
+            <input
+              type="number"
+              inputMode="numeric"
+              min={ADMIN_GIFT_CARD_MIN_CENTS / 100}
+              max={ADMIN_GIFT_CARD_MAX_CENTS / 100}
+              step={1}
+              required
+              value={customAmount}
+              onChange={(e) => setCustomAmount(e.target.value)}
+              placeholder="35"
+              className="w-full rounded-lg border border-ink/20 px-3 py-2"
+            />
+          </label>
+        )}
       </div>
       <label className="block">
         <span className="mb-1 block text-xs font-semibold">{t("form_recipient_email")}</span>

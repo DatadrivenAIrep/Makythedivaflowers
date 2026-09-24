@@ -1,15 +1,18 @@
 import { z } from "zod";
 
-// Phase 1 ships a single denomination. Add more to this literal union to enable them.
-export const GIFT_CARD_AMOUNTS = [15000] as const;
+// Quick-pick denominations for staff; any whole-dollar amount inside the band is
+// also accepted so a one-off (e.g. an apology for $35) doesn't need a code change.
+export const GIFT_CARD_AMOUNTS = [2500, 5000, 7500, 10000, 15000, 20000, 25000, 50000] as const;
+export const ADMIN_GIFT_CARD_MIN_CENTS = 500;
+export const ADMIN_GIFT_CARD_MAX_CENTS = 100000;
 
 export const issueGiftCardSchema = z.object({
   amountCents: z
     .number()
     .int()
-    .refine((n) => (GIFT_CARD_AMOUNTS as readonly number[]).includes(n), {
-      message: "amount_not_allowed",
-    }),
+    .min(ADMIN_GIFT_CARD_MIN_CENTS, "amount_too_small")
+    .max(ADMIN_GIFT_CARD_MAX_CENTS, "amount_too_large")
+    .refine((n) => n % 100 === 0, { message: "amount_whole_dollars" }),
   recipientEmail: z.string().email("email_invalid"),
   recipientName: z.string().max(80).optional(),
   fromLabel: z.string().max(80).optional(),

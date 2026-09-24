@@ -1373,6 +1373,8 @@
     "status_expired": "Expired",
     "status_void": "Voided",
     "form_amount": "Amount",
+    "form_amount_custom": "Other amount",
+    "form_amount_invalid": "Invalid amount: use whole dollars between {min} and {max}.",
     "form_recipient_email": "Recipient email",
     "form_recipient_name": "Recipient name",
     "form_from": "From",

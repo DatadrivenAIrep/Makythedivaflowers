@@ -1373,6 +1373,8 @@
     "status_expired": "Vencida",
     "status_void": "Anulada",
     "form_amount": "Monto",
+    "form_amount_custom": "Otro monto",
+    "form_amount_invalid": "Monto inválido: usa dólares enteros entre {min} y {max}.",
     "form_recipient_email": "Email del destinatario",
     "form_recipient_name": "Nombre del destinatario",
     "form_from": "De parte de",
