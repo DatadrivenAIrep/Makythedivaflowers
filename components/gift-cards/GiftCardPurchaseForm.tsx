@@ -29,7 +29,7 @@ export function GiftCardPurchaseForm({ locale }: Props) {
       typeof window !== "undefined" &&
       new URLSearchParams(window.location.search).get("gift_card") === "sent",
   );
-  const [amountCents, setAmountCents] = useState<number>(GIFT_CARD_PRESET_CENTS[1]);
+  const [amountCents, setAmountCents] = useState<number>(10000);
   const [customAmount, setCustomAmount] = useState("");
   const [isCustom, setIsCustom] = useState(false);
   const [recipientEmail, setRecipientEmail] = useState("");

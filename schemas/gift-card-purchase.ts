@@ -7,7 +7,7 @@ import { z } from "zod";
  * card useless, too large and a stolen card is a real loss. Staff can still
  * issue any amount from the admin.
  */
-export const GIFT_CARD_PRESET_CENTS = [5000, 10000, 15000, 25000] as const;
+export const GIFT_CARD_PRESET_CENTS = [5000, 7500, 10000, 15000, 20000, 25000] as const;
 export const GIFT_CARD_MIN_CENTS = 2500;
 export const GIFT_CARD_MAX_CENTS = 50000;
 
