@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getOrder } from "@/lib/order-storage";
-import { buildSheetHtml } from "@/lib/print-render-html";
+import { buildOrderSheetHtml } from "@/lib/print-sheet";
 import { requireAdmin } from "@/lib/admin-auth";
 
 export const runtime = "nodejs";
@@ -13,6 +13,6 @@ export async function GET(
   const { id } = await ctx.params;
   const order = await getOrder(id);
   if (!order) return NextResponse.json({ error: "not_found" }, { status: 404 });
-  const html = await buildSheetHtml(order);
+  const html = await buildOrderSheetHtml(order);
   return new NextResponse(html, { status: 200, headers: { "content-type": "text/html; charset=utf-8" } });
 }

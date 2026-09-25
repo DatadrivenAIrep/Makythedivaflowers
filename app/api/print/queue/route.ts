@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { isPrintAuthValid } from "@/lib/print-auth";
 import { ackJob, claimPendingJobs, recoverStuckJobs } from "@/lib/print-queue";
 import { getOrder } from "@/lib/order-storage";
-import { buildSheetHtml } from "@/lib/print-render-html";
+import { buildOrderSheetHtml } from "@/lib/print-sheet";
 import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
@@ -40,7 +40,7 @@ export async function GET(req: Request): Promise<Response> {
       hydrated.push({
         id: job.id,
         orderId: job.orderId,
-        html: await buildSheetHtml(order),
+        html: await buildOrderSheetHtml(order),
       });
     } catch (e) {
       const errMsg = (e as Error).message ?? String(e);

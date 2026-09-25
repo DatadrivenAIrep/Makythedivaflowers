@@ -17,6 +17,7 @@ import { formatMoneyCents, formatPhoneUS, formatDeliveryWindow } from "@/lib/for
 import { formatDateTime } from "@/lib/format-datetime";
 import { orderBalanceCents } from "@/lib/order-balance";
 import { getPrintStyles, getCardBgDataUri, getLogoDataUri, getProductImageDataUri, getQrWebsiteDataUri } from "@/lib/print-styles";
+import { qrSvgDataUri } from "@/lib/digital-card-qr";
 
 type Locale = "en" | "es";
 
@@ -317,11 +318,17 @@ function CoverRecipient({ order }: { order: Order }) {
   );
 }
 
-function BrandCoverPanel({ order, qrUri }: { order: Order; qrUri: string }) {
+function BrandCoverPanel({ order, qrUri, digital }: { order: Order; qrUri: string; digital: boolean }) {
+  const scanLine = order.locale === "en" ? "Scan to open your surprise" : "Escanea para abrir tu sorpresa";
   return (
     <div className="card-panel brand-cover">
       <div className="qr-chip">
-        <img className="qr-img" src={qrUri} alt="Escanea para visitar makythedivaflowers.com" />
+        <img
+          className="qr-img"
+          src={qrUri}
+          alt={digital ? scanLine : "Escanea para visitar makythedivaflowers.com"}
+        />
+        {digital && <div className="qr-caption">{scanLine}</div>}
       </div>
       <div className="card-brand">
         <div className="name">maky</div>
@@ -386,22 +393,22 @@ function LogoPanel({ logoUri }: { logoUri: string }) {
   );
 }
 
-function CardRow({ order, logoUri, qrUri }: { order: Order; logoUri: string; qrUri: string }) {
+function CardRow({ order, logoUri, qrUri, digital }: { order: Order; logoUri: string; qrUri: string; digital: boolean }) {
   // Card 1: brand cover + recipient + QR · Card 2: logo · Card 3: message.
   return (
     <section className="card-row">
-      <BrandCoverPanel order={order} qrUri={qrUri} />
+      <BrandCoverPanel order={order} qrUri={qrUri} digital={digital} />
       <LogoPanel logoUri={logoUri} />
       <InsideMessagePanel message={order.fulfillment.cardMessage} />
     </section>
   );
 }
 
-function Sheet({ order, logoUri, qrUri }: { order: Order; logoUri: string; qrUri: string }) {
+function Sheet({ order, logoUri, qrUri, digital }: { order: Order; logoUri: string; qrUri: string; digital: boolean }) {
   return (
     <div className="sheet">
       <Worksheet order={order} />
-      <CardRow order={order} logoUri={logoUri} qrUri={qrUri} />
+      <CardRow order={order} logoUri={logoUri} qrUri={qrUri} digital={digital} />
     </div>
   );
 }
@@ -420,9 +427,17 @@ function htmlDocument(body: string, locale: Locale): string {
 </html>`;
 }
 
-export async function buildSheetHtml(order: Order): Promise<string> {
+export type SheetOptions = { digitalCardUrl?: string };
+
+// Stays DB-free so it can render any Order. lib/print-sheet.ts looks up the
+// order's digital card and passes its short URL here.
+export async function buildSheetHtml(order: Order, opts: SheetOptions = {}): Promise<string> {
   const renderToStaticMarkup = await loadRenderToStaticMarkup();
   const logoUri = getLogoDataUri();
-  const qrUri = getQrWebsiteDataUri();
-  return htmlDocument(renderToStaticMarkup(<Sheet order={order} logoUri={logoUri} qrUri={qrUri} />), order.locale);
+  const digital = Boolean(opts.digitalCardUrl);
+  const qrUri = opts.digitalCardUrl ? await qrSvgDataUri(opts.digitalCardUrl) : getQrWebsiteDataUri();
+  return htmlDocument(
+    renderToStaticMarkup(<Sheet order={order} logoUri={logoUri} qrUri={qrUri} digital={digital} />),
+    order.locale,
+  );
 }

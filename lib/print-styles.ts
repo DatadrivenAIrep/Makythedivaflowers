@@ -221,6 +221,12 @@ export function getPrintStyles(): string {
       box-shadow: 0 1pt 4pt rgba(14,13,12,0.12); line-height: 0;
     }
     .brand-cover .qr-img { width: 0.8in; height: 0.8in; display: block; }
+    /* Digital-card caption under the QR. The chip sets line-height: 0 for the
+       image, so the caption restores it. */
+    .brand-cover .qr-caption {
+      line-height: 1.15; margin-top: 3pt; max-width: 0.8in;
+      font-size: 6.5pt; text-align: center; color: #0E0D0C;
+    }
     .card-brand { position: relative; z-index: 2; }
     .card-brand .name {
       font-family: var(--font-display); font-size: 34pt; font-weight: 600;
