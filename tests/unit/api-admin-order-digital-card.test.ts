@@ -69,6 +69,15 @@ describe("PATCH /api/admin/orders/[id]/digital-card", () => {
     const history = await listOrderHistory("o1");
     expect(history.some((c) => c.summary === "URL de tarjeta digital actualizada")).toBe(true);
   });
+  it("stores a normalized, percent-encoded href for non-ASCII paths", async () => {
+    seed("o1");
+    await POST(req("POST"), params("o1"));
+    const raw = "https://tarjetas.makythedivaflowers.com/i/josé";
+    const res = await PATCH(req("PATCH", { targetUrl: raw }), params("o1"));
+    expect(res.status).toBe(200);
+    expect((await res.json()).targetUrl).toBe("https://tarjetas.makythedivaflowers.com/i/jos%C3%A9");
+  });
+
   it("clears the url with null", async () => {
     seed("o1");
     await POST(req("POST"), params("o1"));

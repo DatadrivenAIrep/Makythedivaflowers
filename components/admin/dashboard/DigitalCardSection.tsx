@@ -23,6 +23,8 @@ export default function DigitalCardSection({ orderId, initial }: Props) {
       const res = await fetch(endpoint, { method: "POST" });
       if (!res.ok) { setError(t("digital_card_error")); return; }
       setCard((await res.json()) as DigitalCardView);
+    } catch {
+      setError(t("digital_card_error"));
     } finally {
       setBusy(false);
     }
@@ -43,6 +45,8 @@ export default function DigitalCardSection({ orderId, initial }: Props) {
       const next = (await res.json()) as DigitalCardView;
       setCard(next);
       setUrl(next.targetUrl ?? "");
+    } catch {
+      setError(t("digital_card_error"));
     } finally {
       setBusy(false);
     }
@@ -50,9 +54,14 @@ export default function DigitalCardSection({ orderId, initial }: Props) {
 
   async function copy() {
     if (!card) return;
-    await navigator.clipboard.writeText(card.shortUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    try {
+      if (!navigator.clipboard) throw new Error("clipboard unavailable");
+      await navigator.clipboard.writeText(card.shortUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      setError(t("digital_card_error"));
+    }
   }
 
   const inputId = `digital-card-url-${orderId}`;
@@ -61,9 +70,12 @@ export default function DigitalCardSection({ orderId, initial }: Props) {
     <section className="mb-3 rounded border border-ink/10 bg-bone p-3 text-sm">
       <div className="mb-2 text-xs uppercase tracking-wide text-ink/50">{t("digital_card_title")}</div>
       {!card ? (
-        <AdminButton variant="secondary" icon={Sparkle} disabled={busy} onClick={activate}>
-          {t("digital_card_activate")}
-        </AdminButton>
+        <div className="space-y-2">
+          <AdminButton variant="secondary" icon={Sparkle} disabled={busy} onClick={activate}>
+            {t("digital_card_activate")}
+          </AdminButton>
+          {error && <div role="alert" className="text-xs text-error">{error}</div>}
+        </div>
       ) : (
         <div className="space-y-2">
           <div className="flex items-center gap-2">

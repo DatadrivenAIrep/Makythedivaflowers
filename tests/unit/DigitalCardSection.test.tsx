@@ -66,4 +66,21 @@ describe("DigitalCardSection", () => {
     await waitFor(() => expect(writeText).toHaveBeenCalledWith(VIEW.shortUrl));
     await screen.findByText("digital_card_copied");
   });
+
+  it("shows the generic error and re-enables activate when fetch rejects", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("network down")));
+    render(<DigitalCardSection orderId="o1" initial={null} />);
+    const button = screen.getByRole("button", { name: "digital_card_activate" });
+    fireEvent.click(button);
+    expect((await screen.findByRole("alert")).textContent).toBe("digital_card_error");
+    await waitFor(() => expect(button).not.toBeDisabled());
+  });
+
+  it("shows the generic error when clipboard.writeText rejects", async () => {
+    const writeText = vi.fn().mockRejectedValue(new Error("clipboard unavailable"));
+    Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
+    render(<DigitalCardSection orderId="o1" initial={VIEW} />);
+    fireEvent.click(screen.getByRole("button", { name: "digital_card_copy" }));
+    expect((await screen.findByRole("alert")).textContent).toBe("digital_card_error");
+  });
 });

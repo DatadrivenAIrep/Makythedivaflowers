@@ -33,6 +33,12 @@ describe("digitalCardPatchSchema", () => {
   it("rejects a disallowed url", () => {
     expect(digitalCardPatchSchema.safeParse({ targetUrl: "https://evil.example.com" }).success).toBe(false);
   });
+  it("normalizes non-ASCII path segments to a percent-encoded href", () => {
+    expect(digitalCardPatchSchema.parse({ targetUrl: "https://tarjetas.makythedivaflowers.com/i/josé" }))
+      .toEqual({ targetUrl: "https://tarjetas.makythedivaflowers.com/i/jos%C3%A9" });
+    expect(digitalCardPatchSchema.parse({ targetUrl: "https://tarjetas.makythedivaflowers.com/i/🎉" }))
+      .toEqual({ targetUrl: "https://tarjetas.makythedivaflowers.com/i/%F0%9F%8E%89" });
+  });
 });
 
 describe("generateCardCode", () => {

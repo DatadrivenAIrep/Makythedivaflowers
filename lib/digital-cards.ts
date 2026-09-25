@@ -51,14 +51,21 @@ export function enableForOrder(orderId: string, gen: () => string = generateCard
   const db = getDb();
   if (!db.prepare("SELECT 1 FROM orders WHERE id = ?").get(orderId)) return null;
   const insert = db.prepare(
-    "INSERT INTO digital_cards (order_id, code, target_url, created_at, updated_at) VALUES (?, ?, NULL, ?, ?)",
+    "INSERT OR IGNORE INTO digital_cards (order_id, code, target_url, created_at, updated_at) VALUES (?, ?, NULL, ?, ?)",
   );
-  const taken = db.prepare("SELECT 1 FROM digital_cards WHERE code = ?");
   for (let attempt = 0; attempt < MAX_CODE_ATTEMPTS; attempt++) {
     const code = gen();
-    if (taken.get(code)) continue;
     const now = new Date().toISOString();
-    insert.run(orderId, code, now, now);
+    const result = insert.run(orderId, code, now, now);
+    if (result.changes === 0) {
+      // Either our order_id already has a row (another process won the
+      // check-then-insert race) or this code was already taken by someone
+      // else's order. Distinguish by re-selecting on order_id: if a row now
+      // exists for this order, that is the winner, whoever inserted it.
+      const winner = getByOrder(orderId);
+      if (winner) return winner;
+      continue;
+    }
     return getByOrder(orderId);
   }
   throw new Error(`could not allocate a unique digital card code for order ${orderId}`);

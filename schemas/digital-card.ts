@@ -23,5 +23,10 @@ export function isAllowedCardUrl(value: string): boolean {
 }
 
 export const digitalCardPatchSchema = z.object({
-  targetUrl: z.string().trim().refine(isAllowedCardUrl, "invalid_card_url").nullable(),
+  targetUrl: z
+    .string()
+    .trim()
+    .refine(isAllowedCardUrl, "invalid_card_url")
+    .transform((v) => new URL(v).href)
+    .nullable(),
 });

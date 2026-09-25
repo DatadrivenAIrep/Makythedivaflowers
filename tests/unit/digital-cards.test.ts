@@ -58,6 +58,18 @@ describe("enableForOrder", () => {
     enableForOrder("o1", () => "AAAAAAAA");
     expect(() => enableForOrder("o2", () => "AAAAAAAA")).toThrow(/digital card code/);
   });
+
+  it("returns the row inserted concurrently by another process instead of throwing", () => {
+    seed("o1");
+    // Simulate a second process winning a check-then-insert race: a row for
+    // this order already exists by the time our own INSERT OR IGNORE runs.
+    const now = new Date().toISOString();
+    getDb().prepare(
+      "INSERT INTO digital_cards (order_id, code, target_url, created_at, updated_at) VALUES (?, ?, NULL, ?, ?)",
+    ).run("o1", "Zz9yX8wV", now, now);
+    const card = enableForOrder("o1", () => "Ab3dE5fG")!;
+    expect(card.code).toBe("Zz9yX8wV");
+  });
 });
 
 describe("setTargetUrl", () => {
