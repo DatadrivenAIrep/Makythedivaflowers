@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { closeDb, getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import { GET } from "@/app/api/admin/orders/[id]/route";
+import { enableForOrder } from "@/lib/digital-cards";
 
 beforeEach(() => { vi.stubEnv("SQLITE_FILE", ":memory:"); runMigrations(); });
 afterEach(() => { closeDb(); vi.unstubAllEnvs(); });
@@ -33,4 +34,13 @@ it("returns order + customer + messages array", async () => {
 it("returns 404 for unknown id", async () => {
   const res = await GET(new Request("http://x"), { params: Promise.resolve({ id: "nope" }) });
   expect(res.status).toBe(404);
+});
+
+it("includes digitalCard (null, then the view once enabled)", async () => {
+  seed("d2");
+  let body = await (await GET(new Request("http://x"), { params: Promise.resolve({ id: "d2" }) })).json();
+  expect(body.digitalCard).toBeNull();
+  enableForOrder("d2", () => "Ab3dE5fG");
+  body = await (await GET(new Request("http://x"), { params: Promise.resolve({ id: "d2" }) })).json();
+  expect(body.digitalCard).toMatchObject({ code: "Ab3dE5fG", targetUrl: null });
 });

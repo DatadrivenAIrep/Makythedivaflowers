@@ -131,7 +131,7 @@ export type Order = {
 };
 
 export type OrderChangeKind =
-  | "created" | "edit" | "payment" | "fulfillment" | "cancel" | "note" | "reprint";
+  | "created" | "edit" | "payment" | "fulfillment" | "cancel" | "note" | "reprint" | "digital_card";
 
 export type FieldDiff = {
   field: string; // machine key, e.g. "fulfillment.address.street1"

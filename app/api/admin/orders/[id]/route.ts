@@ -7,6 +7,7 @@ import { listOrderHistory } from "@/lib/order-history";
 import { orderBalanceCents } from "@/lib/order-balance";
 import { editOrder, type OrderEditPatch } from "@/lib/order-edit";
 import { requireAdmin } from "@/lib/admin-auth";
+import { digitalCardView, getByOrder as getDigitalCard } from "@/lib/digital-cards";
 
 export const runtime = "nodejs";
 
@@ -22,7 +23,12 @@ export async function GET(
     : null;
   const messages = recentMessagesForOrder(id, 50);
   const history = await listOrderHistory(id);
-  return NextResponse.json({ order, customer, messages, history, balanceCents: orderBalanceCents(order) });
+  const card = getDigitalCard(id);
+  return NextResponse.json({
+    order, customer, messages, history,
+    balanceCents: orderBalanceCents(order),
+    digitalCard: card ? digitalCardView(card) : null,
+  });
 }
 
 const addressSchema = z.object({
