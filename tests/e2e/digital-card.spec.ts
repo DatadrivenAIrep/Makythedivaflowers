@@ -15,7 +15,7 @@ test("an order's digital card link prepares, then redirects", async ({ page }) =
   // pre-existing on this branch (confirmed by running admin-intake.spec.ts,
   // which fails the same way). Selectors below use the actual English text.
   await page.click("button:has-text('Walk-in')");
-  await page.fill("input[placeholder='Phone']", "5165550300");
+  await page.fill("input[placeholder='Phone']", "5165550371");
   await page.fill("input[placeholder='Name']", "E2E Digital Card");
   await page.click("button:has-text('Delivery')");
   await page.fill("input[placeholder='Recipient']", "Raymond");
