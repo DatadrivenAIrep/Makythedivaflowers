@@ -13,8 +13,10 @@ import { resolveLine } from "./product-lookup";
 import AdminButton from "./AdminButton";
 import OrderEditForm from "./OrderEditForm";
 import OrderHistoryList from "./OrderHistoryList";
+import DigitalCardSection from "./DigitalCardSection";
 import type { Order, OrderChange } from "@/types/order";
 import type { OrderEditPatch } from "@/lib/order-edit";
+import type { DigitalCardView } from "@/types/digital-card";
 
 type Message = {
   id: string; channel: string; template: string; locale: string;
@@ -27,6 +29,7 @@ type DetailResp = {
   messages: Message[];
   history?: OrderChange[];
   balanceCents?: number;
+  digitalCard?: DigitalCardView | null;
 };
 
 type Props = {
@@ -265,6 +268,8 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
             <div className="mt-2 rounded bg-ink/5 p-2 text-xs italic">&quot;{f.cardMessage}&quot;</div>
           )}
         </section>
+
+        <DigitalCardSection key={data.order.id} orderId={orderId} initial={data.digitalCard ?? null} />
 
         <section className="mb-3 rounded border border-ink/10 bg-bone p-3 text-sm">
           <div className="mb-2 text-xs uppercase tracking-wide text-ink/50">{t("items", { count: order.lines.length })}</div>
