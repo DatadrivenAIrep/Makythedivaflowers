@@ -17,6 +17,14 @@ function card(html: string) {
   return body.slice(body.indexOf('class="card-row"'));
 }
 
+// One panel of the tri-fold card, e.g. panel(html, "inside-msg").
+function panel(html: string, cls: string) {
+  const row = card(html);
+  const start = row.indexOf(`class="card-panel ${cls}"`);
+  const next = row.indexOf('class="card-panel', start + 1);
+  return row.slice(start, next === -1 ? undefined : next);
+}
+
 function order(locale: "es" | "en", id = "do_dc01"): Order {
   return {
     id,
@@ -39,20 +47,30 @@ function order(locale: "es" | "en", id = "do_dc01"): Order {
 }
 
 describe("buildSheetHtml with a digital card", () => {
-  it("prints the digital QR and the Spanish caption", async () => {
-    const c = card(await buildSheetHtml(order("es"), { digitalCardUrl: CARD_URL }));
-    expect(c).toContain(`src="${await qrSvgDataUri(CARD_URL)}"`);
-    expect(c).toContain("Escanea para abrir tu sorpresa");
-    expect(c).not.toContain(getQrWebsiteDataUri());
+  it("puts the digital QR and the Spanish caption in the message panel, instead of the message", async () => {
+    const html = await buildSheetHtml(order("es"), { digitalCardUrl: CARD_URL });
+    const msg = panel(html, "inside-msg");
+    expect(msg).toContain(`src="${await qrSvgDataUri(CARD_URL)}"`);
+    expect(msg).toContain("Escanea para abrir tu sorpresa");
+    expect(msg).not.toContain("Feliz 50");
+  });
+  it("keeps the website QR on the cover, with no caption", async () => {
+    const html = await buildSheetHtml(order("es"), { digitalCardUrl: CARD_URL });
+    const cover = panel(html, "brand-cover");
+    expect(cover).toContain(`src="${getQrWebsiteDataUri()}"`);
+    expect(cover).not.toContain(await qrSvgDataUri(CARD_URL));
+    expect(cover).not.toContain("sorpresa");
   });
   it("uses the English caption for English orders", async () => {
-    const c = card(await buildSheetHtml(order("en"), { digitalCardUrl: CARD_URL }));
-    expect(c).toContain("Scan to open your surprise");
+    const msg = panel(await buildSheetHtml(order("en"), { digitalCardUrl: CARD_URL }), "inside-msg");
+    expect(msg).toContain("Scan to open your surprise");
   });
-  it("keeps the website QR and no caption without one", async () => {
-    const c = card(await buildSheetHtml(order("es")));
-    expect(c).toContain(`src="${getQrWebsiteDataUri()}"`);
-    expect(c).not.toContain("qr-caption");
+  it("prints the customer's message and no digital QR without one", async () => {
+    const html = await buildSheetHtml(order("es"));
+    const msg = panel(html, "inside-msg");
+    expect(msg).toContain("Feliz 50");
+    expect(msg).not.toContain("msg-qr");
+    expect(panel(html, "brand-cover")).toContain(`src="${getQrWebsiteDataUri()}"`);
   });
 });
 
@@ -73,11 +91,11 @@ describe("buildOrderSheetHtml", () => {
 
   it("uses the order's digital card when enabled", async () => {
     enableForOrder("do_dc01", () => "Ab3dE5fG");
-    const c = card(await buildOrderSheetHtml(order("es")));
-    expect(c).toContain(`src="${await qrSvgDataUri(CARD_URL)}"`);
+    const msg = panel(await buildOrderSheetHtml(order("es")), "inside-msg");
+    expect(msg).toContain(`src="${await qrSvgDataUri(CARD_URL)}"`);
   });
-  it("falls back to the website QR otherwise", async () => {
-    const c = card(await buildOrderSheetHtml(order("es")));
-    expect(c).toContain(`src="${getQrWebsiteDataUri()}"`);
+  it("prints the customer's message otherwise", async () => {
+    const msg = panel(await buildOrderSheetHtml(order("es")), "inside-msg");
+    expect(msg).toContain("Feliz 50");
   });
 });

@@ -221,12 +221,6 @@ export function getPrintStyles(): string {
       box-shadow: 0 1pt 4pt rgba(14,13,12,0.12); line-height: 0;
     }
     .brand-cover .qr-img { width: 0.8in; height: 0.8in; display: block; }
-    /* Digital-card caption under the QR. The chip sets line-height: 0 for the
-       image, so the caption restores it. */
-    .brand-cover .qr-caption {
-      line-height: 1.15; margin-top: 3pt; max-width: 0.8in;
-      font-size: 6.5pt; text-align: center; color: #0E0D0C;
-    }
     .card-brand { position: relative; z-index: 2; }
     .card-brand .name {
       font-family: var(--font-display); font-size: 34pt; font-weight: 600;
@@ -286,6 +280,18 @@ export function getPrintStyles(): string {
     .inside-msg .text.short { font-size: 16pt; }
     .inside-msg .text.med { font-size: 13pt; }
     .inside-msg .text.long { font-size: 11pt; }
+    /* Digital card: its QR takes the message's place, large enough to scan
+       from arm's length, on white for contrast. */
+    .inside-msg .msg-qr {
+      background: #fff; border-radius: 4pt; padding: 6pt; line-height: 0;
+      box-shadow: 0 1pt 4pt rgba(14,13,12,0.12);
+    }
+    .inside-msg .msg-qr-img { width: 1.6in; height: 1.6in; display: block; }
+    .inside-msg .msg-qr-caption {
+      font-family: var(--font-display); font-style: italic;
+      font-size: 13pt; line-height: 1.3; color: var(--ink);
+      margin-top: 10pt; font-variation-settings: "opsz" 96;
+    }
 
     /* Panel 3 (right): logo lockup. The source logo has a flat white
        background (no alpha), so we wrap it in a white card with soft

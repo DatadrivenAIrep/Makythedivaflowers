@@ -318,17 +318,11 @@ function CoverRecipient({ order }: { order: Order }) {
   );
 }
 
-function BrandCoverPanel({ order, qrUri, digital }: { order: Order; qrUri: string; digital: boolean }) {
-  const scanLine = order.locale === "en" ? "Scan to open your surprise" : "Escanea para abrir tu sorpresa";
+function BrandCoverPanel({ order, qrUri }: { order: Order; qrUri: string }) {
   return (
     <div className="card-panel brand-cover">
       <div className="qr-chip">
-        <img
-          className="qr-img"
-          src={qrUri}
-          alt={digital ? scanLine : "Escanea para visitar makythedivaflowers.com"}
-        />
-        {digital && <div className="qr-caption">{scanLine}</div>}
+        <img className="qr-img" src={qrUri} alt="Escanea para visitar makythedivaflowers.com" />
       </div>
       <div className="card-brand">
         <div className="name">maky</div>
@@ -347,7 +341,30 @@ function classifyMessageLength(msg: string | undefined): "short" | "med" | "long
   return "long";
 }
 
-function InsideMessagePanel({ message }: { message: string | undefined }) {
+// With a digital card the inside panel carries its QR instead of the written
+// message: the card itself is the message.
+function InsideMessagePanel({
+  message,
+  digitalQrUri,
+  locale,
+}: {
+  message: string | undefined;
+  digitalQrUri?: string;
+  locale: Order["locale"];
+}) {
+  if (digitalQrUri) {
+    const scanLine = locale === "en" ? "Scan to open your surprise" : "Escanea para abrir tu sorpresa";
+    return (
+      <div className="card-panel inside-msg">
+        <div className="orn-top">❀</div>
+        <div className="msg-qr">
+          <img className="msg-qr-img" src={digitalQrUri} alt={scanLine} />
+        </div>
+        <div className="msg-qr-caption">{scanLine}</div>
+        <div className="orn-bot">❀</div>
+      </div>
+    );
+  }
   const trimmed = message?.trim();
   if (!trimmed) {
     return (
@@ -393,22 +410,24 @@ function LogoPanel({ logoUri }: { logoUri: string }) {
   );
 }
 
-function CardRow({ order, logoUri, qrUri, digital }: { order: Order; logoUri: string; qrUri: string; digital: boolean }) {
-  // Card 1: brand cover + recipient + QR · Card 2: logo · Card 3: message.
+type QrUris = { websiteQrUri: string; digitalQrUri?: string };
+
+function CardRow({ order, logoUri, websiteQrUri, digitalQrUri }: { order: Order; logoUri: string } & QrUris) {
+  // Card 1: brand cover + recipient + website QR · Card 2: logo · Card 3: message (or the digital card's QR).
   return (
     <section className="card-row">
-      <BrandCoverPanel order={order} qrUri={qrUri} digital={digital} />
+      <BrandCoverPanel order={order} qrUri={websiteQrUri} />
       <LogoPanel logoUri={logoUri} />
-      <InsideMessagePanel message={order.fulfillment.cardMessage} />
+      <InsideMessagePanel message={order.fulfillment.cardMessage} digitalQrUri={digitalQrUri} locale={order.locale} />
     </section>
   );
 }
 
-function Sheet({ order, logoUri, qrUri, digital }: { order: Order; logoUri: string; qrUri: string; digital: boolean }) {
+function Sheet({ order, logoUri, websiteQrUri, digitalQrUri }: { order: Order; logoUri: string } & QrUris) {
   return (
     <div className="sheet">
       <Worksheet order={order} />
-      <CardRow order={order} logoUri={logoUri} qrUri={qrUri} digital={digital} />
+      <CardRow order={order} logoUri={logoUri} websiteQrUri={websiteQrUri} digitalQrUri={digitalQrUri} />
     </div>
   );
 }
@@ -434,10 +453,12 @@ export type SheetOptions = { digitalCardUrl?: string };
 export async function buildSheetHtml(order: Order, opts: SheetOptions = {}): Promise<string> {
   const renderToStaticMarkup = await loadRenderToStaticMarkup();
   const logoUri = getLogoDataUri();
-  const digital = Boolean(opts.digitalCardUrl);
-  const qrUri = opts.digitalCardUrl ? await qrSvgDataUri(opts.digitalCardUrl) : getQrWebsiteDataUri();
+  const websiteQrUri = getQrWebsiteDataUri();
+  const digitalQrUri = opts.digitalCardUrl ? await qrSvgDataUri(opts.digitalCardUrl) : undefined;
   return htmlDocument(
-    renderToStaticMarkup(<Sheet order={order} logoUri={logoUri} qrUri={qrUri} digital={digital} />),
+    renderToStaticMarkup(
+      <Sheet order={order} logoUri={logoUri} websiteQrUri={websiteQrUri} digitalQrUri={digitalQrUri} />,
+    ),
     order.locale,
   );
 }
