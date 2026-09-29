@@ -45,7 +45,7 @@ function MegaMenuImpl({ locale, label }: Props) {
             <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-mute-500">
               {locale === "es" ? "Por tipo" : "By type"}
             </p>
-            <div className="grid grid-cols-7 gap-3">
+            <div className="grid grid-cols-8 gap-3">
               {CATS.map((c) => (
                 <Link
                   role="menuitem"
