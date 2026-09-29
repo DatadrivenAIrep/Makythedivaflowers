@@ -73,6 +73,14 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["@phosphor-icons/react", "framer-motion"],
     staleTimes: { dynamic: 0 },
+    // Turbopack runs PostCSS/Tailwind in a helper Node process that has to
+    // connect back to the build over a local socket. Since late September 2026
+    // Hostinger's build environment stops that: the helper exits and the build
+    // dies on the first CSS file with "node process exited before we could
+    // connect to it with exit status: 0". Worker threads do the same work
+    // inside the build process, so nothing has to connect. Reproduce with
+    // `sandbox-exec` denying outbound loopback before removing this.
+    turbopackPluginRuntimeStrategy: "workerThreads",
   },
 };
 
