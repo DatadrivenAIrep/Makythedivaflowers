@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import type { Order } from "@/types/order";
 import { buildInvoiceModel } from "@/lib/invoice";
+import { PRODUCTS } from "@/data/products";
 
 const NOW = new Date("2026-09-22T15:00:00Z");
 
@@ -46,9 +47,15 @@ describe("buildInvoiceModel", () => {
   });
 
   it("resolves catalog lines with variant and add-ons, and custom lines", () => {
+    // Line prices are resolved from the catalog, so the expectation reads them
+    // from it too instead of pinning today's price.
+    const table = PRODUCTS.find((p) => p.id === "p-arr-b1-01")!;
+    const unit =
+      table.variants.find((v) => v.id === "standard")!.priceCents +
+      table.addOns!.find((a) => a.id === "candles")!.priceCents;
     const m = buildInvoiceModel(order(), { now: NOW });
     expect(m.lines).toEqual([
-      { title: "Abundant Table — Standard", addOns: ["Add taper candle pair"], qty: 2, unitCents: 13400, amountCents: 26800 },
+      { title: "Abundant Table — Standard", addOns: ["Add taper candle pair"], qty: 2, unitCents: unit, amountCents: unit * 2 },
       { title: "Custom sympathy spray", addOns: [], qty: 1, unitCents: 15000, amountCents: 15000 },
     ]);
   });

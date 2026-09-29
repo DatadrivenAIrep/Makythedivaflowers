@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import os from "node:os";
+import { PRODUCTS } from "@/data/products";
 
 const createPI = vi.fn();
 vi.mock("@/lib/stripe-server", () => ({
@@ -33,7 +34,7 @@ function makeReq(body: unknown) {
 
 const validBody = {
   locale: "en",
-  // Real product+variant from data/products.ts: A Thousand Heartbeats, standard ($191).
+  // Real product+variant from data/products.ts: A Thousand Heartbeats, standard.
   lines: [
     { productId: "p-arr-m01", variantId: "standard", addOnIds: [], qty: 1 },
   ],
@@ -163,11 +164,13 @@ describe("POST /api/checkout/intent", () => {
         },
       },
     }));
-    // The product is $191 (p-arr-m01 standard). Pickup => no delivery fee.
+    // p-arr-m01 standard, read from the catalog so a price change does not break
+    // this test. Pickup => no delivery fee.
     // Tax is 8.625% of (subtotal + delivery).
-    // Expected total: 19100 + 0 + round(19100 * 0.08625) = 19100 + 1647 = 20747
+    const subtotal = PRODUCTS.find((p) => p.id === "p-arr-m01")!
+      .variants.find((v) => v.id === "standard")!.priceCents;
     const [params] = createPI.mock.calls[0];
-    expect(params.amount).toBe(20747);
+    expect(params.amount).toBe(subtotal + Math.round(subtotal * 0.08625));
   });
 
   it("ignores zip_not_in_zone for pickup orders even if address-shaped data is sent", async () => {
