@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import type { Product } from "@/types/product";
 import type { Locale } from "@/types/locale";
 import { formatMoneyCents } from "@/lib/format";
+import { baseSizeLabel } from "@/lib/variant-measure";
 import { cn } from "@/lib/cn";
 
 type Props = {
@@ -19,6 +20,7 @@ function VariantChipsImpl({ product, locale, value, onChange }: Props) {
     <div className="flex flex-wrap gap-2">
       {product.variants.map((v) => {
         const selected = v.id === value;
+        const base = baseSizeLabel(product, v);
         return (
           <div key={v.id} className="flex flex-col gap-1">
             {v.id === "lush" && product.variants.length > 1 && (
@@ -40,6 +42,11 @@ function VariantChipsImpl({ product, locale, value, onChange }: Props) {
                 {formatMoneyCents(v.priceCents, locale)}
               </span>
             </button>
+            {base && (
+              <small className="text-[11px] text-ink/60 leading-snug">
+                {base[locale]}
+              </small>
+            )}
             {v.subtitle && (
               <small className="text-[11px] text-ink/60 leading-snug">
                 {v.subtitle[locale]}
