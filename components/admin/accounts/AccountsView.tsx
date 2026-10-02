@@ -1,6 +1,6 @@
 // components/admin/accounts/AccountsView.tsx
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { ArrowLeft, Plus } from "@phosphor-icons/react/dist/ssr";
@@ -28,23 +28,44 @@ export default function AccountsView({ locale, initialAccounts, initialUpcoming 
   const [busy, setBusy] = useState(false);
   const [creating, setCreating] = useState(false);
 
-  async function refresh(f: AccountFilter = filter, query: string = q) {
-    const res = await fetch(`/api/admin/accounts?filter=${f}&q=${encodeURIComponent(query)}`, { cache: "no-store" });
-    if (!res.ok) return;
-    const d = (await res.json()) as { accounts: AccountListItem[]; upcoming: UpcomingSend[] };
-    setAccounts(d.accounts);
-    setUpcoming(d.upcoming);
+  const [flash, setFlash] = useState<{ ok: boolean; text: string } | null>(null);
+  const reqId = useRef(0);
+  const debounce = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  async function refresh(f: AccountFilter = filter, query: string = q): Promise<boolean> {
+    const id = ++reqId.current;
+    try {
+      const res = await fetch(`/api/admin/accounts?filter=${f}&q=${encodeURIComponent(query)}`, { cache: "no-store" });
+      if (id !== reqId.current) return true;
+      if (!res.ok) { setFlash({ ok: false, text: t("error_generic") }); return false; }
+      const d = (await res.json()) as { accounts: AccountListItem[]; upcoming: UpcomingSend[] };
+      if (id !== reqId.current) return true;
+      setAccounts(d.accounts);
+      setUpcoming(d.upcoming);
+      return true;
+    } catch {
+      if (id === reqId.current) setFlash({ ok: false, text: t("error_generic") });
+      return false;
+    }
   }
 
   async function sendAction(id: string, action: "sendNow" | "skip") {
     setBusy(true);
+    setFlash(null);
     try {
-      await fetch(`/api/admin/accounts/sends/${id}`, {
+      const res = await fetch(`/api/admin/accounts/sends/${id}`, {
         method: "PATCH",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(action === "skip" ? { skip: true } : { sendNow: true }),
       });
+      if (!res.ok) {
+        setFlash({ ok: false, text: t("error_generic") });
+      } else {
+        setFlash({ ok: true, text: action === "skip" ? t("send_status_skipped") : t("sent_ok") });
+      }
       await refresh();
+    } catch {
+      setFlash({ ok: false, text: t("error_generic") });
     } finally {
       setBusy(false);
     }
@@ -67,6 +88,7 @@ export default function AccountsView({ locale, initialAccounts, initialUpcoming 
       </div>
 
       <UpcomingSends locale={locale} rows={upcoming} busy={busy} onAction={sendAction} />
+      {flash && <p className={`mb-3 text-sm ${flash.ok ? "text-success" : "text-error"}`}>{flash.text}</p>}
 
       <div className="mb-3 flex flex-wrap items-center gap-2">
         {FILTERS.map((f) => (
@@ -76,7 +98,12 @@ export default function AccountsView({ locale, initialAccounts, initialUpcoming 
           </button>
         ))}
         <input value={q} placeholder={t("search_placeholder")} aria-label={t("search_placeholder")}
-          onChange={(e) => { setQ(e.target.value); void refresh(filter, e.target.value); }}
+          onChange={(e) => {
+            const v = e.target.value;
+            setQ(v);
+            if (debounce.current) clearTimeout(debounce.current);
+            debounce.current = setTimeout(() => { void refresh(filter, v); }, 200);
+          }}
           className="ml-auto min-h-11 w-56 rounded-lg border border-ink/20 bg-white px-3 text-sm" />
       </div>
 
