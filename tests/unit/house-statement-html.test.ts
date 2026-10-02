@@ -28,6 +28,7 @@ describe("buildStatementHtml", () => {
     expect(html).not.toContain("<b>Roslyn</b>");
     expect(html).toContain('action="/s/AbCdEfGh/pay"');
     expect(html).toContain("Saldo pendiente");
+    expect(html).toContain('class="stamp open"');
     expect(html).toContain("Orden #1001 · Lobby");
     expect(html).toContain("Pago · Zelle");
     expect(html).toContain("$70");
@@ -40,7 +41,11 @@ describe("buildStatementHtml", () => {
   });
   it("paid: PAID stamp, settled line, no pay form", async () => {
     const html = await buildStatementHtml({ ...statement, status: "paid", settledCents: 7000 }, account, { today: "2026-10-05" });
-    expect(html).toContain("Pagado");
+    expect(html).toContain('class="stamp paid"');
+    expect(html).toContain(">Pagado<");
+    expect(html).toContain("Pagado / acreditado después de emitido");
+    expect(html).toContain("Saldo a pagar");
+    expect(html).not.toContain('class="stamp open"');
     expect(html).not.toContain("/pay");
   });
   it("justPaid shows the updating note while still open", async () => {
