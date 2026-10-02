@@ -56,7 +56,11 @@ export function resolveDefaults(json: string | null): PlanDefaults {
   } catch { return DEFAULT_PLAN; }
   const out: PlanDefaults = { ...DEFAULT_PLAN, reminderPlan: [...DEFAULT_PLAN.reminderPlan] };
   if (isCadence(raw.cadence)) out.cadence = raw.cadence;
-  if (Number.isInteger(raw.issueDay)) out.issueDay = raw.issueDay as number;
+  if (Number.isInteger(raw.issueDay)) {
+    const d = raw.issueDay as number;
+    const inRange = out.cadence === "monthly" ? d >= 1 && d <= 28 : d >= 0 && d <= 6;
+    if (inRange) out.issueDay = d;
+  }
   if (Number.isInteger(raw.termsDays) && (raw.termsDays as number) >= 0) out.termsDays = raw.termsDays as number;
   if (isChannel(raw.statementChannel)) out.statementChannel = raw.statementChannel;
   if (Array.isArray(raw.reminderPlan)) out.reminderPlan = parseReminderPlan(JSON.stringify(raw.reminderPlan));

@@ -21,6 +21,13 @@ describe("defaults", () => {
       .toEqual([{ offsetDays: -3, channel: "sms" }]);
     expect(parseReminderPlan(null)).toEqual([]);
   });
+  it("ignores an issueDay outside the range for the resolved cadence", () => {
+    expect(resolveDefaults('{"issueDay":31}').issueDay).toBe(1);
+    expect(resolveDefaults('{"issueDay":0}').issueDay).toBe(1);
+    expect(resolveDefaults('{"cadence":"weekly","issueDay":9}').issueDay).toBe(1);
+    expect(resolveDefaults('{"cadence":"weekly","issueDay":5}').issueDay).toBe(5);
+    expect(resolveDefaults('{"cadence":"monthly","issueDay":28}').issueDay).toBe(28);
+  });
 });
 
 describe("issue days", () => {
