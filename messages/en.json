@@ -1316,6 +1316,9 @@
     "payment_ach": "ACH",
     "payment_stripe": "Stripe",
     "payment_pending": "Pending",
+    "payment_account": "On account",
+    "account_pick": "Organization account",
+    "account_chip": "Linked account: {name}",
     "action_discard": "Discard",
     "action_save": "Save and print ticket",
     "action_saving": "Saving…",
@@ -1676,6 +1679,8 @@
     "cancel": "Cancel"
   },
   "admin_accounts": {
+    "account_search_placeholder": "Search account by name",
+    "account_no_results": "No active accounts match",
     "title": "Accounts",
     "subtitle": "Organizations on account: balance, statements and scheduled sends.",
     "back_to_dashboard": "Back to dashboard",

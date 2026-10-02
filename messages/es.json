@@ -1316,6 +1316,9 @@
     "payment_ach": "ACH",
     "payment_stripe": "Stripe",
     "payment_pending": "Pendiente",
+    "payment_account": "A cuenta",
+    "account_pick": "Cuenta de la organización",
+    "account_chip": "Cuenta vinculada: {name}",
     "action_discard": "Descartar",
     "action_save": "Guardar e imprimir ticket",
     "action_saving": "Guardando…",
@@ -1676,6 +1679,8 @@
     "cancel": "Cancelar"
   },
   "admin_accounts": {
+    "account_search_placeholder": "Buscar cuenta por nombre",
+    "account_no_results": "Sin cuentas activas con ese nombre",
     "title": "Cuentas",
     "subtitle": "Organizaciones con cuenta corriente: saldo, estados de cuenta y envíos programados.",
     "back_to_dashboard": "Volver al panel",

@@ -102,6 +102,27 @@ export default function IntakeForm({ products }: { products: Product[] }) {
   const [payment, setPayment] = useState<PaymentState>(() => ({ ...INITIAL_PAYMENT }));
   // Remounts PaymentBlock (and its typed deposit text) on reset / draft load.
   const [paymentKey, setPaymentKey] = useState(0);
+  const [linkedAccount, setLinkedAccount] = useState<{ id: string; name: string } | null>(null);
+
+  // A phone that belongs to a house-account contact preselects "A cuenta",
+  // unless staff already chose a paid method or typed a deposit.
+  const phoneDigits = customer.phone.replace(/\D/g, "");
+  useEffect(() => {
+    if (phoneDigits.length < 10) { setLinkedAccount(null); return; }
+    let cancelled = false;
+    fetch(`/api/admin/accounts/for-phone?phone=${phoneDigits}`, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : { account: null }))
+      .then((d: { account: { id: string; name: string } | null }) => {
+        if (cancelled) return;
+        setLinkedAccount(d.account);
+        if (d.account) {
+          setPayment((p) => (p.status === "pending" && !p.deposit ? { status: "account", accountId: d.account!.id, accountName: d.account!.name } : p));
+          setPaymentKey((k) => k + 1);
+        }
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [phoneDigits]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [draftId, setDraftId] = useState<string | null>(null);
@@ -441,10 +462,13 @@ export default function IntakeForm({ products }: { products: Product[] }) {
                 />
               </div>
               <div className="mt-4"><PaymentBlock key={paymentKey} value={payment} onChange={setPayment} totalCents={liveTotalCents} /></div>
-              <label className="block mt-4">
-                <span className="mb-1 block text-xs font-semibold">{t("gift_card_label")}</span>
-                <input value={giftCardCode} onChange={(e) => setGiftCardCode(e.target.value)} placeholder="DIVA-XXXX-XXXX" className="w-full rounded-lg border border-ink/20 px-3 py-2 font-mono" />
-              </label>
+              {linkedAccount && <p className="mt-2 text-xs text-mute-600">{t("account_chip", { name: linkedAccount.name })}</p>}
+              {payment.status !== "account" && (
+                <label className="block mt-4">
+                  <span className="mb-1 block text-xs font-semibold">{t("gift_card_label")}</span>
+                  <input value={giftCardCode} onChange={(e) => setGiftCardCode(e.target.value)} placeholder="DIVA-XXXX-XXXX" className="w-full rounded-lg border border-ink/20 px-3 py-2 font-mono" />
+                </label>
+              )}
             </SectionCard>
           </div>
         </div>
@@ -467,7 +491,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
               </button>
               <button
                 type="button"
-                disabled={submitting || lines.length === 0 || (fulfillment.method !== "pickup" && (customer.name.length === 0 || customer.phone.replace(/\D/g, "").length < 10))}
+                disabled={submitting || lines.length === 0 || (payment.status === "account" && !payment.accountId) || (fulfillment.method !== "pickup" && (customer.name.length === 0 || customer.phone.replace(/\D/g, "").length < 10))}
                 onClick={onSubmit}
                 className="px-7 py-3.5 rounded-full bg-ink text-bone font-display disabled:opacity-40"
               >
