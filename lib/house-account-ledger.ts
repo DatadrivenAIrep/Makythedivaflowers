@@ -189,10 +189,12 @@ export function recordCredit(i: { accountId: string; amountCents: number; note: 
 }
 
 /**
- * Signed. Never allocates to other orders. An order-bound adjustment (an edit
- * of an account order's total) keeps its own order's payment fields in sync:
- * covered → paid with amount_paid capped at the total (the excess is already
- * account credit through the negative adjustment); no longer covered → pending.
+ * Signed. An order-bound adjustment (an edit of an account order's total) keeps
+ * its own order's payment fields in sync: covered → paid, no longer covered → pending.
+ * When a lowered total caps amount_paid, the excess freed is applied to the account's
+ * OTHER open orders oldest-first, the way a cancel reversal applies freed money.
+ * A positive order-bound adjustment consumes any credit the account already had
+ * (oldest open order first, after its own order is reopened), the way a charge does.
  */
 export function recordAdjustment(i: { accountId: string; amountCents: number; orderId?: string; note: string; actor: string }): LedgerEntry {
   runMigrations();
@@ -200,23 +202,29 @@ export function recordAdjustment(i: { accountId: string; amountCents: number; or
   const note = assertNote(i.note);
   assertAccount(i.accountId);
   return tx(() => {
+    const balanceBefore = i.orderId && i.amountCents > 0 ? accountBalanceCents(i.accountId) : 0;
     const e = insertEntry({ accountId: i.accountId, kind: "adjustment", amountCents: i.amountCents, orderId: i.orderId, note, actor: i.actor })!;
-    if (i.orderId) syncOrderPaymentFields(i.orderId);
+    if (i.orderId) {
+      syncOrderPaymentFields(i.orderId, i.accountId, e.id, i.actor);
+      if (i.amountCents > 0 && balanceBefore < 0) applyToOrders(i.accountId, Math.min(-balanceBefore, i.amountCents), e.id, i.actor);
+    }
     recomputeSettlement(i.accountId);
     return e;
   });
 }
 
-function syncOrderPaymentFields(orderId: string): void {
+function syncOrderPaymentFields(orderId: string, accountId: string, entryId: string, actor: string): void {
   const db = getDb();
   const o = db.prepare("SELECT amount_paid_cents, total_cents, payment_status, fulfillment_status FROM orders WHERE id = ?")
     .get(orderId) as { amount_paid_cents: number; total_cents: number; payment_status: string; fulfillment_status: string } | undefined;
   if (!o || o.fulfillment_status === "canceled") return;
   const now = new Date().toISOString();
   if (o.amount_paid_cents >= o.total_cents) {
+    const excess = o.amount_paid_cents - o.total_cents; // measured before the cap
     db.prepare(
       `UPDATE orders SET payment_status = 'paid', paid_at = COALESCE(paid_at, ?), amount_paid_cents = ?, updated_at = ? WHERE id = ?`,
     ).run(now, o.total_cents, now, orderId);
+    if (excess > 0) applyToOrders(accountId, excess, entryId, actor, orderId);
   } else if (o.payment_status === "paid") {
     db.prepare("UPDATE orders SET payment_status = 'pending', paid_at = NULL, updated_at = ? WHERE id = ?").run(now, orderId);
   }

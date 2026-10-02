@@ -170,6 +170,35 @@ describe("adjustments, reversals, edits", () => {
     expect(order("o1002")).toMatchObject({ amount_paid_cents: 500, payment_status: "paid" });
     expect(accountBalanceCents(a.id)).toBe(-500);
   });
+
+  it("lowering then restoring a paid order's total leaves it paid and the balance at zero", () => {
+    const a = createAccount({ name: "Org" });
+    seedOrder({ id: "o1001", total: 1000, accountId: a.id, createdAt: "2026-09-10T12:00:00Z" });
+    recordCharge({ accountId: a.id, orderId: "o1001", amountCents: 1000, actor: "maky" });
+    recordPayment({ accountId: a.id, amountCents: 1000, method: "zelle", actor: "maky" });
+    getDb().prepare("UPDATE orders SET total_cents = 800 WHERE id = 'o1001'").run();
+    syncOrderTotal("o1001", 1000, 800, "maky");
+    expect(order("o1001")).toMatchObject({ amount_paid_cents: 800, payment_status: "paid" });
+    expect(accountBalanceCents(a.id)).toBe(-200);
+    getDb().prepare("UPDATE orders SET total_cents = 1000 WHERE id = 'o1001'").run();
+    syncOrderTotal("o1001", 800, 1000, "maky");
+    expect(order("o1001")).toMatchObject({ amount_paid_cents: 1000, payment_status: "paid" });
+    expect(accountBalanceCents(a.id)).toBe(0);
+  });
+
+  it("the excess freed by lowering a paid order's total pays the next open order", () => {
+    const a = createAccount({ name: "Org" });
+    seedOrder({ id: "o1001", total: 1000, accountId: a.id, createdAt: "2026-09-10T12:00:00Z" });
+    seedOrder({ id: "o1002", total: 500, accountId: a.id, createdAt: "2026-09-11T12:00:00Z" });
+    recordCharge({ accountId: a.id, orderId: "o1001", amountCents: 1000, actor: "maky" });
+    recordPayment({ accountId: a.id, amountCents: 1000, method: "cash", actor: "maky" }); // pays o1001
+    recordCharge({ accountId: a.id, orderId: "o1002", amountCents: 500, actor: "maky" });
+    getDb().prepare("UPDATE orders SET total_cents = 700 WHERE id = 'o1001'").run();
+    syncOrderTotal("o1001", 1000, 700, "maky");
+    expect(order("o1001")).toMatchObject({ amount_paid_cents: 700, payment_status: "paid" });
+    expect(order("o1002")).toMatchObject({ amount_paid_cents: 300, payment_status: "pending" });
+    expect(accountBalanceCents(a.id)).toBe(200); // = o1002's remaining due
+  });
 });
 
 describe("reversal deposits", () => {
