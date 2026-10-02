@@ -188,7 +188,12 @@ export function recordCredit(i: { accountId: string; amountCents: number; note: 
   });
 }
 
-/** Signed. Never allocates to other orders; an order-bound adjustment only re-checks its own order. */
+/**
+ * Signed. Never allocates to other orders. An order-bound adjustment (an edit
+ * of an account order's total) keeps its own order's payment fields in sync:
+ * covered → paid with amount_paid capped at the total (the excess is already
+ * account credit through the negative adjustment); no longer covered → pending.
+ */
 export function recordAdjustment(i: { accountId: string; amountCents: number; orderId?: string; note: string; actor: string }): LedgerEntry {
   runMigrations();
   if (!Number.isInteger(i.amountCents) || i.amountCents === 0) throw new Error("invalid_amount");
@@ -196,33 +201,46 @@ export function recordAdjustment(i: { accountId: string; amountCents: number; or
   assertAccount(i.accountId);
   return tx(() => {
     const e = insertEntry({ accountId: i.accountId, kind: "adjustment", amountCents: i.amountCents, orderId: i.orderId, note, actor: i.actor })!;
-    if (i.orderId) {
-      const now = new Date().toISOString();
-      getDb().prepare(
-        `UPDATE orders SET payment_status = 'paid', paid_at = COALESCE(paid_at, ?), updated_at = ?
-         WHERE id = ? AND payment_status = 'pending' AND fulfillment_status != 'canceled' AND amount_paid_cents >= total_cents`,
-      ).run(now, now, i.orderId);
-    }
+    if (i.orderId) syncOrderPaymentFields(i.orderId);
     recomputeSettlement(i.accountId);
     return e;
   });
 }
 
-/** Cancel hook: reverse the order's charge (+ its adjustments) once; free only money already applied to it. */
+function syncOrderPaymentFields(orderId: string): void {
+  const db = getDb();
+  const o = db.prepare("SELECT amount_paid_cents, total_cents, payment_status, fulfillment_status FROM orders WHERE id = ?")
+    .get(orderId) as { amount_paid_cents: number; total_cents: number; payment_status: string; fulfillment_status: string } | undefined;
+  if (!o || o.fulfillment_status === "canceled") return;
+  const now = new Date().toISOString();
+  if (o.amount_paid_cents >= o.total_cents) {
+    db.prepare(
+      `UPDATE orders SET payment_status = 'paid', paid_at = COALESCE(paid_at, ?), amount_paid_cents = ?, updated_at = ? WHERE id = ?`,
+    ).run(now, o.total_cents, now, orderId);
+  } else if (o.payment_status === "paid") {
+    db.prepare("UPDATE orders SET payment_status = 'pending', paid_at = NULL, updated_at = ? WHERE id = ?").run(now, orderId);
+  }
+}
+
+/** Signed net of every entry of `orderId` on `accountId` (charges, adjustments, reversals). */
+function orderNetOnAccount(orderId: string, accountId: string): { net: number; rows: LedgerEntry[] } {
+  const rows = entriesForOrder(orderId).filter((r) => r.accountId === accountId);
+  return { net: rows.reduce((s, r) => s + r.amountCents, 0), rows };
+}
+
+/** Cancel hook: reverse whatever the order still nets on its current account; free only money already applied to it. */
 export function reverseOrderCharge(orderId: string, actor: string): LedgerEntry | null {
   runMigrations();
   return tx(() => {
-    const rows = entriesForOrder(orderId);
-    if (rows.length === 0) return null;
-    if (rows.some((r) => r.kind === "reversal")) return null;
-    const sum = rows.filter((r) => r.kind === "charge" || r.kind === "adjustment").reduce((s, r) => s + r.amountCents, 0);
-    if (sum === 0) return null;
-    const accountId = rows[0].accountId;
+    const o = getDb().prepare("SELECT amount_paid_cents, total_cents, house_account_id FROM orders WHERE id = ?")
+      .get(orderId) as { amount_paid_cents: number; total_cents: number; house_account_id: string | null } | undefined;
+    if (!o?.house_account_id) return null;
+    const accountId = o.house_account_id;
+    const { net: sum } = orderNetOnAccount(orderId, accountId);
+    if (sum <= 0) return null;
     // Only money that reached this order THROUGH the account is freed. A cash
     // deposit taken before "Pasar a cuenta" never touched the ledger: the charge
     // was total − deposit, so deposit = total − S and account money = paid − deposit.
-    const o = getDb().prepare("SELECT amount_paid_cents, total_cents FROM orders WHERE id = ?").get(orderId) as { amount_paid_cents: number; total_cents: number } | undefined;
-    if (!o) return null;
     const freed = Math.max(0, Math.min(sum, o.amount_paid_cents + sum - o.total_cents));
     const e = insertEntry({ accountId, kind: "reversal", amountCents: -sum, orderId, note: "Orden cancelada", actor })!;
     if (freed > 0) applyToOrders(accountId, freed, e.id, actor, orderId);
@@ -284,17 +302,23 @@ export function removeOrderFromAccount(orderId: string, actor: string): LedgerEn
     const o = orderRow(orderId);
     if (!o.house_account_id) throw new Error("not_on_account");
     const accountId = o.house_account_id;
-    const rows = entriesForOrder(orderId);
+    // Only this account's rows: a re-move after an earlier remove leaves the
+    // previous account's (netted-out) rows behind, and they are not this decision.
+    const { net: sum, rows } = orderNetOnAccount(orderId, accountId);
+    if (sum <= 0) throw new Error("not_on_account");
     if (rows.some((r) => r.statementId)) throw new Error("already_billed");
-    if (rows.some((r) => r.kind === "reversal")) throw new Error("already_reversed");
-    const firstCharge = rows.find((r) => r.kind === "charge");
-    if (firstCharge) {
+    // Money the account already put into this order (paid beyond any pre-move
+    // deposit, which is total − S): removing would strand it.
+    const accountMoney = Math.max(0, o.amount_paid_cents + sum - o.total_cents);
+    if (accountMoney > 0) throw new Error("has_payments");
+    // The latest charge is the live one (a re-move to the same account appends a new charge).
+    const liveCharge = [...rows].reverse().find((r) => r.kind === "charge");
+    if (liveCharge) {
       const later = getDb().prepare(
         "SELECT 1 FROM house_account_entries WHERE account_id = ? AND kind IN ('payment','credit') AND created_at >= ? LIMIT 1",
-      ).get(accountId, firstCharge.createdAt);
+      ).get(accountId, liveCharge.createdAt);
       if (later) throw new Error("has_payments");
     }
-    const sum = rows.filter((r) => r.kind === "charge" || r.kind === "adjustment").reduce((s, r) => s + r.amountCents, 0);
     const now = new Date().toISOString();
     const e = insertEntry({ accountId, kind: "reversal", amountCents: -sum, orderId, note: "Quitada de cuenta", actor })!;
     getDb().prepare("UPDATE orders SET house_account_id = NULL, payment_method = NULL, updated_at = ? WHERE id = ?").run(now, orderId);

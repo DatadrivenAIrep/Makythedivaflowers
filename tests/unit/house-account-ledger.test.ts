@@ -5,7 +5,7 @@ import { runMigrations } from "@/lib/db-migrate";
 import { createAccount, accountBalanceCents, updateAccount } from "@/lib/house-account-storage";
 import {
   recordCharge, recordPayment, recordCredit, recordAdjustment, reverseOrderCharge, syncOrderTotal,
-  moveOrderToAccount, removeOrderFromAccount, recordStripeStatementPayment, listEntries,
+  moveOrderToAccount, removeOrderFromAccount, recordStripeStatementPayment, listEntries, entriesForOrder,
 } from "@/lib/house-account-ledger";
 import { recomputeSettlement, dueCents } from "@/lib/house-account-settlement";
 import { enqueue, getSend } from "@/lib/house-account-sends";
@@ -234,6 +234,61 @@ describe("move / remove", () => {
   });
 });
 
+describe("re-move, net reversal, account money", () => {
+  it("remove → move to a second account → cancel reverses on the second account only", () => {
+    const a = createAccount({ name: "Org A" });
+    const b = createAccount({ name: "Org B" });
+    seedOrder({ id: "o1001", total: 5000 });
+    moveOrderToAccount("o1001", a.id, "maky");
+    removeOrderFromAccount("o1001", "maky");
+    moveOrderToAccount("o1001", b.id, "maky");
+    getDb().prepare("UPDATE orders SET fulfillment_status = 'canceled' WHERE id = 'o1001'").run();
+    expect(reverseOrderCharge("o1001", "maky")).toMatchObject({ kind: "reversal", amountCents: -5000, accountId: b.id });
+    expect(listEntries(b.id).map((e) => [e.kind, e.amountCents])).toEqual([["charge", 5000], ["reversal", -5000]]);
+    expect(accountBalanceCents(b.id)).toBe(0);
+    expect(accountBalanceCents(a.id)).toBe(0);
+    const rows = entriesForOrder("o1001");
+    expect(rows.map((r) => r.accountId)).toEqual([a.id, a.id, b.id, b.id]);
+    expect(reverseOrderCharge("o1001", "maky")).toBeNull(); // nets to 0 now
+  });
+  it("remove refuses an order that already received account money", () => {
+    const a = createAccount({ name: "Org" });
+    seedOrder({ id: "o1001", total: 1000, accountId: a.id, createdAt: "2026-09-10T12:00:00Z" });
+    recordCharge({ accountId: a.id, orderId: "o1001", amountCents: 1000, actor: "maky" });
+    recordPayment({ accountId: a.id, amountCents: 1600, method: "cash", actor: "maky" }); // 600 credit
+    seedOrder({ id: "o1002", total: 400, accountId: a.id, createdAt: "2026-09-11T12:00:00Z" });
+    recordCharge({ accountId: a.id, orderId: "o1002", amountCents: 400, actor: "maky" }); // consumes 400 of the credit
+    expect(order("o1002")).toMatchObject({ amount_paid_cents: 400, payment_status: "paid" });
+    expect(() => removeOrderFromAccount("o1002", "maky")).toThrow("has_payments");
+    expect(order("o1002").house_account_id).toBe(a.id);
+  });
+});
+
+describe("order-bound adjustments keep order fields in sync", () => {
+  it("a paid account order whose total goes up returns to pending with the old amount paid", () => {
+    const a = createAccount({ name: "Org" });
+    seedOrder({ id: "o1001", total: 1000, accountId: a.id });
+    recordCharge({ accountId: a.id, orderId: "o1001", amountCents: 1000, actor: "maky" });
+    recordPayment({ accountId: a.id, amountCents: 1000, method: "cash", actor: "maky" });
+    expect(order("o1001").payment_status).toBe("paid");
+    getDb().prepare("UPDATE orders SET total_cents = 1500 WHERE id = 'o1001'").run();
+    syncOrderTotal("o1001", 1000, 1500, "maky");
+    expect(order("o1001")).toMatchObject({ payment_status: "pending", amount_paid_cents: 1000, paid_at: null });
+    expect(accountBalanceCents(a.id)).toBe(500);
+  });
+  it("a fully-paid order whose total goes down caps amount paid, stays paid, and leaves credit", () => {
+    const a = createAccount({ name: "Org" });
+    seedOrder({ id: "o1001", total: 1000, accountId: a.id });
+    recordCharge({ accountId: a.id, orderId: "o1001", amountCents: 1000, actor: "maky" });
+    recordPayment({ accountId: a.id, amountCents: 1000, method: "cash", actor: "maky" });
+    getDb().prepare("UPDATE orders SET total_cents = 800 WHERE id = 'o1001'").run();
+    syncOrderTotal("o1001", 1000, 800, "maky");
+    expect(order("o1001")).toMatchObject({ payment_status: "paid", amount_paid_cents: 800 });
+    expect(order("o1001").paid_at).toBeTruthy();
+    expect(accountBalanceCents(a.id)).toBe(-200);
+  });
+});
+
 describe("settlement", () => {
   it("one payment settles two cumulative statements at once and cancels their queue", () => {
     const a = createAccount({ name: "Org" });
@@ -258,6 +313,38 @@ describe("settlement", () => {
     getDb().prepare("UPDATE orders SET fulfillment_status = 'canceled' WHERE id = 'o1001'").run();
     reverseOrderCharge("o1001", "maky");
     expect(statement("s1").status).toBe("paid");
+  });
+  function billedS1WithUnbilledSecondOrder() {
+    const a = createAccount({ name: "Org" });
+    seedOrder({ id: "o1001", total: 5000, accountId: a.id, createdAt: "2026-09-10T12:00:00Z" });
+    recordCharge({ accountId: a.id, orderId: "o1001", amountCents: 5000, actor: "maky" });
+    seedStatement(a.id, "s1", "2026-09-30", 5000);
+    getDb().prepare("UPDATE house_account_entries SET statement_id = 's1' WHERE account_id = ?").run(a.id);
+    seedOrder({ id: "o1002", total: 3000, accountId: a.id, createdAt: "2026-10-01T12:00:00Z" });
+    recordCharge({ accountId: a.id, orderId: "o1002", amountCents: 3000, actor: "maky" });
+    return a;
+  }
+  it("cancelling an unbilled order leaves an older statement's due unchanged", () => {
+    const a = billedS1WithUnbilledSecondOrder();
+    getDb().prepare("UPDATE orders SET fulfillment_status = 'canceled' WHERE id = 'o1002'").run();
+    expect(reverseOrderCharge("o1002", "maky")).toMatchObject({ kind: "reversal", amountCents: -3000 });
+    expect(statement("s1")).toMatchObject({ status: "open", settledCents: 0 });
+    expect(dueCents(statement("s1"))).toBe(5000);
+    expect(accountBalanceCents(a.id)).toBe(5000);
+  });
+  it("removing an unbilled order leaves an older statement's due unchanged", () => {
+    const a = billedS1WithUnbilledSecondOrder();
+    expect(removeOrderFromAccount("o1002", "maky")).toMatchObject({ kind: "reversal", amountCents: -3000 });
+    expect(statement("s1")).toMatchObject({ status: "open", settledCents: 0 });
+    expect(dueCents(statement("s1"))).toBe(5000);
+    expect(accountBalanceCents(a.id)).toBe(5000);
+  });
+  it("a reversal of a BILLED order does settle that statement", () => {
+    const a = billedS1WithUnbilledSecondOrder();
+    getDb().prepare("UPDATE orders SET fulfillment_status = 'canceled' WHERE id = 'o1001'").run();
+    reverseOrderCharge("o1001", "maky");
+    expect(statement("s1")).toMatchObject({ status: "paid", settledCents: 5000 });
+    expect(accountBalanceCents(a.id)).toBe(3000);
   });
   it("a negative entry captured in the statement's own snapshot does not settle it", () => {
     const a = createAccount({ name: "Org" });

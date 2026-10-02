@@ -185,15 +185,16 @@ export function accountsDueToIssue(today: string): HouseAccount[] {
 
 export function voidStatement(id: string): Statement {
   runMigrations();
-  const s = getStatement(id);
-  if (!s) throw new Error("statement_not_found");
-  if (s.status === "void") return s;
-  if (s.status === "paid") throw new Error("statement_paid");
-  const latest = latestStatement(s.accountId);
-  if (latest && latest.id !== s.id) throw new Error("not_latest");
   const db = getDb();
   db.exec("BEGIN IMMEDIATE");
   try {
+    // Checked inside the write lock so a concurrent payment or issue cannot slip in between.
+    const s = getStatement(id);
+    if (!s) throw new Error("statement_not_found");
+    if (s.status === "void") { db.exec("COMMIT"); return s; }
+    if (s.status === "paid") throw new Error("statement_paid");
+    const latest = latestStatement(s.accountId);
+    if (latest && latest.id !== s.id) throw new Error("not_latest");
     db.prepare("UPDATE house_account_entries SET statement_id = NULL WHERE statement_id = ?").run(id);
     db.prepare("UPDATE house_account_statements SET status = 'void' WHERE id = ?").run(id);
     cancelForStatement(id);

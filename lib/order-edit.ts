@@ -120,8 +120,13 @@ export async function editOrder(
 
   // A changed total on an account order becomes a signed ledger adjustment.
   if (next.houseAccountId && next.totals.totalCents !== cur.totals.totalCents) {
-    const { syncOrderTotal } = await import("@/lib/house-account-ledger");
-    syncOrderTotal(orderId, cur.totals.totalCents, next.totals.totalCents, actor);
+    // The order row is already saved; a ledger failure is logged, not thrown, so the edit stands.
+    try {
+      const { syncOrderTotal } = await import("@/lib/house-account-ledger");
+      syncOrderTotal(orderId, cur.totals.totalCents, next.totals.totalCents, actor);
+    } catch (e) {
+      console.error(JSON.stringify({ event: "house_account_sync_failed", orderId, error: String(e) }));
+    }
   }
 
   const labels = changes.map((c) => c.label).join(", ");
