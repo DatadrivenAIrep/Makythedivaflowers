@@ -74,6 +74,11 @@ const payment = z.discriminatedUnion("status", [
       method: z.enum(["cash", "zelle", "card-terminal", "ach"]),
     }).optional(),
   }),
+  z.object({
+    status: z.literal("account"),
+    // Charged to a house account; the server validates the account is active.
+    accountId: z.string().min(1),
+  }),
 ]);
 
 export const intakeSchema = z.object({

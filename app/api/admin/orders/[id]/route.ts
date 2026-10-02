@@ -7,6 +7,8 @@ import { listOrderHistory } from "@/lib/order-history";
 import { orderBalanceCents } from "@/lib/order-balance";
 import { editOrder, type OrderEditPatch } from "@/lib/order-edit";
 import { requireAdmin } from "@/lib/admin-auth";
+import { getAccount } from "@/lib/house-account-storage";
+import { entriesForOrder } from "@/lib/house-account-ledger";
 import { digitalCardView, getByOrder as getDigitalCard } from "@/lib/digital-cards";
 
 export const runtime = "nodejs";
@@ -24,8 +26,12 @@ export async function GET(
   const messages = recentMessagesForOrder(id, 50);
   const history = await listOrderHistory(id);
   const card = getDigitalCard(id);
+  const acct = order.houseAccountId ? getAccount(order.houseAccountId) : null;
+  const houseAccount = acct
+    ? { id: acct.id, name: acct.name, billed: entriesForOrder(id).some((e) => e.kind === "charge" && !!e.statementId) }
+    : null;
   return NextResponse.json({
-    order, customer, messages, history,
+    order, customer, messages, history, houseAccount,
     balanceCents: orderBalanceCents(order),
     digitalCard: card ? digitalCardView(card) : null,
   });

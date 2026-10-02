@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
   WhatsappLogo, ArrowsClockwise, Check, CheckCircle,
-  Package, Truck, XCircle, X, Pencil, Eye, Printer, FileText, Storefront, Star, HandCoins,
+  Package, Truck, XCircle, X, Pencil, Eye, Printer, FileText, Storefront, Star, HandCoins, Buildings,
 } from "@phosphor-icons/react/dist/ssr";
 import { useTranslations, useLocale } from "next-intl";
 import { formatDateTime } from "@/lib/format-datetime";
@@ -14,6 +14,7 @@ import AdminButton from "./AdminButton";
 import OrderEditForm from "./OrderEditForm";
 import OrderHistoryList from "./OrderHistoryList";
 import DigitalCardSection from "./DigitalCardSection";
+import AccountSearch from "@/components/admin/accounts/AccountSearch";
 import type { Order, OrderChange } from "@/types/order";
 import type { OrderEditPatch } from "@/lib/order-edit";
 import type { DigitalCardView } from "@/types/digital-card";
@@ -30,6 +31,7 @@ type DetailResp = {
   history?: OrderChange[];
   balanceCents?: number;
   digitalCard?: DigitalCardView | null;
+  houseAccount?: { id: string; name: string; billed: boolean } | null;
 };
 
 type Props = {
@@ -63,6 +65,8 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
   const [depositText, setDepositText] = useState("");
   const [depositMethod, setDepositMethod] = useState<DepositMethod>("zelle");
   const [depositErr, setDepositErr] = useState<string | null>(null);
+  const [accountPickOpen, setAccountPickOpen] = useState(false);
+  const [accountErr, setAccountErr] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -145,6 +149,20 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
     } finally { setBusy(false); }
   }
 
+  async function accountCall(body: unknown): Promise<boolean> {
+    setBusy(true); setAccountErr(null);
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}/payment`, {
+        method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify(body),
+      });
+      if (!res.ok) { setAccountErr(t("account_error")); return false; }
+      const refreshed = await fetch(`/api/admin/orders/${orderId}`, { cache: "no-store" });
+      setData((await refreshed.json()) as DetailResp);
+      onChanged();
+      return true;
+    } finally { setBusy(false); }
+  }
+
   async function saveEdit(patch: OrderEditPatch) {
     setBusy(true);
     try {
@@ -186,6 +204,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
   const balance = data.balanceCents ?? order.totals.totalCents - amountPaid;
   // A pending order with money already collected carries a deposit.
   const hasDeposit = order.paymentStatus === "pending" && amountPaid > 0;
+  const onAccount = !!order.houseAccountId;
 
   return (
     <div className="fixed inset-0 z-20 flex" onClick={onClose}>
@@ -205,7 +224,14 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
           </div>
         </header>
 
-        {!editing && (order.amountPaidCents ?? 0) > 0 && (data.balanceCents ?? 0) !== 0 && (
+        {!editing && onAccount && data.houseAccount && (
+          <div className="mb-3 flex items-center justify-between gap-2 rounded bg-sky-50 px-3 py-2 text-sm font-semibold text-sky-800">
+            <span>{t("on_account", { name: data.houseAccount.name })}{balance > 0 && ` · ${money(balance)}`}</span>
+            <Link href={`/${locale}/admin/accounts/${data.houseAccount.id}`} className="underline">{t("view_account")}</Link>
+          </div>
+        )}
+
+        {!editing && !onAccount && (order.amountPaidCents ?? 0) > 0 && (data.balanceCents ?? 0) !== 0 && (
           <div className={`mb-3 flex items-center justify-between gap-2 rounded px-3 py-2 text-sm font-semibold ${
             (data.balanceCents ?? 0) > 0 ? "bg-amber-50 text-amber-800" : "bg-sky-50 text-sky-800"
           }`}>
@@ -354,6 +380,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
           <div className="mt-2 text-xs text-ink/60">
             {t("payment_label")}: {order.paymentStatus === "paid" ? t("paid_with", { method: order.paymentMethod ?? "?" })
               : order.paymentStatus === "refunded" ? t("payment_status.refunded")
+              : onAccount && order.paymentStatus === "pending" ? t("on_account", { name: data.houseAccount?.name ?? "" })
               : hasDeposit ? t("deposit_summary", { paid: money(amountPaid), balance: money(balance) })
               : t("payment_status.pending")}
             {order.paidAt && order.paymentStatus !== "refunded" && ` · ${formatDateTime(order.paidAt, locale)}`}
@@ -404,11 +431,11 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
 
         <footer className="sticky bottom-0 -mx-4 -mb-4 border-t border-ink/10 bg-bone p-3">
           <div className="flex flex-wrap gap-2">
-            {order.paymentStatus === "pending" && order.status !== "canceled" && !depositOpen && (
+            {order.paymentStatus === "pending" && order.status !== "canceled" && !depositOpen && !onAccount && (
               <AdminButton variant="secondary" icon={HandCoins} disabled={busy}
                 onClick={() => { setDepositErr(null); setDepositOpen(true); }}>{t("record_deposit")}</AdminButton>
             )}
-            {order.paymentStatus !== "paid" && (
+            {order.paymentStatus !== "paid" && !onAccount && (
               <>
                 <AdminButton variant="secondary" icon={ArrowsClockwise} disabled={busy}
                   onClick={() => call("POST", `/api/admin/orders/${order.id}/resend`, { kind: "payment_link" })}>{t("resend_link")}</AdminButton>
@@ -417,6 +444,12 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
                 <AdminButton variant="primary" icon={Check} disabled={busy}
                   onClick={() => call("PATCH", `/api/admin/orders/${order.id}/payment`, { method: "zelle" })}>{t("zelle")}</AdminButton>
               </>
+            )}
+            {order.paymentStatus === "pending" && order.status !== "canceled" && !onAccount && !accountPickOpen && (
+              <AdminButton variant="secondary" icon={Buildings} disabled={busy} onClick={() => { setAccountErr(null); setAccountPickOpen(true); }}>{t("move_to_account")}</AdminButton>
+            )}
+            {onAccount && order.paymentStatus === "pending" && order.status !== "canceled" && data.houseAccount && !data.houseAccount.billed && (
+              <AdminButton variant="secondary" icon={Buildings} disabled={busy} onClick={() => accountCall({ removeFromAccount: true })}>{t("remove_from_account")}</AdminButton>
             )}
             {order.status !== "delivered" && order.status !== "canceled" && (
               <>
@@ -478,6 +511,17 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
                   disabled={busy || !(parseFloat(depositText) > 0)} onClick={saveDeposit}>{t("save_deposit")}</AdminButton>
                 <AdminButton variant="secondary" disabled={busy} onClick={() => setDepositOpen(false)}>{t("back")}</AdminButton>
               </div>
+            </div>
+          )}
+          {accountErr && <p className="mt-2 text-xs text-error">{accountErr}</p>}
+          {accountPickOpen && (
+            <div className="mt-2 rounded border border-sky-300 bg-sky-50 p-3 text-xs">
+              <div className="mb-2 font-semibold text-sky-900">{t("account_pick")} · {t("balance_due")} {money(balance)}</div>
+              <AccountSearch autoFocus value={null} onSelect={async (a) => {
+                if (!a) return;
+                if (await accountCall({ moveToAccount: { accountId: a.id } })) setAccountPickOpen(false);
+              }} />
+              <div className="mt-2"><AdminButton variant="secondary" disabled={busy} onClick={() => setAccountPickOpen(false)}>{t("back")}</AdminButton></div>
             </div>
           )}
           {cancelOpen && (

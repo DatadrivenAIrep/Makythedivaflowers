@@ -131,7 +131,7 @@ the customer owes; negative = credit in their favor.
 | credits_cents | INTEGER NOT NULL | sum of negative non-payment entries snapshotted (as a positive number) |
 | payments_cents | INTEGER NOT NULL | sum of payment entries snapshotted (as a positive number) |
 | closing_cents | INTEGER NOT NULL | `opening + charges − credits − payments` = account balance at `period_end` |
-| settled_cents | INTEGER NOT NULL DEFAULT 0 | `min(closing, Σ|negative entries with created_at after period_end|)`, recomputed from the ledger after every entry |
+| settled_cents | INTEGER NOT NULL DEFAULT 0 | `min(closing, Σ|negative entries not captured by this statement's snapshot (unbilled or billed on a later statement)|)`, recomputed from the ledger after every entry |
 | status | TEXT NOT NULL | `open` / `paid` / `void` |
 | lines_json | TEXT NOT NULL | snapshot of the orders and other entries listed (see Statement content) |
 | created_at | TEXT NOT NULL | |
@@ -176,9 +176,10 @@ Index `(status, scheduled_for)`, index `(statement_id)`.
 - **Order edit** that changes `total_cents` on an account order inserts an
   `adjustment` for the delta (signed), `order_id` set. The original charge is
   never mutated, billed or not.
-- **Cancel** of an account order inserts a `reversal` of
-  `−(charge + adjustments for that order)` once (guarded by "no reversal
-  exists for this order"). Money already allocated to that order stays on the
+- **Cancel** of an account order inserts a `reversal` of the order's net on
+  its current account (charges + adjustments + reversals, signed), only when
+  that net is > 0 — so it happens once, and a remove followed by a re-move to
+  another account reverses only on the new account. Money already allocated to that order stays on the
   account as credit (the balance goes negative by that amount) and shows as
   "saldo a favor" on the next statement.
 - **Payment** (`−amount`) and **credit** (`−amount`, staff, note required):
@@ -192,16 +193,30 @@ Index `(status, scheduled_for)`, index `(statement_id)`.
   balance (it covers unbilled charges or becomes credit). The pure function
   `allocate(targets, amount)` does the arithmetic. (Credits inflate
   `amount_paid_cents` and therefore LTV by their amount; accepted.)
-- **Adjustment** (signed, staff with a required note, or the order-edit
-  delta): never allocates to orders. After an order-edit adjustment, the
-  order is marked `paid` if its `amount_paid_cents >= total_cents`.
+- **Adjustment**: never allocates to orders. A **manual** adjustment (staff,
+  required note) is positive only — an extra charge; to discount or write off,
+  staff uses a credit. Only the order-edit delta (`syncOrderTotal`) is signed,
+  with `order_id` set. After an order-edit adjustment the order's fields follow
+  its total: `amount_paid_cents >= total_cents` → `paid` (`paid_at` kept or
+  set) with `amount_paid_cents` capped at the total (the excess is already
+  account credit through the negative adjustment); `amount_paid_cents <
+  total_cents` on a `paid` order → back to `pending`, `paid_at = NULL`.
 - **Reversal** allocates only the *freed* money — the canceled order's
   `amount_paid_cents` — to the other open orders FIFO; the reversed charge
   itself never marks anything paid.
 - **Statement settlement** is derived, not incremented: after every entry,
   `recomputeSettlement(accountId)` (in `lib/house-account-settlement.ts`) sets each open statement's
-  `settled_cents = min(closing_cents, Σ|negative entries with created_at >
-  period_end 23:59:59 shop time|)`, and a statement whose `dueCents =
+  `settled_cents = min(closing_cents, Σ|counting negative entries|)`. A
+  negative entry captured by this statement or an earlier one is already
+  inside closing and never counts. Of the rest (unbilled, or billed on a later
+  statement): a `payment`, a `credit` and an `adjustment` without `order_id`
+  always count; a `reversal` or an `adjustment` with `order_id` counts only
+  when that order's `charge` (same account) was captured by this statement or
+  an earlier one — cancelling or removing an order nobody was billed for must
+  not reduce what an older statement says is due. Defining settlement by the
+  snapshot rather than by dates makes
+  a same-day payment after a manual issue count, while a payment captured in
+  the snapshot (already inside closing) never double-counts. A statement whose `dueCents =
   max(0, closing − settled)` reaches 0 becomes `paid` and its `scheduled`
   sends are canceled. Because `closing` is the cumulative balance, a single
   payment settles every older statement at once and no FIFO across
@@ -465,8 +480,9 @@ deposit field), method (`cash | zelle | ach | check | card-terminal`), note.
 Overpayment is allowed and becomes credit (balance goes negative).
 
 **Crédito / ajuste** modal: a toggle **Crédito** (amount > 0, stored as a
-negative `credit`, allocates to open orders) or **Ajuste** (signed amount,
-stored as `adjustment`, never allocates), plus a required note.
+negative `credit`, allocates to open orders) or **Ajuste** (amount > 0, an
+extra charge stored as a positive `adjustment`, never allocates), plus a
+required note.
 
 ### Intake (`components/admin/intake/PaymentBlock.tsx`, `IntakeForm.tsx`, `schemas/intake.ts`)
 
@@ -489,7 +505,11 @@ stored as `adjustment`, never allocates), plus a required note.
 
 - Account order: balance banner shows **A cuenta · {name}** with a link to the
   account; the **Liquidar** button, the deposit form and the payment-link
-  button are hidden (the account is where money is recorded).
+  button are hidden (the account is where money is recorded). The server
+  enforces it too: order-level payment actions (mark paid, deposit, settle
+  balance), payment links (`payment-link`, `resend` of `payment_link`) and
+  cancel-with-refund are refused with 409 `on_account` for an account order,
+  and a stale order checkout paid later is recorded as an account payment.
 - Pending order without account, not canceled: new action **Pasar a cuenta**
   (same account search). `PATCH /api/admin/orders/[id]/payment` with
   `{ moveToAccount: { accountId } }` → sets the fields and inserts a charge

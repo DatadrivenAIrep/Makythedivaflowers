@@ -44,6 +44,7 @@ export default function MetricsView({ locale, initial }: Props) {
     { key: "kpi_orders", value: String(k.orderCount) },
     { key: "kpi_aov", value: money(k.aovCents) },
     { key: "kpi_repeat_rate", value: `${k.repeatRatePct}%`, sub: t("kpi_repeat_rate_note") },
+    { key: "kpi_house_accounts", value: money(k.houseAccountsCents), sub: t("kpi_house_accounts_sub", { n: k.houseAccountsOverdueCount, amount: money(k.houseAccountsOverdueCents) }) },
   ];
 
   const productRows: RankRow[] = data.topProducts.map((p) => ({
@@ -82,7 +83,7 @@ export default function MetricsView({ locale, initial }: Props) {
 
       {error && <div className="mb-3 rounded bg-rose-50 p-3 text-sm text-rose-800">{t("empty")}</div>}
 
-      <div className="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <div className="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
         {kpis.map((c) => (
           <KpiCard key={c.key} label={t(c.key)} value={c.value} sub={c.sub} />
         ))}

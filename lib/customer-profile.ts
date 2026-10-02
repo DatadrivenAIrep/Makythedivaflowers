@@ -8,6 +8,7 @@ import {
   type ImportantDate,
   type PreferencesMap,
 } from "@/lib/customer-dates-storage";
+import { findAccountForCustomer } from "@/lib/house-account-storage";
 import type { Order } from "@/types/order";
 
 export type CustomerProfileData = {
@@ -17,6 +18,7 @@ export type CustomerProfileData = {
   orders: Order[];
   dates: ImportantDate[];
   preferences: PreferencesMap;
+  houseAccount?: { id: string; name: string };
 };
 
 export function getCustomerProfile(id: string, now: Date = new Date()): CustomerProfileData | null {
@@ -36,6 +38,7 @@ export function getCustomerProfile(id: string, now: Date = new Date()): Customer
       lastSeenAt: customer.lastSeenAt,
     },
   );
+  const acct = findAccountForCustomer(id);
   return {
     customer,
     metrics,
@@ -43,5 +46,6 @@ export function getCustomerProfile(id: string, now: Date = new Date()): Customer
     orders,
     dates: listDatesFor(id, now),
     preferences: listPreferencesFor(id),
+    ...(acct ? { houseAccount: { id: acct.id, name: acct.name } } : {}),
   };
 }

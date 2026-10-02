@@ -102,6 +102,53 @@ export default function IntakeForm({ products }: { products: Product[] }) {
   const [payment, setPayment] = useState<PaymentState>(() => ({ ...INITIAL_PAYMENT }));
   // Remounts PaymentBlock (and its typed deposit text) on reset / draft load.
   const [paymentKey, setPaymentKey] = useState(0);
+  // The gift-card field is hidden on account orders; drop any code typed earlier.
+  useEffect(() => { if (payment.status === "account" && giftCardCode) setGiftCardCode(""); }, [payment.status, giftCardCode]);
+  const [linkedAccount, setLinkedAccount] = useState<{ id: string; name: string } | null>(null);
+
+  // A phone that belongs to a house-account contact preselects "A cuenta",
+  // unless staff already chose a paid method or typed a deposit. The id of an
+  // auto-selected account is kept so that, if the phone changes to one with no
+  // account, the preselect is undone; a manual pick (AccountSearch) is never reverted.
+  const autoAccountRef = useRef<string | null>(null);
+  const phoneDigits = customer.phone.replace(/\D/g, "");
+  useEffect(() => {
+    function revertAuto() {
+      const autoId = autoAccountRef.current;
+      if (!autoId) return;
+      autoAccountRef.current = null;
+      setPayment((p) => {
+        if (p.status === "account" && p.accountId === autoId) {
+          setPaymentKey((k) => k + 1);
+          return { status: "pending" };
+        }
+        return p;
+      });
+    }
+    if (phoneDigits.length < 10) { setLinkedAccount(null); revertAuto(); return; }
+    let cancelled = false;
+    fetch(`/api/admin/accounts/for-phone?phone=${phoneDigits}`, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : { account: null }))
+      .then((d: { account: { id: string; name: string } | null }) => {
+        if (cancelled) return;
+        setLinkedAccount(d.account);
+        if (d.account) {
+          const acc = d.account;
+          setPayment((p) => {
+            if (p.status === "pending" && !p.deposit) {
+              autoAccountRef.current = acc.id;
+              setPaymentKey((k) => k + 1);
+              return { status: "account", accountId: acc.id, accountName: acc.name };
+            }
+            return p;
+          });
+        } else {
+          revertAuto();
+        }
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [phoneDigits]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [draftId, setDraftId] = useState<string | null>(null);
@@ -268,7 +315,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
         fulfillment: toOrderFulfillment(fulfillment),
         lines,
         totalsOverride: override,
-        giftCardCode: giftCardCode || undefined,
+        giftCardCode: payment.status === "account" ? undefined : (giftCardCode || undefined),
         promoCode: promo?.code || undefined,
         payment,
       };
@@ -441,10 +488,13 @@ export default function IntakeForm({ products }: { products: Product[] }) {
                 />
               </div>
               <div className="mt-4"><PaymentBlock key={paymentKey} value={payment} onChange={setPayment} totalCents={liveTotalCents} /></div>
-              <label className="block mt-4">
-                <span className="mb-1 block text-xs font-semibold">{t("gift_card_label")}</span>
-                <input value={giftCardCode} onChange={(e) => setGiftCardCode(e.target.value)} placeholder="DIVA-XXXX-XXXX" className="w-full rounded-lg border border-ink/20 px-3 py-2 font-mono" />
-              </label>
+              {linkedAccount && <p className="mt-2 text-xs text-mute-600">{t("account_chip", { name: linkedAccount.name })}</p>}
+              {payment.status !== "account" && (
+                <label className="block mt-4">
+                  <span className="mb-1 block text-xs font-semibold">{t("gift_card_label")}</span>
+                  <input value={giftCardCode} onChange={(e) => setGiftCardCode(e.target.value)} placeholder="DIVA-XXXX-XXXX" className="w-full rounded-lg border border-ink/20 px-3 py-2 font-mono" />
+                </label>
+              )}
             </SectionCard>
           </div>
         </div>
@@ -467,7 +517,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
               </button>
               <button
                 type="button"
-                disabled={submitting || lines.length === 0 || (fulfillment.method !== "pickup" && (customer.name.length === 0 || customer.phone.replace(/\D/g, "").length < 10))}
+                disabled={submitting || lines.length === 0 || (payment.status === "account" && !payment.accountId) || (fulfillment.method !== "pickup" && (customer.name.length === 0 || customer.phone.replace(/\D/g, "").length < 10))}
                 onClick={onSubmit}
                 className="px-7 py-3.5 rounded-full bg-ink text-bone font-display disabled:opacity-40"
               >

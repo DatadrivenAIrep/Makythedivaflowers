@@ -11,6 +11,10 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
   if (!order) {
     return NextResponse.json({ error: "not_found" }, { status: 404 });
   }
+  // An account order is paid through the account's statement, never by an order link.
+  if (order.houseAccountId) {
+    return NextResponse.json({ error: "on_account" }, { status: 409 });
+  }
   if (order.paymentStatus === "paid") {
     return NextResponse.json({ error: "already_paid" }, { status: 409 });
   }

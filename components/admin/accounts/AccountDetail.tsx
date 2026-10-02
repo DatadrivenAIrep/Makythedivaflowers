@@ -1,0 +1,141 @@
+"use client";
+import { useState } from "react";
+import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { ArrowLeft, HandCoins, Receipt, PauseCircle, PlayCircle, XCircle, PlusMinus } from "@phosphor-icons/react/dist/ssr";
+import AdminButton from "@/components/admin/dashboard/AdminButton";
+import OrderDetailDrawer from "@/components/admin/dashboard/OrderDetailDrawer";
+import type { AccountDetailData } from "@/lib/house-account-detail";
+import type { AccountStatus, SendChannel } from "@/types/house-account";
+import AccountStatusBadge from "./AccountStatusBadge";
+import PlanEditor, { type PlanPatch } from "./PlanEditor";
+import StatementsTable from "./StatementsTable";
+import LedgerTable from "./LedgerTable";
+import ContactsList from "./ContactsList";
+import SendsQueue from "./SendsQueue";
+import PaymentModal from "./PaymentModal";
+import EntryModal from "./EntryModal";
+
+type Props = { locale: string; initial: AccountDetailData };
+function money(c: number) { return `$${(Math.abs(c) / 100).toFixed(2)}`; }
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="mb-4 rounded-xl border border-ink/10 bg-bone p-4">
+      <h2 className="mb-3 text-xs uppercase tracking-wide text-ink/50">{title}</h2>
+      {children}
+    </section>
+  );
+}
+
+export default function AccountDetail({ locale, initial }: Props) {
+  const t = useTranslations("admin_accounts");
+  const [data, setData] = useState<AccountDetailData>(initial);
+  const [busy, setBusy] = useState(false);
+  const [flash, setFlash] = useState<{ ok: boolean; text: string } | null>(null);
+  const [payOpen, setPayOpen] = useState(false);
+  const [entryOpen, setEntryOpen] = useState(false);
+  const [openOrderId, setOpenOrderId] = useState<string | null>(null);
+  const { account } = data;
+  const overdue = data.statements.some((s) => s.status === "open" && s.dueCents > 0 && s.dueDate < new Date().toISOString().slice(0, 10));
+
+  async function refresh() {
+    const res = await fetch(`/api/admin/accounts/${account.id}`, { cache: "no-store" });
+    if (res.ok) setData((await res.json()) as AccountDetailData);
+  }
+
+  function errorText(json: { error?: string; reason?: string; send?: { error?: string } }): string {
+    switch (json.error) {
+      case "no_channel": return t("send_error_no_channel", { reason: json.reason ?? "" });
+      case "send_failed": return t("send_failed", { reason: json.send?.error ?? "" });
+      case "statement_paid": return t("void_error_paid");
+      case "not_latest": return t("void_error_not_latest");
+      default: return t("error_generic");
+    }
+  }
+
+  async function call(method: string, url: string, body?: unknown): Promise<Record<string, unknown> | null> {
+    setBusy(true); setFlash(null);
+    try {
+      const res = await fetch(url, { method, headers: { "content-type": "application/json" }, body: body === undefined ? undefined : JSON.stringify(body) });
+      const json = (await res.json().catch(() => ({}))) as Record<string, unknown>;
+      if (!res.ok) { setFlash({ ok: false, text: errorText(json as { error?: string }) }); return null; }
+      await refresh();
+      return json;
+    } catch {
+      setFlash({ ok: false, text: t("error_generic") });
+      return null;
+    } finally { setBusy(false); }
+  }
+
+  async function savePlan(patch: PlanPatch): Promise<boolean> {
+    const ok = (await call("PATCH", `/api/admin/accounts/${account.id}`, patch)) !== null;
+    if (ok) setFlash({ ok: true, text: t("saved") });
+    return ok;
+  }
+  async function setStatus(status: AccountStatus) {
+    if (status === "closed" && !window.confirm(t("close_confirm"))) return;
+    await call("PATCH", `/api/admin/accounts/${account.id}`, { status });
+  }
+  async function issueNow() {
+    const r = await call("POST", `/api/admin/accounts/${account.id}/statements`);
+    if (r && r.statement === null) setFlash({ ok: true, text: t("nothing_to_issue") });
+  }
+  async function sendStatement(sid: string, channel: SendChannel) {
+    const r = await call("POST", `/api/admin/accounts/statements/${sid}/send`, { channel });
+    if (r) setFlash({ ok: true, text: t("sent_ok") });
+  }
+  async function voidStatement(sid: string) {
+    await call("PATCH", `/api/admin/accounts/statements/${sid}`, { void: true });
+  }
+  async function sendAction(id: string, action: "sendNow" | "skip" | "reschedule", date?: string) {
+    const body = action === "skip" ? { skip: true } : action === "sendNow" ? { sendNow: true } : { scheduledFor: date };
+    await call("PATCH", `/api/admin/accounts/sends/${id}`, body);
+  }
+
+  const numbers = Object.fromEntries(data.statements.map((s) => [s.id, s.number]));
+
+  return (
+    <div className="mx-auto max-w-5xl">
+      <Link href={`/${locale}/admin/accounts`} className="mb-2 inline-flex items-center gap-1.5 text-sm text-rouge hover:underline">
+        <ArrowLeft size={15} weight="bold" /> {t("back_to_accounts")}
+      </Link>
+
+      <header className="mb-4 flex flex-wrap items-start gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-semibold">{account.name}</h1>
+            <AccountStatusBadge status={account.status} />
+            {overdue && <span className="rounded-full bg-rose-100 px-2 py-0.5 text-xs font-semibold text-rose-700">{t("overdue")}</span>}
+          </div>
+          <div className={`mt-1 text-lg tabular-nums ${data.balanceCents > 0 ? (overdue ? "text-rose-700" : "text-amber-800") : "text-ink/70"}`}>
+            {data.balanceCents < 0 ? t("credit_balance") : t("balance")}: <strong>{money(data.balanceCents)}</strong>
+          </div>
+        </div>
+        <div className="ml-auto flex flex-wrap gap-2">
+          <AdminButton variant="primary" icon={HandCoins} disabled={busy} onClick={() => setPayOpen(true)}>{t("record_payment")}</AdminButton>
+          <AdminButton variant="secondary" icon={PlusMinus} disabled={busy} onClick={() => setEntryOpen(true)}>{t("credit_or_adjustment")}</AdminButton>
+          <AdminButton variant="secondary" icon={Receipt} disabled={busy || account.status !== "active"} onClick={issueNow}>{t("issue_now")}</AdminButton>
+          {account.status === "active" && <AdminButton variant="secondary" icon={PauseCircle} disabled={busy} onClick={() => setStatus("paused")}>{t("pause")}</AdminButton>}
+          {account.status === "paused" && <AdminButton variant="secondary" icon={PlayCircle} disabled={busy} onClick={() => setStatus("active")}>{t("resume")}</AdminButton>}
+          {account.status !== "closed" && <AdminButton variant="danger" icon={XCircle} disabled={busy} onClick={() => setStatus("closed")}>{t("close_account")}</AdminButton>}
+        </div>
+      </header>
+      {flash && <p className={`mb-3 text-sm ${flash.ok ? "text-success" : "text-error"}`}>{flash.text}</p>}
+
+      <Section title={t("section_plan")}><PlanEditor key={account.updatedAt} account={account} busy={busy} onSave={savePlan} /></Section>
+      <Section title={t("section_statements")}>
+        <StatementsTable locale={locale} statements={data.statements} defaultChannel={account.statementChannel} busy={busy} onSend={sendStatement} onVoid={voidStatement} />
+      </Section>
+      <Section title={t("section_ledger")}><LedgerTable locale={locale} entries={data.entries} onOpenOrder={setOpenOrderId} /></Section>
+      <Section title={t("section_contacts")}>
+        <ContactsList locale={locale} accountId={account.id} contacts={data.contacts} busy={busy} onChanged={refresh} />
+      </Section>
+      <Section title={t("section_queue")}><SendsQueue locale={locale} sends={data.sends} numbers={numbers} busy={busy} onAction={sendAction} /></Section>
+
+      {payOpen && <PaymentModal accountId={account.id} onClose={() => setPayOpen(false)} onDone={async () => { setPayOpen(false); await refresh(); }} />}
+      {entryOpen && <EntryModal accountId={account.id} onClose={() => setEntryOpen(false)} onDone={async () => { setEntryOpen(false); await refresh(); }} />}
+      {openOrderId && <OrderDetailDrawer orderId={openOrderId} onClose={() => setOpenOrderId(null)} onChanged={refresh} />}
+    </div>
+  );
+}

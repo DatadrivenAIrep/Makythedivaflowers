@@ -56,7 +56,7 @@ function upsertSqlite(order: Order): void {
        fulfillment_status, payment_status, payment_method, paid_at,
        stripe_payment_intent_id, taken_by, internal_notes, sms_consent, sms_marketing_consent,
        stripe_checkout_session_id, gift_card_id, gift_card_cents,
-       promo_id, promo_code,
+       promo_id, promo_code, house_account_id,
        order_number, created_at, updated_at
      ) VALUES (
        @id, @locale, @source, @customer_id, @recipient_name, @recipient_phone,
@@ -66,7 +66,7 @@ function upsertSqlite(order: Order): void {
        @fulfillment_status, @payment_status, @payment_method, @paid_at,
        @stripe_payment_intent_id, @taken_by, @internal_notes, @sms_consent, @sms_marketing_consent,
        @stripe_checkout_session_id, @gift_card_id, @gift_card_cents,
-       @promo_id, @promo_code,
+       @promo_id, @promo_code, @house_account_id,
        @order_number, @created_at, @updated_at
      )
      ON CONFLICT(id) DO UPDATE SET
@@ -106,6 +106,7 @@ function upsertSqlite(order: Order): void {
        gift_card_cents=excluded.gift_card_cents,
        promo_id=excluded.promo_id,
        promo_code=excluded.promo_code,
+       house_account_id=excluded.house_account_id,
        order_number=COALESCE(excluded.order_number, order_number),
        updated_at=excluded.updated_at`,
   ).run(row);

@@ -192,6 +192,11 @@ export default function CustomerProfile({ locale, initial, suggestions }: Props)
           )}
           <SegmentBadge segment={metrics.segment} />
           {metrics.isVip && metrics.segment !== "vip" && <SegmentBadge segment="vip" />}
+          {data.houseAccount && (
+            <Link href={`/${locale}/admin/accounts/${data.houseAccount.id}`} className="rounded-full bg-rouge/10 px-2 py-0.5 text-xs font-semibold text-rouge hover:bg-rouge/20">
+              {t("house_account_badge", { name: data.houseAccount.name })}
+            </Link>
+          )}
         </div>
         <div className="mt-2 text-sm text-ink/70">
           <span className="mr-2 text-xs uppercase tracking-wide text-ink/50">{t("profile_contact")}</span>

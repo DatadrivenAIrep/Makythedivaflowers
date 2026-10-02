@@ -15,7 +15,7 @@ function wrap(ui: React.ReactNode) {
 
 const payload: MetricsPayload = {
   range: "90d",
-  kpis: { revenueCents: 360000, outstandingCents: 12000, orderCount: 42, paidOrderCount: 40, aovCents: 9000, repeatRatePct: 55 },
+  kpis: { revenueCents: 360000, outstandingCents: 12000, orderCount: 42, paidOrderCount: 40, aovCents: 9000, repeatRatePct: 55, houseAccountsCents: 0, houseAccountsOverdueCents: 0, houseAccountsOverdueCount: 0 },
   monthly: Array.from({ length: 12 }, (_, i) => ({ month: `2026-${String(i + 1).padStart(2, "0")}`, cents: i * 1000 })),
   topProducts: [
     { key: "p1", name: "Ramo Rosa", qty: 12, cents: null },

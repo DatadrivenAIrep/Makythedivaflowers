@@ -10,6 +10,8 @@ import { dispatchOrderReceived } from "@/lib/order-dispatch";
 import { validateForRedemption, redeem } from "@/lib/gift-card-storage";
 import { validatePromo, redeemPromo } from "@/lib/promo";
 import { buyerHasPaidOrder } from "@/lib/buyer-history";
+import { getAccount, linkContact } from "@/lib/house-account-storage";
+import { recordCharge } from "@/lib/house-account-ledger";
 import type { Order, OrderFulfillment, CartLine } from "@/types/order";
 
 export const runtime = "nodejs";
@@ -36,6 +38,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ errors: parsed.error.flatten() }, { status: 400 });
   }
   const input = parsed.data;
+  // House account: must exist and be active, and cannot be mixed with a gift card.
+  const houseAccount = input.payment.status === "account" ? getAccount(input.payment.accountId) : null;
+  if (input.payment.status === "account") {
+    if (!houseAccount || houseAccount.status !== "active") {
+      return NextResponse.json({ errors: { formErrors: ["account_invalid"] } }, { status: 422 });
+    }
+    if (input.giftCardCode) {
+      return NextResponse.json({ errors: { formErrors: ["account_gift_card"] } }, { status: 422 });
+    }
+  }
   const now = new Date().toISOString();
 
   // Buyer info is optional for pickup — fall back to the recipient (who picks up)
@@ -113,9 +125,10 @@ export async function POST(req: Request) {
     promoCode,
     totals: computeTotals(input, promoDiscountCents),
     status: "pending",
-    paymentStatus: input.payment.status,
-    paymentMethod: input.payment.status === "paid" ? input.payment.method : undefined,
+    paymentStatus: input.payment.status === "paid" ? "paid" : "pending",
+    paymentMethod: input.payment.status === "paid" ? input.payment.method : input.payment.status === "account" ? "house-account" : undefined,
     paidAt: input.payment.status === "paid" ? now : undefined,
+    houseAccountId: houseAccount?.id,
     takenBy: "maky",
     internalNotes: input.internalNotes,
     createdAt: now,
@@ -176,6 +189,13 @@ export async function POST(req: Request) {
     }
   }
 
+  if (houseAccount) {
+    recordCharge({ accountId: houseAccount.id, orderId: order.id, amountCents: order.totals.totalCents, actor: order.takenBy ?? "maky" });
+    // A person who orders on the account is one of its contacts from now on;
+    // "contact_taken" (already on another account) is not an error here.
+    try { linkContact(houseAccount.id, customer.id); } catch { /* keep the order */ }
+  }
+
   if (giftCardId && order.paymentStatus === "paid") {
     try {
       redeem(giftCardId, order.id, giftCardCents);
@@ -187,7 +207,7 @@ export async function POST(req: Request) {
   // Burn the promo only once the order is actually paid, mirroring web checkout.
   // Pending orders redeem later — via the Stripe webhook (payment link) or the
   // manual "mark paid" mutation. redeemPromo is idempotent per order.
-  if (promoId && order.paymentStatus === "paid" && order.totals.discountCents > 0) {
+  if (promoId && (order.paymentStatus === "paid" || houseAccount) && order.totals.discountCents > 0) {
     try {
       redeemPromo(promoId, order.id, order.totals.discountCents);
     } catch (e) {

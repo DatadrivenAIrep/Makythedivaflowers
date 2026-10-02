@@ -33,7 +33,7 @@ export const INVOICE_STRINGS: Record<"en" | "es", InvoiceStrings> = {
     subtotal: "Subtotal", delivery: "Delivery", discount: "Discount", tax: "Sales tax (NY)", tip: "Tip", total: "Total",
     giftCard: "Gift card", paid: "Paid", deposit: "Deposit", balanceDue: "Balance due", credit: "Credit",
     status: { paid: "Paid", refunded: "Refunded", balance_due: "Balance due", canceled: "Canceled" },
-    methods: { cash: "Cash", zelle: "Zelle", "card-terminal": "Card", ach: "ACH", stripe: "Card (online)", "gift-card": "Gift card" },
+    methods: { cash: "Cash", zelle: "Zelle", "card-terminal": "Card", ach: "ACH", stripe: "Card (online)", "gift-card": "Gift card", "house-account": "House account" },
     thanks: "Thank you for choosing Maky The Diva Flowers.", print: "Print / Save PDF",
   },
   es: {
@@ -43,7 +43,7 @@ export const INVOICE_STRINGS: Record<"en" | "es", InvoiceStrings> = {
     subtotal: "Subtotal", delivery: "Envío", discount: "Descuento", tax: "Impuesto (NY)", tip: "Propina", total: "Total",
     giftCard: "Tarjeta de regalo", paid: "Pagado", deposit: "Depósito", balanceDue: "Saldo pendiente", credit: "Saldo a favor",
     status: { paid: "Pagada", refunded: "Reembolsada", balance_due: "Saldo pendiente", canceled: "Cancelada" },
-    methods: { cash: "Efectivo", zelle: "Zelle", "card-terminal": "Tarjeta", ach: "ACH", stripe: "Tarjeta (en línea)", "gift-card": "Tarjeta de regalo" },
+    methods: { cash: "Efectivo", zelle: "Zelle", "card-terminal": "Tarjeta", ach: "ACH", stripe: "Tarjeta (en línea)", "gift-card": "Tarjeta de regalo", "house-account": "A cuenta" },
     thanks: "Gracias por elegir Maky The Diva Flowers.", print: "Imprimir / Guardar PDF",
   },
 };
