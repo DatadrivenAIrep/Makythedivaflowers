@@ -13,6 +13,7 @@ import { sendPurchaseToGA4 } from "@/lib/analytics-server";
 import { resolveCartLines } from "@/lib/cart-helpers";
 import { resolvedLineToAnalyticsItem, centsToDollars } from "@/lib/analytics-types";
 import { PRODUCTS } from "@/data/products";
+import { recordStripeStatementPayment } from "@/lib/house-account-ledger";
 import type { Order } from "@/types/order";
 
 export const runtime = "nodejs";
@@ -54,6 +55,10 @@ export async function POST(req: Request) {
     switch (event.type) {
       case "payment_intent.succeeded": {
         const pi = event.data.object as Stripe.PaymentIntent;
+
+        // A house-account statement paid through /s/<code>/pay. The money is
+        // recorded on checkout.session.completed below; there is no order here.
+        if (pi.metadata?.kind === "house_statement") return NextResponse.json({ received: true });
 
         // A gift card the customer bought on the site. It has no order behind
         // it, so it is handled here and the order path below is skipped.
@@ -122,6 +127,15 @@ export async function POST(req: Request) {
       }
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
+        if (session.metadata?.kind === "house_statement" && session.metadata.statementId) {
+          // Idempotent by session id (UNIQUE stripe_session_id + INSERT OR IGNORE).
+          recordStripeStatementPayment({
+            statementId: session.metadata.statementId,
+            sessionId: session.id,
+            amountCents: session.amount_total ?? 0,
+          });
+          break;
+        }
         const orderId = (session.metadata?.orderId ?? session.client_reference_id) ?? null;
         if (!orderId) {
           console.log(JSON.stringify({ event: "checkout_session_completed_no_orderid", sessionId: session.id }));
