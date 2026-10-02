@@ -102,6 +102,8 @@ export default function IntakeForm({ products }: { products: Product[] }) {
   const [payment, setPayment] = useState<PaymentState>(() => ({ ...INITIAL_PAYMENT }));
   // Remounts PaymentBlock (and its typed deposit text) on reset / draft load.
   const [paymentKey, setPaymentKey] = useState(0);
+  // The gift-card field is hidden on account orders; drop any code typed earlier.
+  useEffect(() => { if (payment.status === "account" && giftCardCode) setGiftCardCode(""); }, [payment.status, giftCardCode]);
   const [linkedAccount, setLinkedAccount] = useState<{ id: string; name: string } | null>(null);
 
   // A phone that belongs to a house-account contact preselects "A cuenta",
@@ -116,8 +118,13 @@ export default function IntakeForm({ products }: { products: Product[] }) {
         if (cancelled) return;
         setLinkedAccount(d.account);
         if (d.account) {
-          setPayment((p) => (p.status === "pending" && !p.deposit ? { status: "account", accountId: d.account!.id, accountName: d.account!.name } : p));
-          setPaymentKey((k) => k + 1);
+          setPayment((p) => {
+            if (p.status === "pending" && !p.deposit) {
+              setPaymentKey((k) => k + 1);
+              return { status: "account", accountId: d.account!.id, accountName: d.account!.name };
+            }
+            return p;
+          });
         }
       })
       .catch(() => {});
@@ -289,7 +296,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
         fulfillment: toOrderFulfillment(fulfillment),
         lines,
         totalsOverride: override,
-        giftCardCode: giftCardCode || undefined,
+        giftCardCode: payment.status === "account" ? undefined : (giftCardCode || undefined),
         promoCode: promo?.code || undefined,
         payment,
       };
