@@ -34,7 +34,7 @@ export type OrderTotals = {
 };
 
 export type OrderSource = "web" | "walk-in" | "phone" | "whatsapp" | "event";
-export type PaymentMethod = "cash" | "zelle" | "card-terminal" | "ach" | "stripe" | "gift-card";
+export type PaymentMethod = "cash" | "zelle" | "card-terminal" | "ach" | "stripe" | "gift-card" | "house-account";
 export type PaymentStatus = "paid" | "pending" | "refunded";
 
 export type MessagingChannel = "sms" | "whatsapp" | "email" | "none";
@@ -120,6 +120,8 @@ export type Order = {
   /** Promo code applied at checkout. The discount itself lives in totals.discountCents. */
   promoId?: string;
   promoCode?: string;
+  /** Set when the order is charged to a house account (payment_method "house-account"). */
+  houseAccountId?: string;
   takenBy?: string;
   internalNotes?: string;
   /** Buyer opted in to transactional SMS (order + delivery updates) at checkout. */
@@ -131,7 +133,7 @@ export type Order = {
 };
 
 export type OrderChangeKind =
-  | "created" | "edit" | "payment" | "fulfillment" | "cancel" | "note" | "reprint" | "digital_card";
+  | "created" | "edit" | "payment" | "fulfillment" | "cancel" | "note" | "reprint" | "digital_card" | "house_account";
 
 export type FieldDiff = {
   field: string; // machine key, e.g. "fulfillment.address.street1"

@@ -48,7 +48,7 @@ const T = {
     payment: "Payment",
     methods: {
       cash: "Cash", zelle: "Zelle", "card-terminal": "Card terminal",
-      ach: "ACH", stripe: "Stripe", "gift-card": "Gift card",
+      ach: "ACH", stripe: "Stripe", "gift-card": "Gift card", "house-account": "House account",
     },
   },
   es: {
@@ -77,7 +77,7 @@ const T = {
     payment: "Pago",
     methods: {
       cash: "Efectivo", zelle: "Zelle", "card-terminal": "Terminal",
-      ach: "ACH", stripe: "Stripe", "gift-card": "Gift card",
+      ach: "ACH", stripe: "Stripe", "gift-card": "Gift card", "house-account": "A cuenta",
     },
   },
 } as const;

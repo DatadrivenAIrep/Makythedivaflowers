@@ -37,6 +37,7 @@ export type OrderRow = {
   gift_card_cents: number | null;
   promo_id: string | null;
   promo_code: string | null;
+  house_account_id: string | null;
   discount_cents: number | null;
   tip_cents: number | null;
   order_number: number | null;
@@ -84,6 +85,7 @@ export function orderToRow(o: Order): OrderRow {
     gift_card_cents: o.giftCardCents ?? null,
     promo_id: o.promoId ?? null,
     promo_code: o.promoCode ?? null,
+    house_account_id: o.houseAccountId ?? null,
     order_number: o.orderNumber ?? null,
     created_at: o.createdAt,
     updated_at: o.updatedAt,
@@ -155,6 +157,7 @@ export function rowToOrder(r: OrderRow): Order {
     ...(r.gift_card_cents != null ? { giftCardCents: r.gift_card_cents } : {}),
     ...(r.promo_id != null ? { promoId: r.promo_id } : {}),
     ...(r.promo_code != null ? { promoCode: r.promo_code } : {}),
+    ...(r.house_account_id != null ? { houseAccountId: r.house_account_id } : {}),
     createdAt: r.created_at,
     updatedAt: r.updated_at,
   };
