@@ -4,6 +4,8 @@ import { runMigrations } from "@/lib/db-migrate";
 import { customerStats } from "@/lib/customer-storage";
 import { findDeliveryZoneByZip } from "@/lib/delivery-zones";
 import { PRODUCTS } from "@/data/products";
+import { receivablesSummary } from "@/lib/house-account-storage";
+import { shopDateStr } from "@/lib/tv-slots";
 import {
   aovCents,
   byZone,
@@ -96,6 +98,9 @@ export type MetricsKpis = {
   paidOrderCount: number;
   aovCents: number;
   repeatRatePct: number;
+  houseAccountsCents: number;
+  houseAccountsOverdueCents: number;
+  houseAccountsOverdueCount: number;
 };
 
 export type MetricsPayload = {
@@ -124,6 +129,7 @@ export function getMetrics(
     const z = findDeliveryZoneByZip(zip);
     return z ? { id: z.id, label: z.label[locale] } : null;
   };
+  const receivables = receivablesSummary(shopDateStr(now));
   return {
     range,
     kpis: {
@@ -133,6 +139,9 @@ export function getMetrics(
       paidOrderCount: paidOrderCount(rows),
       aovCents: aovCents(rows),
       repeatRatePct: customerStats(now).repeatRatePct,
+      houseAccountsCents: receivables.balanceCents,
+      houseAccountsOverdueCents: receivables.overdueCents,
+      houseAccountsOverdueCount: receivables.overdueCount,
     },
     monthly: monthlyRevenue(trendRows, now),
     topProducts: topProducts(rows, resolveName, labels.customProducts),

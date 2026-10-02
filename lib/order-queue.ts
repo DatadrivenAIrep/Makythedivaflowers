@@ -53,15 +53,15 @@ export async function getPendingQueue(): Promise<PendingItem[]> {
       -- web_unacknowledged
       (o.source = 'web' AND a.order_id IS NULL AND o.created_at >= ?)
       -- intake_unpaid_stale
-      OR (o.source != 'web' AND o.payment_status = 'pending'
+      OR (o.source != 'web' AND o.payment_status = 'pending' AND o.payment_method IS NOT 'house-account'
           AND o.created_at <= ? AND o.stripe_checkout_session_id IS NOT NULL)
       -- delivery_today_undispatched
       OR (o.fulfillment_method = 'delivery' AND o.window_date = ?
           AND o.fulfillment_status NOT IN ('out-for-delivery','delivered','canceled'))
       -- delivery_today_unpaid
-      OR (o.fulfillment_method = 'delivery' AND o.window_date = ? AND o.payment_status = 'pending')
+      OR (o.fulfillment_method = 'delivery' AND o.window_date = ? AND o.payment_status = 'pending' AND o.payment_method IS NOT 'house-account')
       -- pickup_today_unpaid
-      OR (o.fulfillment_method = 'pickup' AND o.window_date = ? AND o.payment_status = 'pending')
+      OR (o.fulfillment_method = 'pickup' AND o.window_date = ? AND o.payment_status = 'pending' AND o.payment_method IS NOT 'house-account')
     )
   `).all(cutoffCap, cutoffStale, today, today, today) as OrderRow[];
 
@@ -77,11 +77,13 @@ export async function getPendingQueue(): Promise<PendingItem[]> {
     if (
       order.fulfillment.method === "delivery" &&
       order.fulfillment.window.date === today &&
+      order.paymentMethod !== "house-account" &&
       order.paymentStatus === "pending"
     ) reasons.push("delivery_today_unpaid");
     if (
       order.fulfillment.method === "pickup" &&
       order.fulfillment.window.date === today &&
+      order.paymentMethod !== "house-account" &&
       order.paymentStatus === "pending"
     ) reasons.push("pickup_today_unpaid");
     if (
@@ -91,6 +93,7 @@ export async function getPendingQueue(): Promise<PendingItem[]> {
     ) reasons.push("delivery_today_undispatched");
     if (
       order.source !== "web" &&
+      order.paymentMethod !== "house-account" &&
       order.paymentStatus === "pending" &&
       order.createdAt <= cutoffStale &&
       !!order.stripeCheckoutSessionId
