@@ -19,6 +19,20 @@ export async function POST(_req: Request, ctx: { params: Promise<{ code: string 
   if (!account) return text("not found", 404);
   if (statement.status === "void") return text("gone", 410);
   if (statement.status !== "open" || dueCents(statement) <= 0) return text("nothing due", 409);
-  const { url } = await createStatementCheckout(statement, account);
+  let url: string;
+  try {
+    ({ url } = await createStatementCheckout(statement, account));
+  } catch (e) {
+    console.error(JSON.stringify({ event: "statement_checkout_failed", statementId: statement.id, error: String(e) }));
+    return payFailedPage(account.locale);
+  }
   return new Response(null, { status: 303, headers: { location: url, "cache-control": "no-store" } });
+}
+
+function payFailedPage(locale: "en" | "es"): Response {
+  const msg = locale === "es"
+    ? "No pudimos iniciar el pago. Intenta de nuevo."
+    : "We could not start the payment. Please try again.";
+  const html = `<!doctype html><html lang="${locale}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Diva Flowers</title></head><body style="font-family:system-ui,sans-serif;max-width:32rem;margin:4rem auto;padding:0 1rem;text-align:center"><p>${msg}</p></body></html>`;
+  return new Response(html, { status: 502, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
 }

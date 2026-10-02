@@ -1816,7 +1816,7 @@
     "entry_credit": "Credit",
     "entry_adjustment": "Adjustment",
     "entry_hint_credit": "Lowers the balance and is applied to open orders (positive amount).",
-    "entry_hint_adjustment": "Adds or subtracts without touching orders. Use a negative sign to subtract.",
+    "entry_hint_adjustment": "Adds an extra charge to the account without touching orders (positive amount). To discount or write off, use Credit.",
     "send_channel_pick": "Send by",
     "send_error_no_channel": "No channel available: {reason}",
     "send_failed": "Sending failed: {reason}",

@@ -31,9 +31,12 @@ export const paymentBody = z.object({
   note: z.string().max(500).optional(),
 });
 
+// Manual entries are positive for both kinds: a credit lowers the balance, an
+// adjustment adds an extra charge. Negative adjustments exist only internally
+// (syncOrderTotal on an order edit); to discount or write off, use a credit.
 export const entryBody = z.object({
   kind: z.enum(["credit", "adjustment"]),
-  amountCents: z.number().int(),
+  amountCents: z.number().int().positive(),
   note: z.string().trim().min(1).max(500),
 });
 

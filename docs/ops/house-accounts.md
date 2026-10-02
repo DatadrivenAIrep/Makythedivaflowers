@@ -12,6 +12,16 @@ Checkout. Zelle, cash, ACH and check payments are recorded on the account's
 page ("Registrar pago"); payments are applied oldest-first to the orders on
 the account so the ledger, Bandeja and metrics agree.
 
+## Reembolsos
+
+An account order's money lives on the account, so "Cancelar + reembolso" is
+refused for it (409 `on_account`); cancel it without refund (the charge is
+reversed and anything already applied stays as credit). If money actually
+goes back to the customer, record it on the account: a cash (or Zelle, check)
+refund is a positive **Ajuste** with the note "Reembolso", which takes the
+credit back out of the balance. Card refunds are issued in Stripe and then
+recorded the same way.
+
 ## Wiring the cron
 
 Same pattern as `docs/ops/date-reminders.md`, same `CRON_SECRET`:

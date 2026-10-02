@@ -20,6 +20,11 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
     return NextResponse.json({ send: getSend(id) });
   }
   if ("scheduledFor" in data) {
+    // The regex only checks the shape; a real calendar day round-trips unchanged (2026-13-45 does not).
+    const d = new Date(data.scheduledFor + "T12:00:00Z");
+    if (Number.isNaN(d.getTime()) || d.toISOString().slice(0, 10) !== data.scheduledFor) {
+      return NextResponse.json({ error: "date_invalid" }, { status: 400 });
+    }
     if (data.scheduledFor < today) return NextResponse.json({ error: "date_in_past" }, { status: 400 });
     return NextResponse.json({ send: rescheduleSend(id, data.scheduledFor) });
   }

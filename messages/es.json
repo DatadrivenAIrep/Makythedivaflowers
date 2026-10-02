@@ -1816,7 +1816,7 @@
     "entry_credit": "Crédito",
     "entry_adjustment": "Ajuste",
     "entry_hint_credit": "Reduce el saldo y se aplica a las órdenes abiertas (monto positivo).",
-    "entry_hint_adjustment": "Suma o resta sin tocar órdenes. Usa signo negativo para restar.",
+    "entry_hint_adjustment": "Suma un cargo extra a la cuenta sin tocar órdenes (monto positivo). Para descontar o condonar usa Crédito.",
     "send_channel_pick": "Enviar por",
     "send_error_no_channel": "Sin canal disponible: {reason}",
     "send_failed": "El envío falló: {reason}",

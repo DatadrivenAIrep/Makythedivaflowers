@@ -15,7 +15,7 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
     const { kind, amountCents, note } = parsed.data;
     const entry = kind === "credit"
       ? recordCredit({ accountId: id, amountCents, note, actor: "maky" }).entry
-      : recordAdjustment({ accountId: id, amountCents, note, actor: "maky" });
+      : recordAdjustment({ accountId: id, amountCents: +amountCents, note, actor: "maky" }); // always a positive charge
     return NextResponse.json({ entry, detail: getAccountDetail(id) });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);

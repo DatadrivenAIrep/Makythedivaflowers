@@ -13,7 +13,8 @@ export default function EntryModal({ accountId, onClose, onDone }: Props) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const cents = Math.round(parseFloat(text) * 100);
-  const valid = Number.isFinite(cents) && (kind === "credit" ? cents > 0 : cents !== 0) && note.trim().length > 0;
+  // Both kinds are positive amounts (an adjustment is an extra charge; discounts are credits).
+  const valid = Number.isFinite(cents) && cents > 0 && note.trim().length > 0;
 
   async function submit() {
     setBusy(true); setError(null);
@@ -40,7 +41,7 @@ export default function EntryModal({ accountId, onClose, onDone }: Props) {
         </div>
         <p className="mb-3 text-xs text-ink/60">{t(kind === "credit" ? "entry_hint_credit" : "entry_hint_adjustment")}</p>
         <label className="block text-sm"><span className="mb-1 block text-xs font-semibold">{t("pay_amount")}</span>
-          <input autoFocus inputMode="decimal" value={text} placeholder="0.00" onChange={(e) => setText(e.target.value.replace(/[^0-9.\-]/g, ""))}
+          <input autoFocus inputMode="decimal" value={text} placeholder="0.00" onChange={(e) => setText(e.target.value.replace(/[^0-9.]/g, ""))}
             className="w-full rounded-lg border border-ink/20 bg-white px-3 py-2 text-sm tabular-nums" /></label>
         <label className="mt-3 block text-sm"><span className="mb-1 block text-xs font-semibold">{t("pay_note")}</span>
           <input value={note} onChange={(e) => setNote(e.target.value)} className="w-full rounded-lg border border-ink/20 bg-white px-3 py-2 text-sm" /></label>

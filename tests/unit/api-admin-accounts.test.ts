@@ -125,14 +125,18 @@ describe("money routes need the admin session", () => {
     expect((await POST(req("/x", "POST", { amountCents: 0, method: "cash" }), params({ id: a.id }))).status).toBe(400);
     expect((await POST(req("/x", "POST", { amountCents: 5, method: "cash" }), params({ id: "ha_nope" }))).status).toBe(404);
   });
-  it("entries: credit allocates, adjustment is signed", async () => {
+  it("entries: credit allocates, manual adjustment is a positive extra charge", async () => {
     const a = chargedAccount();
     const { POST } = await import("@/app/api/admin/accounts/[id]/entries/route");
     const c = await (await POST(req("/x", "POST", { kind: "credit", amountCents: 500, note: "cortesía" }), params({ id: a.id }))).json();
     expect(c.entry).toMatchObject({ kind: "credit", amountCents: -500 });
-    const adj = await (await POST(req("/x", "POST", { kind: "adjustment", amountCents: -200, note: "descuento" }), params({ id: a.id }))).json();
-    expect(adj.entry).toMatchObject({ kind: "adjustment", amountCents: -200 });
-    expect(adj.detail.balanceCents).toBe(6300);
+    const res = await POST(req("/x", "POST", { kind: "adjustment", amountCents: 200, note: "recargo" }), params({ id: a.id }));
+    expect(res.status).toBe(200);
+    const adj = await res.json();
+    expect(adj.entry).toMatchObject({ kind: "adjustment", amountCents: 200 });
+    expect(adj.detail.balanceCents).toBe(6700);
+    // Negative manual adjustments are refused: discounts and write-offs are credits.
+    expect((await POST(req("/x", "POST", { kind: "adjustment", amountCents: -200, note: "descuento" }), params({ id: a.id }))).status).toBe(400);
     expect((await POST(req("/x", "POST", { kind: "adjustment", amountCents: 0, note: "x" }), params({ id: a.id }))).status).toBe(400);
   });
 });
@@ -192,6 +196,10 @@ describe("statements and sends", () => {
     expect((await (await PATCH(req("/x", "PATCH", { skip: true }), params({ id: x.id }))).json()).send.status).toBe("skipped");
     expect((await (await PATCH(req("/x", "PATCH", { scheduledFor: "2026-10-18" }), params({ id: y.id }))).json()).send.scheduledFor).toBe("2026-10-18");
     expect((await PATCH(req("/x", "PATCH", { scheduledFor: "2026-09-01" }), params({ id: y.id }))).status).toBe(400);
+    const bad = await PATCH(req("/x", "PATCH", { scheduledFor: "2026-13-45" }), params({ id: y.id }));
+    expect(bad.status).toBe(400);
+    expect(await bad.json()).toEqual({ error: "date_invalid" });
+    expect((await PATCH(req("/x", "PATCH", { scheduledFor: "2026-02-30" }), params({ id: y.id }))).status).toBe(400);
     const now = await (await PATCH(req("/x", "PATCH", { sendNow: true }), params({ id: z.id }))).json();
     expect(now.send).toMatchObject({ status: "sent", smsSid: "SM1" });
     expect((await PATCH(req("/x", "PATCH", { skip: true }), params({ id: z.id }))).status).toBe(409);

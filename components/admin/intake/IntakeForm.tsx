@@ -107,10 +107,25 @@ export default function IntakeForm({ products }: { products: Product[] }) {
   const [linkedAccount, setLinkedAccount] = useState<{ id: string; name: string } | null>(null);
 
   // A phone that belongs to a house-account contact preselects "A cuenta",
-  // unless staff already chose a paid method or typed a deposit.
+  // unless staff already chose a paid method or typed a deposit. The id of an
+  // auto-selected account is kept so that, if the phone changes to one with no
+  // account, the preselect is undone; a manual pick (AccountSearch) is never reverted.
+  const autoAccountRef = useRef<string | null>(null);
   const phoneDigits = customer.phone.replace(/\D/g, "");
   useEffect(() => {
-    if (phoneDigits.length < 10) { setLinkedAccount(null); return; }
+    function revertAuto() {
+      const autoId = autoAccountRef.current;
+      if (!autoId) return;
+      autoAccountRef.current = null;
+      setPayment((p) => {
+        if (p.status === "account" && p.accountId === autoId) {
+          setPaymentKey((k) => k + 1);
+          return { status: "pending" };
+        }
+        return p;
+      });
+    }
+    if (phoneDigits.length < 10) { setLinkedAccount(null); revertAuto(); return; }
     let cancelled = false;
     fetch(`/api/admin/accounts/for-phone?phone=${phoneDigits}`, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : { account: null }))
@@ -118,13 +133,17 @@ export default function IntakeForm({ products }: { products: Product[] }) {
         if (cancelled) return;
         setLinkedAccount(d.account);
         if (d.account) {
+          const acc = d.account;
           setPayment((p) => {
             if (p.status === "pending" && !p.deposit) {
+              autoAccountRef.current = acc.id;
               setPaymentKey((k) => k + 1);
-              return { status: "account", accountId: d.account!.id, accountName: d.account!.name };
+              return { status: "account", accountId: acc.id, accountName: acc.name };
             }
             return p;
           });
+        } else {
+          revertAuto();
         }
       })
       .catch(() => {});

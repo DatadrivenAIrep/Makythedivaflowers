@@ -60,6 +60,19 @@ describe("POST /s/[code]/pay", () => {
     expect(res.headers.get("location")).toBe("https://checkout.stripe.test/cs_1");
     expect(create).toHaveBeenCalledTimes(1);
   });
+  it("502 with a small no-store page in the account's locale when Stripe fails", async () => {
+    const err = vi.spyOn(console, "error").mockImplementation(() => {});
+    create.mockRejectedValueOnce(new Error("stripe down"));
+    const a = createAccount({ name: "Hotel", locale: "es" });
+    seedStatement(a.id);
+    const res = await post("AbCdEfGh");
+    expect(res.status).toBe(502);
+    expect(res.headers.get("cache-control")).toBe("no-store");
+    expect(res.headers.get("content-type")).toContain("text/html");
+    expect(await res.text()).toContain("No pudimos iniciar el pago. Intenta de nuevo.");
+    expect(err).toHaveBeenCalled();
+    err.mockRestore();
+  });
   it("404 unknown, 409 when paid, 410 when void", async () => {
     expect((await post("AbCdEfGh")).status).toBe(404);
     const a = createAccount({ name: "Hotel" });
