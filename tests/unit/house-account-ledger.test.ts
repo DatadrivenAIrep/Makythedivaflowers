@@ -259,12 +259,19 @@ describe("settlement", () => {
     reverseOrderCharge("o1001", "maky");
     expect(statement("s1").status).toBe("paid");
   });
-  it("recomputeSettlement ignores negatives dated on or before the period end", () => {
+  it("a negative entry captured in the statement's own snapshot does not settle it", () => {
+    const a = createAccount({ name: "Org" });
+    seedStatement(a.id, "s1", "2026-09-30", 5000);
+    getDb().prepare("INSERT INTO house_account_entries (id, account_id, kind, amount_cents, actor, created_at, statement_id) VALUES ('e1', ?, 'payment', -5000, 't', '2026-09-30T12:00:00Z', 's1')").run(a.id);
+    expect(recomputeSettlement(a.id)).toEqual([]);
+    expect(statement("s1")).toMatchObject({ status: "open", settledCents: 0 });
+  });
+  it("an unbilled negative entry settles the statement even on the close date", () => {
     const a = createAccount({ name: "Org" });
     seedStatement(a.id, "s1", "2026-09-30", 5000);
     getDb().prepare("INSERT INTO house_account_entries (id, account_id, kind, amount_cents, actor, created_at) VALUES ('e1', ?, 'payment', -5000, 't', '2026-09-30T12:00:00Z')").run(a.id);
-    expect(recomputeSettlement(a.id)).toEqual([]);
-    expect(statement("s1")).toMatchObject({ status: "open", settledCents: 0 });
+    expect(recomputeSettlement(a.id)).toEqual(["s1"]);
+    expect(statement("s1")).toMatchObject({ status: "paid", settledCents: 5000 });
   });
 });
 

@@ -131,7 +131,7 @@ the customer owes; negative = credit in their favor.
 | credits_cents | INTEGER NOT NULL | sum of negative non-payment entries snapshotted (as a positive number) |
 | payments_cents | INTEGER NOT NULL | sum of payment entries snapshotted (as a positive number) |
 | closing_cents | INTEGER NOT NULL | `opening + charges − credits − payments` = account balance at `period_end` |
-| settled_cents | INTEGER NOT NULL DEFAULT 0 | `min(closing, Σ|negative entries with created_at after period_end|)`, recomputed from the ledger after every entry |
+| settled_cents | INTEGER NOT NULL DEFAULT 0 | `min(closing, Σ|negative entries not captured by this statement's snapshot (unbilled or billed on a later statement)|)`, recomputed from the ledger after every entry |
 | status | TEXT NOT NULL | `open` / `paid` / `void` |
 | lines_json | TEXT NOT NULL | snapshot of the orders and other entries listed (see Statement content) |
 | created_at | TEXT NOT NULL | |
@@ -200,8 +200,11 @@ Index `(status, scheduled_for)`, index `(statement_id)`.
   itself never marks anything paid.
 - **Statement settlement** is derived, not incremented: after every entry,
   `recomputeSettlement(accountId)` (in `lib/house-account-settlement.ts`) sets each open statement's
-  `settled_cents = min(closing_cents, Σ|negative entries with created_at >
-  period_end 23:59:59 shop time|)`, and a statement whose `dueCents =
+  `settled_cents = min(closing_cents, Σ|negative entries NOT captured by this
+  statement's snapshot — i.e. unbilled (statement_id NULL) or billed on a later
+  statement|)`. Defining settlement by the snapshot rather than by dates makes
+  a same-day payment after a manual issue count, while a payment captured in
+  the snapshot (already inside closing) never double-counts. A statement whose `dueCents =
   max(0, closing − settled)` reaches 0 becomes `paid` and its `scheduled`
   sends are canceled. Because `closing` is the cumulative balance, a single
   payment settles every older statement at once and no FIFO across

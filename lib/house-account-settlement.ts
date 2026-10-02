@@ -1,5 +1,6 @@
-// A statement is settled by every negative ledger entry recorded after its
-// period closed. Recomputed from the ledger (never incremented) so no code
+// A statement is settled by every negative ledger entry it did not capture,
+// i.e. unbilled (statement_id NULL) or billed on a later statement. Entries
+// inside its own snapshot are already part of closing_cents. Recomputed from the ledger (never incremented) so no code
 // path can drift. closing_cents is the cumulative balance, so one payment
 // settles every older open statement at once.
 import "server-only";
@@ -24,16 +25,18 @@ export function entryDate(createdAtIso: string): string {
 export function recomputeSettlement(accountId: string): string[] {
   const db = getDb();
   const negatives = db
-    .prepare("SELECT amount_cents, created_at FROM house_account_entries WHERE account_id = ? AND amount_cents < 0")
-    .all(accountId) as { amount_cents: number; created_at: string }[];
-  const open = db
-    .prepare("SELECT id, period_end, closing_cents FROM house_account_statements WHERE account_id = ? AND status = 'open'")
-    .all(accountId) as { id: string; period_end: string; closing_cents: number }[];
+    .prepare("SELECT amount_cents, statement_id FROM house_account_entries WHERE account_id = ? AND amount_cents < 0")
+    .all(accountId) as { amount_cents: number; statement_id: string | null }[];
+  const all = db
+    .prepare("SELECT id, period_end, closing_cents, status FROM house_account_statements WHERE account_id = ? AND status != 'void'")
+    .all(accountId) as { id: string; period_end: string; closing_cents: number; status: string }[];
+  const periodEndOf = new Map(all.map((s) => [s.id, s.period_end]));
+  const open = all.filter((x) => x.status === "open");
   const update = db.prepare("UPDATE house_account_statements SET settled_cents = ?, status = ? WHERE id = ?");
   const paid: string[] = [];
   for (const s of open) {
     const sum = negatives
-      .filter((n) => entryDate(n.created_at) > s.period_end)
+      .filter((n) => n.statement_id !== s.id && (n.statement_id === null || (periodEndOf.get(n.statement_id) ?? "") > s.period_end))
       .reduce((acc, n) => acc + -n.amount_cents, 0);
     const settled = Math.max(0, Math.min(s.closing_cents, sum));
     const isPaid = s.closing_cents - settled <= 0;

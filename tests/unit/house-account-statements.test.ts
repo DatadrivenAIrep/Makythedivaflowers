@@ -84,6 +84,15 @@ describe("issueStatement", () => {
     expect(listEntries(a.id).filter((e) => !e.statementId)).toHaveLength(1); // the October payment stays unbilled
   });
 
+  it("a same-day payment after a manual issue settles it", () => {
+    const a = seedAccountWithCharges();
+    const s = issueStatement(a.id, "2026-10-02", { today: "2026-10-02" })!;
+    expect(s).toMatchObject({ status: "open", closingCents: 7000 });
+    recordPayment({ accountId: a.id, amountCents: 7000, method: "zelle", actor: "m" });
+    expect(getStatement(s.id)?.status).toBe("paid");
+    expect(listForAccount(a.id).every((x) => x.status === "canceled" || x.status === "sent" || x.status === "skipped")).toBe(true);
+  });
+
   it("entries after the period end wait for the next statement", () => {
     const a = seedAccountWithCharges();
     seedOrder("o1003", a.id, 900, "2026-10-01T12:00:00Z");
