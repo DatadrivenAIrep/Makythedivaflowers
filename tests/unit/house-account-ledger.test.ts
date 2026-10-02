@@ -91,6 +91,22 @@ describe("charges and payments", () => {
     expect(() => recordCredit({ accountId: a.id, amountCents: 5, note: "  ", actor: "m" })).toThrow("note_required");
   });
 
+  it("a new charge on an account in credit is paid from that credit", () => {
+    const a = createAccount({ name: "Org" });
+    seedOrder({ id: "o1001", total: 1000, accountId: a.id, createdAt: "2026-09-10T12:00:00Z" });
+    recordCharge({ accountId: a.id, orderId: "o1001", amountCents: 1000, actor: "maky" });
+    recordPayment({ accountId: a.id, amountCents: 1600, method: "cash", actor: "maky" }); // 600 credit
+    expect(accountBalanceCents(a.id)).toBe(-600);
+    seedOrder({ id: "o1002", total: 400, accountId: a.id, createdAt: "2026-09-11T12:00:00Z" });
+    recordCharge({ accountId: a.id, orderId: "o1002", amountCents: 400, actor: "maky" });
+    expect(order("o1002")).toMatchObject({ amount_paid_cents: 400, payment_status: "paid" });
+    expect(accountBalanceCents(a.id)).toBe(-200);
+    seedOrder({ id: "o1003", total: 500, accountId: a.id, createdAt: "2026-09-12T12:00:00Z" });
+    recordCharge({ accountId: a.id, orderId: "o1003", amountCents: 500, actor: "maky" });
+    expect(order("o1003")).toMatchObject({ amount_paid_cents: 200, payment_status: "pending" });
+    expect(accountBalanceCents(a.id)).toBe(300);
+  });
+
   it("recordCredit allocates like a payment", () => {
     const a = createAccount({ name: "Org" });
     seedOrder({ id: "o1001", total: 1000, accountId: a.id });
@@ -153,6 +169,21 @@ describe("adjustments, reversals, edits", () => {
     reverseOrderCharge("o1001", "maky");
     expect(order("o1002")).toMatchObject({ amount_paid_cents: 500, payment_status: "paid" });
     expect(accountBalanceCents(a.id)).toBe(-500);
+  });
+});
+
+describe("reversal deposits", () => {
+  it("reversal of a moved order does not spend a deposit that never reached the ledger", () => {
+    const a = createAccount({ name: "Org" });
+    seedOrder({ id: "o1001", total: 5000, paid: 1000, createdAt: "2026-09-10T12:00:00Z" }); // $10 cash deposit, then moved
+    seedOrder({ id: "o1002", total: 500, accountId: a.id, createdAt: "2026-09-11T12:00:00Z" });
+    moveOrderToAccount("o1001", a.id, "maky"); // charge 4000
+    recordCharge({ accountId: a.id, orderId: "o1002", amountCents: 500, actor: "maky" });
+    getDb().prepare("UPDATE orders SET fulfillment_status = 'canceled' WHERE id = 'o1001'").run();
+    const r = reverseOrderCharge("o1001", "maky");
+    expect(r).toMatchObject({ kind: "reversal", amountCents: -4000 });
+    expect(order("o1002")).toMatchObject({ amount_paid_cents: 0, payment_status: "pending" }); // the $10 deposit stays with o1001
+    expect(accountBalanceCents(a.id)).toBe(500);
   });
 });
 
