@@ -71,6 +71,7 @@ type MsgRow = {
 };
 type CampRow = { id: string; customer_id: string; phone: string; status: string; created_at: string; body_es: string };
 type InRow = { id: string; customer_id: string | null; from_phone: string; body: string; created_at: string };
+type HasRow = { id: string; body: string | null; sent_at: string | null; created_at: string; billing_phone: string };
 
 type NameForResult = { key: string; name?: string; phone: string; customerId?: string };
 
@@ -150,6 +151,24 @@ function fetchEvents(limit: number): RawEvent[] {
   for (const i of ins) {
     const who = nameFor(i.customer_id, i.from_phone, phoneCache);
     events.push({ ...who, id: i.id, direction: "in", kind: "inbound", text: i.body, at: i.created_at });
+  }
+  // House-account statement / reminder texts. They are logged in their own
+  // queue table (not `messages`, whose order_id is NOT NULL), so the inbox
+  // reads them from there, attributed by the account's billing phone.
+  const hs = db
+    .prepare(
+      `SELECT s.id, s.body, s.sent_at, s.created_at, a.billing_phone
+         FROM house_account_sends s JOIN house_accounts a ON a.id = s.account_id
+        WHERE s.status = 'sent' AND s.sms_sid IS NOT NULL AND a.billing_phone IS NOT NULL
+        ORDER BY s.sent_at DESC LIMIT ?`,
+    )
+    .all(limit) as HasRow[];
+  for (const h of hs) {
+    const who = nameFor(null, h.billing_phone, phoneCache);
+    events.push({
+      ...who, id: h.id, direction: "out", kind: "transactional", text: h.body ?? "",
+      template: "house_statement", status: "sent", at: h.sent_at ?? h.created_at,
+    });
   }
   return events;
 }
