@@ -10,7 +10,7 @@ import { getAccount, newId, rowToAccount } from "@/lib/house-account-storage";
 import { isIssueDay, scheduleFromPlan } from "@/lib/house-account-plan";
 import { enqueue, cancelForStatement } from "@/lib/house-account-sends";
 import { recomputeSettlement, entryDate } from "@/lib/house-account-settlement";
-import type { HouseAccount, Statement, StatementLine, StatementStatus, EntryKind } from "@/types/house-account";
+import type { HouseAccount, Statement, StatementLine, StatementStatus, EntryKind, AccountPaymentMethod } from "@/types/house-account";
 
 type Row = {
   id: string; account_id: string; number: string; code: string; period_start: string; period_end: string;
@@ -104,6 +104,9 @@ function buildLines(entries: EntryRow[]): StatementLine[] {
       label,
       ...(e.order_id ? { orderId: e.order_id } : {}),
       ...(o?.order_number != null ? { orderNumber: o.order_number } : {}),
+      ...(o ? { recipientName: o.recipient_name } : {}),
+      ...(e.method ? { method: e.method as AccountPaymentMethod } : {}),
+      ...(e.note ? { note: e.note } : {}),
       amountCents: e.amount_cents,
     };
   });

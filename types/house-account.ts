@@ -43,9 +43,12 @@ export type StatementStatus = "open" | "paid" | "void";
 export type StatementLine = {
   date: string; // YYYY-MM-DD shop time
   kind: EntryKind;
-  label: string;
+  label: string; // Spanish fallback built at issue time (admin tables)
   orderId?: string;
   orderNumber?: number;
+  recipientName?: string;
+  method?: AccountPaymentMethod;
+  note?: string;
   amountCents: number; // signed
 };
 export type Statement = {
