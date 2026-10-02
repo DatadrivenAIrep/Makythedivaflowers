@@ -46,6 +46,14 @@ describe("MegaMenu", () => {
     );
   });
 
+  it("lists centerpieces among the categories", async () => {
+    await open();
+    expect(screen.getByRole("menuitem", { name: /centros de mesa/i })).toHaveAttribute(
+      "href",
+      "/es/shop/centerpieces",
+    );
+  });
+
   it("lists occasions, pointing at their own pages and not a query string", async () => {
     await open();
     const birthday = screen.getByRole("menuitem", { name: /cumpleaños/i });

@@ -13,6 +13,7 @@ import type { Order } from "@/types/order";
 import { PRODUCTS } from "@/data/products";
 import { SITE } from "@/data/site";
 import { resolveCartLine } from "@/lib/cart-helpers";
+import { baseSizeShort } from "@/lib/variant-measure";
 import { formatMoneyCents, formatPhoneUS, formatDeliveryWindow } from "@/lib/format";
 import { formatDateTime } from "@/lib/format-datetime";
 import { orderBalanceCents } from "@/lib/order-balance";
@@ -190,12 +191,13 @@ function Worksheet({ order }: { order: Order }) {
                 const r = resolveCartLine(line, PRODUCTS);
                 if (!r) return null;
                 const thumb = density === "no-photos" ? null : getProductImageDataUri(r.product.images[0]?.src);
+                const base = baseSizeShort(r.product, r.variant);
                 return (
                   <tr key={`${line.productId}-${line.variantId}-${i}`}>
                     <td className="qty">{r.line.qty}×</td>
                     <td>
                       {thumb ? <img className="item-thumb" src={thumb} alt="" /> : null}
-                      {r.product.title[locale]} <span style={{ color: "var(--mute-600)" }}>— {r.variant.label[locale]}</span>
+                      {r.product.title[locale]} <span style={{ color: "var(--mute-600)" }}>{`— ${r.variant.label[locale]}${base ? ` · base ${base}` : ""}`}</span>
                       {r.addOns.length > 0 ? (
                         <div className="addon">+ {r.addOns.map((a) => a.label[locale]).join(", ")}</div>
                       ) : null}

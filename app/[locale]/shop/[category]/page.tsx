@@ -4,12 +4,7 @@ import { setRequestLocale } from "next-intl/server";
 import { notFound, redirect } from "next/navigation";
 import type { Locale } from "@/types/locale";
 import { PRODUCTS } from "@/data/products";
-import {
-  productsByCategory,
-  filterProducts,
-  sortProducts,
-} from "@/data/product-helpers";
-import type { ProductCategory } from "@/types/product";
+import { filterProducts, sortProducts } from "@/data/product-helpers";
 import { parseFilterParams, type RawSearchParams } from "@/lib/search-params";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { FilterBar } from "@/components/product/FilterBar";
@@ -20,17 +15,16 @@ import { BreadcrumbListLD } from "@/components/seo/BreadcrumbListLD";
 import { ShopCategoryContactSubject } from "@/components/contact/ShopCategoryContactSubject";
 import { TrackEvent } from "@/components/analytics/TrackEvent";
 import type { AnalyticsItem } from "@/lib/analytics-types";
-import { isRoseProduct, isExoticProduct } from "@/lib/shop-categories";
+import { productsInShopCategory, type ShopSlug } from "@/lib/shop-categories";
 import { getAllImageOverrides, applyImageOverrides } from "@/lib/product-images";
 import { localeAlternates } from "@/lib/seo/alternates";
-
-type ShopSlug = ProductCategory | "roses" | "exotic";
 
 const ALLOWED: ShopSlug[] = [
   "arrangements",
   "bouquets",
   "roses",
   "exotic",
+  "centerpieces",
   "plants",
   "gifts",
   "sympathy",
@@ -42,6 +36,7 @@ const CATEGORY_TITLES: Record<ShopSlug, { en: string; es: string }> = {
   bouquets: { en: "Bouquets", es: "Ramos" },
   roses: { en: "Roses", es: "Rosas" },
   exotic: { en: "Exotic", es: "Exóticas" },
+  centerpieces: { en: "Centerpieces", es: "Centros de mesa" },
   plants: { en: "Plants & Orchids", es: "Plantas y Orquídeas" },
   gifts: { en: "Gifts", es: "Regalos" },
   sympathy: { en: "Sympathy", es: "Condolencias" },
@@ -64,6 +59,10 @@ const CATEGORY_DESCS: Record<ShopSlug, { en: string; es: string }> = {
   exotic: {
     en: "Tropical orchids and rainforest blooms — bold, sculptural, hand-built.",
     es: "Orquídeas tropicales y flores de selva — atrevidas, escultóricas, hechas a mano.",
+  },
+  centerpieces: {
+    en: "Low, full arrangements made for the table — dinners, showers and celebrations.",
+    es: "Arreglos bajos y llenos, hechos para la mesa: cenas, showers y celebraciones.",
   },
   plants: {
     en: "Long-lasting plants and orchids in studio-poured planters.",
@@ -119,12 +118,7 @@ export default async function CategoryPage({
   const { filter, sort } = parseFilterParams(sp);
 
   const products = applyImageOverrides(PRODUCTS, getAllImageOverrides());
-  const all =
-    cat === "roses"
-      ? products.filter(isRoseProduct)
-      : cat === "exotic"
-        ? products.filter(isExoticProduct)
-        : productsByCategory(products, cat as ProductCategory);
+  const all = productsInShopCategory(products, cat);
   const filtered = sortProducts(filterProducts(all, filter), sort);
 
   const isSympathy = cat === "sympathy";

@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import CartLines from "@/components/admin/intake/CartLines";
 import type { CartLine } from "@/types/order";
+import { PRODUCTS } from "@/data/products";
 
 vi.mock("next-intl", () => ({ useLocale: () => "es" }));
 
@@ -23,7 +24,9 @@ describe("CartLines", () => {
     render(<CartLines lines={lines} onChangeLines={() => {}} />);
     expect(screen.getByText(/El Ramo de Talita/)).toBeInTheDocument();
     expect(screen.getByText(/Grande/)).toBeInTheDocument();
-    expect(screen.getByText("$125.00")).toBeInTheDocument();
+    const cents = PRODUCTS.find((p) => p.id === "p-bou-b3-15")!
+      .variants.find((v) => v.id === "grand")!.priceCents;
+    expect(screen.getByText(`$${(cents / 100).toFixed(2)}`)).toBeInTheDocument();
   });
 
   it("shows an empty state with no lines", () => {

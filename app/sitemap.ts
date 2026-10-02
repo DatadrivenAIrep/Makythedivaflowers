@@ -20,6 +20,7 @@ const STATIC_PATHS: { path: string; priority: number; changeFrequency: MetadataR
   { path: "shop/bouquets", priority: 0.8, changeFrequency: "weekly" },
   { path: "shop/roses", priority: 0.8, changeFrequency: "weekly" },
   { path: "shop/exotic", priority: 0.7, changeFrequency: "weekly" },
+  { path: "shop/centerpieces", priority: 0.7, changeFrequency: "weekly" },
   { path: "shop/plants", priority: 0.7, changeFrequency: "weekly" },
   { path: "shop/gifts", priority: 0.7, changeFrequency: "weekly" },
   { path: "shop/sympathy", priority: 0.8, changeFrequency: "weekly" },

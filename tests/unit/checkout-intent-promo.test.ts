@@ -5,6 +5,7 @@ import os from "node:os";
 import { closeDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import { createPromo, listPromos } from "@/lib/promo";
+import { PRODUCTS } from "@/data/products";
 
 const createPI = vi.fn();
 vi.mock("@/lib/stripe-server", () => ({
@@ -36,8 +37,10 @@ function makeReq(body: unknown) {
   });
 }
 
-// A Thousand Heartbeats, standard = $191.00, delivered to Albertson ($10).
-const SUBTOTAL = 19100;
+// A Thousand Heartbeats, standard, delivered to Albertson ($10). The price is
+// read from the catalog so a price change does not break these tests.
+const SUBTOTAL = PRODUCTS.find((p) => p.id === "p-arr-m01")!
+  .variants.find((v) => v.id === "standard")!.priceCents;
 const DELIVERY = 1000;
 
 const validBody = {
