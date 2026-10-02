@@ -199,7 +199,7 @@ Index `(status, scheduled_for)`, index `(statement_id)`.
   `amount_paid_cents` — to the other open orders FIFO; the reversed charge
   itself never marks anything paid.
 - **Statement settlement** is derived, not incremented: after every entry,
-  `recomputeSettlement(accountId)` sets each open statement's
+  `recomputeSettlement(accountId)` (in `lib/house-account-settlement.ts`) sets each open statement's
   `settled_cents = min(closing_cents, Σ|negative entries with created_at >
   period_end 23:59:59 shop time|)`, and a statement whose `dueCents =
   max(0, closing − settled)` reaches 0 becomes `paid` and its `scheduled`
@@ -386,8 +386,10 @@ Content, top to bottom:
 
 `lines_json` shape: `[{ "date": "YYYY-MM-DD", "kind": "charge" | "payment" |
 "credit" | "adjustment" | "reversal", "label": string, "orderId"?: string,
-"orderNumber"?: number, "amountCents": number }]`, built at issue time so the
-page never changes afterward.
+"orderNumber"?: number, "recipientName"?: string, "method"?: string,
+"note"?: string, "amountCents": number }]`, built at issue time so the page
+never changes afterward. `label` is the Spanish fallback for admin tables; the
+public page composes a localized label from the structured fields.
 
 ### `POST /s/[code]/pay` → `app/s/[code]/pay/route.ts`
 
@@ -523,7 +525,9 @@ stored as `adjustment`, never allocates), plus a required note.
 | `house-account-ledger.ts` | `recordCharge`, `recordPayment` (+ allocation in one transaction), `recordCredit`, `recordAdjustment`, `reverseOrderCharge`, `syncOrderTotal`, `listEntries`, `recordStripeStatementPayment` | no |
 | `house-account-allocate.ts` | `allocate(targets: {id, dueCents}[], amountCents) → {id, appliedCents}[]` | yes |
 | `house-account-plan.ts` | `nextIssueDate`, `isIssueDay`, `scheduleFromPlan`, `DEFAULTS`, `resolveDefaults(settingsJson)` | yes |
-| `house-account-statements.ts` | `issueStatement`, `accountsDueToIssue(today)`, `getStatementByCode`, `voidStatement`, `recomputeSettlement`, `dueCents`, `buildLines` | no |
+| `house-account-settlement.ts` | `dueCents`, `entryDate`, `recomputeSettlement` (own module so ledger and statements can both import it without a cycle) | no |
+| `house-account-statements.ts` | `issueStatement`, `accountsDueToIssue(today)`, `getStatementByCode`, `voidStatement`, `latestStatement`, `buildLines` | no |
+| `house-account-detail.ts` | `getAccountDetail(id)` for the admin page and API | no |
 | `house-account-sends.ts` | `enqueue`, `dueSends(today)`, `claim`, `markSent/Failed/Skipped`, `cancelForStatement`, `skipStaleForAccount`, `upcomingSends(days)`, `listForAccount` | no |
 | `house-account-sender.ts` | `sendStep(row)`: resolves channels, renders, calls `sendSms` / Resend, returns the outcome | no (I/O) |
 | `house-account-templates.ts` | `renderSms(template, locale, vars)`, `renderEmail(...)`, `SUBJECTS` | yes |
