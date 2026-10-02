@@ -68,6 +68,27 @@ describe("webhook: house statement", () => {
     expect((getDb().prepare("SELECT status FROM house_account_statements WHERE id = 'hst_1'").get() as { status: string }).status).toBe("paid");
     expect((getDb().prepare("SELECT payment_status FROM orders WHERE id = 'o1'").get() as { payment_status: string }).payment_status).toBe("paid");
   });
+  it("a stale order checkout paid for an account order goes to the ledger, idempotently", async () => {
+    const a = createAccount({ name: "Hotel" });
+    seedOrder("o1", a.id, 7000);
+    getDb().prepare("UPDATE orders SET stripe_checkout_session_id = 'cs_old' WHERE id = 'o1'").run();
+    recordCharge({ accountId: a.id, orderId: "o1", amountCents: 7000, actor: "m" });
+    const event = {
+      type: "checkout.session.completed",
+      data: { object: { id: "cs_old", amount_total: 7000, client_reference_id: "o1", metadata: { orderId: "o1" } } },
+    };
+    expect((await post(event)).status).toBe(200);
+    expect((await post(event)).status).toBe(200); // replay
+    const entries = getDb().prepare("SELECT kind, amount_cents, method, stripe_session_id, note FROM house_account_entries WHERE kind = 'payment'").all();
+    expect(entries).toEqual([{ kind: "payment", amount_cents: -7000, method: "stripe", stripe_session_id: "cs_old", note: "Stripe · pedido 1001" }]);
+    expect(accountBalanceCents(a.id)).toBe(0);
+    // Paid through allocation (the ledger), not through updateOrderPaidByCheckoutSession.
+    expect(getDb().prepare("SELECT payment_status, amount_paid_cents FROM orders WHERE id = 'o1'").get())
+      .toEqual({ payment_status: "paid", amount_paid_cents: 7000 });
+    const changes = getDb().prepare("SELECT summary FROM order_changes WHERE order_id = 'o1' AND kind = 'payment'").all() as { summary: string }[];
+    expect(changes).toHaveLength(1);
+    expect(changes[0].summary).toContain("Pago de cuenta");
+  });
   it("ignores a payment_intent.succeeded for a statement (no order lookup, no crash)", async () => {
     const res = await post({ type: "payment_intent.succeeded", data: { object: { id: "pi_hs", metadata: { kind: "house_statement", statementId: "hst_1" } } } });
     expect(res.status).toBe(200);

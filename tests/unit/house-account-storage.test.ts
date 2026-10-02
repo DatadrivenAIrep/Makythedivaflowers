@@ -21,12 +21,12 @@ function seedEntry(accountId: string, kind: string, cents: number, createdAt = "
     `INSERT INTO house_account_entries (id, account_id, kind, amount_cents, actor, created_at) VALUES (?, ?, ?, ?, 'test', ?)`,
   ).run(`hae_${Math.random().toString(36).slice(2)}`, accountId, kind, cents, createdAt);
 }
-function seedStatement(accountId: string, id: string, dueDate: string, closing: number, settled = 0, status = "open") {
+function seedStatement(accountId: string, id: string, dueDate: string, closing: number, settled = 0, status = "open", periodEnd = "2026-09-30") {
   getDb().prepare(
     `INSERT INTO house_account_statements (id, account_id, number, code, period_start, period_end, issued_at, due_date,
        opening_cents, charges_cents, credits_cents, payments_cents, closing_cents, settled_cents, status, lines_json, created_at)
-     VALUES (?, ?, ?, ?, '2026-09-01', '2026-09-30', '2026-10-01T13:00:00Z', ?, 0, ?, 0, 0, ?, ?, ?, '[]', '2026-10-01T13:00:00Z')`,
-  ).run(id, accountId, `ST-${id}`, id.padEnd(8, "x").slice(0, 8), dueDate, closing, closing, settled, status);
+     VALUES (?, ?, ?, ?, '2026-09-01', ?, '2026-10-01T13:00:00Z', ?, 0, ?, 0, 0, ?, ?, ?, '[]', '2026-10-01T13:00:00Z')`,
+  ).run(id, accountId, `ST-${id}`, id.padEnd(8, "x").slice(0, 8), periodEnd, dueDate, closing, closing, settled, status);
 }
 
 describe("createAccount / getAccount / updateAccount", () => {
@@ -137,5 +137,18 @@ describe("balance, search, list, receivables", () => {
     seedEntry(b.id, "credit", -300);
     seedStatement(b.id, "s2", "2026-10-20", 900);
     expect(receivablesSummary("2026-10-02")).toEqual({ balanceCents: 5000, overdueCents: 4000, overdueCount: 1 });
+    // A second account with two cumulative overdue statements counts once, at its largest due.
+    const c = createAccount({ name: "C" });
+    seedEntry(c.id, "charge", 15000);
+    seedStatement(c.id, "s3", "2026-09-15", 10000, 0, "open", "2026-08-31");
+    seedStatement(c.id, "s4", "2026-09-30", 15000);
+    expect(receivablesSummary("2026-10-02")).toEqual({ balanceCents: 20000, overdueCents: 19000, overdueCount: 2 });
+  });
+  it("receivablesSummary counts an account with two overdue statements once, at its largest due", () => {
+    const a = createAccount({ name: "A" });
+    seedEntry(a.id, "charge", 15000);
+    seedStatement(a.id, "s1", "2026-09-15", 10000, 0, "open", "2026-08-31");
+    seedStatement(a.id, "s2", "2026-09-30", 15000);
+    expect(receivablesSummary("2026-10-02")).toEqual({ balanceCents: 15000, overdueCents: 15000, overdueCount: 1 });
   });
 });

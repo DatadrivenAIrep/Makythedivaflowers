@@ -6,6 +6,13 @@ import { createAccount } from "@/lib/house-account-storage";
 import { recordCharge } from "@/lib/house-account-ledger";
 import { PATCH } from "@/app/api/admin/orders/[id]/payment/route";
 import { GET } from "@/app/api/admin/orders/[id]/route";
+import { POST as postPaymentLink } from "@/app/api/admin/orders/[id]/payment-link/route";
+import { POST as postResend } from "@/app/api/admin/orders/[id]/resend/route";
+
+const createCheckoutSession = vi.hoisted(() => vi.fn());
+const dispatchOrderReceived = vi.hoisted(() => vi.fn());
+vi.mock("@/lib/stripe-payment-link", () => ({ createCheckoutSession }));
+vi.mock("@/lib/order-dispatch", () => ({ dispatchOrderReceived, dispatchPaymentConfirmed: vi.fn() }));
 
 beforeEach(() => {
   vi.stubEnv("SQLITE_FILE", ":memory:");
@@ -42,6 +49,38 @@ describe("PATCH /api/admin/orders/[id]/payment · house account", () => {
     expect(detail.houseAccount).toEqual({ id: a.id, name: "Hotel", billed: false });
     expect((await patch("o1", { moveToAccount: { accountId: a.id } })).status).toBe(409);
     expect((await patch("o2", { moveToAccount: { accountId: "ha_nope" } })).status).toBe(404);
+  });
+  it("order-level payment actions on an account order are refused with 409 on_account", async () => {
+    const a = createAccount({ name: "Hotel" });
+    seed("o1", a.id);
+    recordCharge({ accountId: a.id, orderId: "o1", amountCents: 5000, actor: "m" });
+    for (const body of [
+      { method: "cash" },
+      { deposit: { amountCents: 1000, method: "cash" } },
+      { settleBalance: true },
+    ]) {
+      const res = await patch("o1", body);
+      expect(res.status).toBe(409);
+      expect(await res.json()).toEqual({ error: "on_account" });
+    }
+    expect(getDb().prepare("SELECT amount_paid_cents, payment_status FROM orders WHERE id = 'o1'").get())
+      .toEqual({ amount_paid_cents: 0, payment_status: "pending" });
+  });
+  it("payment links are refused for an account order before any session or send", async () => {
+    const a = createAccount({ name: "Hotel" });
+    seed("o1", a.id);
+    const ctx = { params: Promise.resolve({ id: "o1" }) };
+    const link = await postPaymentLink(new Request("http://x", { method: "POST" }), ctx);
+    expect(link.status).toBe(409);
+    expect(await link.json()).toEqual({ error: "on_account" });
+    const resend = await postResend(
+      new Request("http://x", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ kind: "payment_link" }) }),
+      { params: Promise.resolve({ id: "o1" }) },
+    );
+    expect(resend.status).toBe(409);
+    expect(await resend.json()).toEqual({ error: "on_account" });
+    expect(createCheckoutSession).not.toHaveBeenCalled();
+    expect(dispatchOrderReceived).not.toHaveBeenCalled();
   });
   it("removeFromAccount clears the order while unbilled; 409 once billed", async () => {
     const a = createAccount({ name: "Hotel" });

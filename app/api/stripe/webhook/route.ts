@@ -13,7 +13,7 @@ import { sendPurchaseToGA4 } from "@/lib/analytics-server";
 import { resolveCartLines } from "@/lib/cart-helpers";
 import { resolvedLineToAnalyticsItem, centsToDollars } from "@/lib/analytics-types";
 import { PRODUCTS } from "@/data/products";
-import { recordStripeStatementPayment } from "@/lib/house-account-ledger";
+import { recordStripeStatementPayment, recordPayment } from "@/lib/house-account-ledger";
 import type { Order } from "@/types/order";
 
 export const runtime = "nodejs";
@@ -143,6 +143,21 @@ export async function POST(req: Request) {
         }
         const csOrder = await getOrderByCheckoutSessionId(session.id);
         if (!csOrder) break;
+        // An account order paid through a stale order checkout link: the money
+        // goes to the account ledger (allocated oldest-first like any payment),
+        // never straight onto the order. Idempotent by session id. Checked before
+        // the paid short-circuit: the order may already be covered by the account.
+        if (csOrder.houseAccountId) {
+          recordPayment({
+            accountId: csOrder.houseAccountId,
+            amountCents: session.amount_total ?? 0,
+            method: "stripe",
+            note: `Stripe · pedido ${csOrder.orderNumber ?? csOrder.id}`,
+            actor: "stripe",
+            stripeSessionId: session.id,
+          });
+          break;
+        }
         if (csOrder.paymentStatus === "paid") break; // idempotent
 
         await updateOrderPaidByCheckoutSession(session.id);

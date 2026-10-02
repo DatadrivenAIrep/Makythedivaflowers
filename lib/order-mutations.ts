@@ -19,6 +19,8 @@ export async function markPaidManual(
   const row = db.prepare("SELECT * FROM orders WHERE id = ?").get(orderId) as OrderRow | undefined;
   if (!row) throw new Error(`order not found: ${orderId}`);
   const cur = rowToOrder(row);
+  // An account order is paid only through the account ledger.
+  if (cur.houseAccountId) throw new Error("on_account");
   // Idempotent: if already paid, return as-is regardless of method arg.
   if (cur.paymentStatus === "paid") return cur;
 
@@ -96,6 +98,7 @@ export async function recordDeposit(
   const row = db.prepare("SELECT * FROM orders WHERE id = ?").get(orderId) as OrderRow | undefined;
   if (!row) throw new Error(`order not found: ${orderId}`);
   const cur = rowToOrder(row);
+  if (cur.houseAccountId) throw new Error("on_account");
   if (cur.paymentStatus !== "pending" || cur.status === "canceled") throw new Error("not_pending");
   if (!DEPOSIT_METHODS.includes(args.method)) throw new Error(`unsupported deposit method: ${args.method}`);
   if (!Number.isInteger(args.amountCents) || args.amountCents <= 0) throw new Error("invalid_amount");
@@ -203,6 +206,9 @@ export async function cancelOrder(
   const cur = rowToOrder(row);
   if (cur.status === "delivered") throw new Error("cannot cancel a delivered order");
   if (cur.status === "canceled") return cur;
+  // An account order's money lives on the account: a refund is recorded there
+  // (positive adjustment "Reembolso"), never as an order-level refund.
+  if (cur.houseAccountId && args.refund) throw new Error("on_account");
   if (args.refund && cur.paymentStatus !== "paid") {
     throw new Error("cannot refund an unpaid order");
   }
@@ -265,6 +271,7 @@ export async function settleBalance(orderId: string, actor: string): Promise<Ord
   const row = db.prepare("SELECT * FROM orders WHERE id = ?").get(orderId) as OrderRow | undefined;
   if (!row) throw new Error(`order not found: ${orderId}`);
   const cur = rowToOrder(row);
+  if (cur.houseAccountId) throw new Error("on_account");
   const now = new Date().toISOString();
   const next: Order = { ...cur, amountPaidCents: cur.totals.totalCents, updatedAt: now };
   upsert(next);

@@ -20,7 +20,7 @@ const body = z.union([
   z.object({ removeFromAccount: z.literal(true) }),
 ]);
 
-const CONFLICTS = new Set(["account_inactive", "already_on_account", "not_pending", "nothing_due", "not_on_account", "already_billed", "already_reversed", "has_payments"]);
+const CONFLICTS = new Set(["account_inactive", "already_on_account", "not_pending", "nothing_due", "not_on_account", "already_billed", "has_payments", "on_account"]);
 
 export async function PATCH(
   req: Request,

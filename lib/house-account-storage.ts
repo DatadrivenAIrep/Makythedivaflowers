@@ -268,14 +268,17 @@ export function receivablesSummary(today: string = shopDateStr(new Date())): {
   const balanceCents = balances.reduce((s, r) => s + Math.max(0, r.b), 0);
   const overdue = db
     .prepare(
-      `SELECT closing_cents, settled_cents FROM house_account_statements WHERE status = 'open' AND due_date < ?`,
+      `SELECT account_id, closing_cents, settled_cents FROM house_account_statements WHERE status = 'open' AND due_date < ?`,
     )
-    .all(today) as { closing_cents: number; settled_cents: number }[];
-  let overdueCents = 0;
-  let overdueCount = 0;
+    .all(today) as { account_id: string; closing_cents: number; settled_cents: number }[];
+  // Statements are cumulative (each closing includes the previous), so an
+  // account's overdue amount is its largest overdue due, never their sum.
+  const perAccount = new Map<string, number>();
   for (const s of overdue) {
     const due = Math.max(0, s.closing_cents - s.settled_cents);
-    if (due > 0) { overdueCents += due; overdueCount += 1; }
+    if (due > 0) perAccount.set(s.account_id, Math.max(perAccount.get(s.account_id) ?? 0, due));
   }
-  return { balanceCents, overdueCents, overdueCount };
+  let overdueCents = 0;
+  for (const v of perAccount.values()) overdueCents += v;
+  return { balanceCents, overdueCents, overdueCount: perAccount.size };
 }

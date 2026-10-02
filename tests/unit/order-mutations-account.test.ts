@@ -3,7 +3,7 @@ import { closeDb, getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import { createAccount, accountBalanceCents } from "@/lib/house-account-storage";
 import { recordCharge, listEntries } from "@/lib/house-account-ledger";
-import { cancelOrder } from "@/lib/order-mutations";
+import { cancelOrder, markPaidManual, recordDeposit, settleBalance } from "@/lib/order-mutations";
 import { editOrder } from "@/lib/order-edit";
 
 beforeEach(() => {
@@ -35,6 +35,24 @@ describe("account orders", () => {
     expect(accountBalanceCents(a.id)).toBe(0);
     await cancelOrder("o1", { refund: false });
     expect(listEntries(a.id)).toHaveLength(2);
+  });
+  it("cancel with refund is refused for an account order, before any write", async () => {
+    const a = createAccount({ name: "Hotel" });
+    seed("o3", a.id);
+    recordCharge({ accountId: a.id, orderId: "o3", amountCents: 5000, actor: "m" });
+    await expect(cancelOrder("o3", { refund: true })).rejects.toThrow("on_account");
+    const row = getDb().prepare("SELECT fulfillment_status, payment_status FROM orders WHERE id = 'o3'").get() as { fulfillment_status: string; payment_status: string };
+    expect(row).toEqual({ fulfillment_status: "pending", payment_status: "pending" });
+    expect(listEntries(a.id)).toHaveLength(1);
+  });
+  it("order-level payment mutations are refused for an account order", async () => {
+    const a = createAccount({ name: "Hotel" });
+    seed("o4", a.id);
+    await expect(markPaidManual("o4", { method: "cash" })).rejects.toThrow("on_account");
+    await expect(recordDeposit("o4", { amountCents: 100, method: "cash" }, "maky")).rejects.toThrow("on_account");
+    await expect(settleBalance("o4", "maky")).rejects.toThrow("on_account");
+    const row = getDb().prepare("SELECT amount_paid_cents, payment_status FROM orders WHERE id = 'o4'").get();
+    expect(row).toEqual({ amount_paid_cents: 0, payment_status: "pending" });
   });
   it("editOrder with a new total records a signed adjustment", async () => {
     const a = createAccount({ name: "Hotel" });
