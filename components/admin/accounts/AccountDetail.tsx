@@ -62,11 +62,16 @@ export default function AccountDetail({ locale, initial }: Props) {
       if (!res.ok) { setFlash({ ok: false, text: errorText(json as { error?: string }) }); return null; }
       await refresh();
       return json;
+    } catch {
+      setFlash({ ok: false, text: t("error_generic") });
+      return null;
     } finally { setBusy(false); }
   }
 
   async function savePlan(patch: PlanPatch): Promise<boolean> {
-    return (await call("PATCH", `/api/admin/accounts/${account.id}`, patch)) !== null;
+    const ok = (await call("PATCH", `/api/admin/accounts/${account.id}`, patch)) !== null;
+    if (ok) setFlash({ ok: true, text: t("saved") });
+    return ok;
   }
   async function setStatus(status: AccountStatus) {
     if (status === "closed" && !window.confirm(t("close_confirm"))) return;

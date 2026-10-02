@@ -29,17 +29,28 @@ export default function ContactsList({ locale, accountId, contacts, busy, onChan
 
   async function link(customerId: string) {
     setError(null);
-    const res = await fetch(`/api/admin/accounts/${accountId}/contacts`, {
-      method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ customerId }),
-    });
-    if (res.status === 409) { setError(t("contact_taken")); return; }
-    if (!res.ok) { setError(t("error_generic")); return; }
-    setAdding(false); setQ(""); onChanged();
+    try {
+      const res = await fetch(`/api/admin/accounts/${accountId}/contacts`, {
+        method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ customerId }),
+      });
+      if (res.status === 409) { setError(t("contact_taken")); return; }
+      if (!res.ok) { setError(t("error_generic")); return; }
+      setAdding(false); setQ(""); onChanged();
+    } catch {
+      setError(t("error_generic"));
+    }
   }
   async function unlink(customerId: string) {
-    await fetch(`/api/admin/accounts/${accountId}/contacts`, {
-      method: "DELETE", headers: { "content-type": "application/json" }, body: JSON.stringify({ customerId }),
-    });
+    setError(null);
+    try {
+      const res = await fetch(`/api/admin/accounts/${accountId}/contacts`, {
+        method: "DELETE", headers: { "content-type": "application/json" }, body: JSON.stringify({ customerId }),
+      });
+      if (!res.ok) { setError(t("error_generic")); return; }
+    } catch {
+      setError(t("error_generic"));
+      return;
+    }
     onChanged();
   }
 
@@ -56,6 +67,7 @@ export default function ContactsList({ locale, accountId, contacts, busy, onChan
           ))}
         </ul>
       )}
+      {!adding && error && <p className="mt-2 text-xs text-error">{error}</p>}
       {adding ? (
         <div className="mt-3">
           <input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder={t("contact_search_placeholder")}

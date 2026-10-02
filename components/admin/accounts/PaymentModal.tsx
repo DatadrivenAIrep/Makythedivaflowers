@@ -29,6 +29,7 @@ export default function PaymentModal({ accountId, onClose, onDone }: Props) {
       });
       if (!res.ok) { setError(t("error_generic")); return; }
       onDone();
+    } catch { setError(t("error_generic"));
     } finally { setBusy(false); }
   }
 
