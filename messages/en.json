@@ -1405,6 +1405,12 @@
     "empty": "No gift cards issued yet"
   },
   "admin_orders": {
+    "on_account": "On account · {name}",
+    "move_to_account": "Move to account",
+    "remove_from_account": "Remove from account",
+    "view_account": "View account",
+    "account_pick": "Pick the account",
+    "account_error": "Could not change this order's account.",
     "fulfillment_status": {
       "pending": "Received",
       "preparing": "Preparing",

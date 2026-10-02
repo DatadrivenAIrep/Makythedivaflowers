@@ -1405,6 +1405,12 @@
     "empty": "Aún no has emitido gift cards"
   },
   "admin_orders": {
+    "on_account": "A cuenta · {name}",
+    "move_to_account": "Pasar a cuenta",
+    "remove_from_account": "Quitar de cuenta",
+    "view_account": "Ver cuenta",
+    "account_pick": "Elige la cuenta",
+    "account_error": "No se pudo cambiar la cuenta de esta orden.",
     "fulfillment_status": {
       "pending": "Recibida",
       "preparing": "Preparando",

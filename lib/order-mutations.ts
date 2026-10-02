@@ -223,6 +223,16 @@ export async function cancelOrder(
     orderId, actor: "maky", kind: "cancel",
     summary: `Cancelada${args.refund ? " + reembolso" : ""}${args.reason ? ` · ${args.reason}` : ""}`,
   });
+  // An order charged to a house account: reverse its charge on the ledger
+  // (once; any money already applied to it stays on the account as credit).
+  if (cur.houseAccountId) {
+    try {
+      const { reverseOrderCharge } = await import("@/lib/house-account-ledger");
+      reverseOrderCharge(orderId, "maky");
+    } catch (e) {
+      console.error(JSON.stringify({ event: "house_account_reverse_failed", orderId, error: String(e) }));
+    }
+  }
   return next;
 }
 

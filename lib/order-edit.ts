@@ -118,6 +118,12 @@ export async function editOrder(
   next.updatedAt = new Date().toISOString();
   await updateOrder(next);
 
+  // A changed total on an account order becomes a signed ledger adjustment.
+  if (next.houseAccountId && next.totals.totalCents !== cur.totals.totalCents) {
+    const { syncOrderTotal } = await import("@/lib/house-account-ledger");
+    syncOrderTotal(orderId, cur.totals.totalCents, next.totals.totalCents, actor);
+  }
+
   const labels = changes.map((c) => c.label).join(", ");
   const change = await recordOrderChange({
     orderId, actor, kind: "edit", summary: `Editó: ${labels}`, changes,
