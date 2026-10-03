@@ -1543,6 +1543,7 @@
   },
   "admin_dashboard": {
     "nav_bandeja": "Bandeja",
+    "nav_sections": "Secciones del panel",
     "nav_run_sheet": "Entregas hoy",
     "nav_ledger": "Libro de órdenes",
     "nav_gift_cards": "Gift Cards",
@@ -1823,6 +1824,7 @@
     "send_error_no_channel": "Sin canal disponible: {reason}",
     "send_failed": "El envío falló: {reason}",
     "sent_ok": "Enviado.",
+    "sent_but_still_queued": "Enviado. No se pudo quitar la copia que estaba en cola: usa Saltar en la cola para que no salga otra vez.",
     "queue_when": "Cuándo",
     "queue_what": "Qué",
     "queue_channel": "Canal",

@@ -60,8 +60,14 @@ export default function AccountsView({ locale, initialAccounts, initialUpcoming 
       });
       if (!res.ok) {
         setFlash({ ok: false, text: t("error_generic") });
+      } else if (action === "skip") {
+        setFlash({ ok: true, text: t("send_status_skipped") });
       } else {
-        setFlash({ ok: true, text: action === "skip" ? t("send_status_skipped") : t("sent_ok") });
+        // The queue answers 200 even when delivery failed; the reason is in send.error.
+        const json = (await res.json().catch(() => ({}))) as { send?: { status?: string; error?: string } };
+        setFlash(json.send?.status === "failed"
+          ? { ok: false, text: t("send_failed", { reason: json.send.error ?? "" }) }
+          : { ok: true, text: t("sent_ok") });
       }
       await refresh();
     } catch {
@@ -127,6 +133,10 @@ export default function AccountsView({ locale, initialAccounts, initialUpcoming 
                 <tr key={a.id}>
                   <td className="px-3 py-2">
                     <Link href={`/${locale}/admin/accounts/${a.id}`} className="font-medium underline decoration-ink/30 underline-offset-2 hover:decoration-ink">{a.name}</Link>
+                    <div className="mt-0.5 space-y-0.5 text-xs text-ink/55 sm:hidden">
+                      {a.status === "active" && <p>{t("col_next_issue")}: {formatDateOnly(a.nextIssueDate, locale)}</p>}
+                      {a.lastPaymentAt && <p>{t("col_last_payment")}: {formatDate(a.lastPaymentAt, locale)}</p>}
+                    </div>
                   </td>
                   <td className={`px-3 py-2 text-right tabular-nums ${a.balanceCents > 0 ? "font-semibold" : "text-ink/60"}`}>{money(a.balanceCents)}</td>
                   <td className="px-3 py-2">

@@ -37,4 +37,23 @@ describe("PlanEditor reminders", () => {
     fireEvent.click(screen.getByRole("button", { name: "Guardar" }));
     expect((onSave.mock.calls[0] as unknown[])[0]).toMatchObject({ reminderPlan: [{ offsetDays: -1 }] });
   });
+
+  it("shows the clamped value on blur and when the direction changes", () => {
+    wrap(<PlanEditor account={account} busy={false} onSave={vi.fn(async () => true)} />);
+    const days = screen.getByLabelText("Cantidad de días") as HTMLInputElement;
+    const when = screen.getByLabelText("Cuándo enviar el recordatorio") as HTMLSelectElement;
+    fireEvent.change(days, { target: { value: "100" } });
+    expect(days.value).toBe("100");
+    fireEvent.blur(days);
+    expect(days.value).toBe("60");
+    fireEvent.change(days, { target: { value: "" } });
+    fireEvent.blur(days);
+    expect(days.value).toBe("1");
+    fireEvent.change(when, { target: { value: "after" } });
+    fireEvent.change(days, { target: { value: "100" } });
+    fireEvent.blur(days);
+    expect(days.value).toBe("100");
+    fireEvent.change(when, { target: { value: "before" } });
+    expect(days.value).toBe("60");
+  });
 });

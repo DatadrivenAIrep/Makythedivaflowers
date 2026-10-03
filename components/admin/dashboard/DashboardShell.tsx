@@ -63,7 +63,7 @@ export default function DashboardShell({ locale, children, lastUpdated, onRefres
               href={`/${locale}/admin/settings`}
               aria-label={t("nav_settings")}
               aria-current={isSettings ? "page" : undefined}
-              className={`flex min-h-11 shrink-0 items-center whitespace-nowrap gap-1 rounded-lg px-3 text-sm text-ink ${isSettings ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
+              className={`flex min-h-11 shrink-0 items-center whitespace-nowrap gap-1 rounded-lg px-3 text-sm ${isSettings ? "bg-rouge text-bone" : "text-ink hover:bg-ink/5"}`}
             ><GearSix size={16} weight="bold" /></Link>
             <Link
               href={`/${locale}/admin/intake`}
@@ -75,6 +75,7 @@ export default function DashboardShell({ locale, children, lastUpdated, onRefres
         {/* Row 2: section tabs, always one line. The right edge fades when there is more to scroll to. */}
         <nav
           ref={navRef}
+          aria-label={t("nav_sections")}
           className="relative flex gap-1 overflow-x-auto px-4 pb-2 pt-1 text-sm [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [mask-image:linear-gradient(to_right,black_calc(100%-2rem),transparent)]"
         >
             <Link

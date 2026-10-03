@@ -25,15 +25,15 @@ export default function StatementsTable({ locale, statements, defaultChannel, bu
         <span>{t("st_number")}</span><span>{t("st_status")}</span><span>{t("st_period")}</span><span>{t("st_due")}</span>
         <span className="text-right">{t("st_closing")}</span><span className="text-right">{t("st_due_amount")}</span>
       </div>
-      <ul className="divide-y divide-ink/10">
+      <ul role="list" className="divide-y divide-ink/10">
         {statements.map((s) => (
           <li key={s.id} className={`grid grid-cols-2 gap-x-3 gap-y-1 py-3 sm:px-2 sm:py-2 ${COLS}`}>
             <span className="font-medium">{s.number}</span>
-            <span className="justify-self-end sm:justify-self-start"><span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_CLS[s.status]}`}>{t(`st_${s.status}`)}</span></span>
-            <span className="col-span-2 tabular-nums sm:col-span-1 sm:whitespace-nowrap">{formatDateOnly(s.periodStart, locale)} – {formatDateOnly(s.periodEnd, locale)}</span>
-            <span className="col-span-2 tabular-nums sm:col-span-1 sm:whitespace-nowrap"><span className="text-xs text-ink/50 sm:hidden">{t("st_due")}: </span>{formatDateOnly(s.dueDate, locale)}</span>
-            <span className="tabular-nums sm:text-right"><span className="block text-xs text-ink/50 sm:hidden">{t("st_closing")}</span>{money(s.closingCents)}</span>
-            <span className="text-right tabular-nums"><span className="block text-xs text-ink/50 sm:hidden">{t("st_due_amount")}</span>{money(s.dueCents)}</span>
+            <span className="justify-self-end sm:justify-self-start"><span className="sr-only">{t("st_status")}: </span><span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_CLS[s.status]}`}>{t(`st_${s.status}`)}</span></span>
+            <span className="col-span-2 tabular-nums sm:col-span-1 sm:whitespace-nowrap"><span className="sr-only">{t("st_period")}: </span>{formatDateOnly(s.periodStart, locale)} – {formatDateOnly(s.periodEnd, locale)}</span>
+            <span className="col-span-2 tabular-nums sm:col-span-1 sm:whitespace-nowrap"><span className="text-xs text-ink/50 sm:sr-only">{t("st_due")}: </span>{formatDateOnly(s.dueDate, locale)}</span>
+            <span className="tabular-nums sm:text-right"><span className="block text-xs text-ink/50 sm:sr-only">{t("st_closing")}</span>{money(s.closingCents)}</span>
+            <span className="text-right tabular-nums"><span className="block text-xs text-ink/50 sm:sr-only">{t("st_due_amount")}</span>{money(s.dueCents)}</span>
             <div className="col-span-2 mt-1 flex flex-wrap items-center gap-x-4 gap-y-2 sm:col-span-full">
               <a href={`/s/${s.code}`} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center text-xs text-rouge underline">{t("view")}</a>
               <button type="button" className="min-h-11 text-xs text-rouge underline" onClick={async () => {

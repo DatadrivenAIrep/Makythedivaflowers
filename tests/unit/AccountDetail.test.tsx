@@ -68,15 +68,18 @@ describe("AccountDetail", () => {
     const afterIssue: AccountDetailData = { ...data, statements: [issuedStatement, ...data.statements], sends: [queuedRow, ...data.sends] };
     const calls: Array<{ method: string; url: string; body: unknown }> = [];
 
-    function mockFetch(patchResponse: unknown = { send: { ...queuedRow, status: "sent" } }) {
+    const noQueue: AccountDetailData = { ...afterIssue, sends: data.sends };
+    function mockFetch(patchResponse: unknown = { send: { ...queuedRow, status: "sent" } }, opts: { after?: AccountDetailData; patchFails?: boolean } = {}) {
+      const after = opts.after ?? afterIssue;
       calls.length = 0;
       vi.stubGlobal("fetch", vi.fn(async (url: string, init?: RequestInit) => {
         const method = init?.method ?? "GET";
         calls.push({ method, url, body: init?.body ? JSON.parse(String(init.body)) : undefined });
         const ok = (json: unknown) => ({ ok: true, status: 200, json: async () => json });
-        if (method === "GET") return ok(afterIssue);
+        if (method === "GET") return ok(after);
         if (url.endsWith("/statements") && method === "POST") return ok({ statement: { id: "hst_2", number: "ST-1002" } });
         if (url.endsWith("/send") && method === "POST") return ok({ send: { status: "sent" } });
+        if (opts.patchFails) return { ok: false, status: 500, json: async () => ({ error: "boom" }) };
         return ok(patchResponse);
       }));
     }
@@ -110,6 +113,27 @@ describe("AccountDetail", () => {
         { method: "POST", url: "/api/admin/accounts/statements/hst_2/send", body: { channel: "sms" } },
         { method: "PATCH", url: "/api/admin/accounts/sends/q1", body: { skip: true } },
       ]);
+    });
+
+    it("sends once with no PATCH when no queued row exists for the statement", async () => {
+      mockFetch(undefined, { after: noQueue });
+      wrap(<AccountDetail locale="es" initial={data} />);
+      await issue();
+      fireEvent.click(screen.getByRole("button", { name: "Enviar ahora" }));
+      await screen.findByText("Enviado.");
+      const w = writes().filter((c) => !c.url.endsWith("/statements"));
+      expect(w).toEqual([{ method: "POST", url: "/api/admin/accounts/statements/hst_2/send", body: { channel: "both" } }]);
+    });
+
+    it("warns when the manual send went out but the queued copy could not be skipped", async () => {
+      mockFetch(undefined, { patchFails: true });
+      wrap(<AccountDetail locale="es" initial={data} />);
+      await issue();
+      const prompt = screen.getByText(/emitido y agregado a la cola de envíos/).parentElement as HTMLElement;
+      fireEvent.change(prompt.querySelector("select") as HTMLSelectElement, { target: { value: "sms" } });
+      fireEvent.click(screen.getByRole("button", { name: "Enviar ahora" }));
+      await screen.findByText(/No se pudo quitar la copia que estaba en cola/);
+      expect(screen.queryByText("Enviado.")).toBeNull();
     });
 
     it("treats a 200 whose send failed as a failure", async () => {

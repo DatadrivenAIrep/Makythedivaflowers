@@ -42,10 +42,10 @@ export default function SendsQueue({ locale, sends, statements, busy, onAction }
         <span className="w-full whitespace-nowrap font-medium tabular-nums lg:w-auto lg:font-normal">{formatDateOnly(s.scheduledFor, locale)}</span>
         <span className="w-full min-w-0 lg:w-auto">
           {label} · {st?.number ?? s.statementId}
-          {detail && <span className="block truncate text-xs text-ink/60" title={s.error ?? s.body ?? ""}>{detail}</span>}
+          {detail && <span className={`block text-xs text-ink/60 ${s.error ? "break-words" : "truncate"}`} title={s.error ?? s.body ?? ""}>{detail}</span>}
         </span>
-        <span>{t(`channel_${s.channel}`)}</span>
-        <span><span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_CLS[s.status]}`}>{t(`send_status_${s.status}`)}</span></span>
+        <span><span className="sr-only">{t("queue_channel")}: </span>{t(`channel_${s.channel}`)}</span>
+        <span><span className="sr-only">{t("queue_status")}: </span><span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_CLS[s.status]}`}>{t(`send_status_${s.status}`)}</span></span>
         <div className="mt-1 w-full lg:mt-0 lg:w-auto">
           {s.status === "scheduled" && (editingId === s.id ? (
             <div className="flex flex-wrap items-center gap-1">
@@ -76,7 +76,7 @@ export default function SendsQueue({ locale, sends, statements, busy, onAction }
           <span>{t("queue_when")}</span><span>{t("queue_what")}</span><span>{t("queue_channel")}</span>
           <span>{t("queue_status")}</span><span />
         </div>
-        <ul className="divide-y divide-ink/10 text-sm">{rows.map(row)}</ul>
+        <ul role="list" className="divide-y divide-ink/10 text-sm">{rows.map(row)}</ul>
       </div>
     );
   }

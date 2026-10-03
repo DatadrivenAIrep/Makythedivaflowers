@@ -9,8 +9,15 @@ export default function ModalShell({ title, onClose, children }: Props) {
   const onCloseRef = useRef(onClose);
   useEffect(() => { onCloseRef.current = onClose; });
 
+  // Captured during the first render, before children mount: an autoFocus child is focused at commit,
+  // which is before any effect runs, so reading activeElement in an effect would find the modal's own input.
+  const openerRef = useRef<HTMLElement | null | undefined>(undefined);
+  if (openerRef.current === undefined) {
+    openerRef.current = typeof document !== "undefined" ? (document.activeElement as HTMLElement | null) : null;
+  }
+
   useEffect(() => {
-    const opener = document.activeElement as HTMLElement | null;
+    const opener = openerRef.current;
     function onKey(e: KeyboardEvent) { if (e.key === "Escape") onCloseRef.current(); }
     document.addEventListener("keydown", onKey);
     return () => {

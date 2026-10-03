@@ -68,16 +68,18 @@ export default function AccountDetail({ locale, initial }: Props) {
     }
   }
 
-  async function call(method: string, url: string, body?: unknown): Promise<Record<string, unknown> | null> {
+  /** `quiet` skips the error flash so the caller can show a more specific message. */
+  async function call(method: string, url: string, body?: unknown, quiet = false): Promise<Record<string, unknown> | null> {
     setBusy(true); setFlash(null);
     try {
       const res = await fetch(url, { method, headers: { "content-type": "application/json" }, body: body === undefined ? undefined : JSON.stringify(body) });
       const json = (await res.json().catch(() => ({}))) as Record<string, unknown>;
-      if (!res.ok) { setFlash({ ok: false, text: errorText(json as { error?: string }) }); return null; }
-      await refresh();
+      if (!res.ok) { if (!quiet) setFlash({ ok: false, text: errorText(json as { error?: string }) }); return null; }
+      // The write already happened: a failed re-read must not look like a failed write (the user could resend).
+      try { await refresh(); } catch { /* keep the write's result */ }
       return json;
     } catch {
-      setFlash({ ok: false, text: t("error_generic") });
+      if (!quiet) setFlash({ ok: false, text: t("error_generic") });
       return null;
     } finally { setBusy(false); }
   }
@@ -108,7 +110,7 @@ export default function AccountDetail({ locale, initial }: Props) {
     return send?.status === "failed" ? t("send_failed", { reason: send.error ?? "" }) : null;
   }
   /** Dispatches an already-queued row now; true only when it actually went out. */
-  async function dispatchQueued(id: string): Promise<boolean> {
+  async function dispatchQueuedNow(id: string): Promise<boolean> {
     const r = await call("PATCH", `/api/admin/accounts/sends/${id}`, { sendNow: true });
     if (!r) return false;
     const failure = sendFailure(r);
@@ -116,16 +118,26 @@ export default function AccountDetail({ locale, initial }: Props) {
     setFlash({ ok: true, text: t("sent_ok") });
     return true;
   }
+  /** Guarded entry point for the queue's "Enviar ya": a same-tick double click would otherwise 409 over the success flash. */
+  async function dispatchQueued(id: string): Promise<boolean> {
+    if (sendInFlight.current) return false;
+    sendInFlight.current = true;
+    try { return await dispatchQueuedNow(id); } finally { sendInFlight.current = false; }
+  }
   async function sendStatement(sid: string, channel: SendChannel) {
     if (sendInFlight.current) return;
     sendInFlight.current = true;
     try {
       // Issuing already queued this statement; reuse that row instead of sending a second copy.
       const queued = dataRef.current.sends.find((x) => x.statementId === sid && x.kind === "statement" && x.status === "scheduled");
-      if (queued && queued.channel === channel) { await dispatchQueued(queued.id); return; }
+      if (queued && queued.channel === channel) { await dispatchQueuedNow(queued.id); return; }
       const r = await call("POST", `/api/admin/accounts/statements/${sid}/send`, { channel });
       if (!r) return;
-      if (queued && (await call("PATCH", `/api/admin/accounts/sends/${queued.id}`, { skip: true })) === null) return;
+      if (queued && (await call("PATCH", `/api/admin/accounts/sends/${queued.id}`, { skip: true }, true)) === null) {
+        // The statement went out but its queued copy is still scheduled and would go out again.
+        setFlash({ ok: false, text: t("sent_but_still_queued") });
+        return;
+      }
       setFlash({ ok: true, text: t("sent_ok") });
     } finally { sendInFlight.current = false; }
   }

@@ -30,4 +30,14 @@ describe("ModalShell", () => {
     expect(document.activeElement).toBe(opener);
     opener.remove();
   });
+  it("returns focus to the trigger even when a child autoFocuses on mount", () => {
+    const trigger = document.createElement("button");
+    document.body.appendChild(trigger);
+    trigger.focus();
+    const { unmount } = render(<ModalShell title="X" onClose={() => {}}><input aria-label="inner" autoFocus /></ModalShell>);
+    expect(document.activeElement).toBe(screen.getByLabelText("inner"));
+    unmount();
+    expect(document.activeElement).toBe(trigger);
+    trigger.remove();
+  });
 });

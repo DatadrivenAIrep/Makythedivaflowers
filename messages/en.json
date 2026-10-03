@@ -1543,6 +1543,7 @@
   },
   "admin_dashboard": {
     "nav_bandeja": "Inbox",
+    "nav_sections": "Admin sections",
     "nav_run_sheet": "Deliveries today",
     "nav_ledger": "Order book",
     "nav_gift_cards": "Gift Cards",
@@ -1823,6 +1824,7 @@
     "send_error_no_channel": "No channel available: {reason}",
     "send_failed": "Sending failed: {reason}",
     "sent_ok": "Sent.",
+    "sent_but_still_queued": "Sent. The queued copy could not be removed: use Skip in the queue so it does not go out again.",
     "queue_when": "When",
     "queue_what": "What",
     "queue_channel": "Channel",

@@ -21,6 +21,12 @@ function toEditorRow(s: ReminderStep): EditorRow {
   const r = offsetToRow(s.offsetDays);
   return { when: r.when, days: String(r.days), channel: s.channel };
 }
+/** Clamps a typed day count to what the chosen direction allows (before 1..60, after 1..120). */
+function clampDays(when: ReminderWhen, days: string): string {
+  if (when === "on") return days;
+  const n = Math.min(Math.max(Math.round(Number(days)) || 1, 1), MAX_DAYS[when]);
+  return String(n);
+}
 function toStep(r: EditorRow): ReminderStep {
   const n = Math.min(Math.max(Math.round(Number(r.days)) || 1, 1), MAX_DAYS[r.when] || 1);
   return { offsetDays: rowToOffset({ when: r.when, days: n }), channel: r.channel };
@@ -92,12 +98,13 @@ export default function PlanEditor({ account, busy, onSave, onCancel }: Props) {
             <li key={i} className="flex flex-wrap items-center gap-2">
               <input type="number" min={1} max={MAX_DAYS[r.when] || undefined} value={r.days} disabled={r.when === "on"} aria-label={t("reminder_days_aria")}
                 onChange={(e) => setRow(i, { days: e.target.value })}
+                onBlur={() => { const d = clampDays(r.when, r.days); if (d !== r.days) setRow(i, { days: d }); }}
                 className="w-20 rounded-lg border border-ink/20 bg-white px-2 py-1.5 text-sm disabled:opacity-40" />
               <span className="text-xs text-ink/60">{t("reminder_days_unit")}</span>
               <select value={r.when} aria-label={t("reminder_when_aria")}
                 onChange={(e) => {
                   const when = e.target.value as ReminderWhen;
-                  setRow(i, { when, days: Number(r.days) >= 1 ? r.days : "1" });
+                  setRow(i, { when, days: clampDays(when, r.days) });
                 }}
                 className="rounded-lg border border-ink/20 bg-white px-2 py-1.5 text-sm">
                 {WHENS.map((w) => <option key={w} value={w}>{t(`reminder_when_${w}`)}</option>)}
