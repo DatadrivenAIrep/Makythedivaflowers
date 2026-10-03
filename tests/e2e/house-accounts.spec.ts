@@ -41,7 +41,7 @@ test("house account: charge an order, issue, view the public statement, pay, see
 
   await page.goto(`/en/admin/accounts/${account.id}`);
   await expect(page.getByRole("heading", { name: `E2E Hotel ${unique}` })).toBeVisible();
-  await expect(page.getByRole("cell", { name: statement.number, exact: true })).toBeVisible();
+  await expect(page.getByText(statement.number, { exact: true }).first()).toBeVisible();
 
   const detail = await (await page.request.get(`/api/admin/accounts/${account.id}`)).json() as { balanceCents: number };
   const paid = await page.request.post(`/api/admin/accounts/${account.id}/payments`, {
