@@ -18,4 +18,16 @@ describe("ModalShell", () => {
     fireEvent.click(screen.getByRole("dialog").parentElement as HTMLElement);
     expect(onClose).toHaveBeenCalledTimes(2);
   });
+  it("returns focus to the previously focused element after close", () => {
+    const opener = document.createElement("button");
+    document.body.appendChild(opener);
+    opener.focus();
+    expect(document.activeElement).toBe(opener);
+    const { unmount } = render(<ModalShell title="X" onClose={() => {}}><input aria-label="inner" /></ModalShell>);
+    (screen.getByLabelText("inner") as HTMLInputElement).focus();
+    expect(document.activeElement).not.toBe(opener);
+    unmount();
+    expect(document.activeElement).toBe(opener);
+    opener.remove();
+  });
 });

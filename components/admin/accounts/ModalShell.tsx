@@ -1,16 +1,23 @@
 "use client";
-import { useEffect, useId } from "react";
+import { useEffect, useId, useRef } from "react";
 
 type Props = { title: string; onClose: () => void; children: React.ReactNode };
 
-/** Shared dialog chrome for the account modals: backdrop click and Escape close it. */
+/** Shared dialog chrome for the account modals: backdrop click and Escape close it, focus returns to the opener. */
 export default function ModalShell({ title, onClose, children }: Props) {
   const titleId = useId();
+  const onCloseRef = useRef(onClose);
+  useEffect(() => { onCloseRef.current = onClose; });
+
   useEffect(() => {
-    function onKey(e: KeyboardEvent) { if (e.key === "Escape") onClose(); }
+    const opener = document.activeElement as HTMLElement | null;
+    function onKey(e: KeyboardEvent) { if (e.key === "Escape") onCloseRef.current(); }
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [onClose]);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      if (opener && opener !== document.body && document.contains(opener)) opener.focus();
+    };
+  }, []);
 
   return (
     <div className="fixed inset-0 z-20 flex items-center justify-center bg-ink/30 p-4" onClick={onClose}>

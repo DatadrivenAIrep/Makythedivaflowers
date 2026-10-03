@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect, vi, afterEach } from "vitest";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import esMessages from "@/messages/es.json";
 import AccountDetail from "@/components/admin/accounts/AccountDetail";
@@ -60,5 +60,65 @@ describe("AccountDetail", () => {
     wrap(<AccountDetail locale="es" initial={data} />);
     expect(screen.getByText("Próximos")).toBeDefined();
     expect(screen.getByText(/3 días antes del vencimiento · ST-1001/)).toBeDefined();
+  });
+
+  describe("issuing a statement", () => {
+    const issuedStatement = { ...data.statements[0], id: "hst_2", number: "ST-1002", code: "ZyXwVuTs" };
+    const queuedRow = { id: "q1", accountId: "ha_1", statementId: "hst_2", kind: "statement" as const, stepIndex: 0, channel: "both" as const, scheduledFor: "2026-10-04", status: "scheduled" as const, createdAt: "2026-10-03T13:00:00Z" };
+    const afterIssue: AccountDetailData = { ...data, statements: [issuedStatement, ...data.statements], sends: [queuedRow, ...data.sends] };
+    const calls: Array<{ method: string; url: string; body: unknown }> = [];
+
+    function mockFetch(patchResponse: unknown = { send: { ...queuedRow, status: "sent" } }) {
+      calls.length = 0;
+      vi.stubGlobal("fetch", vi.fn(async (url: string, init?: RequestInit) => {
+        const method = init?.method ?? "GET";
+        calls.push({ method, url, body: init?.body ? JSON.parse(String(init.body)) : undefined });
+        const ok = (json: unknown) => ({ ok: true, status: 200, json: async () => json });
+        if (method === "GET") return ok(afterIssue);
+        if (url.endsWith("/statements") && method === "POST") return ok({ statement: { id: "hst_2", number: "ST-1002" } });
+        if (url.endsWith("/send") && method === "POST") return ok({ send: { status: "sent" } });
+        return ok(patchResponse);
+      }));
+    }
+    const writes = () => calls.filter((c) => c.method !== "GET");
+    async function issue() {
+      fireEvent.click(screen.getByRole("button", { name: "Emitir estado ahora" }));
+      await screen.findByText(/emitido y agregado a la cola de envíos/);
+    }
+    afterEach(() => vi.unstubAllGlobals());
+
+    it("sends the already queued row (one PATCH sendNow, no manual POST)", async () => {
+      mockFetch();
+      wrap(<AccountDetail locale="es" initial={data} />);
+      await issue();
+      fireEvent.click(screen.getByRole("button", { name: "Enviar ahora" }));
+      await screen.findByText("Enviado.");
+      const w = writes().filter((c) => !c.url.endsWith("/statements"));
+      expect(w).toEqual([{ method: "PATCH", url: "/api/admin/accounts/sends/q1", body: { sendNow: true } }]);
+    });
+
+    it("sends manually on a different channel, then skips the queued row", async () => {
+      mockFetch();
+      wrap(<AccountDetail locale="es" initial={data} />);
+      await issue();
+      const prompt = screen.getByText(/emitido y agregado a la cola de envíos/).parentElement as HTMLElement;
+      fireEvent.change(prompt.querySelector("select") as HTMLSelectElement, { target: { value: "sms" } });
+      fireEvent.click(screen.getByRole("button", { name: "Enviar ahora" }));
+      await screen.findByText("Enviado.");
+      const w = writes().filter((c) => !c.url.endsWith("/statements"));
+      expect(w).toEqual([
+        { method: "POST", url: "/api/admin/accounts/statements/hst_2/send", body: { channel: "sms" } },
+        { method: "PATCH", url: "/api/admin/accounts/sends/q1", body: { skip: true } },
+      ]);
+    });
+
+    it("treats a 200 whose send failed as a failure", async () => {
+      mockFetch({ send: { ...queuedRow, status: "failed", error: "Twilio 21211" } });
+      wrap(<AccountDetail locale="es" initial={data} />);
+      await issue();
+      fireEvent.click(screen.getByRole("button", { name: "Enviar ahora" }));
+      await waitFor(() => expect(screen.getByText("El envío falló: Twilio 21211")).toBeDefined());
+      expect(screen.queryByText("Enviado.")).toBeNull();
+    });
   });
 });

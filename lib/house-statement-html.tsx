@@ -64,7 +64,7 @@ body{margin:0;background:#f4f1ec;color:#1d1a17;font:13px/1.45 -apple-system,Blin
 .paycard .amt{font-size:30px;line-height:1.15;font-weight:700;margin:4px 0}
 .paycard .dueline{font-size:13px;color:#6b635b;margin-bottom:14px}
 .paycard .dueline.overdue{color:#b42318;font-weight:600}
-.paycard form{margin:0}
+.paycard form,.paycard .paybox{margin:0;text-align:center}
 .paycard.paid{background:#eef7f0;border-color:#cfe6d6;color:#1f7a4d;font-weight:700;font-size:16px;padding:14px 20px}
 .paycard .note{margin:12px 0 0}
 a.pay{display:inline-block;text-decoration:none}

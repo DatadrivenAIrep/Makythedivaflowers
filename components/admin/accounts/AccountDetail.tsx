@@ -1,8 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { ArrowLeft, HandCoins, Receipt, PauseCircle, PlayCircle, XCircle, PlusMinus } from "@phosphor-icons/react/dist/ssr";
+import { shopDateStr } from "@/lib/tv-slots";
 import AdminButton from "@/components/admin/dashboard/AdminButton";
 import OrderDetailDrawer from "@/components/admin/dashboard/OrderDetailDrawer";
 import type { AccountDetailData } from "@/lib/house-account-detail";
@@ -41,12 +42,20 @@ export default function AccountDetail({ locale, initial }: Props) {
   const [openOrderId, setOpenOrderId] = useState<string | null>(null);
   const [editingPlan, setEditingPlan] = useState(false);
   const [issued, setIssued] = useState<{ id: string; number: string; channel: SendChannel } | null>(null);
+  // Always holds the latest fetched data so follow-up actions never read a stale closure.
+  const dataRef = useRef<AccountDetailData>(initial);
+  const sendInFlight = useRef(false);
   const { account } = data;
-  const overdue = data.statements.some((s) => s.status === "open" && s.dueCents > 0 && s.dueDate < new Date().toISOString().slice(0, 10));
+  const today = shopDateStr(new Date());
+  const overdue = data.statements.some((s) => s.status === "open" && s.dueCents > 0 && s.dueDate < today);
 
-  async function refresh() {
+  async function refresh(): Promise<AccountDetailData | null> {
     const res = await fetch(`/api/admin/accounts/${account.id}`, { cache: "no-store" });
-    if (res.ok) setData((await res.json()) as AccountDetailData);
+    if (!res.ok) return null;
+    const fresh = (await res.json()) as AccountDetailData;
+    dataRef.current = fresh;
+    setData(fresh);
+    return fresh;
   }
 
   function errorText(json: { error?: string; reason?: string; send?: { error?: string } }): string {
@@ -89,16 +98,40 @@ export default function AccountDetail({ locale, initial }: Props) {
     if (st) setIssued({ id: st.id, number: st.number, channel: account.statementChannel });
     else if (st === null) setFlash({ ok: true, text: t("nothing_to_issue") });
   }
+  /** The queue answers 200 even when delivery failed; the reason is in send.error. */
+  function sendFailure(json: Record<string, unknown>): string | null {
+    const send = json.send as { status?: string; error?: string } | undefined;
+    return send?.status === "failed" ? t("send_failed", { reason: send.error ?? "" }) : null;
+  }
+  /** Dispatches an already-queued row now; true only when it actually went out. */
+  async function dispatchQueued(id: string): Promise<boolean> {
+    const r = await call("PATCH", `/api/admin/accounts/sends/${id}`, { sendNow: true });
+    if (!r) return false;
+    const failure = sendFailure(r);
+    if (failure) { setFlash({ ok: false, text: failure }); return false; }
+    setFlash({ ok: true, text: t("sent_ok") });
+    return true;
+  }
   async function sendStatement(sid: string, channel: SendChannel) {
-    const r = await call("POST", `/api/admin/accounts/statements/${sid}/send`, { channel });
-    if (r) setFlash({ ok: true, text: t("sent_ok") });
+    if (sendInFlight.current) return;
+    sendInFlight.current = true;
+    try {
+      // Issuing already queued this statement; reuse that row instead of sending a second copy.
+      const queued = dataRef.current.sends.find((x) => x.statementId === sid && x.kind === "statement" && x.status === "scheduled");
+      if (queued && queued.channel === channel) { await dispatchQueued(queued.id); return; }
+      const r = await call("POST", `/api/admin/accounts/statements/${sid}/send`, { channel });
+      if (!r) return;
+      if (queued && (await call("PATCH", `/api/admin/accounts/sends/${queued.id}`, { skip: true })) === null) return;
+      setFlash({ ok: true, text: t("sent_ok") });
+    } finally { sendInFlight.current = false; }
   }
   async function voidStatement(sid: string) {
     await call("PATCH", `/api/admin/accounts/statements/${sid}`, { void: true });
   }
-  async function sendAction(id: string, action: "sendNow" | "skip" | "reschedule", date?: string) {
-    const body = action === "skip" ? { skip: true } : action === "sendNow" ? { sendNow: true } : { scheduledFor: date };
-    await call("PATCH", `/api/admin/accounts/sends/${id}`, body);
+  async function sendAction(id: string, action: "sendNow" | "skip" | "reschedule", date?: string): Promise<boolean> {
+    if (action === "sendNow") return dispatchQueued(id);
+    const body = action === "skip" ? { skip: true } : { scheduledFor: date };
+    return (await call("PATCH", `/api/admin/accounts/sends/${id}`, body)) !== null;
   }
 
   const statementRefs = Object.fromEntries(data.statements.map((s) => [s.id, { number: s.number, dueDate: s.dueDate }]));

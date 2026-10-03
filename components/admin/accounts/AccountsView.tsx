@@ -76,13 +76,13 @@ export default function AccountsView({ locale, initialAccounts, initialUpcoming 
       <Link href={`/${locale}/admin/dashboard`} className="mb-2 inline-flex items-center gap-1.5 text-sm text-rouge hover:underline">
         <ArrowLeft size={15} weight="bold" /> {t("back_to_dashboard")}
       </Link>
-      <div className="mb-5 flex items-end justify-between gap-4">
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
         <div>
           <h1 className="font-display text-2xl text-ink">{t("title")}</h1>
           <p className="mt-1 text-sm text-ink/55">{t("subtitle")}</p>
         </div>
         <button type="button" onClick={() => setCreating(true)}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-rouge px-4 py-2.5 text-sm font-bold text-bone hover:bg-rouge/90">
+          className="inline-flex min-h-11 items-center gap-1.5 self-start whitespace-nowrap rounded-lg bg-rouge px-4 py-2.5 text-sm font-bold text-bone hover:bg-rouge/90">
           <Plus size={16} weight="bold" /> {t("new_account")}
         </button>
       </div>
@@ -104,7 +104,7 @@ export default function AccountsView({ locale, initialAccounts, initialUpcoming 
             if (debounce.current) clearTimeout(debounce.current);
             debounce.current = setTimeout(() => { void refresh(filter, v); }, 200);
           }}
-          className="ml-auto min-h-11 w-56 rounded-lg border border-ink/20 bg-white px-3 text-sm" />
+          className="min-h-11 w-full rounded-lg sm:ml-auto sm:w-56 border border-ink/20 bg-white px-3 text-sm" />
       </div>
 
       {accounts.length === 0 ? (
@@ -117,8 +117,8 @@ export default function AccountsView({ locale, initialAccounts, initialUpcoming 
                 <th className="px-3 py-2">{t("col_name")}</th>
                 <th className="px-3 py-2 text-right">{t("col_balance")}</th>
                 <th className="px-3 py-2">{t("col_oldest")}</th>
-                <th className="px-3 py-2">{t("col_next_issue")}</th>
-                <th className="px-3 py-2">{t("col_last_payment")}</th>
+                <th className="hidden px-3 py-2 sm:table-cell">{t("col_next_issue")}</th>
+                <th className="hidden px-3 py-2 sm:table-cell">{t("col_last_payment")}</th>
                 <th className="px-3 py-2">{t("col_status")}</th>
               </tr>
             </thead>
@@ -137,8 +137,8 @@ export default function AccountsView({ locale, initialAccounts, initialUpcoming 
                       </span>
                     ) : <span className="text-ink/40">—</span>}
                   </td>
-                  <td className="px-3 py-2 tabular-nums">{a.status === "active" ? formatDateOnly(a.nextIssueDate, locale) : <span className="text-ink/40">—</span>}</td>
-                  <td className="px-3 py-2 tabular-nums">{a.lastPaymentAt ? formatDate(a.lastPaymentAt, locale) : <span className="text-ink/40">—</span>}</td>
+                  <td className="hidden px-3 py-2 tabular-nums sm:table-cell">{a.status === "active" ? formatDateOnly(a.nextIssueDate, locale) : <span className="text-ink/40">—</span>}</td>
+                  <td className="hidden px-3 py-2 tabular-nums sm:table-cell">{a.lastPaymentAt ? formatDate(a.lastPaymentAt, locale) : <span className="text-ink/40">—</span>}</td>
                   <td className="px-3 py-2"><AccountStatusBadge status={a.status} /></td>
                 </tr>
               ))}
