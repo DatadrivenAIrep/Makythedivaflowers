@@ -117,7 +117,7 @@ export default function MessagesInbox({ locale }: { locale: string }) {
       </header>
       <p className="mb-4 text-sm text-ink/60">{t("intro")}</p>
 
-      <div className="flex h-[calc(100vh-13rem)] min-h-[420px] overflow-hidden rounded-bento border border-ink/10 bg-white shadow-sm">
+      <div className="flex h-[calc(100vh-15.5rem)] min-h-[420px] overflow-hidden rounded-bento border border-ink/10 bg-white shadow-sm">
         {/* Conversation list */}
         <div
           className={`w-full flex-col border-ink/10 md:flex md:w-80 md:shrink-0 md:border-r ${

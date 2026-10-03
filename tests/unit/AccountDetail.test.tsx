@@ -121,4 +121,29 @@ describe("AccountDetail", () => {
       expect(screen.queryByText("Enviado.")).toBeNull();
     });
   });
+
+  describe("when the server issues nothing", () => {
+    function mockNothingIssued(current: AccountDetailData) {
+      vi.stubGlobal("fetch", vi.fn(async (_url: string, init?: RequestInit) => {
+        const body = (init?.method ?? "GET") === "GET" ? current : { statement: null };
+        return { ok: true, status: 200, json: async () => body };
+      }));
+    }
+    afterEach(() => vi.unstubAllGlobals());
+
+    it("explains that a statement already closed today", async () => {
+      const closedToday: AccountDetailData = { ...data, statements: [{ ...data.statements[0], periodEnd: "2999-12-31" }] };
+      mockNothingIssued(closedToday);
+      wrap(<AccountDetail locale="es" initial={closedToday} />);
+      fireEvent.click(screen.getByRole("button", { name: "Emitir estado ahora" }));
+      await screen.findByText("Ya se emitió un estado hoy. Los movimientos nuevos entran en el próximo.");
+    });
+
+    it("says there is nothing to issue when the last statement closed earlier", async () => {
+      mockNothingIssued(data);
+      wrap(<AccountDetail locale="es" initial={data} />);
+      fireEvent.click(screen.getByRole("button", { name: "Emitir estado ahora" }));
+      await screen.findByText("Nada que emitir: sin movimientos ni saldo pendiente.");
+    });
+  });
 });

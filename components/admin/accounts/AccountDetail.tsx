@@ -96,7 +96,11 @@ export default function AccountDetail({ locale, initial }: Props) {
     if (!r) return;
     const st = r.statement as { id: string; number: string } | null | undefined;
     if (st) setIssued({ id: st.id, number: st.number, channel: account.statementChannel });
-    else if (st === null) setFlash({ ok: true, text: t("nothing_to_issue") });
+    else if (st === null) {
+      // One statement per closing day: say so instead of claiming there is nothing pending.
+      const issuedToday = dataRef.current.statements.some((s) => s.status !== "void" && s.periodEnd >= shopDateStr(new Date()));
+      setFlash({ ok: true, text: t(issuedToday ? "already_issued_today" : "nothing_to_issue") });
+    }
   }
   /** The queue answers 200 even when delivery failed; the reason is in send.error. */
   function sendFailure(json: Record<string, unknown>): string | null {
