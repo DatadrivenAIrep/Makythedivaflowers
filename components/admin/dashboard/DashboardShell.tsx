@@ -40,87 +40,87 @@ export default function DashboardShell({ locale, children, lastUpdated, onRefres
           <Link href={base} className="flex items-center" aria-label="Diva Admin">
             <Image src="/logo-header.webp" alt="Maky the Diva Flowers" width={320} height={96} priority className="h-9 w-auto" />
           </Link>
-          <nav className="ml-2 flex gap-1 text-sm">
+          <nav className="ml-2 flex min-w-0 flex-1 gap-1 overflow-x-auto text-sm">
             <Link
               href={base}
-              className={`flex min-h-11 items-center rounded-lg px-3 ${isBandeja ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
+              className={`flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-lg px-3 ${isBandeja ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >{t("nav_bandeja")}</Link>
             <Link
               href={`${base}/run-sheet`}
-              className={`flex min-h-11 items-center rounded-lg px-3 ${isRunSheet ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
+              className={`flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-lg px-3 ${isRunSheet ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >{t("nav_run_sheet")}</Link>
             <Link
               href={`${base}/ledger`}
-              className={`flex min-h-11 items-center rounded-lg px-3 ${isLedger ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
+              className={`flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-lg px-3 ${isLedger ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >{t("nav_ledger")}</Link>
             <Link
               href={`/${locale}/admin/gift-cards`}
-              className={`flex min-h-11 items-center rounded-lg px-3 ${isGiftCards ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
+              className={`flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-lg px-3 ${isGiftCards ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >
               {t("nav_gift_cards")}
             </Link>
             <Link
               href={`/${locale}/admin/promos`}
-              className={`flex min-h-11 items-center rounded-lg px-3 ${isPromos ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
+              className={`flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-lg px-3 ${isPromos ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >
               {t("nav_promos")}
             </Link>
             <Link
               href={`/${locale}/admin/customers`}
-              className={`flex min-h-11 items-center rounded-lg px-3 ${isCustomers ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
+              className={`flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-lg px-3 ${isCustomers ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >
               {t("nav_customers")}
             </Link>
             <Link
               href={`/${locale}/admin/accounts`}
-              className={`flex min-h-11 items-center rounded-lg px-3 ${isAccounts ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
+              className={`flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-lg px-3 ${isAccounts ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >
               {t("nav_accounts")}
             </Link>
             <Link
               href={`/${locale}/admin/occasions`}
-              className={`flex min-h-11 items-center rounded-lg px-3 ${isOccasions ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
+              className={`flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-lg px-3 ${isOccasions ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >
               {t("nav_occasions")}
             </Link>
             <Link
               href={`/${locale}/admin/metrics`}
-              className={`flex min-h-11 items-center rounded-lg px-3 ${isMetrics ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
+              className={`flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-lg px-3 ${isMetrics ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >
               {t("nav_metrics")}
             </Link>
             <Link
               href={`/${locale}/admin/pipeline`}
-              className={`flex min-h-11 items-center rounded-lg px-3 ${isPipeline ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
+              className={`flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-lg px-3 ${isPipeline ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >
               {t("nav_pipeline")}
             </Link>
             <Link
               href={`/${locale}/admin/messages`}
-              className={`flex min-h-11 items-center rounded-lg px-3 ${isMessages ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
+              className={`flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-lg px-3 ${isMessages ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >
               {t("nav_messages")}
             </Link>
             <Link
               href={`/${locale}/admin/campaigns`}
-              className={`flex min-h-11 items-center rounded-lg px-3 ${isCampaigns ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
+              className={`flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-lg px-3 ${isCampaigns ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >
               {t("nav_campaigns")}
             </Link>
             <Link
               href={`/${locale}/admin/intake`}
-              className="flex min-h-11 items-center gap-1 rounded-lg px-3 hover:bg-ink/5"
+              className="flex min-h-11 shrink-0 items-center whitespace-nowrap gap-1 rounded-lg px-3 hover:bg-ink/5"
             ><Plus size={16} weight="bold" /> {t("nav_new_order")}</Link>
           </nav>
           <Link
               href={`/${locale}/admin/settings`}
-              className={`flex min-h-11 items-center gap-1 rounded-lg px-3 ${isSettings ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
+              className={`flex min-h-11 shrink-0 items-center whitespace-nowrap gap-1 rounded-lg px-3 ${isSettings ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             ><GearSix size={16} weight="bold" /></Link>
-          <div className="ml-auto flex items-center gap-3 text-xs text-ink/60">
+          <div className="ml-auto flex shrink-0 items-center gap-3 text-xs text-ink/60">
             <LocaleSwitcher current={locale as Locale} />
             {lastUpdated && <span>{t("last_updated")}: {lastUpdated}</span>}
             {onRefresh && (
-              <button onClick={onRefresh} className="flex min-h-11 items-center gap-1 rounded-lg border border-ink/20 px-3 hover:bg-ink/5">
+              <button onClick={onRefresh} className="flex min-h-11 shrink-0 items-center whitespace-nowrap gap-1 rounded-lg border border-ink/20 px-3 hover:bg-ink/5">
                 <ArrowsClockwise size={16} weight="bold" /> {t("refresh")}
               </button>
             )}
