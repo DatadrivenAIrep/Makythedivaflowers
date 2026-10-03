@@ -74,7 +74,7 @@ export async function sendStep(row: ScheduledSend, today: string): Promise<SendO
   }
   if (ch.email) {
     try {
-      const html = await buildStatementHtml(statement, account, { today });
+      const html = await buildStatementHtml(statement, account, { today, forEmail: true });
       const resend = new Resend(process.env.RESEND_API_KEY!);
       const result = await resend.emails.send({
         from: process.env.ORDER_NOTIFICATIONS_FROM!,

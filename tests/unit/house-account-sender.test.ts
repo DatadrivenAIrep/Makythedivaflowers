@@ -53,6 +53,8 @@ describe("sendStep", () => {
     expect(emailArgs.to).toBe("ap@org.com");
     expect(emailArgs.subject).toBe("Estado de cuenta ST-1001 · Diva Flowers");
     expect(emailArgs.html).toContain("ST-1001");
+    expect(emailArgs.html).toContain('href="https://x.test/s/AbCdEfGh"');
+    expect(emailArgs.html).not.toContain("<form");
     expect(emailArgs.replyTo).toBe("studio@divaflowers.com");
   });
   it("skips when neither channel is available, naming the reasons", async () => {

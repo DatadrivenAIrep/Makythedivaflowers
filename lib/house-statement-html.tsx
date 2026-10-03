@@ -7,6 +7,7 @@ import { formatAddressLine, formatMoneyCents, formatPhoneUS } from "@/lib/format
 import { formatDateOnly } from "@/lib/format-datetime";
 import { getLogoDataUri } from "@/lib/print-styles";
 import { dueCents, entryDate } from "@/lib/house-account-settlement";
+import { statementUrl } from "@/lib/house-account-templates";
 import type { HouseAccount, Statement, StatementLine, AccountPaymentMethod, EntryKind } from "@/types/house-account";
 
 async function loadRenderToStaticMarkup() {
@@ -21,6 +22,7 @@ type Strings = {
   title: string; number: string; period: string; issued: string; due: string; billTo: string;
   opening: string; charges: string; credits: string; payments: string; closing: string; settled: string; remaining: string;
   date: string; detail: string; amount: string; pay: string; justPaid: string; thanks: string; print: string;
+  amountDue: string; dueOn: string; wasDueOn: string; paidThanks: string; viewAndPay: string;
   stamp: Record<Stamp, string>;
   kinds: Record<EntryKind, string>;
   methods: Record<AccountPaymentMethod, string>;
@@ -33,6 +35,7 @@ export const STATEMENT_STRINGS: Record<Locale, Strings> = {
     settled: "Paid / credited after issue", remaining: "Amount due",
     date: "Date", detail: "Detail", amount: "Amount", pay: "Pay now",
     justPaid: "Payment received — updating…", thanks: "Thank you for choosing Maky The Diva Flowers.", print: "Print / Save PDF",
+    amountDue: "Amount due", dueOn: "Due", wasDueOn: "Was due", paidThanks: "Paid. Thank you.", viewAndPay: "View and pay",
     stamp: { open: "Balance due", overdue: "Past due", paid: "Paid", void: "Void" },
     kinds: { charge: "Order", payment: "Payment", credit: "Credit", adjustment: "Adjustment", reversal: "Cancellation" },
     methods: { cash: "Cash", zelle: "Zelle", ach: "ACH", check: "Check", "card-terminal": "Card", stripe: "Card (online)" },
@@ -43,6 +46,7 @@ export const STATEMENT_STRINGS: Record<Locale, Strings> = {
     settled: "Pagado / acreditado después de emitido", remaining: "Saldo a pagar",
     date: "Fecha", detail: "Detalle", amount: "Importe", pay: "Pagar ahora",
     justPaid: "Pago recibido, actualizando…", thanks: "Gracias por elegir Maky The Diva Flowers.", print: "Imprimir / Guardar PDF",
+    amountDue: "Saldo a pagar", dueOn: "Vence", wasDueOn: "Venció el", paidThanks: "Pagado. Gracias.", viewAndPay: "Ver y pagar",
     stamp: { open: "Saldo pendiente", overdue: "Vencido", paid: "Pagado", void: "Anulado" },
     kinds: { charge: "Orden", payment: "Pago", credit: "Crédito", adjustment: "Ajuste", reversal: "Cancelación" },
     methods: { cash: "Efectivo", zelle: "Zelle", ach: "ACH", check: "Cheque", "card-terminal": "Tarjeta", stripe: "Tarjeta (en línea)" },
@@ -53,8 +57,17 @@ const STYLES = `
 *{box-sizing:border-box}
 body{margin:0;background:#f4f1ec;color:#1d1a17;font:13px/1.45 -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
 .page{max-width:8.5in;margin:24px auto;background:#fff;padding:0.6in;box-shadow:0 1px 8px rgba(0,0,0,.08)}
-.toolbar{max-width:8.5in;margin:16px auto 0;padding:0 16px;text-align:right}
-.toolbar button{font:inherit;font-weight:600;padding:8px 16px;border-radius:8px;border:1px solid #1d1a17;background:#1d1a17;color:#fff;cursor:pointer}
+.printbtn{text-align:center;margin-top:28px}
+.printbtn button{font:inherit;font-size:12px;padding:6px 10px;border:0;background:none;color:#6b635b;text-decoration:underline;cursor:pointer}
+.paycard{margin:20px 0 0;padding:20px;border-radius:14px;background:#fbf6f1;border:1px solid #eadfd3;text-align:center}
+.paycard .lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6b635b}
+.paycard .amt{font-size:30px;line-height:1.15;font-weight:700;margin:4px 0}
+.paycard .dueline{font-size:13px;color:#6b635b;margin-bottom:14px}
+.paycard .dueline.overdue{color:#b42318;font-weight:600}
+.paycard form{margin:0}
+.paycard.paid{background:#eef7f0;border-color:#cfe6d6;color:#1f7a4d;font-weight:700;font-size:16px;padding:14px 20px}
+.paycard .note{margin:12px 0 0}
+a.pay{display:inline-block;text-decoration:none}
 header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:24px;padding-bottom:20px;border-bottom:1px solid #e6e0d8}
 header img{height:56px}
 .shop{font-size:12px;color:#6b635b;margin-top:6px}
@@ -78,9 +91,9 @@ table{width:100%;border-collapse:collapse}
 .pay{font:inherit;font-weight:700;padding:12px 22px;border-radius:10px;border:0;background:#b42318;color:#fff;cursor:pointer;font-size:15px}
 .note{margin:16px 0 0;padding:10px 12px;border-radius:8px;background:#eef7f0;color:#1f7a4d;font-weight:600}
 footer{margin-top:36px;padding-top:16px;border-top:1px solid #e6e0d8;text-align:center;color:#6b635b;font-size:12px}
-@media (max-width:640px){.page{margin:12px 0;padding:20px 16px}.sums{width:100%}}
+@media (max-width:640px){.page{margin:12px 0;padding:20px 16px}.sums{width:100%}.paycard{padding:18px 16px}.pay{width:100%;min-height:48px;display:block;text-align:center}a.pay{display:flex;align-items:center;justify-content:center}.paybox{text-align:center}}
 @page{size:letter;margin:0.6in}
-@media print{body{background:#fff}.toolbar,.paybox{display:none}.page{margin:0;padding:0;box-shadow:none;max-width:none}}
+@media print{body{background:#fff}.printbtn,.paybox{display:none}.page{margin:0;padding:0;box-shadow:none;max-width:none}}
 `;
 
 function lineLabel(l: StatementLine, s: Strings): string {
@@ -88,8 +101,8 @@ function lineLabel(l: StatementLine, s: Strings): string {
   switch (l.kind) {
     case "charge": return [s.kinds.charge, num, l.recipientName ? `· ${l.recipientName}` : ""].filter(Boolean).join(" ");
     case "payment": return [s.kinds.payment, l.method ? `· ${s.methods[l.method]}` : ""].filter(Boolean).join(" ");
-    case "credit": return [s.kinds.credit, l.note ? `· ${l.note}` : ""].filter(Boolean).join(" ");
-    case "adjustment": return [s.kinds.adjustment, num, l.note ? `· ${l.note}` : ""].filter(Boolean).join(" ");
+    case "credit": return [s.kinds.credit].filter(Boolean).join(" ");
+    case "adjustment": return [s.kinds.adjustment, num].filter(Boolean).join(" ");
     case "reversal": return [s.kinds.reversal, num].filter(Boolean).join(" ");
   }
 }
@@ -100,7 +113,7 @@ function stampFor(st: Statement, today: string): Stamp {
   return today > st.dueDate ? "overdue" : "open";
 }
 
-function Doc({ st, account, today, justPaid }: { st: Statement; account: HouseAccount; today: string; justPaid: boolean }) {
+function Doc({ st, account, today, justPaid, forEmail }: { st: Statement; account: HouseAccount; today: string; justPaid: boolean; forEmail: boolean }) {
   const locale = account.locale;
   const s = STATEMENT_STRINGS[locale];
   const money = (c: number) => formatMoneyCents(c, locale);
@@ -108,9 +121,17 @@ function Doc({ st, account, today, justPaid }: { st: Statement; account: HouseAc
   const stamp = stampFor(st, today);
   const due = dueCents(st);
   const canPay = st.status === "open" && due > 0;
+  const overdue = today > st.dueDate;
+  const payLabel = `${s.pay} · ${money(due)}`;
+  const payControl = forEmail ? (
+    <a className="pay" href={statementUrl(st.code)}>{s.viewAndPay} · {money(due)}</a>
+  ) : (
+    <form className="paybox" method="post" action={`/s/${st.code}/pay`}>
+      <button type="submit" className="pay">{payLabel}</button>
+    </form>
+  );
   return (
     <>
-      <div className="toolbar"><button type="button" data-print>{s.print}</button></div>
       <main className="page">
         <header>
           <div>
@@ -134,6 +155,17 @@ function Doc({ st, account, today, justPaid }: { st: Statement; account: HouseAc
           </div>
         </header>
 
+        {canPay ? (
+          <section className="paycard">
+            <div className="lbl">{s.amountDue}</div>
+            <div className="amt">{money(due)}</div>
+            <div className={`dueline${overdue ? " overdue" : ""}`}>{overdue ? s.wasDueOn : s.dueOn} {formatDateOnly(st.dueDate, locale)}</div>
+            {payControl}
+            {justPaid ? <p className="note">{s.justPaid}</p> : null}
+          </section>
+        ) : null}
+        {st.status === "paid" ? <section className="paycard paid">{s.paidThanks}</section> : null}
+
         <section className="parties">
           <h2>{s.billTo}</h2>
           <p><strong>{account.name}</strong></p>
@@ -147,7 +179,7 @@ function Doc({ st, account, today, justPaid }: { st: Statement; account: HouseAc
             <tr><td>{s.opening}</td><td>{money(st.openingCents)}</td></tr>
             <tr><td>{s.charges}</td><td>{money(st.chargesCents)}</td></tr>
             {st.creditsCents > 0 ? <tr><td>{s.credits}</td><td>−{money(st.creditsCents)}</td></tr> : null}
-            <tr><td>{s.payments}</td><td>−{money(st.paymentsCents)}</td></tr>
+            {st.paymentsCents !== 0 ? <tr><td>{s.payments}</td><td>−{money(st.paymentsCents)}</td></tr> : null}
             <tr className="total"><td>{s.closing}</td><td>{money(st.closingCents)}</td></tr>
             {st.settledCents > 0 ? (
               <>
@@ -173,12 +205,10 @@ function Doc({ st, account, today, justPaid }: { st: Statement; account: HouseAc
           </table>
         ) : null}
 
-        {justPaid && st.status === "open" ? <p className="note">{s.justPaid}</p> : null}
-        {canPay ? (
-          <form className="paybox" method="post" action={`/s/${st.code}/pay`}>
-            <button type="submit" className="pay">{s.pay} · {money(due)}</button>
-          </form>
-        ) : null}
+        {canPay ? payControl : null}
+        {!canPay && justPaid && st.status === "open" ? <p className="note">{s.justPaid}</p> : null}
+
+        {forEmail ? null : <div className="printbtn"><button type="button" data-print>{s.print}</button></div>}
 
         <footer>{s.thanks} · {site}</footer>
       </main>
@@ -203,15 +233,17 @@ ${extraHead}
 export async function buildStatementHtml(
   statement: Statement,
   account: HouseAccount,
-  opts: { today: string; justPaid?: boolean },
+  opts: { today: string; justPaid?: boolean; forEmail?: boolean },
 ): Promise<string> {
   const renderToStaticMarkup = await loadRenderToStaticMarkup();
-  const body = renderToStaticMarkup(<Doc st={statement} account={account} today={opts.today} justPaid={!!opts.justPaid} />);
+  const body = renderToStaticMarkup(<Doc st={statement} account={account} today={opts.today} justPaid={!!opts.justPaid} forEmail={!!opts.forEmail} />);
   // statement.number is "ST-" + digits — safe to interpolate into <title>.
   return shell(
     account.locale,
     `${statement.number} · ${SITE.merchantName}`,
-    `${body}
+    opts.forEmail
+      ? body
+      : `${body}
 <script>document.querySelector("[data-print]").addEventListener("click", function () { window.print(); });</script>`,
     `<style>${STYLES}</style>`,
   );
