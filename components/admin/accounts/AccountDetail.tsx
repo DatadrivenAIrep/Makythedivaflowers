@@ -19,10 +19,13 @@ import EntryModal from "./EntryModal";
 type Props = { locale: string; initial: AccountDetailData };
 function money(c: number) { return `$${(Math.abs(c) / 100).toFixed(2)}`; }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({ title, action, children }: { title: string; action?: React.ReactNode; children: React.ReactNode }) {
   return (
     <section className="mb-4 rounded-xl border border-ink/10 bg-bone p-4">
-      <h2 className="mb-3 text-xs uppercase tracking-wide text-ink/50">{title}</h2>
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <h2 className="text-xs uppercase tracking-wide text-ink/50">{title}</h2>
+        {action}
+      </div>
       {children}
     </section>
   );
@@ -36,6 +39,8 @@ export default function AccountDetail({ locale, initial }: Props) {
   const [payOpen, setPayOpen] = useState(false);
   const [entryOpen, setEntryOpen] = useState(false);
   const [openOrderId, setOpenOrderId] = useState<string | null>(null);
+  const [editingPlan, setEditingPlan] = useState(false);
+  const [issued, setIssued] = useState<{ id: string; number: string; channel: SendChannel } | null>(null);
   const { account } = data;
   const overdue = data.statements.some((s) => s.status === "open" && s.dueCents > 0 && s.dueDate < new Date().toISOString().slice(0, 10));
 
@@ -70,7 +75,7 @@ export default function AccountDetail({ locale, initial }: Props) {
 
   async function savePlan(patch: PlanPatch): Promise<boolean> {
     const ok = (await call("PATCH", `/api/admin/accounts/${account.id}`, patch)) !== null;
-    if (ok) setFlash({ ok: true, text: t("saved") });
+    if (ok) { setFlash({ ok: true, text: t("saved") }); setEditingPlan(false); }
     return ok;
   }
   async function setStatus(status: AccountStatus) {
@@ -79,7 +84,10 @@ export default function AccountDetail({ locale, initial }: Props) {
   }
   async function issueNow() {
     const r = await call("POST", `/api/admin/accounts/${account.id}/statements`);
-    if (r && r.statement === null) setFlash({ ok: true, text: t("nothing_to_issue") });
+    if (!r) return;
+    const st = r.statement as { id: string; number: string } | null | undefined;
+    if (st) setIssued({ id: st.id, number: st.number, channel: account.statementChannel });
+    else if (st === null) setFlash({ ok: true, text: t("nothing_to_issue") });
   }
   async function sendStatement(sid: string, channel: SendChannel) {
     const r = await call("POST", `/api/admin/accounts/statements/${sid}/send`, { channel });
@@ -93,7 +101,19 @@ export default function AccountDetail({ locale, initial }: Props) {
     await call("PATCH", `/api/admin/accounts/sends/${id}`, body);
   }
 
-  const numbers = Object.fromEntries(data.statements.map((s) => [s.id, s.number]));
+  const statementRefs = Object.fromEntries(data.statements.map((s) => [s.id, { number: s.number, dueDate: s.dueDate }]));
+  const weekday = (d: number) => (locale === "es" ? t(`weekday_${d}`).toLowerCase() : t(`weekday_${d}`));
+  const cadenceText = account.cadence === "monthly"
+    ? t("plan_summary_monthly", { day: account.issueDay })
+    : t(`plan_summary_${account.cadence}`, { day: weekday(account.issueDay) });
+  const billing = [account.billingName, account.billingPhone, account.billingEmail].filter(Boolean).join(" · ");
+  const summary = [
+    cadenceText,
+    t("plan_summary_terms", { days: account.termsDays }),
+    t("plan_summary_channel", { channel: t(`channel_${account.statementChannel}`) }),
+    t("plan_summary_reminders", { count: account.reminderPlan.length }),
+    billing,
+  ].filter(Boolean).join(" · ");
 
   return (
     <div className="mx-auto max-w-5xl">
@@ -123,15 +143,31 @@ export default function AccountDetail({ locale, initial }: Props) {
       </header>
       {flash && <p className={`mb-3 text-sm ${flash.ok ? "text-success" : "text-error"}`}>{flash.text}</p>}
 
-      <Section title={t("section_plan")}><PlanEditor key={account.updatedAt} account={account} busy={busy} onSave={savePlan} /></Section>
+      {issued && (
+        <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-rouge/30 bg-white p-4 text-sm">
+          <span className="font-medium">{t("issued_prompt", { number: issued.number })}</span>
+          <select aria-label={t("send_channel_pick")} value={issued.channel} onChange={(e) => setIssued({ ...issued, channel: e.target.value as SendChannel })}
+            className="rounded-lg border border-ink/20 bg-white px-2 py-1.5 text-sm">
+            {(["sms", "email", "both"] as SendChannel[]).map((c) => <option key={c} value={c}>{t(`channel_${c}`)}</option>)}
+          </select>
+          <AdminButton variant="primary" disabled={busy} onClick={async () => { const { id, channel } = issued; setIssued(null); await sendStatement(id, channel); }}>{t("send_now_long")}</AdminButton>
+          <AdminButton variant="secondary" disabled={busy} onClick={() => setIssued(null)}>{t("issued_later")}</AdminButton>
+        </div>
+      )}
+
+      <Section title={t("section_plan")} action={!editingPlan && <AdminButton variant="secondary" disabled={busy} onClick={() => setEditingPlan(true)}>{t("plan_edit")}</AdminButton>}>
+        {editingPlan
+          ? <PlanEditor key={account.updatedAt} account={account} busy={busy} onSave={savePlan} onCancel={() => setEditingPlan(false)} />
+          : <p className="text-sm text-ink/80">{summary}</p>}
+      </Section>
       <Section title={t("section_statements")}>
         <StatementsTable locale={locale} statements={data.statements} defaultChannel={account.statementChannel} busy={busy} onSend={sendStatement} onVoid={voidStatement} />
       </Section>
+      <Section title={t("section_queue")}><SendsQueue locale={locale} sends={data.sends} statements={statementRefs} busy={busy} onAction={sendAction} /></Section>
       <Section title={t("section_ledger")}><LedgerTable locale={locale} entries={data.entries} onOpenOrder={setOpenOrderId} /></Section>
       <Section title={t("section_contacts")}>
         <ContactsList locale={locale} accountId={account.id} contacts={data.contacts} busy={busy} onChanged={refresh} />
       </Section>
-      <Section title={t("section_queue")}><SendsQueue locale={locale} sends={data.sends} numbers={numbers} busy={busy} onAction={sendAction} /></Section>
 
       {payOpen && <PaymentModal accountId={account.id} onClose={() => setPayOpen(false)} onDone={async () => { setPayOpen(false); await refresh(); }} />}
       {entryOpen && <EntryModal accountId={account.id} onClose={() => setEntryOpen(false)} onDone={async () => { setEntryOpen(false); await refresh(); }} />}

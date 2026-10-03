@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import esMessages from "@/messages/es.json";
 import AccountDetail from "@/components/admin/accounts/AccountDetail";
@@ -44,5 +44,21 @@ describe("AccountDetail", () => {
     expect(screen.getByText("Sin contactos vinculados. Las personas vinculadas se preseleccionan en el intake.")).toBeDefined();
     expect(screen.getByText("Programado")).toBeDefined();
     expect(screen.getByRole("button", { name: "Registrar pago" })).toBeDefined();
+  });
+
+  it("keeps the terms collapsed to a summary until Editar is clicked", () => {
+    wrap(<AccountDetail locale="es" initial={data} />);
+    expect(screen.getByText(/Mensual, día 1 · 15 días de plazo · Estado por SMS \+ email · 1 recordatorio · Ana · 5165550100 · ap@hotel.com/)).toBeDefined();
+    expect(screen.queryByText("Nombre comercial")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Editar" }));
+    expect(screen.getByText("Nombre comercial")).toBeDefined();
+    fireEvent.click(screen.getByRole("button", { name: "Cancelar" }));
+    expect(screen.queryByText("Nombre comercial")).toBeNull();
+  });
+
+  it("labels the queued reminder relative to the due date under Próximos", () => {
+    wrap(<AccountDetail locale="es" initial={data} />);
+    expect(screen.getByText("Próximos")).toBeDefined();
+    expect(screen.getByText(/3 días antes del vencimiento · ST-1001/)).toBeDefined();
   });
 });

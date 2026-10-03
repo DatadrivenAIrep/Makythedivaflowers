@@ -32,7 +32,7 @@ describe("AccountsView", () => {
     expect(screen.getByText("$700.00")).toBeDefined();
     expect(screen.getByText("Vencido")).toBeDefined();
     expect(screen.getByText("Próximos envíos (7 días)")).toBeDefined();
-    expect(screen.getByText(/Recordatorio · ST-1001 · SMS/)).toBeDefined();
+    expect(screen.getByText(/11 días antes del vencimiento · ST-1001 · SMS/)).toBeDefined();
     expect(screen.getByRole("button", { name: "Enviar ya" })).toBeDefined();
   });
   it("shows the empty states", () => {

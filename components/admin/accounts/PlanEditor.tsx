@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import AdminButton from "@/components/admin/dashboard/AdminButton";
+import { offsetToRow, rowToOffset, type ReminderWhen } from "./send-label";
 import type { HouseAccount, AccountCadence, SendChannel, ReminderStep } from "@/types/house-account";
 
 export type PlanPatch = {
@@ -9,13 +10,14 @@ export type PlanPatch = {
   cadence: AccountCadence; issueDay: number; termsDays: number; statementChannel: SendChannel;
   reminderPlan: ReminderStep[]; notes: string;
 };
-type Props = { account: HouseAccount; busy: boolean; onSave: (patch: PlanPatch) => Promise<boolean> };
+type Props = { account: HouseAccount; busy: boolean; onSave: (patch: PlanPatch) => Promise<boolean>; onCancel?: () => void };
+const WHENS: ReminderWhen[] = ["before", "on", "after"];
 
 const INPUT = "w-full rounded-lg border border-ink/20 bg-white px-3 py-2 text-sm";
 const CADENCES: AccountCadence[] = ["weekly", "biweekly", "monthly"];
 const CHANNELS: SendChannel[] = ["sms", "email", "both"];
 
-export default function PlanEditor({ account, busy, onSave }: Props) {
+export default function PlanEditor({ account, busy, onSave, onCancel }: Props) {
   const t = useTranslations("admin_accounts");
   const [f, setF] = useState<PlanPatch>({
     name: account.name, billingName: account.billingName ?? "", billingPhone: account.billingPhone ?? "",
@@ -71,23 +73,36 @@ export default function PlanEditor({ account, busy, onSave }: Props) {
       <div className="text-sm md:col-span-2">
         <span className="mb-1 block text-xs font-semibold">{t("form_reminders")}</span>
         <ul className="space-y-2">
-          {f.reminderPlan.map((s, i) => (
-            <li key={i} className="flex flex-wrap items-center gap-2">
-              <input type="number" min={-60} max={120} value={s.offsetDays} aria-label={t("offset_hint")}
-                onChange={(e) => setStep(i, { ...s, offsetDays: Number(e.target.value) })} className="w-20 rounded-lg border border-ink/20 bg-white px-2 py-1.5 text-sm" />
-              <span className="text-xs text-ink/60">{t("offset_hint")}</span>
-              <select value={s.channel} onChange={(e) => setStep(i, { ...s, channel: e.target.value as SendChannel })} className="rounded-lg border border-ink/20 bg-white px-2 py-1.5 text-sm">
-                {CHANNELS.map((c) => <option key={c} value={c}>{t(`channel_${c}`)}</option>)}
-              </select>
-              <button type="button" onClick={() => set("reminderPlan", f.reminderPlan.filter((_, j) => j !== i))} className="text-xs text-error underline">{t("remove")}</button>
-            </li>
-          ))}
+          {f.reminderPlan.map((s, i) => {
+            const row = offsetToRow(s.offsetDays);
+            return (
+              <li key={i} className="flex flex-wrap items-center gap-2">
+                <input type="number" min={0} max={120} value={row.days} disabled={row.when === "on"} aria-label={t("reminder_days_aria")}
+                  onChange={(e) => setStep(i, { ...s, offsetDays: rowToOffset({ when: row.when, days: Number(e.target.value) }) })}
+                  className="w-20 rounded-lg border border-ink/20 bg-white px-2 py-1.5 text-sm disabled:opacity-40" />
+                <span className="text-xs text-ink/60">{t("reminder_days_unit")}</span>
+                <select value={row.when} aria-label={t("reminder_when_aria")}
+                  onChange={(e) => {
+                    const when = e.target.value as ReminderWhen;
+                    setStep(i, { ...s, offsetDays: rowToOffset({ when, days: row.days || 1 }) });
+                  }}
+                  className="rounded-lg border border-ink/20 bg-white px-2 py-1.5 text-sm">
+                  {WHENS.map((w) => <option key={w} value={w}>{t(`reminder_when_${w}`)}</option>)}
+                </select>
+                <select value={s.channel} onChange={(e) => setStep(i, { ...s, channel: e.target.value as SendChannel })} className="rounded-lg border border-ink/20 bg-white px-2 py-1.5 text-sm">
+                  {CHANNELS.map((c) => <option key={c} value={c}>{t(`channel_${c}`)}</option>)}
+                </select>
+                <button type="button" onClick={() => set("reminderPlan", f.reminderPlan.filter((_, j) => j !== i))} className="text-xs text-error underline">{t("remove")}</button>
+              </li>
+            );
+          })}
         </ul>
         <button type="button" onClick={() => set("reminderPlan", [...f.reminderPlan, { offsetDays: 0, channel: "sms" }])} className="mt-2 text-xs text-rouge underline">{t("add_step")}</button>
       </div>
       <div className="md:col-span-2">{field(t("form_notes"), <textarea value={f.notes} onChange={(e) => set("notes", e.target.value)} rows={2} className={INPUT} />)}</div>
       <div className="flex items-center gap-3 md:col-span-2">
         <AdminButton variant="primary" disabled={busy || f.name.trim().length === 0} onClick={async () => setSaved(await onSave(f))}>{t("save")}</AdminButton>
+        {onCancel && <AdminButton variant="secondary" disabled={busy} onClick={onCancel}>{t("cancel")}</AdminButton>}
         {saved && <span className="text-xs text-success">{t("saved")}</span>}
       </div>
     </div>
