@@ -129,6 +129,7 @@ export async function POST(req: Request) {
     paymentMethod: input.payment.status === "paid" ? input.payment.method : input.payment.status === "account" ? "house-account" : undefined,
     paidAt: input.payment.status === "paid" ? now : undefined,
     houseAccountId: houseAccount?.id,
+    ...(input.funeral ? { funeral: true } : {}),
     takenBy: "maky",
     internalNotes: input.internalNotes,
     createdAt: now,

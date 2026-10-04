@@ -30,6 +30,7 @@ export function makeInitialFulfillment(): FulfillmentState {
     address: { street1: "", city: "", state: "NY", zip: "", country: "US" },
     window: { date: todayYmd(), slot: "midday" },
     cardMessage: "",
+    funeral: false,
   };
 }
 

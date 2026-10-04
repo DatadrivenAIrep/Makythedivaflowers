@@ -62,3 +62,19 @@ describe("FulfillmentBlock delivery time", () => {
     expect(screen.getByText("Franja (según la hora)")).toBeDefined();
   });
 });
+
+describe("FulfillmentBlock funeral toggle", () => {
+  it("checking 'Es para funeral' sets the flag", () => {
+    const onChange = vi.fn();
+    wrap(<FulfillmentBlock value={baseValue()} onChange={onChange} />);
+    const box = screen.getByRole("checkbox", { name: /Es para funeral/ }) as HTMLInputElement;
+    expect(box.checked).toBe(false);
+    fireEvent.click(box);
+    expect((onChange.mock.calls[0][0] as FulfillmentState).funeral).toBe(true);
+  });
+
+  it("reflects a funeral order as checked", () => {
+    wrap(<FulfillmentBlock value={{ ...baseValue(), funeral: true }} onChange={() => {}} />);
+    expect((screen.getByRole("checkbox", { name: /Es para funeral/ }) as HTMLInputElement).checked).toBe(true);
+  });
+});

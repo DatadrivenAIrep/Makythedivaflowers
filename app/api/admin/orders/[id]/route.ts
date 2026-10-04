@@ -60,6 +60,7 @@ const patchSchema = z.object({
   address: addressSchema.optional(),
   window: windowSchema.optional(),
   cardMessage: z.string().optional(),
+  funeral: z.boolean().optional(),
   lines: z.array(lineSchema).optional(),
   totalsOverride: totalsOverrideSchema.optional(),
 });

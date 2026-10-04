@@ -19,6 +19,7 @@ function orderToFulfillmentState(o: Order): FulfillmentState {
     window: f.method !== "in-store" ? { ...f.window }
       : { date: new Date().toISOString().slice(0, 10), slot: "midday" },
     cardMessage: f.cardMessage ?? "",
+    funeral: o.funeral ?? false,
   };
 }
 
@@ -59,6 +60,7 @@ export default function OrderEditForm({
       fulfillmentMethod: f.method,
       recipient: f.recipient,
       cardMessage: f.cardMessage ?? "",
+      funeral: fulfillment.funeral ?? false,
       lines,
       ...(f.method === "delivery" ? { address: f.address } : {}),
       ...(f.method !== "in-store" ? { window: f.window } : {}),

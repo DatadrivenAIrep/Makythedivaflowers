@@ -1285,6 +1285,8 @@
     "slot_from_time_label": "Window (from the time)",
     "card_message_label": "Card message",
     "card_message_placeholder": "For my mom, with all my love...",
+    "funeral_label": "For a funeral",
+    "funeral_hint": "The message card prints in a sober design with the Maky brand — it's the only card the funeral home keeps.",
     "buyer_address_label": "Buyer address",
     "buyer_address_placeholder": "Buyer's own address (optional)",
     "buyer_use_as_delivery": "↳ use as delivery address",

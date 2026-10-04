@@ -140,6 +140,11 @@ export function getPrintStyles(): string {
       font-size: 30pt; font-weight: 600; line-height: 0.95; margin: 0; letter-spacing: -1px;
       font-variation-settings: "opsz" 96;
     }
+    .ws-funeral {
+      display: inline-block; margin: 2pt 0 4pt; padding: 1.5pt 7pt; border-radius: 99pt;
+      background: var(--ink); color: var(--bone);
+      font-size: 7.5pt; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    }
     .ws-paid { font-size: 9pt; color: var(--mute-600); line-height: 1.45; }
     .ws-paid strong { color: var(--ink); font-weight: 600; }
     .ws-window {
@@ -291,6 +296,37 @@ export function getPrintStyles(): string {
       font-family: var(--font-display); font-style: italic;
       font-size: 13pt; line-height: 1.3; color: var(--ink);
       margin-top: 10pt; font-variation-settings: "opsz" 96;
+    }
+
+    /* Funeral variant: the only card a funeral home keeps, so the Maky logo
+       sits behind the message as a watermark. The logo JPG has a white
+       background; multiply drops it into the bone. A bone halo keeps the
+       message legible over the logo's script and monogram. */
+    .card-panel.inside-msg.funeral {
+      justify-content: space-between; padding: 0.35in 0.32in 0.28in;
+      box-shadow: inset 0 0 0 0.12in var(--bone), inset 0 0 0 calc(0.12in + 0.6pt) var(--mute-400);
+    }
+    .funeral .fn-watermark {
+      position: absolute; left: 50%; top: 47%; width: 3.2in;
+      transform: translate(-50%, -50%);
+      opacity: 0.55; mix-blend-mode: multiply;
+    }
+    .funeral .fn-body {
+      position: relative; z-index: 1;
+      flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+      width: 100%;
+    }
+    .funeral .text, .funeral .msg-qr-caption {
+      color: var(--ink);
+      text-shadow: 0 0 4pt var(--bone), 0 0 8pt var(--bone), 0 0 12pt var(--bone);
+    }
+    .funeral .msg-qr-img { width: 1.3in; height: 1.3in; }
+    .funeral .text.short { font-size: 15pt; }
+    .funeral .text.med { font-size: 12.5pt; }
+    .funeral .text.long { font-size: 10.5pt; }
+    .funeral .fn-contact {
+      position: relative; z-index: 1;
+      font-family: var(--font-sans); font-size: 7.5pt; color: var(--mute-600); letter-spacing: 0.4px;
     }
 
     /* Panel 3 (right): logo lockup. The source logo has a flat white
