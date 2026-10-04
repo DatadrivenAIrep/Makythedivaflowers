@@ -2,6 +2,7 @@ import "server-only";
 import { getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import { normalizePhone, getCustomerById, getByPhoneUS } from "@/lib/customer-storage";
+import { formatPhoneUS } from "@/lib/format";
 
 export type ThreadMessage = {
   id: string;
@@ -12,7 +13,10 @@ export type ThreadMessage = {
   status?: string;
   at: string;
 };
-export type RawEvent = ThreadMessage & { key: string; customerId?: string; phone: string; name?: string };
+export type RawEvent = ThreadMessage & {
+  key: string; customerId?: string; phone: string; name?: string;
+  unread?: boolean; // inbound only: the shop hasn't opened this reply yet
+};
 export type Conversation = {
   key: string;
   name: string;
@@ -22,6 +26,18 @@ export type Conversation = {
   lastPreview: string;
   lastDirection: "in" | "out";
   count: number;
+  unread: number;
+};
+
+/** A conversation with customer replies nobody has opened yet. */
+export type UnreadConversation = {
+  key: string;
+  name: string;
+  phone: string;
+  unread: number;
+  lastAt: string;
+  lastPreview: string;
+  lastId: string; // newest unread message — changes on every new reply
 };
 
 function last10(p: string): string {
@@ -42,10 +58,12 @@ export function groupConversations(events: RawEvent[]): Conversation[] {
         lastPreview: e.text,
         lastDirection: e.direction,
         count: 1,
+        unread: e.unread ? 1 : 0,
         _latest: e.at,
       });
     } else {
       cur.count++;
+      if (e.unread) cur.unread++;
       if (e.name && cur.name === cur.phone) cur.name = e.name; // fill a name if a later event has one
       if (e.at >= cur._latest) {
         cur._latest = e.at;
@@ -70,7 +88,10 @@ type MsgRow = {
   created_at: string;
 };
 type CampRow = { id: string; customer_id: string; phone: string; status: string; created_at: string; body_es: string };
-type InRow = { id: string; customer_id: string | null; from_phone: string; body: string; created_at: string };
+type InRow = {
+  id: string; customer_id: string | null; from_phone: string; body: string;
+  created_at: string; read_at: string | null;
+};
 type HasRow = { id: string; body: string | null; sent_at: string | null; created_at: string; billing_phone: string };
 
 type NameForResult = { key: string; name?: string; phone: string; customerId?: string };
@@ -144,13 +165,15 @@ function fetchEvents(limit: number): RawEvent[] {
   }
   const ins = db
     .prepare(
-      `SELECT id, customer_id, from_phone, body, created_at
+      `SELECT id, customer_id, from_phone, body, created_at, read_at
        FROM inbound_messages ORDER BY created_at DESC LIMIT ?`,
     )
     .all(limit) as InRow[];
   for (const i of ins) {
     const who = nameFor(i.customer_id, i.from_phone, phoneCache);
-    events.push({ ...who, id: i.id, direction: "in", kind: "inbound", text: i.body, at: i.created_at });
+    events.push({
+      ...who, id: i.id, direction: "in", kind: "inbound", text: i.body, at: i.created_at, unread: !i.read_at,
+    });
   }
   // House-account statement / reminder texts. They are logged in their own
   // queue table (not `messages`, whose order_id is NOT NULL), so the inbox
@@ -183,7 +206,56 @@ export function conversationThread(key: string): { conversation: Conversation | 
   const events = fetchEvents(2000).filter((e) => e.key === key);
   const conversation = groupConversations(events)[0] ?? null;
   const thread = events
-    .map(({ key: _k, customerId: _c, phone: _p, name: _n, ...t }) => t)
+    .map(({ key: _k, customerId: _c, phone: _p, name: _n, unread: _u, ...t }) => t)
     .sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0)); // chronological
   return { conversation, thread };
+}
+
+/**
+ * Unread customer replies, grouped into conversations with the same key
+ * resolution as the inbox (customer id, else last-10 phone), newest first.
+ */
+export function listUnreadConversations(): UnreadConversation[] {
+  runMigrations();
+  const rows = getDb()
+    .prepare(
+      `SELECT id, customer_id, from_phone, body, created_at, read_at
+         FROM inbound_messages WHERE read_at IS NULL
+        ORDER BY created_at ASC, rowid ASC`,
+    )
+    .all() as InRow[];
+  const phoneCache = new Map<string, NameForResult>();
+  const map = new Map<string, UnreadConversation>();
+  for (const r of rows) {
+    const who = nameFor(r.customer_id, r.from_phone, phoneCache);
+    const cur = map.get(who.key);
+    if (cur) {
+      cur.unread++;
+      cur.lastAt = r.created_at;
+      cur.lastPreview = r.body;
+      cur.lastId = r.id;
+    } else {
+      map.set(who.key, {
+        key: who.key, name: who.name || formatPhoneUS(who.phone), phone: who.phone, unread: 1,
+        lastAt: r.created_at, lastPreview: r.body, lastId: r.id,
+      });
+    }
+  }
+  return [...map.values()].sort((a, b) => (a.lastAt < b.lastAt ? 1 : a.lastAt > b.lastAt ? -1 : 0));
+}
+
+/** Mark every unread reply in one conversation as read. Returns how many changed. */
+export function markConversationRead(key: string, now: Date = new Date()): number {
+  runMigrations();
+  const db = getDb();
+  const rows = db
+    .prepare("SELECT id, customer_id, from_phone FROM inbound_messages WHERE read_at IS NULL")
+    .all() as Pick<InRow, "id" | "customer_id" | "from_phone">[];
+  const phoneCache = new Map<string, NameForResult>();
+  const ids = rows.filter((r) => nameFor(r.customer_id, r.from_phone, phoneCache).key === key).map((r) => r.id);
+  const update = db.prepare("UPDATE inbound_messages SET read_at = ? WHERE id = ? AND read_at IS NULL");
+  const stamp = now.toISOString();
+  let changed = 0;
+  for (const id of ids) changed += Number(update.run(stamp, id).changes);
+  return changed;
 }

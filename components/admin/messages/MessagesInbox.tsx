@@ -1,9 +1,11 @@
 "use client";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { ArrowLeft, ChatCircleText, MagnifyingGlass, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
 import AdminButton from "@/components/admin/dashboard/AdminButton";
 import { formatDateTime } from "@/lib/format-datetime";
+import { relativeTime } from "@/lib/relative-time";
+import { SMS_READ_EVENT } from "@/components/admin/dashboard/useUnreadSmsCount";
 import type { Conversation, ThreadMessage } from "@/lib/conversation-storage";
 
 // Only these templates have `tpl_*` labels in admin_messages — next-intl throws on an
@@ -34,22 +36,6 @@ function statusLabel(t: Translator, status: string | undefined): string | null {
   return status;
 }
 
-function relativeTime(iso: string, locale: string): string {
-  const rtf = new Intl.RelativeTimeFormat(locale === "es" ? "es" : "en", { numeric: "auto" });
-  const diffSec = Math.round((new Date(iso).getTime() - Date.now()) / 1000);
-  const abs = Math.abs(diffSec);
-  if (abs < 60) return rtf.format(diffSec, "second");
-  const diffMin = Math.round(diffSec / 60);
-  if (Math.abs(diffMin) < 60) return rtf.format(diffMin, "minute");
-  const diffHour = Math.round(diffMin / 60);
-  if (Math.abs(diffHour) < 24) return rtf.format(diffHour, "hour");
-  const diffDay = Math.round(diffHour / 24);
-  if (Math.abs(diffDay) < 30) return rtf.format(diffDay, "day");
-  const diffMonth = Math.round(diffDay / 30);
-  if (Math.abs(diffMonth) < 12) return rtf.format(diffMonth, "month");
-  return rtf.format(Math.round(diffMonth / 12), "year");
-}
-
 export default function MessagesInbox({ locale }: { locale: string }) {
   const t = useTranslations("admin_messages");
 
@@ -62,29 +48,51 @@ export default function MessagesInbox({ locale }: { locale: string }) {
   const [thread, setThread] = useState<ThreadMessage[]>([]);
   const [threadLoading, setThreadLoading] = useState(false);
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const res = await fetch("/api/admin/messages");
-        if (!res.ok) throw new Error();
-        const data = await res.json();
-        if (!cancelled) setConversations(data.conversations ?? []);
-      } catch {
-        // leave conversations empty — the empty state covers it
-      } finally {
-        if (!cancelled) setConvLoading(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
+  // Only the newest list request may write state: a slow first load must not
+  // land after a mark-read and bring the unread dot back.
+  const loadSeqRef = useRef(0);
+  const loadList = useCallback(async () => {
+    const seq = ++loadSeqRef.current;
+    try {
+      const res = await fetch("/api/admin/messages", { cache: "no-store" });
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      if (seq === loadSeqRef.current) setConversations(data.conversations ?? []);
+    } catch {
+      // keep what's on screen — the empty state covers a first-load failure
+    } finally {
+      if (seq === loadSeqRef.current) setConvLoading(false);
+    }
   }, []);
 
-  const selectConversation = useCallback((key: string) => {
+  // Load the list, then keep it fresh so a new reply shows up while the tab is open.
+  useEffect(() => {
+    void loadList();
+    const timer = setInterval(() => {
+      if (document.visibilityState === "visible") void loadList();
+    }, 30_000);
+    return () => {
+      loadSeqRef.current++; // drop any in-flight response after unmount
+      clearInterval(timer);
+    };
+  }, [loadList]);
+
+  const markRead = useCallback((key: string) => {
+    loadSeqRef.current++; // whatever list load is in flight predates this read
+    setConversations((list) => list.map((c) => (c.key === key ? { ...c, unread: 0 } : c)));
+    fetch(`/api/admin/messages/${encodeURIComponent(key)}/read`, { method: "POST" })
+      .then(() => {
+        window.dispatchEvent(new Event(SMS_READ_EVENT));
+        return loadList();
+      })
+      .catch(() => {});
+  }, [loadList]);
+
+  const selectConversation = useCallback((key: string, unread = 0) => {
     setSelectedKey(key);
     setThreadLoading(true);
     setThread([]);
+    if (unread > 0) markRead(key);
     (async () => {
       try {
         const res = await fetch(`/api/admin/messages/${encodeURIComponent(key)}`);
@@ -99,7 +107,14 @@ export default function MessagesInbox({ locale }: { locale: string }) {
         setThreadLoading(false);
       }
     })();
-  }, []);
+  }, [markRead]);
+
+  // Deep link from the dashboard widget: /admin/messages?c=<key>. Opening it
+  // marks it read even before the list has loaded.
+  useEffect(() => {
+    const key = new URLSearchParams(window.location.search).get("c");
+    if (key) selectConversation(key, 1);
+  }, [selectConversation]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -145,16 +160,23 @@ export default function MessagesInbox({ locale }: { locale: string }) {
               <button
                 key={c.key}
                 type="button"
-                onClick={() => selectConversation(c.key)}
+                onClick={() => selectConversation(c.key, c.unread)}
                 className={`flex w-full flex-col gap-0.5 border-b border-ink/5 px-4 py-3 text-left transition-colors hover:bg-ink/5 ${
                   selectedKey === c.key ? "bg-rouge/5" : ""
                 }`}
               >
                 <div className="flex items-center justify-between gap-2">
-                  <span className="truncate text-sm font-medium text-ink">{c.name}</span>
-                  <span className="shrink-0 text-xs text-ink/40">{relativeTime(c.lastAt, locale)}</span>
+                  <span className={`flex min-w-0 items-center gap-1.5 text-sm text-ink ${c.unread > 0 ? "font-semibold" : "font-medium"}`}>
+                    {c.unread > 0 && (
+                      <span className="h-2 w-2 shrink-0 rounded-full bg-rouge" role="img" aria-label={t("unread")} />
+                    )}
+                    <span className="truncate">{c.name}</span>
+                  </span>
+                  <span className={`shrink-0 text-xs ${c.unread > 0 ? "font-semibold text-rouge" : "text-ink/40"}`}>
+                    {relativeTime(c.lastAt, locale)}
+                  </span>
                 </div>
-                <span className="truncate text-xs text-ink/60">
+                <span className={`truncate text-xs ${c.unread > 0 ? "text-ink/80" : "text-ink/60"}`}>
                   {c.lastDirection === "in" ? "↓" : "↑"} {c.lastPreview}
                 </span>
               </button>

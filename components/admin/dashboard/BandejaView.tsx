@@ -7,6 +7,8 @@ import OrderDetailDrawer from "./OrderDetailDrawer";
 import PendingCard, { type PendingReason, type PendingActionId } from "./PendingCard";
 import AdminButton from "./AdminButton";
 import AttentionDrawer from "./AttentionDrawer";
+import SmsInboxWidget from "./SmsInboxWidget";
+import { unreadSmsTotal } from "./useUnreadSmsCount";
 import { useDashboardPolling } from "./useDashboardPolling";
 import type { Order } from "@/types/order";
 
@@ -60,7 +62,9 @@ export default function BandejaView({ locale }: { locale: string }) {
   }, []);
 
   const { queue, feed, attention, lastUpdated, error, refresh } = useDashboardPolling({ onNewItem });
-  const newRequests = (attention?.items ?? []).filter((item) => item.kind !== "order");
+  // SMS replies get their own card; orders have the pending queue below.
+  const newRequests = (attention?.items ?? []).filter((item) => item.kind === "inquiry" || item.kind === "contact");
+  const unreadSms = (attention?.items ?? []).filter((item) => item.kind === "sms");
 
   function unlockAudio() {
     if (audioUnlockedRef.current) return;
@@ -116,6 +120,7 @@ export default function BandejaView({ locale }: { locale: string }) {
         locale={locale}
         lastUpdated={lastUpdated ? timeOf(lastUpdated) : undefined}
         onRefresh={() => { void refresh(); }}
+        smsUnread={unreadSmsTotal(attention)}
       >
         {error && (
           <div className="mb-4 flex items-center gap-2 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
@@ -124,6 +129,8 @@ export default function BandejaView({ locale }: { locale: string }) {
             <AdminButton variant="danger" className="ml-auto" onClick={() => { void refresh(); }}>{t("retry")}</AdminButton>
           </div>
         )}
+        <SmsInboxWidget locale={locale} items={unreadSms} />
+
         <section className="mb-6">
           <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-ink/60">
             {t("new_requests")} · {newRequests.length}

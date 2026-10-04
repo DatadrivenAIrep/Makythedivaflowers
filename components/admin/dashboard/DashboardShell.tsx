@@ -6,17 +6,22 @@ import { ArrowsClockwise, Plus, GearSix } from "@phosphor-icons/react/dist/ssr";
 import { useTranslations } from "next-intl";
 import { LocaleSwitcher } from "@/components/nav/LocaleSwitcher";
 import type { Locale } from "@/types/locale";
+import { useUnreadSmsCount } from "./useUnreadSmsCount";
 
 type Props = {
   locale: string;
   children: React.ReactNode;
   lastUpdated?: string;
   onRefresh?: () => void;
+  /** Unread SMS when the page already polls attention; omitted → the shell polls. */
+  smsUnread?: number;
 };
 
-export default function DashboardShell({ locale, children, lastUpdated, onRefresh }: Props) {
+export default function DashboardShell({ locale, children, lastUpdated, onRefresh, smsUnread }: Props) {
   const pathname = usePathname();
   const t = useTranslations("admin_dashboard");
+  const polledSms = useUnreadSmsCount(smsUnread === undefined);
+  const unreadSms = smsUnread ?? polledSms;
   const isLedger = pathname.endsWith("/ledger");
   const isRunSheet = pathname.endsWith("/run-sheet");
   const isSettings = pathname.endsWith("/settings");
@@ -97,9 +102,19 @@ export default function DashboardShell({ locale, children, lastUpdated, onRefres
             </Link>
             <Link
               href={`/${locale}/admin/messages`}
-              className={`flex min-h-11 items-center rounded-lg px-3 ${isMessages ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
+              className={`flex min-h-11 items-center gap-1.5 rounded-lg px-3 ${isMessages ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >
               {t("nav_messages")}
+              {unreadSms > 0 && (
+                <span
+                  aria-label={t("sms_unread_badge", { count: unreadSms })}
+                  className={`min-w-5 rounded-full px-1.5 text-center text-xs font-semibold leading-5 tabular-nums ${
+                    isMessages ? "bg-bone text-rouge" : "bg-rouge text-bone"
+                  }`}
+                >
+                  {unreadSms}
+                </span>
+              )}
             </Link>
             <Link
               href={`/${locale}/admin/campaigns`}
