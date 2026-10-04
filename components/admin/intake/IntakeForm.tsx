@@ -313,6 +313,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
           buyerAddress: customer.buyerAddress,
         },
         fulfillment: toOrderFulfillment(fulfillment),
+        funeral: fulfillment.funeral || undefined,
         lines,
         totalsOverride: override,
         giftCardCode: payment.status === "account" ? undefined : (giftCardCode || undefined),

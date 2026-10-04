@@ -16,6 +16,7 @@ export type OrderEditPatch = {
   address?: Address;
   window?: DeliveryWindow;
   cardMessage?: string;
+  funeral?: boolean;
   lines?: CartLine[];
   totalsOverride?: Partial<OrderTotals>;
 };
@@ -64,13 +65,16 @@ function applyPatch(cur: Order, patch: OrderEditPatch): Order {
     override: patch.totalsOverride,
   });
 
-  return {
+  const next: Order = {
     ...cur,
     contact: { ...cur.contact, ...patch.contact },
     fulfillment,
     lines,
     totals,
   };
+  if (patch.funeral === true) next.funeral = true;
+  if (patch.funeral === false) delete next.funeral;
+  return next;
 }
 
 export function diffOrders(before: Order, after: Order): FieldDiff[] {
@@ -96,6 +100,7 @@ export function diffOrders(before: Order, after: Order): FieldDiff[] {
   push("fulfillment.window", "Entrega", fmtWin(bWin), fmtWin(aWin));
 
   push("cardMessage", "Mensaje de tarjeta", before.fulfillment.cardMessage ?? null, after.fulfillment.cardMessage ?? null);
+  push("funeral", "Funeral", before.funeral ? "sí" : "no", after.funeral ? "sí" : "no");
 
   if (JSON.stringify(before.lines) !== JSON.stringify(after.lines)) {
     diffs.push({ field: "lines", label: "Artículos", before: linesSummary(before.lines), after: linesSummary(after.lines) });

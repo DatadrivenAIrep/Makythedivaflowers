@@ -140,6 +140,11 @@ export function getPrintStyles(): string {
       font-size: 30pt; font-weight: 600; line-height: 0.95; margin: 0; letter-spacing: -1px;
       font-variation-settings: "opsz" 96;
     }
+    .ws-funeral {
+      display: inline-block; margin: 2pt 0 4pt; padding: 1.5pt 7pt; border-radius: 99pt;
+      background: var(--ink); color: var(--bone);
+      font-size: 7.5pt; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    }
     .ws-paid { font-size: 9pt; color: var(--mute-600); line-height: 1.45; }
     .ws-paid strong { color: var(--ink); font-weight: 600; }
     .ws-window {
@@ -291,6 +296,38 @@ export function getPrintStyles(): string {
       font-family: var(--font-display); font-style: italic;
       font-size: 13pt; line-height: 1.3; color: var(--ink);
       margin-top: 10pt; font-variation-settings: "opsz" 96;
+    }
+
+    /* Funeral variant: the only card a funeral home keeps. Sober — ink and
+       greys, hairline rules instead of the pink flowers — with the brand and
+       the shop's contact at the foot. */
+    .card-panel.inside-msg.funeral {
+      justify-content: space-between; padding: 0.35in 0.32in 0.28in;
+      box-shadow: inset 0 0 0 0.12in var(--bone), inset 0 0 0 calc(0.12in + 0.6pt) var(--mute-400);
+    }
+    .funeral .fn-body {
+      flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+      gap: 12pt; width: 100%;
+    }
+    .funeral .fn-rule { width: 0.6in; height: 0.6pt; background: var(--mute-400); }
+    .funeral .text { color: var(--ink); }
+    .funeral .text.short { font-size: 15pt; }
+    .funeral .text.med { font-size: 12.5pt; }
+    .funeral .text.long { font-size: 10.5pt; }
+    .funeral .msg-qr-caption { margin-top: 0; }
+    .funeral .fn-brand { text-align: center; }
+    .funeral .fn-brand .name {
+      font-family: var(--font-display); font-size: 20pt; font-weight: 600;
+      letter-spacing: -0.8px; color: var(--ink); line-height: 0.9;
+      font-variation-settings: "opsz" 144;
+    }
+    .funeral .fn-brand .tag {
+      font-family: var(--font-sans); font-size: 6.5pt; text-transform: uppercase;
+      letter-spacing: 2.5px; color: var(--mute-600); margin-top: 3pt; font-weight: 600;
+    }
+    .funeral .fn-brand .contact {
+      font-family: var(--font-sans); font-size: 7.5pt; color: var(--mute-600);
+      margin-top: 5pt; letter-spacing: 0.4px;
     }
 
     /* Panel 3 (right): logo lockup. The source logo has a flat white

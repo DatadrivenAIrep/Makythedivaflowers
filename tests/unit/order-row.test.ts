@@ -113,4 +113,14 @@ describe("order-row smsConsent", () => {
     expect(orderToRow(baseOrder).sms_consent).toBe(0);
     expect(rowToOrder(orderToRow(baseOrder)).smsConsent).toBe(false);
   });
+  it("round-trips the funeral flag", () => {
+    const o: Order = { ...sample, funeral: true };
+    expect(orderToRow(o).funeral).toBe(1);
+    expect(rowToOrder(orderToRow(o)).funeral).toBe(true);
+  });
+
+  it("stores a regular order as not funeral and reads it back without the flag", () => {
+    expect(orderToRow(sample).funeral).toBe(0);
+    expect(rowToOrder(orderToRow(sample)).funeral).toBeUndefined();
+  });
 });

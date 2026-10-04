@@ -109,6 +109,7 @@ function Worksheet({ order }: { order: Order }) {
         <div>
           <div className="ws-brand">{t.eyebrow}</div>
           <h1 className="ws-title">{t.order} #{order.orderNumber ?? order.id}</h1>
+          {order.funeral ? <span className="ws-funeral">Funeral</span> : null}
           <div className="ws-paid">
             <strong>{t.paid}:</strong> {formatDateTime(order.createdAt, locale)}<br />
             {order.stripePaymentIntentId ? <span style={{ opacity: 0.7 }}>Stripe {order.stripePaymentIntentId}</span> : null}
@@ -345,7 +346,7 @@ function classifyMessageLength(msg: string | undefined): "short" | "med" | "long
 
 // With a digital card the inside panel carries its QR instead of the written
 // message: the card itself is the message.
-function InsideMessagePanel({
+function MessageBody({
   message,
   digitalQrUri,
   locale,
@@ -357,31 +358,50 @@ function InsideMessagePanel({
   if (digitalQrUri) {
     const scanLine = locale === "en" ? "Scan to open your surprise" : "Escanea para abrir tu sorpresa";
     return (
-      <div className="card-panel inside-msg">
-        <div className="orn-top">❀</div>
+      <>
         <div className="msg-qr">
           <img className="msg-qr-img" src={digitalQrUri} alt={scanLine} />
         </div>
         <div className="msg-qr-caption">{scanLine}</div>
-        <div className="orn-bot">❀</div>
-      </div>
+      </>
     );
   }
   const trimmed = message?.trim();
-  if (!trimmed) {
-    return (
-      <div className="card-panel inside-msg">
-        <div className="orn-top">❀</div>
-        <div className="orn-bot">❀</div>
-      </div>
-    );
-  }
-  const cls = classifyMessageLength(trimmed);
+  if (!trimmed) return null;
+  return <div className={`text ${classifyMessageLength(trimmed)}`}>"{trimmed}"</div>;
+}
+
+type MessagePanelProps = {
+  message: string | undefined;
+  digitalQrUri?: string;
+  locale: Order["locale"];
+};
+
+function InsideMessagePanel(props: MessagePanelProps) {
   return (
     <div className="card-panel inside-msg">
       <div className="orn-top">❀</div>
-      <div className={`text ${cls}`}>"{trimmed}"</div>
+      <MessageBody {...props} />
       <div className="orn-bot">❀</div>
+    </div>
+  );
+}
+
+// Funeral homes keep only this card and discard the other two, so for a funeral
+// it is sober (no pink flowers) and carries the brand and how to reach the shop.
+function FuneralMessagePanel(props: MessagePanelProps) {
+  return (
+    <div className="card-panel inside-msg funeral">
+      <div className="fn-body">
+        <div className="fn-rule" />
+        <MessageBody {...props} />
+        <div className="fn-rule" />
+      </div>
+      <div className="fn-brand">
+        <div className="name">maky</div>
+        <div className="tag">the diva flowers</div>
+        <div className="contact">{SITE.phoneDisplay} · {new URL(SITE.url).host}</div>
+      </div>
     </div>
   );
 }
@@ -416,11 +436,12 @@ type QrUris = { websiteQrUri: string; digitalQrUri?: string };
 
 function CardRow({ order, logoUri, websiteQrUri, digitalQrUri }: { order: Order; logoUri: string } & QrUris) {
   // Card 1: brand cover + recipient + website QR · Card 2: logo · Card 3: message (or the digital card's QR).
+  const MessagePanel = order.funeral ? FuneralMessagePanel : InsideMessagePanel;
   return (
     <section className="card-row">
       <BrandCoverPanel order={order} qrUri={websiteQrUri} />
       <LogoPanel logoUri={logoUri} />
-      <InsideMessagePanel message={order.fulfillment.cardMessage} digitalQrUri={digitalQrUri} locale={order.locale} />
+      <MessagePanel message={order.fulfillment.cardMessage} digitalQrUri={digitalQrUri} locale={order.locale} />
     </section>
   );
 }

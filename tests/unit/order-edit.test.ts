@@ -66,4 +66,24 @@ describe("editOrder", () => {
   it("throws on unknown order", async () => {
     await expect(editOrder("nope", { contact: { phone: "1" } }, "maky")).rejects.toThrow(/order not found/);
   });
+  it("marks an order as funeral and records it in history", async () => {
+    await saveOrder(baseOrder("e5"));
+    const { order } = await editOrder("e5", { funeral: true }, "maky");
+    expect(order.funeral).toBe(true);
+    const diff = (await listOrderHistory("e5"))[0].changes?.find((c) => c.field === "funeral");
+    expect(diff?.before).toBe("no");
+    expect(diff?.after).toBe("sí");
+  });
+
+  it("unmarking a funeral order clears the flag", async () => {
+    await saveOrder(baseOrder("e6", { funeral: true }));
+    const { order } = await editOrder("e6", { funeral: false }, "maky");
+    expect(order.funeral).toBeUndefined();
+  });
+
+  it("leaves the funeral flag alone when the patch omits it", async () => {
+    await saveOrder(baseOrder("e7", { funeral: true }));
+    const { order } = await editOrder("e7", { contact: { phone: "999" } }, "maky");
+    expect(order.funeral).toBe(true);
+  });
 });

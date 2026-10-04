@@ -15,6 +15,8 @@ export type FulfillmentState = {
   address: Address;
   window: { date: string; slot: DeliverySlot; time?: string };
   cardMessage: string;
+  /** Optional so drafts saved before the funeral toggle still load. */
+  funeral?: boolean;
 };
 
 type Props = {
@@ -170,6 +172,18 @@ export default function FulfillmentBlock({ value, onChange }: Props) {
           rows={3}
           className="w-full p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white resize-none"
         />
+        <label className="mt-2 flex items-start gap-2.5 cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={value.funeral ?? false}
+            onChange={(e) => onChange({ ...value, funeral: e.target.checked })}
+            className="mt-0.5 h-4 w-4 accent-ink"
+          />
+          <span className="text-sm">
+            {t("funeral_label")}
+            <span className="block text-xs text-mute-400">{t("funeral_hint")}</span>
+          </span>
+        </label>
       </div>
     </div>
   );

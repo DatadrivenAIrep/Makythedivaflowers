@@ -1285,6 +1285,8 @@
     "slot_from_time_label": "Franja (según la hora)",
     "card_message_label": "Mensaje en tarjeta",
     "card_message_placeholder": "Para mi mamá, con todo mi cariño...",
+    "funeral_label": "Es para funeral",
+    "funeral_hint": "La tarjeta del mensaje se imprime con un diseño sobrio y la marca Maky: es la única que la funeraria conserva.",
     "buyer_address_label": "Dirección del comprador",
     "buyer_address_placeholder": "Dirección del comprador (opcional)",
     "buyer_use_as_delivery": "↳ usar como dirección de entrega",
