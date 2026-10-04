@@ -3,6 +3,7 @@ import { describe, it, expect } from "vitest";
 import type { Order } from "@/types/order";
 import { buildSheetHtml } from "@/lib/print-render-html";
 import { qrSvgDataUri } from "@/lib/digital-card-qr";
+import { getLogoDataUri } from "@/lib/print-styles";
 
 const CARD_URL = "https://makythedivaflowers.com/c/Ab3dE5fG";
 
@@ -49,11 +50,11 @@ function order(over: Partial<Order> = {}): Order {
 }
 
 describe("funeral message card", () => {
-  it("carries the message, the Maky wordmark and the shop contact", async () => {
+  it("carries the message over the Maky logo, and the shop contact", async () => {
     const msg = messagePanel(await buildSheetHtml(order({ funeral: true })));
     expect(msg).toContain("card-panel inside-msg funeral");
     expect(msg).toContain("Forever in our hearts");
-    expect(msg).toContain("the diva flowers");
+    expect(msg).toContain(`class="fn-watermark" src="${getLogoDataUri()}"`);
     expect(msg).toContain("516 484 3456");
     expect(msg).toContain("makythedivaflowers.com");
   });
@@ -67,7 +68,7 @@ describe("funeral message card", () => {
     const o = order({ funeral: true });
     delete o.fulfillment.cardMessage;
     const msg = messagePanel(await buildSheetHtml(o));
-    expect(msg).toContain("the diva flowers");
+    expect(msg).toContain("fn-watermark");
     expect(msg).toContain("516 484 3456");
   });
 
@@ -75,7 +76,10 @@ describe("funeral message card", () => {
     const msg = messagePanel(await buildSheetHtml(order({ funeral: true }), { digitalCardUrl: CARD_URL }));
     expect(msg).toContain(`src="${await qrSvgDataUri(CARD_URL)}"`);
     expect(msg).not.toContain("Forever in our hearts");
-    expect(msg).toContain("the diva flowers");
+    expect(msg).toContain("fn-watermark");
+    // "your surprise" is the wrong tone for a funeral.
+    expect(msg).toContain("Scan to open the card");
+    expect(msg).not.toContain("surprise");
   });
 
   it("flags the worksheet so the workshop sees it is a funeral", async () => {
@@ -90,6 +94,7 @@ describe("regular message card", () => {
     expect(msg).toContain("❀");
     expect(msg).not.toContain("funeral");
     expect(msg).not.toContain("516 484 3456");
+    expect(msg).not.toContain("fn-watermark");
     expect(worksheet(html)).not.toContain("Funeral");
   });
 });

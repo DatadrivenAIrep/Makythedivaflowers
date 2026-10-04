@@ -344,19 +344,24 @@ function classifyMessageLength(msg: string | undefined): "short" | "med" | "long
   return "long";
 }
 
+type MessagePanelProps = {
+  message: string | undefined;
+  digitalQrUri?: string;
+  locale: Order["locale"];
+};
+
 // With a digital card the inside panel carries its QR instead of the written
 // message: the card itself is the message.
 function MessageBody({
   message,
   digitalQrUri,
   locale,
-}: {
-  message: string | undefined;
-  digitalQrUri?: string;
-  locale: Order["locale"];
-}) {
+  funeral,
+}: MessagePanelProps & { funeral?: boolean }) {
   if (digitalQrUri) {
-    const scanLine = locale === "en" ? "Scan to open your surprise" : "Escanea para abrir tu sorpresa";
+    const scanLine = funeral
+      ? (locale === "en" ? "Scan to open the card" : "Escanea para abrir la tarjeta")
+      : (locale === "en" ? "Scan to open your surprise" : "Escanea para abrir tu sorpresa");
     return (
       <>
         <div className="msg-qr">
@@ -371,12 +376,6 @@ function MessageBody({
   return <div className={`text ${classifyMessageLength(trimmed)}`}>"{trimmed}"</div>;
 }
 
-type MessagePanelProps = {
-  message: string | undefined;
-  digitalQrUri?: string;
-  locale: Order["locale"];
-};
-
 function InsideMessagePanel(props: MessagePanelProps) {
   return (
     <div className="card-panel inside-msg">
@@ -388,20 +387,15 @@ function InsideMessagePanel(props: MessagePanelProps) {
 }
 
 // Funeral homes keep only this card and discard the other two, so for a funeral
-// it is sober (no pink flowers) and carries the brand and how to reach the shop.
-function FuneralMessagePanel(props: MessagePanelProps) {
+// the message sits over the Maky logo and the card carries how to reach the shop.
+function FuneralMessagePanel({ logoUri, ...props }: MessagePanelProps & { logoUri: string }) {
   return (
     <div className="card-panel inside-msg funeral">
+      <img className="fn-watermark" src={logoUri} alt="" />
       <div className="fn-body">
-        <div className="fn-rule" />
-        <MessageBody {...props} />
-        <div className="fn-rule" />
+        <MessageBody {...props} funeral />
       </div>
-      <div className="fn-brand">
-        <div className="name">maky</div>
-        <div className="tag">the diva flowers</div>
-        <div className="contact">{SITE.phoneDisplay} · {new URL(SITE.url).host}</div>
-      </div>
+      <div className="fn-contact">{SITE.phoneDisplay} · {new URL(SITE.url).host}</div>
     </div>
   );
 }
@@ -436,12 +430,12 @@ type QrUris = { websiteQrUri: string; digitalQrUri?: string };
 
 function CardRow({ order, logoUri, websiteQrUri, digitalQrUri }: { order: Order; logoUri: string } & QrUris) {
   // Card 1: brand cover + recipient + website QR · Card 2: logo · Card 3: message (or the digital card's QR).
-  const MessagePanel = order.funeral ? FuneralMessagePanel : InsideMessagePanel;
+  const message = { message: order.fulfillment.cardMessage, digitalQrUri, locale: order.locale };
   return (
     <section className="card-row">
       <BrandCoverPanel order={order} qrUri={websiteQrUri} />
       <LogoPanel logoUri={logoUri} />
-      <MessagePanel message={order.fulfillment.cardMessage} digitalQrUri={digitalQrUri} locale={order.locale} />
+      {order.funeral ? <FuneralMessagePanel logoUri={logoUri} {...message} /> : <InsideMessagePanel {...message} />}
     </section>
   );
 }
