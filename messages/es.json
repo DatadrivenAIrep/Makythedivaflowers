@@ -1591,7 +1591,12 @@
     "completed_count": "completadas",
     "collect": "Cobrar",
     "collect_amount": "Cobrar {amount}",
-    "deposit_dot": "● Depósito {amount}"
+    "deposit_dot": "● Depósito {amount}",
+    "sms_widget_title": "Mensajes de clientes",
+    "sms_widget_empty": "Sin mensajes nuevos",
+    "sms_widget_view_all": "Ver todos",
+    "sms_widget_more": "+{count} conversaciones más",
+    "sms_unread_badge": "{count} SMS sin leer"
   },
   "admin_customers": {
     "title": "Clientes",
@@ -1974,7 +1979,8 @@
     "tpl_out_for_delivery": "En camino",
     "tpl_ready_for_pickup": "Listo para recoger",
     "tpl_delivered": "Entregado",
-    "tpl_review_request": "Pedir reseña"
+    "tpl_review_request": "Pedir reseña",
+    "unread": "Sin leer"
   },
   "admin_promos": {
     "title": "Códigos promocionales",

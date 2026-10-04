@@ -1591,7 +1591,12 @@
     "completed_count": "completed",
     "collect": "Collect",
     "collect_amount": "Collect {amount}",
-    "deposit_dot": "● Deposit {amount}"
+    "deposit_dot": "● Deposit {amount}",
+    "sms_widget_title": "Customer texts",
+    "sms_widget_empty": "No new texts",
+    "sms_widget_view_all": "View all",
+    "sms_widget_more": "+{count} more conversations",
+    "sms_unread_badge": "{count} unread texts"
   },
   "admin_customers": {
     "title": "Customers",
@@ -1974,7 +1979,8 @@
     "tpl_out_for_delivery": "Out for delivery",
     "tpl_ready_for_pickup": "Ready for pickup",
     "tpl_delivered": "Delivered",
-    "tpl_review_request": "Review request"
+    "tpl_review_request": "Review request",
+    "unread": "Unread"
   },
   "admin_promos": {
     "title": "Promo codes",

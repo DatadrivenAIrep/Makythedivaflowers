@@ -1,9 +1,10 @@
 import "server-only";
 import { getPendingQueue } from "@/lib/order-queue";
 import { listUnacknowledged, type Inquiry } from "@/lib/inquiry-storage-db";
+import { listUnreadConversations } from "@/lib/conversation-storage";
 import type { Order } from "@/types/order";
 
-export type AttentionKind = "order" | "inquiry" | "contact";
+export type AttentionKind = "order" | "inquiry" | "contact" | "sms";
 
 export type AttentionItem = {
   kind: AttentionKind;
@@ -11,11 +12,15 @@ export type AttentionItem = {
   createdAt: string;
   label: string;
   reason?: string; // order PendingReason, when kind === "order"
+  // kind === "sms" only:
+  preview?: string; // newest unread reply
+  count?: number; // unread replies in the conversation
+  conversationKey?: string; // opens /admin/messages?c=<key>
 };
 
 export type AttentionSnapshot = {
   items: AttentionItem[]; // newest first
-  counts: { orders: number; inquiries: number; contacts: number; total: number };
+  counts: { orders: number; inquiries: number; contacts: number; sms: number; total: number };
   generatedAt: string;
 };
 
@@ -62,7 +67,19 @@ export async function getAttention(): Promise<AttentionSnapshot> {
     label: inquiryLabel(c),
   }));
 
-  const items = [...orderItems, ...inquiryItems, ...contactItems].sort((a, b) =>
+  // One item per conversation, id'd on its newest reply so each new text
+  // looks "new" to the pollers and rings again.
+  const smsItems: AttentionItem[] = listUnreadConversations().map((c) => ({
+    kind: "sms",
+    id: `sms:${c.lastId}`,
+    createdAt: c.lastAt,
+    label: `SMS · ${c.name}`,
+    preview: c.lastPreview,
+    count: c.unread,
+    conversationKey: c.key,
+  }));
+
+  const items = [...orderItems, ...inquiryItems, ...contactItems, ...smsItems].sort((a, b) =>
     b.createdAt.localeCompare(a.createdAt),
   );
 
@@ -72,6 +89,7 @@ export async function getAttention(): Promise<AttentionSnapshot> {
       orders: orderItems.length,
       inquiries: inquiryItems.length,
       contacts: contactItems.length,
+      sms: smsItems.length,
       total: items.length,
     },
     generatedAt: new Date().toISOString(),
