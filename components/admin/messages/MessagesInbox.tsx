@@ -18,6 +18,7 @@ const KNOWN_TEMPLATES = new Set([
   "ready_for_pickup",
   "delivered",
   "review_request",
+  "gift_card_issued",
 ]);
 
 const KNOWN_STATUSES = new Set(["sent", "failed", "skipped"]);

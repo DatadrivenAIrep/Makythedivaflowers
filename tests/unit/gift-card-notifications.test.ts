@@ -104,3 +104,30 @@ describe("gift card email co-brand partner", () => {
     expect(body).toContain("In partnership with The Shelter Connection");
   });
 });
+
+describe("gift card email design", () => {
+  it("shows the amount and code on the card face with a valid-thru date", () => {
+    const html = buildHtml(card, "en");
+    expect(html).toContain("$150</div>");
+    expect(html).toContain("Valid thru");
+    expect(html).toMatch(/0[56]\/27/); // June 2027, whichever side of UTC midnight
+  });
+
+  it("explains how to use it and suggests real arrangements in the right language", () => {
+    const en = buildHtml(card, "en");
+    expect(en).toContain("How to use it");
+    expect(en).toContain("/en/product/ballet-slipper");
+    expect(en).toContain(">Ballet Slipper<");
+    const es = buildHtml(card, "es");
+    expect(es).toContain("Cómo usarla");
+    expect(es).toContain("/es/product/ballet-slipper");
+    expect(es).toContain(">Zapatilla de Ballet<");
+    expect(es).toContain("María, te regalaron flores");
+  });
+
+  it("drops the note block when there is no message", () => {
+    const html = buildHtml({ ...card, personalMessage: undefined }, "en");
+    expect(html).not.toContain("A note for you");
+    expect(html).toContain("From Maky · Diva Flowers");
+  });
+});

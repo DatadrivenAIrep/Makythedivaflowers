@@ -16,6 +16,7 @@ type GiftCardRow = {
   status: string;
   recipient_email: string;
   recipient_name: string | null;
+  recipient_phone: string | null;
   from_label: string | null;
   personal_message: string | null;
   headline: string | null;
@@ -38,6 +39,7 @@ function rowToCard(r: GiftCardRow): GiftCard {
     status: r.status === "void" ? "void" : "active",
     recipientEmail: r.recipient_email,
     recipientName: r.recipient_name ?? undefined,
+    recipientPhone: r.recipient_phone ?? undefined,
     fromLabel: r.from_label ?? undefined,
     personalMessage: r.personal_message ?? undefined,
     headline: r.headline ?? undefined,
@@ -62,6 +64,7 @@ export type IssueGiftCardInput = {
   initialCents: number;
   recipientEmail: string;
   recipientName?: string;
+  recipientPhone?: string;
   fromLabel?: string;
   personalMessage?: string;
   headline?: string;
@@ -80,9 +83,9 @@ export function issueGiftCard(input: IssueGiftCardInput): GiftCard {
   const insert = db.prepare(
     `INSERT INTO gift_cards (
        id, code, initial_cents, balance_cents, status,
-       recipient_email, recipient_name, from_label, personal_message, headline, partner,
+       recipient_email, recipient_name, recipient_phone, from_label, personal_message, headline, partner,
        reason, issued_by, expires_at, created_at, updated_at
-     ) VALUES (?, ?, ?, ?, 'active', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+     ) VALUES (?, ?, ?, ?, 'active', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   );
 
   // Retry on the (astronomically unlikely) UNIQUE(code) collision.
@@ -92,7 +95,8 @@ export function issueGiftCard(input: IssueGiftCardInput): GiftCard {
     try {
       insert.run(
         id, code, input.initialCents, input.initialCents,
-        input.recipientEmail, input.recipientName ?? null, input.fromLabel ?? null,
+        input.recipientEmail, input.recipientName ?? null, input.recipientPhone || null,
+        input.fromLabel ?? null,
         input.personalMessage ?? null, input.headline || null, input.partner ?? null,
         input.reason ?? null,
         input.issuedBy ?? null, expires.toISOString(), nowIso, nowIso,
@@ -112,6 +116,7 @@ export type PurchaseGiftCardInput = {
   initialCents: number;
   recipientEmail: string;
   recipientName?: string;
+  recipientPhone?: string;
   fromLabel?: string;
   personalMessage?: string;
   purchaserEmail?: string;
@@ -138,10 +143,10 @@ export function issueGiftCardForPayment(input: PurchaseGiftCardInput): GiftCard 
   const insert = db.prepare(
     `INSERT INTO gift_cards (
        id, code, initial_cents, balance_cents, status,
-       recipient_email, recipient_name, from_label, personal_message,
+       recipient_email, recipient_name, recipient_phone, from_label, personal_message,
        reason, issued_by, purchase_payment_intent_id, purchaser_email,
        expires_at, created_at, updated_at
-     ) VALUES (?, ?, ?, ?, 'active', ?, ?, ?, ?, 'purchase', NULL, ?, ?, ?, ?, ?)`,
+     ) VALUES (?, ?, ?, ?, 'active', ?, ?, ?, ?, ?, 'purchase', NULL, ?, ?, ?, ?, ?)`,
   );
 
   for (let attempt = 0; attempt < 5; attempt++) {
@@ -150,7 +155,8 @@ export function issueGiftCardForPayment(input: PurchaseGiftCardInput): GiftCard 
     try {
       insert.run(
         id, code, input.initialCents, input.initialCents,
-        input.recipientEmail, input.recipientName ?? null, input.fromLabel ?? null,
+        input.recipientEmail, input.recipientName ?? null, input.recipientPhone || null,
+        input.fromLabel ?? null,
         input.personalMessage ?? null, input.paymentIntentId, input.purchaserEmail ?? null,
         expires.toISOString(), nowIso, nowIso,
       );

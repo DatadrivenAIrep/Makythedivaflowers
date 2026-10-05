@@ -7,6 +7,7 @@ import { notifyOrderPaid } from "@/lib/order-notifications";
 import { onWebOrderPaid } from "@/lib/on-web-order-paid";
 import { redeem, issueGiftCardForPayment, getGiftCardByPaymentIntent } from "@/lib/gift-card-storage";
 import { notifyGiftCardIssued } from "@/lib/gift-card-notifications";
+import { notifyGiftCardSms } from "@/lib/gift-card-sms";
 import { redeemPromo } from "@/lib/promo";
 import { enqueuePrintJob } from "@/lib/print-queue";
 import { sendPurchaseToGA4 } from "@/lib/analytics-server";
@@ -71,6 +72,7 @@ export async function POST(req: Request) {
               initialCents: Number(pi.metadata.amountCents),
               recipientEmail: pi.metadata.recipientEmail,
               recipientName: pi.metadata.recipientName || undefined,
+              recipientPhone: pi.metadata.recipientPhone || undefined,
               fromLabel: pi.metadata.fromLabel || undefined,
               personalMessage: pi.metadata.personalMessage || undefined,
               purchaserEmail: pi.metadata.purchaserEmail || undefined,
@@ -79,7 +81,10 @@ export async function POST(req: Request) {
             // the same card. Only mail on the delivery that created it.
             if (!alreadyIssued) {
               const locale = pi.metadata.locale === "es" ? "es" : "en";
-              await notifyGiftCardIssued(card, locale);
+              await Promise.all([
+                notifyGiftCardIssued(card, locale),
+                notifyGiftCardSms(card, locale),
+              ]);
             }
           } catch (e) {
             console.error("[gift-card] issue on payment success failed", pi.id, e);

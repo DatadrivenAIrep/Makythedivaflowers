@@ -40,6 +40,7 @@ export default function GiftCardDetail({ id, onChanged }: { id: string; onChange
       <div className="text-sm">
         {card.recipientName ? `${card.recipientName} · ` : ""}
         {card.recipientEmail}
+        {card.recipientPhone ? ` · ${card.recipientPhone}` : ""}
       </div>
       <div className="text-sm">{money(card.balanceCents)} / {money(card.initialCents)}</div>
 
@@ -56,7 +57,7 @@ export default function GiftCardDetail({ id, onChanged }: { id: string; onChange
       </div>
 
       <div className="flex gap-2">
-        <button onClick={resend} className="rounded-lg border border-ink/20 px-3 py-2 text-sm">{t("detail_resend")}</button>
+        <button onClick={resend} className="rounded-lg border border-ink/20 px-3 py-2 text-sm">{card.recipientPhone ? t("detail_resend_both") : t("detail_resend")}</button>
         <button onClick={copy} className="rounded-lg border border-ink/20 px-3 py-2 text-sm">{t("detail_copy")}</button>
         {card.status !== "void" && (
           <button onClick={voidCard} className="rounded-lg border border-rouge px-3 py-2 text-sm text-rouge">{t("detail_void")}</button>

@@ -21,6 +21,8 @@ export type GiftCard = {
   status: GiftCardStatus;
   recipientEmail: string;
   recipientName?: string;
+  /** Mobile the card is also texted to; digits only. */
+  recipientPhone?: string;
   fromLabel?: string;
   personalMessage?: string;
   /** Replaces the email's default "someone sent you flowers" headline. */

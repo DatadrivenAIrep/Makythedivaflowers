@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { optionalRecipientPhone } from "@/schemas/gift-card-phone";
 import { GIFT_CARD_PARTNER_IDS } from "@/data/gift-card-partners";
 
 // Quick-pick denominations for staff; any whole-dollar amount inside the band is
@@ -16,6 +17,7 @@ export const issueGiftCardSchema = z.object({
     .refine((n) => n % 100 === 0, { message: "amount_whole_dollars" }),
   recipientEmail: z.string().email("email_invalid"),
   recipientName: z.string().max(80).optional(),
+  recipientPhone: optionalRecipientPhone,
   fromLabel: z.string().max(80).optional(),
   personalMessage: z.string().max(400).optional(),
   headline: z.string().trim().max(90).optional(),

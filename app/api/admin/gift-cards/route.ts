@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { issueGiftCardSchema } from "@/schemas/gift-card";
 import { issueGiftCard, listGiftCards } from "@/lib/gift-card-storage";
 import { notifyGiftCardIssued } from "@/lib/gift-card-notifications";
+import { notifyGiftCardSms } from "@/lib/gift-card-sms";
 
 export const runtime = "nodejs";
 
@@ -21,6 +22,7 @@ export async function POST(req: Request) {
     initialCents: input.amountCents,
     recipientEmail: input.recipientEmail,
     recipientName: input.recipientName,
+    recipientPhone: input.recipientPhone,
     fromLabel: input.fromLabel,
     personalMessage: input.personalMessage,
     headline: input.headline,
@@ -30,6 +32,16 @@ export async function POST(req: Request) {
   });
 
   // Email failure must NOT roll back issuance — the card exists and staff can resend.
-  const mail = await notifyGiftCardIssued(card, "en");
-  return NextResponse.json({ card, emailSent: mail.sent, emailError: mail.error });
+  // Same for the SMS: it never blocks issuance, and it is skipped without a phone.
+  const [mail, sms] = await Promise.all([
+    notifyGiftCardIssued(card, "en"),
+    notifyGiftCardSms(card, "en"),
+  ]);
+  return NextResponse.json({
+    card,
+    emailSent: mail.sent,
+    emailError: mail.error,
+    smsSent: sms.status === "sent",
+    smsError: sms.status === "sent" ? undefined : sms.error,
+  });
 }

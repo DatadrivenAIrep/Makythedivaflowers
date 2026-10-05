@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { optionalRecipientPhone } from "@/schemas/gift-card-phone";
 
 /**
  * Denominations the shop sells online, plus a custom amount inside a band.
@@ -20,6 +21,7 @@ export const giftCardPurchaseSchema = z.object({
     .max(GIFT_CARD_MAX_CENTS, "amount_too_large"),
   recipientEmail: z.string().email("email_invalid"),
   recipientName: z.string().max(80).optional().or(z.literal("")),
+  recipientPhone: optionalRecipientPhone,
   fromLabel: z.string().max(80).optional().or(z.literal("")),
   personalMessage: z.string().max(400).optional().or(z.literal("")),
   purchaserEmail: z.string().email("email_invalid"),

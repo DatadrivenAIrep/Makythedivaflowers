@@ -15,7 +15,23 @@ export type TemplateVars = {
   link?: string;
   shop_phone: string;
   order_number?: string;
+  /** Gift card SMS only: the redeemable code and who it is from. */
+  code?: string;
+  from_label?: string;
 };
+
+/** "Ana sent you" / "You received" — the gift SMS reads naturally either way. */
+function giftOpener(v: TemplateVars, locale: "en" | "es"): string {
+  const from = v.from_label?.trim();
+  if (locale === "es") return from ? `${from} te regaló` : "Recibiste";
+  return from ? `${from} sent you` : "You received";
+}
+
+/** " Joey" for the gift recipient, "" when no name was given. */
+function recipientNamed(v: TemplateVars): string {
+  const n = v.recipient_name?.trim();
+  return n ? ` ${n}` : "";
+}
 
 /** "Orden #1042, total $89.50." — or just "Total $89.50." when the order predates
  *  sequential numbering. Capitalisation differs between the two, so this cannot
@@ -56,6 +72,8 @@ const BODIES: Record<"en" | "es", Record<MessageTemplate, (v: TemplateVars) => s
       `Delivered! Your Diva Flowers order has arrived. Thank you! — Maky · ${v.shop_phone}`,
     review_request: (v) =>
       `Hi${named(v)}, thanks for choosing Diva Flowers! Would you leave us a quick Google review? ${v.link ?? ""} — Maky`,
+    gift_card_issued: (v) =>
+      `Hi${recipientNamed(v)}! ${giftOpener(v, "en")} a ${v.total} Diva Flowers gift card. Code: ${v.code ?? ""}. Use it at ${v.link ?? ""} or call ${v.shop_phone}. Reply STOP to opt out.`,
   },
   es: {
     order_received: (v) =>
@@ -72,6 +90,8 @@ const BODIES: Record<"en" | "es", Record<MessageTemplate, (v: TemplateVars) => s
       `¡Entregado! Tu pedido de Diva Flowers ya llegó. ¡Gracias por tu compra! — Maky · ${v.shop_phone}`,
     review_request: (v) =>
       `¡Hola${named(v)}! Gracias por elegir Diva Flowers 🌸 ¿Nos dejas una reseña en Google? ${v.link ?? ""} — Maky`,
+    gift_card_issued: (v) =>
+      `¡Hola${recipientNamed(v)}! ${giftOpener(v, "es")} una gift card de Diva Flowers por ${v.total}. Código: ${v.code ?? ""}. Úsala en ${v.link ?? ""} o llama al ${v.shop_phone}. Responde STOP para no recibir más mensajes.`,
   },
 };
 
@@ -102,6 +122,8 @@ export function whatsappContentVars(
       return { "1": vars.buyer_name, "2": vars.shop_phone };
     case "review_request":
       return { "1": vars.buyer_name, "2": vars.link ?? "" };
+    case "gift_card_issued":
+      return { "1": vars.recipient_name, "2": vars.total, "3": vars.code ?? "" };
   }
 }
 

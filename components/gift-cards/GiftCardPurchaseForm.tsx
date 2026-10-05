@@ -34,6 +34,7 @@ export function GiftCardPurchaseForm({ locale }: Props) {
   const [isCustom, setIsCustom] = useState(false);
   const [recipientEmail, setRecipientEmail] = useState("");
   const [recipientName, setRecipientName] = useState("");
+  const [recipientPhone, setRecipientPhone] = useState("");
   const [fromLabel, setFromLabel] = useState("");
   const [personalMessage, setPersonalMessage] = useState("");
   const [purchaserEmail, setPurchaserEmail] = useState("");
@@ -61,6 +62,11 @@ export function GiftCardPurchaseForm({ locale }: Props) {
       setError(t("error_amount_max", { max: formatMoneyCents(GIFT_CARD_MAX_CENTS, locale) }));
       return;
     }
+    const phoneDigits = recipientPhone.replace(/\D/g, "").replace(/^1(?=\d{10}$)/, "");
+    if (phoneDigits && phoneDigits.length !== 10) {
+      setError(t("error_phone"));
+      return;
+    }
     setBusy(true);
     try {
       const res = await fetch("/api/checkout/gift-card-purchase", {
@@ -71,6 +77,7 @@ export function GiftCardPurchaseForm({ locale }: Props) {
           amountCents: effectiveCents,
           recipientEmail,
           recipientName,
+          recipientPhone: phoneDigits,
           fromLabel,
           personalMessage,
           purchaserEmail,
@@ -208,6 +215,23 @@ export function GiftCardPurchaseForm({ locale }: Props) {
               onChange={(e) => setRecipientName(e.target.value)}
               className="w-full rounded-lg border border-ink/15 bg-bone px-3 py-2 text-sm text-ink"
             />
+          </label>
+          <label className="block">
+            <span className="mb-2 block font-mono text-[10px] uppercase tracking-[0.18em] text-mute-500">
+              {t("recipient_phone")}
+            </span>
+            <input
+              type="tel"
+              inputMode="tel"
+              value={recipientPhone}
+              onChange={(e) => setRecipientPhone(e.target.value)}
+              autoComplete="off"
+              placeholder="(516) 555-0123"
+              className="w-full rounded-lg border border-ink/15 bg-bone px-3 py-2 text-sm text-ink"
+            />
+            <span className="mt-1 block font-mono text-[10px] text-mute-500">
+              {t("recipient_phone_hint")}
+            </span>
           </label>
           <label className="block">
             <span className="mb-2 block font-mono text-[10px] uppercase tracking-[0.18em] text-mute-500">

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getGiftCardById } from "@/lib/gift-card-storage";
 import { notifyGiftCardIssued } from "@/lib/gift-card-notifications";
+import { notifyGiftCardSms } from "@/lib/gift-card-sms";
 
 export const runtime = "nodejs";
 
@@ -8,6 +9,14 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
   const { id } = await ctx.params;
   const card = getGiftCardById(id);
   if (!card) return NextResponse.json({ error: "not_found" }, { status: 404 });
-  const mail = await notifyGiftCardIssued(card, "en");
-  return NextResponse.json({ ok: mail.sent, error: mail.error });
+  const [mail, sms] = await Promise.all([
+    notifyGiftCardIssued(card, "en"),
+    notifyGiftCardSms(card, "en"),
+  ]);
+  return NextResponse.json({
+    ok: mail.sent,
+    error: mail.error,
+    smsSent: sms.status === "sent",
+    smsError: sms.status === "sent" ? undefined : sms.error,
+  });
 }
