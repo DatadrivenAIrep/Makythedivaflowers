@@ -17,6 +17,7 @@ import { baseSizeShort } from "@/lib/variant-measure";
 import { formatMoneyCents, formatPhoneUS, formatDeliveryWindow } from "@/lib/format";
 import { formatDateTime } from "@/lib/format-datetime";
 import { orderBalanceCents } from "@/lib/order-balance";
+import { FUNERAL_CARD_BOX, INSIDE_CARD_BOX, fitCardMessage, isLongCardMessage } from "@/lib/card-message-fit";
 import { getPrintStyles, getCardBgDataUri, getLogoDataUri, getProductImageDataUri, getQrWebsiteDataUri } from "@/lib/print-styles";
 import { qrSvgDataUri } from "@/lib/digital-card-qr";
 
@@ -161,7 +162,7 @@ function Worksheet({ order }: { order: Order }) {
         {order.fulfillment.cardMessage?.trim() ? (
           <div className="ws-section">
             <div className="ws-section-label">{t.cardMessage}</div>
-            <p className="ws-msg-quote">"{order.fulfillment.cardMessage.trim()}"</p>
+            <p className={`ws-msg-quote${isLongCardMessage(order.fulfillment.cardMessage) ? " long" : ""}`}>"{order.fulfillment.cardMessage.trim()}"</p>
           </div>
         ) : null}
       </div>
@@ -336,14 +337,6 @@ function BrandCoverPanel({ order, qrUri }: { order: Order; qrUri: string }) {
   );
 }
 
-function classifyMessageLength(msg: string | undefined): "short" | "med" | "long" {
-  const len = (msg ?? "").trim().length;
-  if (len === 0) return "short"; // unused; empty branch handled by parent
-  if (len <= 120) return "short";
-  if (len <= 220) return "med";
-  return "long";
-}
-
 type MessagePanelProps = {
   message: string | undefined;
   digitalQrUri?: string;
@@ -373,12 +366,21 @@ function MessageBody({
   }
   const trimmed = message?.trim();
   if (!trimmed) return null;
-  return <div className={`text ${classifyMessageLength(trimmed)}`}>"{trimmed}"</div>;
+  // The largest size that keeps the whole message on the card (up to 500 chars).
+  const fit = fitCardMessage(trimmed, funeral ? FUNERAL_CARD_BOX : INSIDE_CARD_BOX);
+  return (
+    <div className="text" style={{ fontSize: `${fit.fontPt}pt`, lineHeight: fit.lineHeight }}>
+      "{fit.text}"
+    </div>
+  );
 }
 
 function InsideMessagePanel(props: MessagePanelProps) {
+  // Small type needs the room the ornaments' spacing takes.
+  const trimmed = props.digitalQrUri ? "" : props.message?.trim();
+  const tight = trimmed ? fitCardMessage(trimmed, INSIDE_CARD_BOX).fontPt <= 12 : false;
   return (
-    <div className="card-panel inside-msg">
+    <div className={`card-panel inside-msg${tight ? " tight" : ""}`}>
       <div className="orn-top">❀</div>
       <MessageBody {...props} />
       <div className="orn-bot">❀</div>
@@ -395,7 +397,10 @@ function FuneralMessagePanel({ logoUri, ...props }: MessagePanelProps & { logoUr
       <div className="fn-body">
         <MessageBody {...props} funeral />
       </div>
-      <div className="fn-contact">{SITE.phoneDisplay} · {new URL(SITE.url).host}</div>
+      <div className="fn-contact">
+        <span className="fn-site">{new URL(SITE.url).host}</span>
+        <span className="fn-phone">{SITE.phoneDisplay}</span>
+      </div>
     </div>
   );
 }

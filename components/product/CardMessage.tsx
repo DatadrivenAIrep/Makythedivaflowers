@@ -7,6 +7,7 @@ import { CardMessageAssist } from "./CardMessageAssist";
 import { getRelations } from "@/lib/card-message-relations";
 import { FormField } from "@/components/ui/form/FormField";
 import { TextArea } from "@/components/ui/form/TextArea";
+import { CARD_MESSAGE_MAX } from "@/lib/card-message-fit";
 
 type Props = {
   locale: Locale;
@@ -23,7 +24,7 @@ function CardMessageImpl({
   locale,
   value,
   onChange,
-  maxLength = 200,
+  maxLength = CARD_MESSAGE_MAX,
   productTitle,
   occasions,
   isSympathy,

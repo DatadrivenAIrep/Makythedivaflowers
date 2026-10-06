@@ -11,6 +11,7 @@ import OrderDetailDrawer from "@/components/admin/dashboard/OrderDetailDrawer";
 import SegmentBadge from "./SegmentBadge";
 import ImportantDates from "./ImportantDates";
 import PreferenceChips from "./PreferenceChips";
+import RecipientList from "./RecipientList";
 import type { PreferencesMap } from "@/lib/customer-dates-storage";
 
 type Props = { locale: string; initial: CustomerProfileData; suggestions: PreferencesMap };
@@ -332,6 +333,8 @@ export default function CustomerProfile({ locale, initial, suggestions }: Props)
           {notesSaved && <span className="text-xs text-emerald-700">{t("notes_saved")}</span>}
         </div>
       </section>
+
+      <RecipientList locale={locale} senderPhone={customer.phone} recipients={data.recipients ?? []} />
 
       <section className="mb-3 rounded border border-ink/10 bg-bone p-3">
         <div className="mb-2 text-xs uppercase tracking-wide text-ink/50">{t("order_history")}</div>

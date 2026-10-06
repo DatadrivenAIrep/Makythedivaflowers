@@ -291,7 +291,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
             </div>
           )}
           {f.cardMessage && (
-            <div className="mt-2 rounded bg-ink/5 p-2 text-xs italic">&quot;{f.cardMessage}&quot;</div>
+            <div className="mt-2 rounded bg-ink/5 p-2 text-xs italic whitespace-pre-line">&quot;{f.cardMessage}&quot;</div>
           )}
         </section>
 

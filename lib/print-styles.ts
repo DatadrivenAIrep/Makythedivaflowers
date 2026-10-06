@@ -177,6 +177,8 @@ export function getPrintStyles(): string {
       font-style: italic; font-size: 11pt; line-height: 1.4;
       font-variation-settings: "opsz" 60;
     }
+    /* The worksheet copy inherits .ws-section p (9pt); only the longest steps shrink it. */
+    .ws-section p.ws-msg-quote.long { font-size: 8pt; line-height: 1.3; }
     .ws-items table { width: 100%; font-size: 9pt; border-collapse: collapse; }
     .ws-items td { padding: 3pt 0; vertical-align: top; }
     .ws-items td.thumb-cell { width: 80pt; padding-right: 8pt; }
@@ -202,7 +204,9 @@ export function getPrintStyles(): string {
     .ws-buyer strong { color: var(--ink); font-size: 7pt; letter-spacing: 1.5px; text-transform: uppercase; }
 
     /* === Card row (bottom half) — tri-fold === */
-    .card-row { flex: 1; display: flex; position: relative; }
+    /* min-height: 0 holds the card row to its half of the sheet: an outsized
+       message clips inside its card instead of squeezing the worksheet. */
+    .card-row { flex: 1; min-height: 0; display: flex; position: relative; }
     .card-panel { flex: 1; position: relative; overflow: hidden; }
 
     /* Panel 1 (left): Maky brand — cover when folded */
@@ -281,10 +285,11 @@ export function getPrintStyles(): string {
       font-family: var(--font-display);
       font-style: italic; line-height: 1.45; color: var(--ink);
       max-width: 92%; font-variation-settings: "opsz" 96;
+      white-space: pre-line;
     }
-    .inside-msg .text.short { font-size: 16pt; }
-    .inside-msg .text.med { font-size: 13pt; }
-    .inside-msg .text.long { font-size: 11pt; }
+    /* font-size + line-height are set inline by lib/card-message-fit (largest size that fits). */
+    .inside-msg.tight .orn-top { margin-bottom: 5pt; }
+    .inside-msg.tight .orn-bot { margin-top: 5pt; }
     /* Digital card: its QR takes the message's place, large enough to scan
        from arm's length, on white for contrast. */
     .inside-msg .msg-qr {
@@ -309,25 +314,26 @@ export function getPrintStyles(): string {
     .funeral .fn-watermark {
       position: absolute; left: 50%; top: 47%; width: 3.2in;
       transform: translate(-50%, -50%);
-      opacity: 0.55; mix-blend-mode: multiply;
+      opacity: 0.45; mix-blend-mode: multiply;
     }
     .funeral .fn-body {
       position: relative; z-index: 1;
       flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
       width: 100%;
     }
+    /* Pure black and a heavier cut so the message reads over the logo. */
     .funeral .text, .funeral .msg-qr-caption {
-      color: var(--ink);
+      color: #000; font-weight: 500;
       text-shadow: 0 0 4pt var(--bone), 0 0 8pt var(--bone), 0 0 12pt var(--bone);
     }
     .funeral .msg-qr-img { width: 1.3in; height: 1.3in; }
-    .funeral .text.short { font-size: 15pt; }
-    .funeral .text.med { font-size: 12.5pt; }
-    .funeral .text.long { font-size: 10.5pt; }
     .funeral .fn-contact {
       position: relative; z-index: 1;
-      font-family: var(--font-sans); font-size: 7.5pt; color: var(--mute-600); letter-spacing: 0.4px;
+      display: flex; flex-direction: column; align-items: center; gap: 1pt;
+      font-family: var(--font-sans); color: var(--ink);
     }
+    .funeral .fn-site { font-size: 11pt; font-weight: 700; letter-spacing: 0.3px; }
+    .funeral .fn-phone { font-size: 8pt; font-weight: 600; color: var(--mute-600); letter-spacing: 0.4px; }
 
     /* Panel 3 (right): logo lockup. The source logo has a flat white
        background (no alpha), so we wrap it in a white card with soft

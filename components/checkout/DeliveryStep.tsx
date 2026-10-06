@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import type { UseFormReturn } from "react-hook-form";
 import { FormField } from "@/components/ui/form/FormField";
 import { TextInput } from "@/components/ui/form/TextInput";
+import { TextArea } from "@/components/ui/form/TextArea";
+import { CARD_MESSAGE_MAX } from "@/lib/card-message-fit";
 import { DateInput } from "@/components/ui/form/DateInput";
 import { RadioChips } from "@/components/ui/form/RadioChips";
 import type { CheckoutInput } from "@/schemas/checkout";
@@ -138,7 +140,7 @@ export function DeliveryStep({ form }: { form: UseFormReturn<CheckoutInput> }) {
         />
       </FormField>
       <FormField label={t("card_message")} htmlFor="ck-card" help={t("card_message_hint")}>
-        <TextInput id="ck-card" maxLength={200} {...register("delivery.cardMessage")} />
+        <TextArea id="ck-card" rows={3} maxLength={CARD_MESSAGE_MAX} {...register("delivery.cardMessage")} />
       </FormField>
     </div>
   );

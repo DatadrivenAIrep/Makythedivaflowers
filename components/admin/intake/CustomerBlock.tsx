@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import type { Address } from "@/types/address";
 import type { MessagingChannel } from "@/types/order";
+import type { KnownRecipient, RecipientProfile } from "@/lib/recipient-history";
 import ChannelPicker from "./ChannelPicker";
 import AddressAutocomplete from "./AddressAutocomplete";
 
@@ -18,16 +19,26 @@ type Props = {
   value: CustomerSnapshot;
   onChange: (v: CustomerSnapshot) => void;
   onApplyAddress: (address: Address) => void;
+  /** Staff tapped one of this sender's past recipients. */
+  onPickRecipient: (recipient: KnownRecipient) => void;
 };
 
-export default function CustomerBlock({ value, onChange, onApplyAddress }: Props) {
+// How many past recipients show before "show more".
+const RECIPIENTS_SHOWN = 4;
+
+export default function CustomerBlock({ value, onChange, onApplyAddress, onPickRecipient }: Props) {
   const t = useTranslations("admin_intake");
   const [match, setMatch] = useState<{ orderCount: number; lastCity?: string; lastAddress?: Address; messagingChannel?: MessagingChannel } | null>(null);
+  const [recipients, setRecipients] = useState<KnownRecipient[]>([]);
+  const [asRecipient, setAsRecipient] = useState<RecipientProfile | null>(null);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     const digits = value.phone.replace(/\D/g, "");
     if (digits.length < 10) {
       setMatch(null);
+      setRecipients([]);
+      setAsRecipient(null);
       return;
     }
     const handle = setTimeout(async () => {
@@ -35,8 +46,13 @@ export default function CustomerBlock({ value, onChange, onApplyAddress }: Props
         const res = await fetch(`/api/admin/customers/lookup?phone=${encodeURIComponent(digits)}`);
         if (!res.ok) return;
         const data = await res.json();
+        setRecipients(data.recipients ?? []);
+        setAsRecipient(data.asRecipient ?? null);
+        setShowAll(false);
         if (!data.found) {
           setMatch(null);
+          // Someone who only ever received flowers: they are the same person, so reuse the name.
+          if (!value.name && data.asRecipient?.name) onChange({ ...value, name: data.asRecipient.name });
           return;
         }
         const c = data.customer;
@@ -133,6 +149,40 @@ export default function CustomerBlock({ value, onChange, onApplyAddress }: Props
               {t("customer_use_last_address")}
             </button>
           )}
+        </div>
+      )}
+      {asRecipient && (
+        <div className="mt-2 px-3 py-2 rounded-lg bg-mute-100 text-[12.5px] text-mute-700">
+          {t(asRecipient.orderCount === 1 ? "caller_received_one" : "caller_received_other", {
+            count: asRecipient.orderCount,
+            sender: asRecipient.senders[0]?.name || "—",
+          })}
+        </div>
+      )}
+      {recipients.length > 0 && (
+        <div className="mt-3">
+          <div className="text-[11px] uppercase tracking-widest text-mute-400 mb-1.5">{t("known_recipients_label")}</div>
+          <div className="flex flex-wrap gap-1.5">
+            {(showAll ? recipients : recipients.slice(0, RECIPIENTS_SHOWN)).map((r) => (
+              <button
+                key={r.phone || `name:${r.name}`}
+                type="button"
+                onClick={() => onPickRecipient(r)}
+                aria-label={t("known_recipient_pick", { name: r.name })}
+                className="text-left px-3 py-1.5 rounded-xl border border-mute-200 bg-bone hover:border-ink/40 transition"
+              >
+                <span className="block text-sm text-ink">{r.name || "—"}</span>
+                <span className="block text-[11px] text-mute-500">
+                  {[r.lastAddress?.city, r.orderCount > 1 ? `×${r.orderCount}` : null].filter(Boolean).join(" · ") || r.phone}
+                </span>
+              </button>
+            ))}
+            {!showAll && recipients.length > RECIPIENTS_SHOWN && (
+              <button type="button" onClick={() => setShowAll(true)} className="px-3 py-1.5 text-sm text-rouge underline">
+                {t("known_recipients_more", { count: recipients.length - RECIPIENTS_SHOWN })}
+              </button>
+            )}
+          </div>
         </div>
       )}
     </div>
