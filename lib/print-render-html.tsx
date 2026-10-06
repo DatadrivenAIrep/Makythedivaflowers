@@ -397,7 +397,10 @@ function FuneralMessagePanel({ logoUri, ...props }: MessagePanelProps & { logoUr
       <div className="fn-body">
         <MessageBody {...props} funeral />
       </div>
-      <div className="fn-contact">{SITE.phoneDisplay} · {new URL(SITE.url).host}</div>
+      <div className="fn-contact">
+        <span className="fn-site">{new URL(SITE.url).host}</span>
+        <span className="fn-phone">{SITE.phoneDisplay}</span>
+      </div>
     </div>
   );
 }

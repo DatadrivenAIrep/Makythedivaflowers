@@ -314,22 +314,26 @@ export function getPrintStyles(): string {
     .funeral .fn-watermark {
       position: absolute; left: 50%; top: 47%; width: 3.2in;
       transform: translate(-50%, -50%);
-      opacity: 0.55; mix-blend-mode: multiply;
+      opacity: 0.45; mix-blend-mode: multiply;
     }
     .funeral .fn-body {
       position: relative; z-index: 1;
       flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
       width: 100%;
     }
+    /* Pure black and a heavier cut so the message reads over the logo. */
     .funeral .text, .funeral .msg-qr-caption {
-      color: var(--ink);
+      color: #000; font-weight: 500;
       text-shadow: 0 0 4pt var(--bone), 0 0 8pt var(--bone), 0 0 12pt var(--bone);
     }
     .funeral .msg-qr-img { width: 1.3in; height: 1.3in; }
     .funeral .fn-contact {
       position: relative; z-index: 1;
-      font-family: var(--font-sans); font-size: 7.5pt; color: var(--mute-600); letter-spacing: 0.4px;
+      display: flex; flex-direction: column; align-items: center; gap: 1pt;
+      font-family: var(--font-sans); color: var(--ink);
     }
+    .funeral .fn-site { font-size: 11pt; font-weight: 700; letter-spacing: 0.3px; }
+    .funeral .fn-phone { font-size: 8pt; font-weight: 600; color: var(--mute-600); letter-spacing: 0.4px; }
 
     /* Panel 3 (right): logo lockup. The source logo has a flat white
        background (no alpha), so we wrap it in a white card with soft
