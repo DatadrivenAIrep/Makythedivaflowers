@@ -42,6 +42,10 @@ const profile: CustomerProfileData = {
   dates: [],
   preferences: { favorite_flower: [], favorite_color: [], dislike: [] },
   orders: [order],
+  recipients: [
+    { name: "Mamá Rosa", phone: "5165559999", orderCount: 3, lastDate: "2026-06-20", lastOrderId: "do_x",
+      lastAddress: { street1: "9 Tulip Ct", city: "Bayville", state: "NY", zip: "11709", country: "US" } },
+  ],
 };
 
 const emptyPrefs = { favorite_flower: [], favorite_color: [], dislike: [] };
@@ -58,6 +62,12 @@ describe("CustomerProfile", () => {
     expect(screen.getByText("#1001")).toBeDefined();                // order row
     expect(screen.getByText("Historial de órdenes")).toBeDefined();
     expect(screen.getByText("Fechas importantes")).toBeDefined();
+    expect(screen.getByText("Sus destinatarios")).toBeDefined();
+    expect(screen.getByText("Mamá Rosa")).toBeDefined();
+    expect(screen.getByText("(516) 555-9999 · 9 Tulip Ct, Bayville")).toBeDefined();
+    expect(screen.getByRole("link", { name: /Nueva orden$/ }).getAttribute("href")).toBe(
+      "/es/admin/intake?phone=5165550001&rphone=5165559999&rname=Mam%C3%A1+Rosa",
+    );
     expect(screen.getByText("Sin fechas guardadas.")).toBeDefined();
     expect(screen.getByText("Preferencias")).toBeDefined();
   });

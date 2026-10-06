@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { CARD_MESSAGE_MAX } from "@/lib/card-message-fit";
 import { getOrder } from "@/lib/order-storage";
 import { getDb } from "@/lib/db";
 import { recentMessagesForOrder } from "@/lib/message-storage";
@@ -59,7 +60,7 @@ const patchSchema = z.object({
   fulfillmentMethod: z.enum(["in-store", "delivery", "pickup"]).optional(),
   address: addressSchema.optional(),
   window: windowSchema.optional(),
-  cardMessage: z.string().optional(),
+  cardMessage: z.string().max(CARD_MESSAGE_MAX).optional(),
   funeral: z.boolean().optional(),
   lines: z.array(lineSchema).optional(),
   totalsOverride: totalsOverrideSchema.optional(),

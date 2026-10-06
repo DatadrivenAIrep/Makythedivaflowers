@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CARD_MESSAGE_MAX } from "@/lib/card-message-fit";
 
 const phone = z
   .string()
@@ -30,20 +31,20 @@ const deliveryF = z.object({
   recipient,
   address,
   window,
-  cardMessage: z.string().max(200).optional(),
+  cardMessage: z.string().max(CARD_MESSAGE_MAX).optional(),
 });
 const pickupF = z.object({
   method: z.literal("pickup"),
   recipient,
   window,
-  cardMessage: z.string().max(200).optional(),
+  cardMessage: z.string().max(CARD_MESSAGE_MAX).optional(),
 });
 const inStoreF = z.object({
   method: z.literal("in-store"),
   // No recipient input for "Take it now": the buyer takes the order, so the buyer IS the
   // recipient (populated server-side from the customer). Any recipient the client sends
   // is ignored/stripped here — buyer name + phone are still required via the superRefine.
-  cardMessage: z.string().max(200).optional(),
+  cardMessage: z.string().max(CARD_MESSAGE_MAX).optional(),
 });
 
 const catalogLine = z.object({

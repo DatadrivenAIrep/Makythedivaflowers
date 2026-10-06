@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, type ReactNode } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import type { Product } from "@/types/product";
 import type { CartLine, OrderTotals } from "@/types/order";
+import type { KnownRecipient } from "@/lib/recipient-history";
 import CustomerBlock, { type CustomerSnapshot } from "./CustomerBlock";
 import FulfillmentBlock, { type FulfillmentState } from "./FulfillmentBlock";
 import ProductPicker from "./ProductPicker";
@@ -55,6 +56,8 @@ export default function IntakeForm({ products }: { products: Product[] }) {
   const searchParams = useSearchParams();
   const okOrderId = searchParams.get("ok");
   const prefillPhone = searchParams.get("phone");
+  const prefillRecipientPhone = searchParams.get("rphone");
+  const prefillRecipientName = searchParams.get("rname");
   const [banner, setBanner] = useState<{
     orderId: string;
     channel?: string;
@@ -85,6 +88,17 @@ export default function IntakeForm({ products }: { products: Product[] }) {
   useEffect(() => {
     if (prefillPhone) {
       setCustomer((c) => (c.phone ? c : { ...c, phone: prefillPhone }));
+    }
+    // "New order" from a customer's recipient list: the recipient's phone lookup fills the rest.
+    if (prefillRecipientPhone || prefillRecipientName) {
+      setFulfillment((f) => ({
+        ...f,
+        method: f.method === "in-store" ? "delivery" : f.method,
+        recipient: {
+          name: f.recipient.name || prefillRecipientName || "",
+          phone: f.recipient.phone || prefillRecipientPhone || "",
+        },
+      }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -187,6 +201,17 @@ export default function IntakeForm({ products }: { products: Product[] }) {
       delete next.discountCents;
       return next;
     });
+  }
+
+  // A past recipient picked from the buyer's history: address the order to them
+  // (and to their last delivery address, when there is one).
+  function pickRecipient(r: KnownRecipient) {
+    setFulfillment((f) => ({
+      ...f,
+      method: r.lastAddress ? "delivery" : f.method === "in-store" ? "delivery" : f.method,
+      recipient: { name: r.name, phone: r.phone },
+      address: r.lastAddress ? { ...r.lastAddress } : f.address,
+    }));
   }
 
   function resetForm() {
@@ -456,6 +481,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
                 value={customer}
                 onChange={setCustomer}
                 onApplyAddress={(addr) => setFulfillment((f) => ({ ...f, address: addr, method: "delivery" }))}
+                onPickRecipient={pickRecipient}
               />
             </SectionCard>
             <SectionCard title={t("section_fulfillment")}>

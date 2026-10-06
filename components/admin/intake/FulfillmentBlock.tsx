@@ -1,8 +1,11 @@
 "use client";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import type { Address } from "@/types/address";
 import type { DeliverySlot, OrderFulfillment } from "@/types/order";
+import type { RecipientProfile } from "@/lib/recipient-history";
 import { slotForTime } from "@/lib/tv-slots";
+import { CARD_MESSAGE_LONG_HINT_AT, CARD_MESSAGE_MAX } from "@/lib/card-message-fit";
 import AddressAutocomplete from "./AddressAutocomplete";
 
 type Method = "in-store" | "delivery" | "pickup";
@@ -27,6 +30,7 @@ type Props = {
 export default function FulfillmentBlock({ value, onChange }: Props) {
   const t = useTranslations("admin_intake");
   const to = useTranslations("admin_orders");
+  const known = useRecipientLookup(value, onChange);
   const segs: { id: Method; label: string }[] = [
     { id: "in-store", label: t("fulfillment_in_store") },
     { id: "delivery", label: t("fulfillment_delivery") },
@@ -66,6 +70,25 @@ export default function FulfillmentBlock({ value, onChange }: Props) {
             placeholder={t("fulfillment_recipient_phone_placeholder")}
             className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white"
           />
+          {known && (
+            <div className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg bg-rouge/[0.06] border-l-2 border-rouge text-[12.5px] text-mute-700">
+              <span>
+                {t(known.orderCount === 1 ? "recipient_known_one" : "recipient_known_other", {
+                  count: known.orderCount,
+                  sender: known.senders[0]?.name || "—",
+                })}
+              </span>
+              {known.lastAddress && !sameStreet(known.lastAddress, value.address) && (
+                <button
+                  type="button"
+                  onClick={() => onChange({ ...value, method: "delivery", address: { ...known.lastAddress! } })}
+                  className="underline text-rouge whitespace-nowrap"
+                >
+                  {t("recipient_use_last_address")}
+                </button>
+              )}
+            </div>
+          )}
           {value.method === "delivery" && (
             <>
               <AddressAutocomplete
@@ -169,9 +192,16 @@ export default function FulfillmentBlock({ value, onChange }: Props) {
           value={value.cardMessage}
           onChange={(e) => onChange({ ...value, cardMessage: e.target.value })}
           placeholder={t("card_message_placeholder")}
-          rows={3}
-          className="w-full p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white resize-none"
+          rows={value.cardMessage.length > CARD_MESSAGE_LONG_HINT_AT ? 6 : 3}
+          maxLength={CARD_MESSAGE_MAX}
+          className="w-full p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white resize-y"
         />
+        <div className="mt-1 flex items-start justify-between gap-3 text-xs text-mute-400">
+          <span>{value.cardMessage.length > CARD_MESSAGE_LONG_HINT_AT ? t("card_message_long_hint") : ""}</span>
+          <span className="tabular-nums shrink-0">
+            {t("card_message_counter", { count: value.cardMessage.length, max: CARD_MESSAGE_MAX })}
+          </span>
+        </div>
         <label className="mt-2 flex items-start gap-2.5 cursor-pointer select-none">
           <input
             type="checkbox"
@@ -187,6 +217,62 @@ export default function FulfillmentBlock({ value, onChange }: Props) {
       </div>
     </div>
   );
+}
+
+function sameStreet(a: Address, b: Address): boolean {
+  const norm = (x: Address) => `${x.street1} ${x.zip}`.trim().toLowerCase();
+  return norm(a) === norm(b);
+}
+
+/**
+ * Looks the recipient's phone up in past orders. A known recipient fills the
+ * name and, for a delivery with no street yet, their last address — never
+ * overwriting what staff already typed.
+ */
+function useRecipientLookup(value: FulfillmentState, onChange: (v: FulfillmentState) => void): RecipientProfile | null {
+  const [known, setKnown] = useState<RecipientProfile | null>(null);
+  // The lookup resolves after a debounce; read the freshest form state then.
+  const latest = useRef({ value, onChange });
+  latest.current = { value, onChange };
+  const digits = value.recipient.phone.replace(/\D/g, "");
+  const active = value.method !== "in-store" && digits.length >= 10;
+
+  useEffect(() => {
+    if (!active) {
+      setKnown(null);
+      return;
+    }
+    let cancelled = false;
+    const handle = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/admin/recipients/lookup?phone=${encodeURIComponent(digits)}`);
+        if (!res.ok || cancelled) return;
+        const data = (await res.json()) as { found: boolean; recipient?: RecipientProfile };
+        if (cancelled) return;
+        const r = data.found ? data.recipient ?? null : null;
+        setKnown(r);
+        if (!r) return;
+        const { value: cur, onChange: emit } = latest.current;
+        const fillName = !cur.recipient.name.trim() && r.name;
+        const fillAddress = cur.method === "delivery" && !cur.address.street1.trim() && r.lastAddress;
+        if (fillName || fillAddress) {
+          emit({
+            ...cur,
+            recipient: fillName ? { ...cur.recipient, name: r.name } : cur.recipient,
+            address: fillAddress ? { ...r.lastAddress! } : cur.address,
+          });
+        }
+      } catch {
+        // Lookup is a convenience; the form works without it.
+      }
+    }, 300);
+    return () => {
+      cancelled = true;
+      clearTimeout(handle);
+    };
+  }, [active, digits]);
+
+  return active ? known : null;
 }
 
 export function toOrderFulfillment(f: FulfillmentState): OrderFulfillment {

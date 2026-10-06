@@ -1,5 +1,6 @@
 // schemas/checkout.ts
 import { z } from "zod";
+import { CARD_MESSAGE_MAX } from "@/lib/card-message-fit";
 
 const phone = z
   .string()
@@ -37,7 +38,7 @@ const window = z.object({
   slot: z.enum(["morning", "midday", "afternoon", "evening"]),
 });
 
-const cardMessage = z.string().max(200, "card_too_long").optional().or(z.literal(""));
+const cardMessage = z.string().max(CARD_MESSAGE_MAX, "card_too_long").optional().or(z.literal(""));
 
 const deliveryFulfillment = z.object({
   method: z.literal("delivery"),
