@@ -21,6 +21,29 @@ export const SYMPATHY_FORMS: Record<SympathyForm, Localized> = {
   installation: { en: "Custom installation", es: "Instalación a medida" },
 };
 
+/**
+ * The funeral pieces sold as products (data/products.ts, category "sympathy"),
+ * in display order. Shared by the /sympathy "ready to order" section and the
+ * home page ribbon so both always show the same pieces.
+ */
+export const SYMPATHY_PRODUCT_SLUGS = [
+  "tranquil-skies-wreath",
+  "crimson-grace-cross",
+  "beloved-heart",
+  "crimson-heart",
+  "tender-heart",
+  "heart-in-full-color",
+  "chapel-white",
+  "peach-tribute-spray",
+  "golden-grace",
+  "sunflower-tribute",
+  "blue-remembrance",
+  "personal-tribute",
+  "twilight-orchid",
+  "amethyst-orchid",
+  "eternal-white",
+] as const;
+
 export const SYMPATHY_PIECES: SympathyPiece[] = [
   {
     slug: "beloved-heart",

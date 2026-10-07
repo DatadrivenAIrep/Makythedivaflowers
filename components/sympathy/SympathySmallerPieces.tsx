@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Locale } from "@/types/locale";
 import { PRODUCTS } from "@/data/products";
+import { SYMPATHY_PRODUCT_SLUGS } from "@/data/sympathy-pieces";
 import { pickLocalized } from "@/types/product";
 import { formatMoneyCents } from "@/lib/format";
 import { startingPriceCents } from "@/data/product-helpers";
@@ -38,23 +39,7 @@ const STANDING: SectionCopy = {
 };
 
 const SMALLER_SLUGS = ["serene-lavender", "celestial-peace", "monstera-mood"];
-const STANDING_SLUGS = [
-  "tranquil-skies-wreath",
-  "crimson-grace-cross",
-  "beloved-heart",
-  "crimson-heart",
-  "tender-heart",
-  "heart-in-full-color",
-  "chapel-white",
-  "peach-tribute-spray",
-  "golden-grace",
-  "sunflower-tribute",
-  "blue-remembrance",
-  "personal-tribute",
-  "twilight-orchid",
-  "amethyst-orchid",
-  "eternal-white",
-];
+const STANDING_SLUGS: readonly string[] = SYMPATHY_PRODUCT_SLUGS;
 
 export function SympathySmallerPieces({ locale }: { locale: Locale }) {
   return <SympathyProductSection locale={locale} slugs={SMALLER_SLUGS} copy={SMALLER} />;
@@ -70,7 +55,7 @@ function SympathyProductSection({
   copy,
 }: {
   locale: Locale;
-  slugs: string[];
+  slugs: readonly string[];
   copy: SectionCopy;
 }) {
   const items = slugs.map((slug) => PRODUCTS.find((p) => p.slug === slug && p.active)).filter(
