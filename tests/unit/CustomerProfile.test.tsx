@@ -43,7 +43,7 @@ const profile: CustomerProfileData = {
   preferences: { favorite_flower: [], favorite_color: [], dislike: [] },
   orders: [order],
   recipients: [
-    { name: "Mamá Rosa", phone: "5165559999", orderCount: 3, lastDate: "2026-06-20", lastOrderId: "do_x",
+    { name: "Mamá Rosa", phone: "5165559999", orderCount: 3, lastDate: "2026-06-20", lastOrderId: "do_x", addresses: [],
       lastAddress: { street1: "9 Tulip Ct", city: "Bayville", state: "NY", zip: "11709", country: "US" } },
   ],
 };

@@ -81,9 +81,14 @@ describe("FulfillmentBlock funeral toggle", () => {
 
 describe("FulfillmentBlock recipient lookup", () => {
   const lastAddress = { street1: "9 Tulip Ct", city: "Bayville", state: "NY", zip: "11709", country: "US" as const };
+  const otherAddress = { street1: "40 Glen St", street2: "Apt 3", city: "Glen Cove", state: "NY", zip: "11542", country: "US" as const };
   const known = {
-    name: "Carmen", phone: "5165559999", orderCount: 2, lastDate: "2026-06-01", lastAddress,
-    senders: [{ name: "Luis", phone: "5165550200", orderCount: 2 }],
+    name: "Carmen", phone: "5165559999", orderCount: 3, lastDate: "2026-06-01", lastAddress,
+    addresses: [
+      { address: lastAddress, orderCount: 2, lastDate: "2026-06-01" },
+      { address: otherAddress, orderCount: 1, lastDate: "2026-02-01" },
+    ],
+    senders: [{ name: "Luis", phone: "5165550200", orderCount: 3 }],
   };
 
   // The address autocomplete fetches too, so answer per call and only for the lookup.
@@ -108,19 +113,33 @@ describe("FulfillmentBlock recipient lookup", () => {
     expect(next.recipient.name).toBe("Carmen");
     expect(next.address).toEqual(lastAddress);
     expect(fetchSpy.mock.calls.some(([u]) => String(u).includes("lookup?phone=5165559999"))).toBe(true);
-    expect(await screen.findByText("Ya recibió 2 veces · la última de Luis")).toBeDefined();
+    expect(await screen.findByText("Ya recibió 3 veces · la última de Luis")).toBeDefined();
     fetchSpy.mockRestore();
   });
 
-  it("never overwrites a name staff already typed", async () => {
+  it("never overwrites a name or street staff already typed", async () => {
     const fetchSpy = mockRecipientLookup();
     const onChange = vi.fn();
     const value = { ...delivery({ name: "Carmencita", phone: "5165559999" }), address: { ...lastAddress, street1: "1 Other St" } };
     wrap(<FulfillmentBlock value={value} onChange={onChange} />);
-    await screen.findByText("usar su última dirección");
+    await screen.findByText("Direcciones anteriores");
     expect(onChange).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByText("usar su última dirección"));
-    expect((onChange.mock.calls[0][0] as FulfillmentState).address).toEqual(lastAddress);
+    fetchSpy.mockRestore();
+  });
+
+  it("lists every past address and switches to the one tapped", async () => {
+    const fetchSpy = mockRecipientLookup();
+    const onChange = vi.fn();
+    wrap(<FulfillmentBlock value={{ ...delivery({ name: "Carmen", phone: "5165559999" }), address: lastAddress }} onChange={onChange} />);
+    const options = await screen.findAllByRole("radio");
+    expect(options).toHaveLength(2);
+    expect(options[0].getAttribute("aria-checked")).toBe("true"); // the address already on the order
+    expect(options[1].textContent).toContain("40 Glen St, Apt 3");
+    expect(options[1].textContent).toContain("1 vez");
+    fireEvent.click(options[1]);
+    const next = onChange.mock.calls.at(-1)![0] as FulfillmentState;
+    expect(next.address).toEqual(otherAddress);
+    expect(next.method).toBe("delivery");
     fetchSpy.mockRestore();
   });
 });
