@@ -4005,7 +4005,7 @@ export const PRODUCTS: Product[] = [
       { src: "/products/serene-lavender.jpg", alt: { en: "Standing sympathy tribute of white roses, lavender hydrangea, blue delphinium, white lilies, snapdragon and stock with burgundy chrysanthemum buttons", es: "Homenaje vertical de condolencia con rosas blancas, hortensia lavanda, delphinium azul, lirios blancos, boca de dragón y alhelí con botones de crisantemo borgoña" }, aspect: "4/5" },
     ],
     variants: [
-      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 15000 },
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 18000 },
     ],
     tags: ["new", "same-day", "staff-pick"],
     occasions: ["sympathy", "thinking-of-you"],
@@ -4340,7 +4340,7 @@ export const PRODUCTS: Product[] = [
       },
     ],
     variants: [
-      { id: "standing", label: { en: "Standing wreath", es: "Corona de pie" }, priceCents: 35000 },
+      { id: "standing", label: { en: "Standing wreath", es: "Corona de pie" }, priceCents: 34999 },
     ],
     tags: ["new"],
     occasions: ["sympathy"],
@@ -4375,7 +4375,7 @@ export const PRODUCTS: Product[] = [
       },
     ],
     variants: [
-      { id: "standing", label: { en: "Standing cross", es: "Cruz de pie" }, priceCents: 40000 },
+      { id: "standing", label: { en: "Standing cross", es: "Cruz de pie" }, priceCents: 39999 },
     ],
     tags: ["new"],
     occasions: ["sympathy"],
@@ -4386,6 +4386,410 @@ export const PRODUCTS: Product[] = [
       description: {
         en: "Standing funeral cross of white chrysanthemums with a cascade of red roses on an easel. Delivered to funeral homes and churches across Long Island.",
         es: "Cruz fúnebre de pie de crisantemos blancos con cascada de rosas rojas sobre atril. Entrega en funerarias e iglesias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-peach-spray",
+    slug: "peach-tribute-spray",
+    title: { en: "Peach Tribute Spray", es: "Tributo Melocotón" },
+    category: "sympathy",
+    blurb: {
+      en: "A standing spray of peach and orange roses with white snapdragon and blue delphinium.",
+      es: "Un tributo de pie de rosas melocotón y naranja con boca de dragón blanca y delphinium azul.",
+    },
+    description: {
+      en: "A warm standing spray for the service — peach and orange roses and spray roses gathered with white snapdragon, blue delphinium, and soft green hydrangea, framed in long leaves and finished with a black-and-white satin bow and trailing ribbons. Set on an easel so it stands beside the family with quiet warmth. A tribute for a life remembered with gentleness, for a funeral, wake, or memorial. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un tributo de pie cálido para el servicio — rosas melocotón y naranja y mini rosas reunidas con boca de dragón blanca, delphinium azul e hortensia verde suave, enmarcadas en hojas largas y rematadas con un moño de satín blanco y negro y cintas colgantes. Montado en un atril para acompañar a la familia con una calidez serena. Un homenaje para una vida recordada con ternura, para un funeral, velorio o servicio memorial. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/peach-tribute-spray.jpg", alt: { en: "Standing funeral spray of peach and orange roses with a black-and-white bow on an easel", es: "Tributo fúnebre de pie de rosas melocotón y naranja con moño blanco y negro sobre atril" }, aspect: "4/5" },
+      { src: "/products/peach-tribute-spray-2.jpg", alt: { en: "Peach Tribute Spray, side view", es: "Tributo Melocotón, vista lateral" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 40000 },
+    ],
+    tags: ["new"],
+    occasions: ["sympathy"],
+    colorFamily: ["pastel", "white"],
+    active: true,
+    seo: {
+      title: { en: "Peach Tribute — Peach Rose & Snapdragon Standing Spray | Diva Flowers", es: "Tributo Melocotón — Tributo de Pie de Rosas Melocotón | Diva Flowers" },
+      description: {
+        en: "Standing funeral spray of peach and orange roses, snapdragon, and delphinium on an easel. Delivered to funeral homes across Long Island.",
+        es: "Tributo fúnebre de pie de rosas melocotón y naranja, boca de dragón y delphinium sobre atril. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-heart-color",
+    slug: "heart-in-full-color",
+    title: { en: "Heart in Full Color", es: "Corazón de Colores" },
+    category: "sympathy",
+    blurb: {
+      en: "An open-heart wreath of roses and gerbera daisies in every color, with a soft pink ribbon.",
+      es: "Una corona de corazón abierto de rosas y gerberas de todos los colores, con cinta rosa suave.",
+    },
+    description: {
+      en: "An open heart that celebrates a colorful life — roses and gerbera daisies in red, lavender, yellow, peach, and blush, woven with greenery and trailing bells of Ireland, finished with a soft pink satin bow. Set on an easel for the service. For the person who filled every room with warmth, sent to a funeral, wake, or celebration of life. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un corazón abierto que celebra una vida llena de color — rosas y gerberas en rojo, lavanda, amarillo, melocotón y rosa, entretejidas con follaje y campanas de Irlanda colgantes, rematadas con un moño de satín rosa suave. Montado en un atril para el servicio. Para quien llenaba de calidez cada lugar, enviado a un funeral, velorio o celebración de vida. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/heart-in-full-color.jpg", alt: { en: "Open-heart funeral wreath of roses and gerbera daisies in many colors with a pink ribbon on an easel", es: "Corona fúnebre de corazón abierto de rosas y gerberas de colores con cinta rosa sobre atril" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing heart", es: "Corazón en atril" }, priceCents: 30000 },
+    ],
+    tags: ["new"],
+    occasions: ["sympathy", "thank-you"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Heart in Full Color — Rose & Gerbera Funeral Heart | Diva Flowers", es: "Corazón de Colores — Corazón Fúnebre de Rosas y Gerberas | Diva Flowers" },
+      description: {
+        en: "Open-heart funeral wreath of colorful roses and gerbera daisies on an easel. Delivered to funeral homes across Long Island.",
+        es: "Corona fúnebre de corazón abierto de rosas y gerberas de colores sobre atril. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-beloved-heart",
+    slug: "beloved-heart",
+    title: { en: "Beloved Heart", es: "Corazón Amado" },
+    category: "sympathy",
+    blurb: {
+      en: "A white hydrangea heart crossed by a cascade of deep-red roses and red satin ribbon.",
+      es: "Un corazón de hortensias blancas atravesado por una cascada de rosas rojas y cinta de satín roja.",
+    },
+    description: {
+      en: "A solid heart of white hydrangea crossed by a diagonal cascade of deep-red roses, finished with long red satin ribbons that can carry a name or a few words. Set on an easel for the service. The classic way to say love that does not end — for a spouse, a parent, or a grandparent, sent to a funeral, wake, or memorial. Tell us the words for the ribbon in your card message. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un corazón macizo de hortensias blancas atravesado por una cascada diagonal de rosas rojas intensas, rematado con cintas largas de satín rojo que pueden llevar un nombre o unas palabras. Montado en un atril para el servicio. La forma clásica de decir un amor que no termina — para un esposo, una madre o un abuelo, enviado a un funeral, velorio o servicio memorial. Escríbenos las palabras de la cinta en el mensaje de la tarjeta. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/beloved-heart.jpg", alt: { en: "Funeral heart of white hydrangea with a diagonal cascade of red roses and red ribbons on an easel", es: "Corazón fúnebre de hortensias blancas con cascada diagonal de rosas rojas y cintas rojas sobre atril" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing heart", es: "Corazón en atril" }, priceCents: 49999 },
+    ],
+    tags: ["new"],
+    occasions: ["sympathy"],
+    colorFamily: ["white", "red"],
+    active: true,
+    seo: {
+      title: { en: "Beloved Heart — White Hydrangea & Red Rose Funeral Heart | Diva Flowers", es: "Corazón Amado — Corazón de Hortensias y Rosas Rojas | Diva Flowers" },
+      description: {
+        en: "Funeral heart of white hydrangea with a cascade of red roses on an easel. Delivered to funeral homes across Long Island.",
+        es: "Corazón fúnebre de hortensias blancas con cascada de rosas rojas sobre atril. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-tender-heart",
+    slug: "tender-heart",
+    title: { en: "Tender Heart", es: "Corazón Tierno" },
+    category: "sympathy",
+    blurb: {
+      en: "A solid heart of pink and lavender roses on a fan of palm.",
+      es: "Un corazón macizo de rosas rosadas y lavanda sobre un abanico de palma.",
+    },
+    description: {
+      en: "A solid heart built rose by rose in pink, blush, and lavender, set on a full fan of palm and finished with pink satin bows at the base of the easel. Soft, full, and unmistakably gentle — for a mother, a daughter, a sister, or a friend who was all tenderness, sent to a funeral, wake, or memorial service. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un corazón macizo hecho rosa por rosa en tonos rosados, rubor y lavanda, sobre un abanico de palma y rematado con moños de satín rosa al pie del atril. Suave, lleno e inconfundiblemente tierno — para una madre, una hija, una hermana o una amiga que fue pura ternura, enviado a un funeral, velorio o servicio memorial. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/tender-heart.jpg", alt: { en: "Solid funeral heart of pink and lavender roses on a fan of palm with pink bows on an easel", es: "Corazón fúnebre macizo de rosas rosadas y lavanda sobre abanico de palma con moños rosados sobre atril" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing heart", es: "Corazón en atril" }, priceCents: 54999 },
+    ],
+    tags: ["new"],
+    occasions: ["sympathy"],
+    colorFamily: ["pink"],
+    active: true,
+    seo: {
+      title: { en: "Tender Heart — Pink & Lavender Rose Funeral Heart | Diva Flowers", es: "Corazón Tierno — Corazón Fúnebre de Rosas Rosadas | Diva Flowers" },
+      description: {
+        en: "Solid funeral heart of pink and lavender roses on a fan of palm, on an easel. Delivered to funeral homes across Long Island.",
+        es: "Corazón fúnebre macizo de rosas rosadas y lavanda sobre palma, en atril. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-crimson-heart",
+    slug: "crimson-heart",
+    title: { en: "Crimson Heart", es: "Corazón Carmesí" },
+    category: "sympathy",
+    blurb: {
+      en: "A white hydrangea heart broken by a bold diagonal of red roses and trailing amaranthus.",
+      es: "Un corazón de hortensias blancas atravesado por una diagonal de rosas rojas y amaranto colgante.",
+    },
+    description: {
+      en: "A heart of white hydrangea broken by a bold diagonal of deep-red roses that spills into trailing red amaranthus and long satin ribbons. Grief and love side by side, set on an easel for the service. A strong, dramatic tribute for a funeral, wake, or memorial mass. Tell us the words for the ribbon in your card message. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un corazón de hortensias blancas atravesado por una diagonal intensa de rosas rojas que cae en amaranto rojo colgante y cintas largas de satín. El duelo y el amor juntos, montado en un atril para el servicio. Un homenaje fuerte y dramático para un funeral, velorio o misa memorial. Escríbenos las palabras de la cinta en el mensaje de la tarjeta. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/crimson-heart.jpg", alt: { en: "Funeral heart of white hydrangea with a bold diagonal of red roses and trailing amaranthus on an easel", es: "Corazón fúnebre de hortensias blancas con diagonal de rosas rojas y amaranto colgante sobre atril" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing heart", es: "Corazón en atril" }, priceCents: 54999 },
+    ],
+    tags: ["new"],
+    occasions: ["sympathy"],
+    colorFamily: ["white", "red"],
+    active: true,
+    seo: {
+      title: { en: "Crimson Heart — Red Rose & White Hydrangea Funeral Heart | Diva Flowers", es: "Corazón Carmesí — Corazón Fúnebre de Rosas Rojas y Amaranto | Diva Flowers" },
+      description: {
+        en: "Funeral heart of white hydrangea with red roses and trailing amaranthus on an easel. Delivered to funeral homes across Long Island.",
+        es: "Corazón fúnebre de hortensias blancas con rosas rojas y amaranto sobre atril. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-chapel-white",
+    slug: "chapel-white",
+    title: { en: "Chapel White", es: "Blanco de Capilla" },
+    category: "sympathy",
+    blurb: {
+      en: "A classic white standing spray of roses, snapdragon, and lilies, framed in palm.",
+      es: "Un clásico tributo blanco de pie con rosas, boca de dragón y lirios, enmarcado en palma.",
+    },
+    description: {
+      en: "A classic all-white standing spray — white roses, snapdragon, oriental lilies, and hydrangea set in a frame of palm fronds, finished with white satin bows on the easel. Composure and peace for the front of the chapel, and a tribute that suits any faith or tradition. For a funeral, wake, or memorial service. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un clásico tributo de pie todo en blanco — rosas blancas, boca de dragón, lirios orientales e hortensia en un marco de hojas de palma, rematado con moños de satín blanco en el atril. Serenidad y paz para el frente de la capilla, y un homenaje que acompaña cualquier fe o tradición. Para un funeral, velorio o servicio memorial. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/chapel-white.jpg", alt: { en: "Classic all-white standing funeral spray of roses, snapdragon, and lilies framed in palm on an easel", es: "Tributo fúnebre de pie todo en blanco de rosas, boca de dragón y lirios enmarcado en palma sobre atril" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 39999 },
+    ],
+    tags: ["new"],
+    occasions: ["sympathy"],
+    colorFamily: ["white"],
+    active: true,
+    seo: {
+      title: { en: "Chapel White — Rose & Lily All-White Standing Spray | Diva Flowers", es: "Blanco de Capilla — Tributo de Pie de Rosas y Lirios Blancos | Diva Flowers" },
+      description: {
+        en: "All-white standing funeral spray of roses, snapdragon, and lilies framed in palm. Delivered to funeral homes across Long Island.",
+        es: "Tributo fúnebre de pie todo en blanco de rosas, boca de dragón y lirios. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-golden-grace",
+    slug: "golden-grace",
+    title: { en: "Golden Grace", es: "Gracia Dorada" },
+    category: "sympathy",
+    blurb: {
+      en: "A standing spray of golden roses, bells of Ireland, and monstera.",
+      es: "Un tributo de pie de rosas doradas, campanas de Irlanda y monstera.",
+    },
+    description: {
+      en: "A tall standing spray built on golden-yellow roses, with bells of Ireland rising above and broad monstera and palm leaves around them, finished with pale yellow bows on the easel. Warmth for a life remembered in sunlight — a bright, hopeful tribute for a funeral, wake, or celebration of life. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un tributo de pie alto sobre rosas amarillo dorado, con campanas de Irlanda que se elevan y hojas anchas de monstera y palma alrededor, rematado con moños amarillo pálido en el atril. Calidez para una vida recordada en la luz — un homenaje luminoso y esperanzador para un funeral, velorio o celebración de vida. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/golden-grace.jpg", alt: { en: "Standing funeral spray of yellow roses with bells of Ireland and monstera leaves on an easel", es: "Tributo fúnebre de pie de rosas amarillas con campanas de Irlanda y hojas de monstera sobre atril" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 29999 },
+    ],
+    tags: ["new"],
+    occasions: ["sympathy"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Golden Grace — Yellow Rose Standing Funeral Spray | Diva Flowers", es: "Gracia Dorada — Tributo de Pie de Rosas Amarillas | Diva Flowers" },
+      description: {
+        en: "Standing funeral spray of yellow roses, bells of Ireland, and monstera on an easel. Delivered to funeral homes across Long Island.",
+        es: "Tributo fúnebre de pie de rosas amarillas, campanas de Irlanda y monstera. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-twilight-orchid",
+    slug: "twilight-orchid",
+    title: { en: "Twilight Orchid", es: "Orquídea de Crepúsculo" },
+    category: "sympathy",
+    blurb: {
+      en: "A tall standing spray of purple dendrobium orchids, lavender roses, and white hydrangea.",
+      es: "Un tributo de pie alto de orquídeas dendrobium moradas, rosas lavanda e hortensias blancas.",
+    },
+    description: {
+      en: "A grand standing spray in twilight tones — cascades of purple dendrobium orchids with lavender roses, stock, and white hydrangea, set over lush aspidistra greens. Abundant and elegant, a statement tribute that fills the front of the room. For a funeral, wake, or memorial service. Please allow extra time to source the orchids. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un gran tributo de pie en tonos de crepúsculo — cascadas de orquídeas dendrobium moradas con rosas lavanda, alhelí e hortensias blancas, sobre follaje frondoso de aspidistra. Abundante y elegante, un homenaje que llena el frente de la sala. Para un funeral, velorio o servicio memorial. Danos tiempo extra para conseguir las orquídeas. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/twilight-orchid.jpg", alt: { en: "Tall standing funeral spray of purple dendrobium orchids, lavender roses, and white hydrangea", es: "Tributo fúnebre de pie alto de orquídeas dendrobium moradas, rosas lavanda e hortensias blancas" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 119999 },
+    ],
+    tags: ["new"],
+    occasions: ["sympathy"],
+    colorFamily: ["pink", "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Twilight Orchid — Purple Orchid & Rose Standing Spray | Diva Flowers", es: "Orquídea de Crepúsculo — Tributo de Pie de Orquídeas Moradas | Diva Flowers" },
+      description: {
+        en: "Grand standing funeral spray of purple dendrobium orchids, lavender roses, and white hydrangea. Delivered across Long Island.",
+        es: "Gran tributo fúnebre de pie de orquídeas moradas, rosas lavanda e hortensias blancas. Entrega en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-amethyst-orchid",
+    slug: "amethyst-orchid",
+    title: { en: "Amethyst Orchid", es: "Orquídea Amatista" },
+    category: "sympathy",
+    blurb: {
+      en: "A white floral tribute with a cascade of fuchsia orchids, rooted in white roses and calla lilies.",
+      es: "Un tributo floral blanco con una cascada de orquídeas fucsia, anclado en rosas blancas y calas.",
+    },
+    description: {
+      en: "A grand tribute in three parts — a solid white floral top, a cascade of fuchsia dendrobium orchids and calla lilies down the center, and a full base of white roses, calla lilies, and baby's breath. Striking and serene at once, made for the front of the chapel. For a funeral, wake, or memorial service. Please allow extra time to source the orchids. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un gran tributo en tres partes — una parte superior floral blanca y maciza, una cascada de orquídeas dendrobium fucsia y calas por el centro, y una base llena de rosas blancas, calas y nube. Impactante y sereno a la vez, hecho para el frente de la capilla. Para un funeral, velorio o servicio memorial. Danos tiempo extra para conseguir las orquídeas. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/amethyst-orchid.jpg", alt: { en: "Tall funeral tribute with a white floral top, a cascade of fuchsia orchids, and a base of white roses and calla lilies", es: "Tributo fúnebre alto con parte superior blanca, cascada de orquídeas fucsia y base de rosas blancas y calas" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing tribute", es: "Tributo en atril" }, priceCents: 149999 },
+    ],
+    tags: ["new"],
+    occasions: ["sympathy"],
+    colorFamily: ["white", "pink"],
+    active: true,
+    seo: {
+      title: { en: "Amethyst Orchid — Fuchsia Orchid & White Rose Funeral Tribute | Diva Flowers", es: "Orquídea Amatista — Tributo de Orquídeas y Rosas Blancas | Diva Flowers" },
+      description: {
+        en: "Grand funeral tribute with fuchsia orchids, white roses, and calla lilies. Delivered to funeral homes across Long Island.",
+        es: "Gran tributo fúnebre de orquídeas fucsia, rosas blancas y calas. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-sunflower-tribute",
+    slug: "sunflower-tribute",
+    title: { en: "Sunflower Tribute", es: "Tributo de Girasoles" },
+    category: "sympathy",
+    blurb: {
+      en: "A warm standing spray of sunflowers, orange roses, and white hydrangea.",
+      es: "Un tributo de pie cálido de girasoles, rosas naranja e hortensia blanca.",
+    },
+    description: {
+      en: "A warm, bright standing spray — sunflowers and orange roses over white hydrangea and chrysanthemums, with red carnations and baby's breath, finished with an orange-and-white striped bow and long ribbons. A luminous remembrance for someone who brought light to everyone around them. For a funeral, wake, or celebration of life. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un tributo de pie cálido y luminoso — girasoles y rosas naranja sobre hortensias y crisantemos blancos, con claveles rojos y nube, rematado con un moño a rayas naranja y blanco y cintas largas. Un recuerdo luminoso para alguien que llenaba de luz a todos a su alrededor. Para un funeral, velorio o celebración de vida. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/sunflower-tribute.jpg", alt: { en: "Standing funeral spray of sunflowers, orange roses, and white hydrangea with red carnations and a striped bow", es: "Tributo fúnebre de pie de girasoles, rosas naranja e hortensia blanca con claveles rojos y moño a rayas" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 49999 },
+    ],
+    tags: ["new"],
+    occasions: ["sympathy"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Sunflower Tribute — Sunflower & Orange Rose Standing Spray | Diva Flowers", es: "Tributo de Girasoles — Tributo de Pie con Girasoles y Rosas | Diva Flowers" },
+      description: {
+        en: "Standing funeral spray of sunflowers, orange roses, and white hydrangea. Delivered to funeral homes across Long Island.",
+        es: "Tributo fúnebre de pie de girasoles, rosas naranja e hortensia blanca. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-blue-remembrance",
+    slug: "blue-remembrance",
+    title: { en: "Blue Remembrance", es: "Recuerdo Azul" },
+    category: "sympathy",
+    blurb: {
+      en: "A standing spray of white hydrangea and orange roses with blue thistle and delphinium.",
+      es: "Un tributo de pie de hortensias blancas y rosas naranja con cardo azul y delphinium.",
+    },
+    description: {
+      en: "A tall standing spray of white hydrangea and orange roses, accented with blue thistle, delphinium, and bells of Ireland, finished with a blue-and-white striped ribbon. Strong and steady — a fitting tribute for a father, a veteran, or a friend whose team colors you will always remember. For a funeral, wake, or memorial service. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un tributo de pie alto de hortensias blancas y rosas naranja, con acentos de cardo azul, delphinium y campanas de Irlanda, rematado con una cinta a rayas azul y blanca. Firme y sereno — un homenaje para un padre, un veterano o un amigo cuyos colores siempre recordarás. Para un funeral, velorio o servicio memorial. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/blue-remembrance.jpg", alt: { en: "Standing funeral spray of white hydrangea and orange roses with blue thistle, delphinium, and a blue-and-white ribbon", es: "Tributo fúnebre de pie de hortensias blancas y rosas naranja con cardo azul, delphinium y cinta azul y blanca" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 49999 },
+    ],
+    tags: ["new"],
+    occasions: ["sympathy"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Blue Remembrance — Hydrangea & Orange Rose Standing Spray | Diva Flowers", es: "Recuerdo Azul — Tributo de Pie de Hortensias y Rosas Naranja | Diva Flowers" },
+      description: {
+        en: "Standing funeral spray of white hydrangea, orange roses, blue thistle, and delphinium. Delivered across Long Island.",
+        es: "Tributo fúnebre de pie de hortensias blancas, rosas naranja, cardo azul y delphinium. Entrega en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-personal-tribute",
+    slug: "personal-tribute",
+    title: { en: "Personal Tribute", es: "Tributo Personalizado" },
+    category: "sympathy",
+    blurb: {
+      en: "A tall blue-and-white rose tribute with personalized sashes.",
+      es: "Un tributo alto de rosas en azul y blanco con bandas personalizadas.",
+    },
+    description: {
+      en: "A tall standing tribute of blue and white roses with orchids and palm, carrying two hand-lettered sashes with the words you choose — a name, \"We Love You,\" or a family's goodbye. For the farewell that needs the name spoken aloud, sent to a funeral, wake, or memorial. Tell us the words for the sashes in your card message. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un tributo alto de pie de rosas azules y blancas con orquídeas y palma, con dos bandas rotuladas con las palabras que elijas — un nombre, \"Te Queremos\" o la despedida de una familia. Para el adiós que necesita pronunciar el nombre, enviado a un funeral, velorio o servicio memorial. Escríbenos las palabras de las bandas en el mensaje de la tarjeta. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/personal-tribute.jpg", alt: { en: "Tall blue-and-white funeral tribute of roses with hand-lettered sashes on an easel", es: "Tributo fúnebre alto de rosas en azul y blanco con bandas rotuladas sobre atril" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing tribute", es: "Tributo en atril" }, priceCents: 19999 },
+    ],
+    tags: ["new"],
+    occasions: ["sympathy"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Personal Tribute — Blue & White Rose Tribute with Sashes | Diva Flowers", es: "Tributo Personalizado — Rosas Azules y Blancas con Bandas | Diva Flowers" },
+      description: {
+        en: "Tall blue-and-white rose funeral tribute with personalized sashes on an easel. Delivered across Long Island.",
+        es: "Tributo fúnebre alto de rosas azules y blancas con bandas personalizadas. Entrega en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-eternal-white",
+    slug: "eternal-white",
+    title: { en: "Eternal White", es: "Blanco Eterno" },
+    category: "sympathy",
+    blurb: {
+      en: "A wide casket spray layered in white orchids, garden roses, and calla lilies.",
+      es: "Un manto amplio en capas de orquídeas blancas, rosas de jardín y calas.",
+    },
+    description: {
+      en: "A full casket spray layered entirely in white — dendrobium orchids, garden roses, calla lilies, gladiolus, and lilies, arranged long and low to rest across the casket. Abundance kept in white, the most dignified tribute a family can offer. Please order at least 24 hours ahead so we can source every stem. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un manto fúnebre completo en capas todo en blanco — orquídeas dendrobium, rosas de jardín, calas, gladiolos y lirios, dispuestos largos y bajos para descansar sobre el ataúd. Abundancia mantenida en blanco, el homenaje más digno que una familia puede ofrecer. Pídelo con al menos 24 horas de anticipación para conseguir cada tallo. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/eternal-white.jpg", alt: { en: "Wide all-white casket spray of orchids, garden roses, gladiolus, and calla lilies", es: "Manto fúnebre amplio todo en blanco de orquídeas, rosas de jardín, gladiolos y calas" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Casket spray", es: "Manto fúnebre" }, priceCents: 249999 },
+    ],
+    tags: ["new"],
+    occasions: ["sympathy"],
+    colorFamily: ["white"],
+    active: true,
+    seo: {
+      title: { en: "Eternal White — Orchid & Calla Lily All-White Casket Spray | Diva Flowers", es: "Blanco Eterno — Manto Fúnebre de Orquídeas y Calas Blancas | Diva Flowers" },
+      description: {
+        en: "All-white casket spray of orchids, garden roses, and calla lilies. Order 24 hours ahead. Delivered across Long Island.",
+        es: "Manto fúnebre todo en blanco de orquídeas, rosas de jardín y calas. Pídelo con 24 horas. Entrega en Long Island.",
       },
     },
   },

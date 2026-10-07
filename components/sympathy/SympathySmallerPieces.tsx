@@ -28,17 +28,33 @@ const SMALLER: SectionCopy = {
 const STANDING: SectionCopy = {
   eyebrow: { en: "For the service", es: "Para el servicio" },
   title: {
-    en: "Standing pieces, ready to order.",
-    es: "Piezas de pie, listas para pedir.",
+    en: "Pieces for the service, ready to order.",
+    es: "Piezas para el servicio, listas para pedir.",
   },
   body: {
-    en: "A wreath and a cross on an easel, made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island. For a larger or custom piece, write to us below.",
-    es: "Una corona y una cruz sobre atril, hechas a mano en nuestra tienda y entregadas en la funeraria, iglesia o casa en cualquier punto de Long Island. Para una pieza más grande o a medida, escríbenos abajo.",
+    en: "Hearts, wreaths, crosses, standing sprays, and casket sprays, made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island. For a custom piece, write to us below.",
+    es: "Corazones, coronas, cruces, tributos de pie y mantos fúnebres, hechos a mano en nuestra tienda y entregados en la funeraria, iglesia o casa en cualquier punto de Long Island. Para una pieza a medida, escríbenos abajo.",
   },
 };
 
 const SMALLER_SLUGS = ["serene-lavender", "celestial-peace", "monstera-mood"];
-const STANDING_SLUGS = ["tranquil-skies-wreath", "crimson-grace-cross"];
+const STANDING_SLUGS = [
+  "tranquil-skies-wreath",
+  "crimson-grace-cross",
+  "beloved-heart",
+  "crimson-heart",
+  "tender-heart",
+  "heart-in-full-color",
+  "chapel-white",
+  "peach-tribute-spray",
+  "golden-grace",
+  "sunflower-tribute",
+  "blue-remembrance",
+  "personal-tribute",
+  "twilight-orchid",
+  "amethyst-orchid",
+  "eternal-white",
+];
 
 export function SympathySmallerPieces({ locale }: { locale: Locale }) {
   return <SympathyProductSection locale={locale} slugs={SMALLER_SLUGS} copy={SMALLER} />;
@@ -76,7 +92,7 @@ function SympathyProductSection({
             {copy.body[locale]}
           </p>
         </Reveal>
-        <StaggerGroup as="ul" className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <StaggerGroup as="ul" className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((p) => {
             const image = p.images[0];
             const from = formatMoneyCents(startingPriceCents(p), locale);
@@ -93,7 +109,7 @@ function SympathyProductSection({
                         src={image.src}
                         alt={pickLocalized(image.alt, locale)}
                         fill
-                        sizes="(min-width: 640px) 50vw, 100vw"
+                        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                         className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                       />
                     )}
