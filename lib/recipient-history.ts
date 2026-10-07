@@ -8,11 +8,20 @@ import type { Address } from "@/types/address";
 // digits by the current forms, but older rows and order edits may carry
 // punctuation or a leading 1 — so both sides are compared on the last 10 digits.
 
+/** A delivery address used for a recipient, with how often and when it was last used. */
+export type PastAddress = {
+  address: Address;
+  orderCount: number;
+  lastDate: string;
+};
+
 export type KnownRecipient = {
   name: string;
   /** Last 10 digits, or "" when the orders never carried a usable phone. */
   phone: string;
   lastAddress?: Address;
+  /** Every distinct delivery address, most recently used first. */
+  addresses: PastAddress[];
   orderCount: number;
   /** Delivery/pickup date (YYYY-MM-DD), or the order's creation day for in-store. */
   lastDate: string;
@@ -42,6 +51,7 @@ type Row = {
 };
 
 const SENDER_LIMIT = 25;
+const ADDRESS_LIMIT = 8;
 
 function last10(phone: string | null | undefined): string {
   const digits = (phone ?? "").replace(/\D/g, "");
@@ -83,14 +93,36 @@ function parseAddress(json: string | null): Address | undefined {
   }
 }
 
+// Same street + apt + ZIP is the same place, however it was capitalized or spaced.
+function addressKey(a: Address): string {
+  const norm = (v: string | undefined) => (v ?? "").toLowerCase().replace(/[.,#]/g, "").replace(/\s+/g, " ").trim();
+  return `${norm(a.street1)}|${norm(a.street2)}|${(a.zip ?? "").slice(0, 5)}`;
+}
+
+/** Distinct delivery addresses across rows (newest first); each keeps its latest spelling. */
+function pastAddresses(rows: Row[]): PastAddress[] {
+  const byKey = new Map<string, PastAddress>();
+  for (const r of rows) {
+    const address = parseAddress(r.address_json);
+    if (!address?.street1?.trim()) continue;
+    const key = addressKey(address);
+    const seen = byKey.get(key);
+    if (seen) seen.orderCount += 1;
+    else byKey.set(key, { address, orderCount: 1, lastDate: r.day });
+  }
+  return [...byKey.values()].slice(0, ADDRESS_LIMIT);
+}
+
 /** Rows arrive newest first, so the first row of a group is its latest order. */
 function summarize(rows: Row[]): KnownRecipient {
   const latest = rows[0];
-  const lastAddress = parseAddress(rows.find((r) => r.address_json)?.address_json ?? null);
+  const addresses = pastAddresses(rows);
+  const lastAddress = addresses[0]?.address;
   return {
     name: latest.recipient_name.trim(),
     phone: last10(latest.recipient_phone),
     ...(lastAddress ? { lastAddress } : {}),
+    addresses,
     orderCount: rows.length,
     lastDate: latest.day,
     lastOrderId: latest.id,
@@ -160,11 +192,12 @@ export function recipientProfile(phoneInput: string): RecipientProfile | null {
     });
   }
 
-  const { name, lastAddress, orderCount, lastDate } = summarize(rows);
+  const { name, lastAddress, addresses, orderCount, lastDate } = summarize(rows);
   return {
     name,
     phone,
     ...(lastAddress ? { lastAddress } : {}),
+    addresses,
     orderCount,
     lastDate,
     // Stable sort: ties keep the newest-first order they were met in.

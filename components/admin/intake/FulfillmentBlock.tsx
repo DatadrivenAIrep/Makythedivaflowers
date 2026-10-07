@@ -71,22 +71,47 @@ export default function FulfillmentBlock({ value, onChange }: Props) {
             className="p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white"
           />
           {known && (
-            <div className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg bg-rouge/[0.06] border-l-2 border-rouge text-[12.5px] text-mute-700">
-              <span>
-                {t(known.orderCount === 1 ? "recipient_known_one" : "recipient_known_other", {
-                  count: known.orderCount,
-                  sender: known.senders[0]?.name || "—",
+            <div className="px-3 py-2 rounded-lg bg-rouge/[0.06] border-l-2 border-rouge text-[12.5px] text-mute-700">
+              {t(known.orderCount === 1 ? "recipient_known_one" : "recipient_known_other", {
+                count: known.orderCount,
+                sender: known.senders[0]?.name || "—",
+              })}
+            </div>
+          )}
+          {known && known.addresses.length > 0 && (
+            <div>
+              <div className="text-[11px] uppercase tracking-widest text-mute-400 mb-1.5">{t("recipient_addresses_label")}</div>
+              <div className="grid gap-1.5" role="radiogroup" aria-label={t("recipient_addresses_label")}>
+                {known.addresses.map((a) => {
+                  const selected = value.method === "delivery" && sameAddress(a.address, value.address);
+                  return (
+                    <button
+                      key={`${a.address.street1}|${a.address.street2 ?? ""}|${a.address.zip}`}
+                      type="button"
+                      role="radio"
+                      aria-checked={selected}
+                      onClick={() => onChange({ ...value, method: "delivery", address: { ...a.address } })}
+                      className={`flex items-center justify-between gap-3 text-left px-3 py-2 rounded-xl border transition ${
+                        selected ? "border-ink bg-white shadow-sm" : "border-mute-200 bg-bone hover:border-ink/40"
+                      }`}
+                    >
+                      <span className="min-w-0">
+                        <span className="block text-sm text-ink truncate">
+                          {a.address.street1}
+                          {a.address.street2 ? `, ${a.address.street2}` : ""}
+                        </span>
+                        <span className="block text-[11px] text-mute-500">
+                          {a.address.city}, {a.address.state} {a.address.zip}
+                        </span>
+                      </span>
+                      <span className="shrink-0 text-[11px] text-mute-500 tabular-nums">
+                        {selected ? "✓ " : ""}
+                        {t(a.orderCount === 1 ? "recipient_address_used_one" : "recipient_address_used_other", { count: a.orderCount })}
+                      </span>
+                    </button>
+                  );
                 })}
-              </span>
-              {known.lastAddress && !sameStreet(known.lastAddress, value.address) && (
-                <button
-                  type="button"
-                  onClick={() => onChange({ ...value, method: "delivery", address: { ...known.lastAddress! } })}
-                  className="underline text-rouge whitespace-nowrap"
-                >
-                  {t("recipient_use_last_address")}
-                </button>
-              )}
+              </div>
             </div>
           )}
           {value.method === "delivery" && (
@@ -219,9 +244,11 @@ export default function FulfillmentBlock({ value, onChange }: Props) {
   );
 }
 
-function sameStreet(a: Address, b: Address): boolean {
-  const norm = (x: Address) => `${x.street1} ${x.zip}`.trim().toLowerCase();
-  return norm(a) === norm(b);
+// Mirrors the server's address grouping (lib/recipient-history), which this client file can't import.
+function sameAddress(a: Address, b: Address): boolean {
+  const norm = (v: string | undefined) => (v ?? "").toLowerCase().replace(/[.,#]/g, "").replace(/\s+/g, " ").trim();
+  const key = (x: Address) => `${norm(x.street1)}|${norm(x.street2)}|${(x.zip ?? "").slice(0, 5)}`;
+  return key(a) === key(b);
 }
 
 /**

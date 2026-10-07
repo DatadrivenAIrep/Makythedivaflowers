@@ -4,6 +4,7 @@ import { runMigrations } from "@/lib/db-migrate";
 import { saveOrder } from "@/lib/order-storage";
 import { recipientsForSender, recipientProfile } from "@/lib/recipient-history";
 import type { Order } from "@/types/order";
+import type { Address } from "@/types/address";
 
 beforeEach(() => {
   vi.stubEnv("SQLITE_FILE", ":memory:");
@@ -22,7 +23,7 @@ let n = 0;
 function order(p: {
   sender: { name: string; phone: string; customerId?: string };
   recipient: { name: string; phone: string };
-  address?: typeof ADDR_A;
+  address?: Address;
   date: string;
   source?: Order["source"];
   status?: Order["status"];
@@ -109,6 +110,29 @@ describe("recipientProfile", () => {
       { name: "Ana", phone: "5165550100", customerId: "cus_ana", orderCount: 2 },
       { name: "Luis", phone: "5165550200", orderCount: 1 },
     ]);
+  });
+
+  it("lists every distinct address, newest first, merging spelling variants", async () => {
+    await saveOrder(order({ sender: ANA, recipient: { name: "Mamá", phone: "5165559999" }, address: ADDR_A, date: "2026-03-01" }));
+    await saveOrder(order({ sender: LUIS, recipient: { name: "Mamá", phone: "5165559999" }, address: ADDR_B, date: "2026-05-01" }));
+    await saveOrder(order({
+      sender: ANA, recipient: { name: "Mamá", phone: "5165559999" },
+      address: { ...ADDR_A, street1: "1  ROSE LN." }, date: "2026-04-01",
+    }));
+    await saveOrder(order({ sender: ANA, recipient: { name: "Mamá", phone: "5165559999" }, date: "2026-06-01" })); // pickup
+
+    const p = recipientProfile("5165559999");
+    expect(p?.addresses.map((a) => [a.address.city, a.orderCount, a.lastDate])).toEqual([
+      ["Bayville", 1, "2026-05-01"],
+      ["Glen Cove", 2, "2026-04-01"],
+    ]);
+    expect(p?.lastAddress).toEqual(ADDR_B);
+  });
+
+  it("keeps an apartment as its own address", async () => {
+    await saveOrder(order({ sender: ANA, recipient: { name: "Mamá", phone: "5165559999" }, address: ADDR_A, date: "2026-03-01" }));
+    await saveOrder(order({ sender: ANA, recipient: { name: "Mamá", phone: "5165559999" }, address: { ...ADDR_A, street2: "Apt 2" }, date: "2026-04-01" }));
+    expect(recipientProfile("5165559999")?.addresses).toHaveLength(2);
   });
 
   it("returns null for a phone nobody has sent to", async () => {
