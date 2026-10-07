@@ -3,7 +3,6 @@ import { setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/types/locale";
 import { SympathyHero } from "@/components/sympathy/SympathyHero";
 import { SympathyProcess } from "@/components/sympathy/SympathyProcess";
-import { SympathyGallery } from "@/components/sympathy/SympathyGallery";
 import { SympathyTestimonial } from "@/components/sympathy/SympathyTestimonial";
 import {
   SympathySmallerPieces,
@@ -56,7 +55,6 @@ export default async function SympathyPage({
       <Grain />
       <SympathyHero locale={locale} />
       <SympathyProcess locale={locale} />
-      <SympathyGallery locale={locale} />
       <SympathyStandingPieces locale={locale} />
       <SympathyTestimonial locale={locale} />
       <SympathySmallerPieces locale={locale} />
