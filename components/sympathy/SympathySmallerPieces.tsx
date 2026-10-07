@@ -8,7 +8,12 @@ import { startingPriceCents } from "@/data/product-helpers";
 import { Reveal } from "@/components/motion/Reveal";
 import { StaggerGroup, StaggerItem } from "@/components/motion/StaggerGroup";
 
-const COPY = {
+type Localized = { en: string; es: string };
+type SectionCopy = { eyebrow: Localized; title: Localized; body: Localized };
+
+const FROM = { en: "From", es: "Desde" } as const;
+
+const SMALLER: SectionCopy = {
   eyebrow: { en: "For the smaller gesture", es: "Para el gesto más pequeño" },
   title: {
     en: "Pieces you can send today.",
@@ -18,14 +23,41 @@ const COPY = {
     en: "Smaller sympathy gifts you can order online — for the friend, the colleague, the neighbor. Same-day delivery on Long Island when ordered before 2pm.",
     es: "Detalles de pésame más pequeños que puedes pedir en línea — para la amiga, la colega, la vecina. Entrega el mismo día en Long Island antes de las 2pm.",
   },
-  from: { en: "From", es: "Desde" },
-  view: { en: "View", es: "Ver" },
-} as const;
+};
+
+const STANDING: SectionCopy = {
+  eyebrow: { en: "For the service", es: "Para el servicio" },
+  title: {
+    en: "Standing pieces, ready to order.",
+    es: "Piezas de pie, listas para pedir.",
+  },
+  body: {
+    en: "A wreath and a cross on an easel, made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island. For a larger or custom piece, write to us below.",
+    es: "Una corona y una cruz sobre atril, hechas a mano en nuestra tienda y entregadas en la funeraria, iglesia o casa en cualquier punto de Long Island. Para una pieza más grande o a medida, escríbenos abajo.",
+  },
+};
 
 const SMALLER_SLUGS = ["serene-lavender", "celestial-peace", "monstera-mood"];
+const STANDING_SLUGS = ["tranquil-skies-wreath", "crimson-grace-cross"];
 
 export function SympathySmallerPieces({ locale }: { locale: Locale }) {
-  const items = SMALLER_SLUGS.map((slug) => PRODUCTS.find((p) => p.slug === slug)).filter(
+  return <SympathyProductSection locale={locale} slugs={SMALLER_SLUGS} copy={SMALLER} />;
+}
+
+export function SympathyStandingPieces({ locale }: { locale: Locale }) {
+  return <SympathyProductSection locale={locale} slugs={STANDING_SLUGS} copy={STANDING} />;
+}
+
+function SympathyProductSection({
+  locale,
+  slugs,
+  copy,
+}: {
+  locale: Locale;
+  slugs: string[];
+  copy: SectionCopy;
+}) {
+  const items = slugs.map((slug) => PRODUCTS.find((p) => p.slug === slug && p.active)).filter(
     (p): p is NonNullable<typeof p> => Boolean(p),
   );
   if (items.length === 0) return null;
@@ -35,13 +67,13 @@ export function SympathySmallerPieces({ locale }: { locale: Locale }) {
       <div className="mx-auto max-w-[var(--container-max)] px-6">
         <Reveal as="header" className="max-w-2xl">
           <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute-500">
-            {COPY.eyebrow[locale]}
+            {copy.eyebrow[locale]}
           </p>
           <h2 className="mt-3 font-display text-4xl leading-[1] tracking-tighter text-ink md:text-5xl">
-            {COPY.title[locale]}
+            {copy.title[locale]}
           </h2>
           <p className="mt-4 max-w-xl font-sans text-base leading-relaxed text-ink/75">
-            {COPY.body[locale]}
+            {copy.body[locale]}
           </p>
         </Reveal>
         <StaggerGroup as="ul" className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -71,7 +103,7 @@ export function SympathySmallerPieces({ locale }: { locale: Locale }) {
                       {pickLocalized(p.title, locale)}
                     </h3>
                     <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-mute-500">
-                      {COPY.from[locale]} {from}
+                      {FROM[locale]} {from}
                     </p>
                   </div>
                 </Link>

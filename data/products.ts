@@ -4319,6 +4319,76 @@ export const PRODUCTS: Product[] = [
       },
     },
   },
+  {
+    id: "p-sym-wreath-blue",
+    slug: "tranquil-skies-wreath",
+    title: { en: "Tranquil Skies Wreath", es: "Corona Cielo Sereno" },
+    category: "sympathy",
+    blurb: {
+      en: "A standing funeral wreath of white roses, lilies, and sky-blue hydrangea.",
+      es: "Una corona fúnebre de pie con rosas blancas, lirios y hortensia azul cielo.",
+    },
+    description: {
+      en: "A full standing wreath for the service — ivory roses, white oriental lilies, lisianthus, and spray chrysanthemums woven through sky-blue hydrangea and delphinium, with a touch of baby's breath. Finished with a sky-blue satin bow and long ribbons, and set on an easel so it stands with dignity beside the family. A calm, luminous tribute for a funeral, wake, or memorial. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Una corona de pie completa para el servicio — rosas marfil, lirios orientales blancos, lisianthus y crisantemos de rama entretejidos con hortensia y delphinium azul cielo, con un toque de nube. Rematada con un moño de satín azul cielo y cintas largas, y montada en un atril para que se mantenga digna junto a la familia. Un homenaje sereno y luminoso para un funeral, velorio o servicio memorial. Hecha a mano en nuestra tienda y entregada en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      {
+        src: "/products/tranquil-skies-wreath.jpg",
+        alt: { en: "Standing funeral wreath of white roses, lilies, and blue hydrangea with sky-blue ribbons on an easel", es: "Corona fúnebre de pie con rosas blancas, lirios y hortensia azul con cintas azul cielo sobre un atril" },
+        aspect: "4/5",
+      },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing wreath", es: "Corona de pie" }, priceCents: 35000 },
+    ],
+    tags: ["new"],
+    occasions: ["sympathy"],
+    colorFamily: ["white", "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Tranquil Skies — White Rose & Blue Hydrangea Funeral Wreath | Diva Flowers", es: "Cielo Sereno — Corona Fúnebre de Rosas Blancas e Hortensia | Diva Flowers" },
+      description: {
+        en: "Standing funeral wreath of white roses, lilies, and sky-blue hydrangea on an easel. Delivered to funeral homes and churches across Long Island.",
+        es: "Corona fúnebre de pie con rosas blancas, lirios y hortensia azul cielo sobre atril. Entrega en funerarias e iglesias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-cross-red",
+    slug: "crimson-grace-cross",
+    title: { en: "Crimson Grace Cross", es: "Cruz Gracia Carmesí" },
+    category: "sympathy",
+    blurb: {
+      en: "A standing cross of white chrysanthemums with a cascade of red roses.",
+      es: "Una cruz de pie de crisantemos blancos con una cascada de rosas rojas.",
+    },
+    description: {
+      en: "A standing funeral cross built from a solid field of white chrysanthemums, crossed by a cascade of deep red roses that spills from the top arm down the side, set with white satin loops, folded aspidistra leaves, and trailing Italian ruscus. Mounted on an easel for the service. A tribute of faith and love for a funeral, wake, or memorial mass. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Una cruz fúnebre de pie construida con un campo compacto de crisantemos blancos, atravesada por una cascada de rosas rojas intensas que cae desde el brazo superior por el costado, con lazadas de satín blanco, hojas de aspidistra plegadas y ruscus italiano colgante. Montada en un atril para el servicio. Un homenaje de fe y amor para un funeral, velorio o misa memorial. Hecha a mano en nuestra tienda y entregada en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      {
+        src: "/products/crimson-grace-cross.jpg",
+        alt: { en: "Standing funeral cross of white chrysanthemums with a cascade of red roses on an easel", es: "Cruz fúnebre de pie de crisantemos blancos con una cascada de rosas rojas sobre un atril" },
+        aspect: "4/5",
+      },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing cross", es: "Cruz de pie" }, priceCents: 40000 },
+    ],
+    tags: ["new"],
+    occasions: ["sympathy"],
+    colorFamily: ["white", "red"],
+    active: true,
+    seo: {
+      title: { en: "Crimson Grace — Red Rose & White Chrysanthemum Funeral Cross | Diva Flowers", es: "Gracia Carmesí — Cruz Fúnebre de Crisantemos y Rosas Rojas | Diva Flowers" },
+      description: {
+        en: "Standing funeral cross of white chrysanthemums with a cascade of red roses on an easel. Delivered to funeral homes and churches across Long Island.",
+        es: "Cruz fúnebre de pie de crisantemos blancos con cascada de rosas rojas sobre atril. Entrega en funerarias e iglesias de Long Island.",
+      },
+    },
+  },
   // ─── TEST PRODUCT — $1 for end-to-end checkout validation. DELETE AFTER TESTING. ─────
   {
     id: "p-test-1usd",

@@ -5,7 +5,10 @@ import { SympathyHero } from "@/components/sympathy/SympathyHero";
 import { SympathyProcess } from "@/components/sympathy/SympathyProcess";
 import { SympathyGallery } from "@/components/sympathy/SympathyGallery";
 import { SympathyTestimonial } from "@/components/sympathy/SympathyTestimonial";
-import { SympathySmallerPieces } from "@/components/sympathy/SympathySmallerPieces";
+import {
+  SympathySmallerPieces,
+  SympathyStandingPieces,
+} from "@/components/sympathy/SympathySmallerPieces";
 import { SympathyFuneralHomes } from "@/components/sympathy/SympathyFuneralHomes";
 import { SympathyTrust } from "@/components/sympathy/SympathyTrust";
 import { SympathyInquiryForm } from "@/components/sympathy/SympathyInquiryForm";
@@ -54,6 +57,7 @@ export default async function SympathyPage({
       <SympathyHero locale={locale} />
       <SympathyProcess locale={locale} />
       <SympathyGallery locale={locale} />
+      <SympathyStandingPieces locale={locale} />
       <SympathyTestimonial locale={locale} />
       <SympathySmallerPieces locale={locale} />
       <SympathyFuneralHomes locale={locale} />
