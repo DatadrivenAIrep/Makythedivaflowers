@@ -22,6 +22,8 @@ export type KnownRecipient = {
   lastAddress?: Address;
   /** Every distinct delivery address, most recently used first. */
   addresses: PastAddress[];
+  /** Day (YYYY-MM-DD) of every order to this recipient, newest first. */
+  days: string[];
   orderCount: number;
   /** Delivery/pickup date (YYYY-MM-DD), or the order's creation day for in-store. */
   lastDate: string;
@@ -35,7 +37,7 @@ export type RecipientSender = {
   orderCount: number;
 };
 
-export type RecipientProfile = Omit<KnownRecipient, "lastOrderId"> & {
+export type RecipientProfile = Omit<KnownRecipient, "lastOrderId" | "days"> & {
   senders: RecipientSender[];
 };
 
@@ -123,6 +125,7 @@ function summarize(rows: Row[]): KnownRecipient {
     phone: last10(latest.recipient_phone),
     ...(lastAddress ? { lastAddress } : {}),
     addresses,
+    days: rows.map((r) => r.day),
     orderCount: rows.length,
     lastDate: latest.day,
     lastOrderId: latest.id,

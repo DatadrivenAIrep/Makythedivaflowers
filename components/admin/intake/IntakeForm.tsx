@@ -11,7 +11,7 @@ import CartLines from "./CartLines";
 import CartTotals from "./CartTotals";
 import PromoField, { type AppliedPromo } from "./PromoField";
 import PaymentBlock, { type PaymentState } from "./PaymentBlock";
-import { toOrderFulfillment } from "./FulfillmentBlock";
+import { canRememberDate, toOrderFulfillment } from "./FulfillmentBlock";
 import DraftsDrawer from "./DraftsDrawer";
 import type { DraftPayload } from "@/types/draft";
 import { PRODUCTS } from "@/data/products";
@@ -339,6 +339,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
         },
         fulfillment: toOrderFulfillment(fulfillment),
         funeral: fulfillment.funeral || undefined,
+        rememberDate: canRememberDate(fulfillment) ? fulfillment.rememberDate ?? undefined : undefined,
         lines,
         totalsOverride: override,
         giftCardCode: payment.status === "account" ? undefined : (giftCardCode || undefined),

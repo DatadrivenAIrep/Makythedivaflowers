@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { formatDateOnly } from "@/lib/format-datetime";
 import type { Address } from "@/types/address";
 import type { DeliverySlot, OrderFulfillment } from "@/types/order";
 import type { RecipientProfile } from "@/lib/recipient-history";
@@ -20,7 +21,12 @@ export type FulfillmentState = {
   cardMessage: string;
   /** Optional so drafts saved before the funeral toggle still load. */
   funeral?: boolean;
+  /** Save the delivery day as the recipient's yearly date on the buyer's profile. */
+  rememberDate?: RememberKind | null;
 };
+
+type RememberKind = "birthday" | "anniversary";
+const REMEMBER_KINDS: RememberKind[] = ["birthday", "anniversary"];
 
 type Props = {
   value: FulfillmentState;
@@ -30,6 +36,7 @@ type Props = {
 export default function FulfillmentBlock({ value, onChange }: Props) {
   const t = useTranslations("admin_intake");
   const to = useTranslations("admin_orders");
+  const locale = useLocale();
   const known = useRecipientLookup(value, onChange);
   const segs: { id: Method; label: string }[] = [
     { id: "in-store", label: t("fulfillment_in_store") },
@@ -239,6 +246,35 @@ export default function FulfillmentBlock({ value, onChange }: Props) {
             <span className="block text-xs text-mute-400">{t("funeral_hint")}</span>
           </span>
         </label>
+        {canRememberDate(value) && (
+          <div className="mt-3">
+            <div className="text-[11px] uppercase tracking-widest text-mute-400 mb-1.5">{t("remember_date_label")}</div>
+            <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label={t("remember_date_label")}>
+              {([null, ...REMEMBER_KINDS] as const).map((k) => {
+                const active = (value.rememberDate ?? null) === k;
+                return (
+                  <button
+                    key={k ?? "none"}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    onClick={() => onChange({ ...value, rememberDate: k })}
+                    className={`px-3 py-1.5 rounded-full text-sm transition border ${
+                      active ? "bg-ink text-bone border-ink" : "bg-bone text-mute-600 border-mute-200 hover:border-ink/40"
+                    }`}
+                  >
+                    {t(k ? `remember_date_${k}` : "remember_date_none")}
+                  </button>
+                );
+              })}
+            </div>
+            {value.rememberDate && (
+              <p className="mt-1.5 text-xs text-mute-400">
+                {t("remember_date_hint", { name: value.recipient.name.trim(), date: formatDateOnly(value.window.date, locale) })}
+              </p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -300,6 +336,11 @@ function useRecipientLookup(value: FulfillmentState, onChange: (v: FulfillmentSt
   }, [active, digits]);
 
   return active ? known : null;
+}
+
+/** Only a dated order for someone other than "the shop's own counter sale" has a day worth remembering. */
+export function canRememberDate(f: FulfillmentState): boolean {
+  return f.method !== "in-store" && !f.funeral && f.recipient.name.trim().length > 0 && /^\d{4}-\d{2}-\d{2}$/.test(f.window.date);
 }
 
 export function toOrderFulfillment(f: FulfillmentState): OrderFulfillment {

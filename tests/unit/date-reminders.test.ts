@@ -127,6 +127,19 @@ describe("renderReminder", () => {
     expect(body).toContain("Aniversario de bodas de mis papás");
   });
 
+  it("names whose birthday it is when the date was saved for a recipient", () => {
+    const es = renderReminder(
+      { customerName: "Ana López", kind: "birthday", label: "Mamá Rosa", occurrenceDate: "2026-03-21" },
+      "es",
+    );
+    expect(es).toContain("se acerca el cumpleaños de Mamá Rosa el 21 de marzo");
+    const en = renderReminder(
+      { customerName: "Ana López", kind: "anniversary", label: "Carlos", occurrenceDate: "2026-03-21" },
+      "en",
+    );
+    expect(en).toContain("Carlos's anniversary is coming up on March 21");
+  });
+
   it("carries the opt-out footer every marketing text needs", () => {
     const body = renderReminder(
       { customerName: "Ana", kind: "birthday", label: undefined, occurrenceDate: "2026-09-09" },

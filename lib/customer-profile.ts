@@ -10,6 +10,8 @@ import {
 } from "@/lib/customer-dates-storage";
 import { findAccountForCustomer } from "@/lib/house-account-storage";
 import { recipientsForSender, type KnownRecipient } from "@/lib/recipient-history";
+import { suggestRecipientDates, type DateSuggestion } from "@/lib/date-suggestions";
+import { listDismissedSuggestions } from "@/lib/customer-dates-storage";
 import type { Order } from "@/types/order";
 
 export type CustomerProfileData = {
@@ -18,6 +20,7 @@ export type CustomerProfileData = {
   tags: string[];
   orders: Order[];
   recipients: KnownRecipient[];
+  dateSuggestions: DateSuggestion[];
   dates: ImportantDate[];
   preferences: PreferencesMap;
   houseAccount?: { id: string; name: string };
@@ -41,14 +44,29 @@ export function getCustomerProfile(id: string, now: Date = new Date()): Customer
     },
   );
   const acct = findAccountForCustomer(id);
+  const recipients = recipientsForSender({ customerId: id, phone: customer.phone });
+  const dates = listDatesFor(id, now);
   return {
     customer,
     metrics,
     tags: listTagsFor(id),
     orders,
-    recipients: recipientsForSender({ customerId: id, phone: customer.phone }),
-    dates: listDatesFor(id, now),
+    recipients,
+    dateSuggestions: dateSuggestionsFor(id, recipients, dates),
+    dates,
     preferences: listPreferencesFor(id),
     ...(acct ? { houseAccount: { id: acct.id, name: acct.name } } : {}),
   };
+}
+
+export function dateSuggestionsFor(
+  customerId: string,
+  recipients: KnownRecipient[],
+  dates: ImportantDate[],
+): DateSuggestion[] {
+  return suggestRecipientDates({
+    recipients,
+    saved: dates,
+    dismissed: listDismissedSuggestions(customerId),
+  });
 }
