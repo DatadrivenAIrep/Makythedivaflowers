@@ -4373,6 +4373,21 @@ export const PRODUCTS: Product[] = [
         alt: { en: "Standing funeral cross of white chrysanthemums with a cascade of red roses on an easel", es: "Cruz fúnebre de pie de crisantemos blancos con una cascada de rosas rojas sobre un atril" },
         aspect: "4/5",
       },
+      {
+        src: "/products/crimson-grace-cross-2.jpg",
+        alt: { en: "Crimson Grace Cross, full view on its easel", es: "Cruz Gracia Carmesí, vista completa sobre su atril" },
+        aspect: "4/5",
+      },
+      {
+        src: "/products/crimson-grace-cross-3.jpg",
+        alt: { en: "Crimson Grace Cross, close-up of the red rose cascade", es: "Cruz Gracia Carmesí, detalle de la cascada de rosas rojas" },
+        aspect: "4/5",
+      },
+      {
+        src: "/products/crimson-grace-cross-4.jpg",
+        alt: { en: "Crimson Grace Cross, front view", es: "Cruz Gracia Carmesí, vista frontal" },
+        aspect: "4/5",
+      },
     ],
     variants: [
       { id: "standing", label: { en: "Standing cross", es: "Cruz de pie" }, priceCents: 39999 },
@@ -4790,6 +4805,197 @@ export const PRODUCTS: Product[] = [
       description: {
         en: "All-white casket spray of orchids, garden roses, and calla lilies. Order 24 hours ahead. Delivered across Long Island.",
         es: "Manto fúnebre todo en blanco de orquídeas, rosas de jardín y calas. Pídelo con 24 horas. Entrega en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-orchid-sunburst",
+    slug: "orchid-sunburst-spray",
+    title: { en: "Orchid Sunburst Spray", es: "Sol de Orquídeas" },
+    category: "sympathy",
+    blurb: {
+      en: "A grand standing spray of sunflowers, roses, and dendrobium orchids — with or without the orchids.",
+      es: "Un gran tributo de pie de girasoles, rosas y orquídeas dendrobium — con o sin las orquídeas.",
+    },
+    description: {
+      en: "A grand, joyful standing spray — sunflowers and red, peach, and yellow roses with bells of Ireland, purple chrysanthemums, and white snapdragon, opened wide in palm and aspidistra and finished with a black-and-white bow and long ribbons. Choose it with cascades of fuchsia and white dendrobium orchids for the full statement, or without them for a warm, sunlit tribute. For a funeral, wake, or celebration of life. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un gran tributo de pie lleno de luz — girasoles y rosas rojas, melocotón y amarillas con campanas de Irlanda, crisantemos morados y boca de dragón blanca, abierto en palma y aspidistra y rematado con un moño blanco y negro y cintas largas. Elígelo con cascadas de orquídeas dendrobium fucsia y blancas para el gesto completo, o sin ellas para un homenaje cálido y luminoso. Para un funeral, velorio o celebración de vida. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/orchid-sunburst-spray.jpg", alt: { en: "Large standing funeral spray of sunflowers, fuchsia orchids, and red, peach, and yellow roses with a black-and-white bow", es: "Gran tributo fúnebre de pie de girasoles, orquídeas fucsia y rosas rojas, melocotón y amarillas con moño blanco y negro" }, aspect: "4/5" },
+      { src: "/products/orchid-sunburst-spray-2.jpg", alt: { en: "Orchid Sunburst Spray on an easel", es: "Sol de Orquídeas sobre atril" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "with-orchids", label: { en: "With orchids", es: "Con orquídeas" }, priceCents: 69999, subtitle: { en: "Fuchsia and white dendrobium orchids throughout", es: "Orquídeas dendrobium fucsia y blancas por toda la pieza" } },
+      { id: "no-orchids", label: { en: "Without orchids", es: "Sin orquídeas" }, priceCents: 39999, subtitle: { en: "Sunflowers, roses, and bells of Ireland", es: "Girasoles, rosas y campanas de Irlanda" } },
+    ],
+    tags: ["new"],
+    occasions: ["sympathy"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Orchid Sunburst — Sunflower & Orchid Standing Spray | Diva Flowers", es: "Sol de Orquídeas — Tributo de Pie de Girasoles y Orquídeas | Diva Flowers" },
+      description: {
+        en: "Grand standing funeral spray of sunflowers, roses, and dendrobium orchids, with or without orchids. Delivered across Long Island.",
+        es: "Gran tributo fúnebre de pie de girasoles, rosas y orquídeas, con o sin orquídeas. Entrega en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-blush-embrace",
+    slug: "blush-embrace-spray",
+    title: { en: "Blush Embrace Spray", es: "Abrazo Rubor" },
+    category: "sympathy",
+    blurb: {
+      en: "An oval standing spray of cream and blush roses with white blooms, finished with a pink satin bow.",
+      es: "Un tributo de pie ovalado de rosas crema y rubor con flores blancas, rematado con un moño de satín rosa.",
+    },
+    description: {
+      en: "A soft oval standing spray — cream and blush garden roses with white chrysanthemums, carnations, daisies, alstroemeria, and baby's breath, framed in a halo of palm and finished with a wide pink satin bow and long ribbons. Gentle and luminous, a tribute for a mother, a grandmother, a sister, or a friend remembered for her tenderness. For a funeral, wake, or memorial. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un tributo de pie ovalado y suave — rosas de jardín crema y rubor con crisantemos, claveles, margaritas, alstroemerias y nube blancas, enmarcado en un halo de palma y rematado con un amplio moño de satín rosa y cintas largas. Delicado y luminoso, un homenaje para una madre, una abuela, una hermana o una amiga recordada por su ternura. Para un funeral, velorio o servicio memorial. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/blush-embrace-spray.jpg", alt: { en: "Oval standing funeral spray of cream and blush roses and white flowers framed in palm with a pink bow", es: "Tributo fúnebre de pie ovalado de rosas crema y rubor y flores blancas enmarcado en palma con moño rosa" }, aspect: "4/5" },
+      { src: "/products/blush-embrace-spray-2.jpg", alt: { en: "Blush Embrace Spray on an easel, full view", es: "Abrazo Rubor sobre atril, vista completa" }, aspect: "4/5" },
+      { src: "/products/blush-embrace-spray-3.jpg", alt: { en: "Blush Embrace Spray, front view", es: "Abrazo Rubor, vista frontal" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 39999 },
+    ],
+    tags: ["new", "same-day"],
+    occasions: ["sympathy"],
+    colorFamily: ["white", "pink"],
+    active: true,
+    seo: {
+      title: { en: "Blush Embrace — Blush Rose & White Standing Spray | Diva Flowers", es: "Abrazo Rubor — Tributo de Pie de Rosas Rubor y Blancas | Diva Flowers" },
+      description: {
+        en: "Oval standing funeral spray of cream and blush roses with white flowers and a pink bow. Same-day delivery across Long Island.",
+        es: "Tributo fúnebre de pie de rosas crema y rubor con flores blancas y moño rosa. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-garden-heart",
+    slug: "garden-heart-wreath",
+    title: { en: "Garden Heart Wreath", es: "Corazón Jardín Vivo" },
+    category: "sympathy",
+    blurb: {
+      en: "An open heart of yellow and orange roses, carnations, and purple lisianthus, like a garden in full bloom.",
+      es: "Un corazón abierto de rosas amarillas y naranja, claveles y lisianthus morado, como un jardín en flor.",
+    },
+    description: {
+      en: "An open heart that feels like a garden in full bloom — yellow and orange roses with fuchsia and pink carnations, purple lisianthus, red hypericum berries, statice, green dianthus, and baby's breath, set in variegated greens and finished with a white bow trimmed in black and gold. Set on an easel for the service. A bright tribute for someone who loved color and life, for a funeral, wake, or celebration of life. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un corazón abierto que parece un jardín en plena floración — rosas amarillas y naranja con claveles fucsia y rosados, lisianthus morado, frutos rojos de hypericum, statice, dianthus verde y nube, en follaje variegado y rematado con un moño blanco con bordes negro y dorado. Montado en un atril para el servicio. Un homenaje luminoso para quien amaba el color y la vida, para un funeral, velorio o celebración de vida. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/garden-heart-wreath.jpg", alt: { en: "Open-heart funeral wreath of yellow and orange roses, carnations, and purple lisianthus with a white-and-black bow on an easel", es: "Corona fúnebre de corazón abierto de rosas amarillas y naranja, claveles y lisianthus morado con moño blanco y negro sobre atril" }, aspect: "4/5" },
+      { src: "/products/garden-heart-wreath-2.jpg", alt: { en: "Garden Heart Wreath, close view", es: "Corazón Jardín Vivo, vista cercana" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing heart", es: "Corazón en atril" }, priceCents: 49999 },
+    ],
+    tags: ["new", "same-day"],
+    occasions: ["sympathy"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Garden Heart — Yellow Rose & Carnation Funeral Heart | Diva Flowers", es: "Corazón Jardín Vivo — Corazón de Rosas Amarillas y Claveles | Diva Flowers" },
+      description: {
+        en: "Open-heart funeral wreath of yellow and orange roses, carnations, and lisianthus on an easel. Same-day delivery on Long Island.",
+        es: "Corazón fúnebre abierto de rosas amarillas y naranja, claveles y lisianthus sobre atril. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-cloud-cross",
+    slug: "cloud-cross",
+    title: { en: "Cloud Cross", es: "Cruz de Nube" },
+    category: "sympathy",
+    blurb: {
+      en: "A soft cross of white hydrangea and baby's breath with a cascade of red roses.",
+      es: "Una cruz suave de hortensia blanca y nube con una cascada de rosas rojas.",
+    },
+    description: {
+      en: "A standing cross as soft as a cloud — white hydrangea framed in baby's breath, crowned with a cluster of deep-red roses that falls in a cascade of roses and Italian ruscus down one side. Set on an easel for the service. A gentle tribute of faith and love for a funeral, wake, or memorial mass. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Una cruz de pie suave como una nube — hortensia blanca enmarcada en nube, coronada con un ramillete de rosas rojas intensas que cae en cascada de rosas y ruscus italiano por un costado. Montada en un atril para el servicio. Un homenaje sereno de fe y amor para un funeral, velorio o misa memorial. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/cloud-cross.jpg", alt: { en: "Standing funeral cross of white hydrangea and baby's breath with a cluster and cascade of red roses on an easel", es: "Cruz fúnebre de pie de hortensia blanca y nube con ramillete y cascada de rosas rojas sobre atril" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing cross", es: "Cruz de pie" }, priceCents: 39999 },
+    ],
+    tags: ["new", "same-day"],
+    occasions: ["sympathy"],
+    colorFamily: ["white", "red"],
+    active: true,
+    seo: {
+      title: { en: "Cloud Cross — Hydrangea & Red Rose Funeral Cross | Diva Flowers", es: "Cruz de Nube — Cruz Fúnebre de Hortensias y Rosas Rojas | Diva Flowers" },
+      description: {
+        en: "Standing funeral cross of white hydrangea and baby's breath with red roses on an easel. Same-day delivery on Long Island.",
+        es: "Cruz fúnebre de pie de hortensia blanca y nube con rosas rojas sobre atril. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-paradise-basket",
+    slug: "paradise-sympathy-basket",
+    title: { en: "Paradise Sympathy Basket", es: "Canasta del Paraíso" },
+    category: "sympathy",
+    blurb: {
+      en: "A generous wicker basket with birds of paradise, orchids, sunflowers, roses, and lilies.",
+      es: "Una canasta de mimbre generosa con aves del paraíso, orquídeas, girasoles, rosas y lirios.",
+    },
+    description: {
+      en: "A generous sympathy basket in natural wicker — birds of paradise and cymbidium orchids rising above white phalaenopsis orchids, sunflowers, orange and fuchsia roses, stargazer lilies, red gerbera daisies, white carnations, and hydrangea, with greens that spill over the edge. Warm and full of life, it can be sent to the service or to the family's home. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Una canasta de condolencias generosa en mimbre natural — aves del paraíso y orquídeas cymbidium que se elevan sobre orquídeas phalaenopsis blancas, girasoles, rosas naranja y fucsia, lirios stargazer, gerberas rojas, claveles blancos e hortensia, con follaje que cae por el borde. Cálida y llena de vida, se puede enviar al servicio o a la casa de la familia. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/paradise-sympathy-basket.jpg", alt: { en: "Wicker sympathy basket with birds of paradise, cymbidium and phalaenopsis orchids, sunflowers, roses, and lilies", es: "Canasta de mimbre de condolencias con aves del paraíso, orquídeas cymbidium y phalaenopsis, girasoles, rosas y lirios" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "basket", label: { en: "Sympathy basket", es: "Canasta de condolencias" }, priceCents: 19999 },
+    ],
+    tags: ["new", "same-day"],
+    occasions: ["sympathy"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Paradise Basket — Bird of Paradise & Orchid Sympathy Basket | Diva Flowers", es: "Canasta del Paraíso — Canasta de Aves del Paraíso y Orquídeas | Diva Flowers" },
+      description: {
+        en: "Wicker sympathy basket with birds of paradise, orchids, sunflowers, and roses. Same-day delivery on Long Island.",
+        es: "Canasta de condolencias con aves del paraíso, orquídeas, girasoles y rosas. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-orchid-pedestal",
+    slug: "orchid-pedestal",
+    title: { en: "Orchid Pedestal", es: "Pedestal de Orquídeas" },
+    category: "sympathy",
+    blurb: {
+      en: "A grand arrangement on a wooden pedestal with cascading fuchsia orchids, lavender hydrangea, and blush roses.",
+      es: "Un gran arreglo sobre pedestal de madera con cascadas de orquídeas fucsia, hortensia lila y rosas rubor.",
+    },
+    description: {
+      en: "A grand arrangement set on a turned wooden pedestal — cascades of fuchsia dendrobium orchids with lavender, green, and white hydrangea, blush roses, and white stock, overflowing on every side. An elegant centerpiece for the front of the chapel or beside the family. For a funeral, wake, or memorial service. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un gran arreglo sobre un pedestal de madera torneada — cascadas de orquídeas dendrobium fucsia con hortensia lila, verde y blanca, rosas rubor y alhelí blanco, desbordándose por todos los lados. Una pieza central elegante para el frente de la capilla o junto a la familia. Para un funeral, velorio o servicio memorial. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/orchid-pedestal.jpg", alt: { en: "Grand funeral arrangement on a wooden pedestal with cascading fuchsia orchids, lavender hydrangea, and blush roses", es: "Gran arreglo fúnebre sobre pedestal de madera con cascadas de orquídeas fucsia, hortensia lila y rosas rubor" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "pedestal", label: { en: "Pedestal arrangement", es: "Arreglo en pedestal" }, priceCents: 119999 },
+    ],
+    tags: ["new", "same-day"],
+    occasions: ["sympathy"],
+    colorFamily: ["pink", "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Orchid Pedestal — Dendrobium Orchid & Hydrangea Arrangement | Diva Flowers", es: "Pedestal de Orquídeas — Arreglo de Orquídeas y Hortensias | Diva Flowers" },
+      description: {
+        en: "Grand funeral arrangement on a wooden pedestal with fuchsia orchids, hydrangea, and blush roses. Same-day delivery on Long Island.",
+        es: "Gran arreglo fúnebre sobre pedestal con orquídeas fucsia, hortensias y rosas rubor. Entrega el mismo día en Long Island.",
       },
     },
   },
