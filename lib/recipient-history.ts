@@ -2,6 +2,7 @@ import "server-only";
 import { getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import type { Address } from "@/types/address";
+import { addressKey } from "@/lib/address-key";
 
 // Recipients have no table of their own: every order already stores who it went
 // to, so their history is read straight from `orders`. Phones are stored as
@@ -93,12 +94,6 @@ function parseAddress(json: string | null): Address | undefined {
   } catch {
     return undefined;
   }
-}
-
-// Same street + apt + ZIP is the same place, however it was capitalized or spaced.
-function addressKey(a: Address): string {
-  const norm = (v: string | undefined) => (v ?? "").toLowerCase().replace(/[.,#]/g, "").replace(/\s+/g, " ").trim();
-  return `${norm(a.street1)}|${norm(a.street2)}|${(a.zip ?? "").slice(0, 5)}`;
 }
 
 /** Distinct delivery addresses across rows (newest first); each keeps its latest spelling. */

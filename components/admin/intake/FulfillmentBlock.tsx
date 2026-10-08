@@ -6,8 +6,10 @@ import type { Address } from "@/types/address";
 import type { DeliverySlot, OrderFulfillment } from "@/types/order";
 import type { RecipientProfile } from "@/lib/recipient-history";
 import { slotForTime } from "@/lib/tv-slots";
+import { sameAddress } from "@/lib/address-key";
 import { CARD_MESSAGE_LONG_HINT_AT, CARD_MESSAGE_MAX } from "@/lib/card-message-fit";
 import AddressAutocomplete from "./AddressAutocomplete";
+import FuneralHomePicker from "./FuneralHomePicker";
 
 type Method = "in-store" | "delivery" | "pickup";
 
@@ -246,6 +248,12 @@ export default function FulfillmentBlock({ value, onChange }: Props) {
             <span className="block text-xs text-mute-400">{t("funeral_hint")}</span>
           </span>
         </label>
+        {value.funeral && value.method !== "in-store" && (
+          <FuneralHomePicker
+            address={value.address}
+            onPick={(address) => onChange({ ...value, method: "delivery", address })}
+          />
+        )}
         {canRememberDate(value) && (
           <div className="mt-3">
             <div className="text-[11px] uppercase tracking-widest text-mute-400 mb-1.5">{t("remember_date_label")}</div>
@@ -280,12 +288,7 @@ export default function FulfillmentBlock({ value, onChange }: Props) {
   );
 }
 
-// Mirrors the server's address grouping (lib/recipient-history), which this client file can't import.
-function sameAddress(a: Address, b: Address): boolean {
-  const norm = (v: string | undefined) => (v ?? "").toLowerCase().replace(/[.,#]/g, "").replace(/\s+/g, " ").trim();
-  const key = (x: Address) => `${norm(x.street1)}|${norm(x.street2)}|${(x.zip ?? "").slice(0, 5)}`;
-  return key(a) === key(b);
-}
+
 
 /**
  * Looks the recipient's phone up in past orders. A known recipient fills the
