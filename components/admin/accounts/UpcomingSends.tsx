@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { formatDateOnly } from "@/lib/format-datetime";
 import AdminButton from "@/components/admin/dashboard/AdminButton";
 import type { UpcomingSend } from "@/lib/house-account-sends";
+import { sendLabel, type Translate } from "./send-label";
 
 type Props = {
   locale: string;
@@ -28,7 +29,7 @@ export default function UpcomingSends({ locale, rows, busy, onAction }: Props) {
               <Link href={`/${locale}/admin/accounts/${r.accountId}`} className="font-medium underline decoration-ink/30 underline-offset-2 hover:decoration-ink">
                 {r.accountName}
               </Link>
-              <span className="text-ink/70">{t(`kind_${r.kind}`)} · {r.statementNumber} · {t(`channel_${r.channel}`)}</span>
+              <span className="text-ink/70">{sendLabel(r.kind, r.scheduledFor, r.dueDate, t as unknown as Translate)} · {r.statementNumber} · {t(`channel_${r.channel}`)}</span>
               <span className="ml-auto flex gap-2">
                 <AdminButton variant="primary" disabled={busy} onClick={() => onAction(r.id, "sendNow")}>{t("send_now")}</AdminButton>
                 <AdminButton variant="secondary" disabled={busy} onClick={() => onAction(r.id, "skip")}>{t("skip")}</AdminButton>

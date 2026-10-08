@@ -1,6 +1,6 @@
 // tests/unit/AccountsView.test.tsx
-import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, it, expect, vi, afterEach } from "vitest";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import esMessages from "@/messages/es.json";
 import AccountsView from "@/components/admin/accounts/AccountsView";
@@ -32,12 +32,35 @@ describe("AccountsView", () => {
     expect(screen.getByText("$700.00")).toBeDefined();
     expect(screen.getByText("Vencido")).toBeDefined();
     expect(screen.getByText("Próximos envíos (7 días)")).toBeDefined();
-    expect(screen.getByText(/Recordatorio · ST-1001 · SMS/)).toBeDefined();
+    expect(screen.getByText(/11 días antes del vencimiento · ST-1001 · SMS/)).toBeDefined();
     expect(screen.getByRole("button", { name: "Enviar ya" })).toBeDefined();
   });
   it("shows the empty states", () => {
     wrap(<AccountsView locale="es" initialAccounts={[]} initialUpcoming={[]} />);
     expect(screen.getByText("Todavía no hay cuentas.")).toBeDefined();
     expect(screen.getByText("Nada programado para los próximos 7 días.")).toBeDefined();
+  });
+  describe("Enviar ya", () => {
+    afterEach(() => vi.unstubAllGlobals());
+    function stubFetch(send: Record<string, unknown>) {
+      const fetchMock = vi.fn(async (url: string, init?: RequestInit) => {
+        if (init?.method === "PATCH") return new Response(JSON.stringify({ send }), { status: 200 });
+        return new Response(JSON.stringify({ accounts: [account], upcoming: [upcoming] }), { status: 200 });
+      });
+      vi.stubGlobal("fetch", fetchMock);
+    }
+    it("shows the failure reason when the 200 carries a failed send", async () => {
+      stubFetch({ id: "hsd_1", status: "failed", error: "Twilio 21211" });
+      wrap(<AccountsView locale="es" initialAccounts={[account]} initialUpcoming={[upcoming]} />);
+      fireEvent.click(screen.getByRole("button", { name: "Enviar ya" }));
+      await waitFor(() => expect(screen.getByText("El envío falló: Twilio 21211")).toBeDefined());
+      expect(screen.queryByText("Enviado.")).toBeNull();
+    });
+    it("confirms when the send really went out", async () => {
+      stubFetch({ id: "hsd_1", status: "sent" });
+      wrap(<AccountsView locale="es" initialAccounts={[account]} initialUpcoming={[upcoming]} />);
+      fireEvent.click(screen.getByRole("button", { name: "Enviar ya" }));
+      await waitFor(() => expect(screen.getByText("Enviado.")).toBeDefined());
+    });
   });
 });
