@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import FulfillmentBlock, { type FulfillmentState } from "@/components/admin/intake/FulfillmentBlock";
 
-vi.mock("next-intl", () => ({ useTranslations: () => (k: string) => k }));
+vi.mock("next-intl", () => ({ useTranslations: () => (k: string) => k, useLocale: () => "es" }));
 
 function state(method: FulfillmentState["method"]): FulfillmentState {
   return {
