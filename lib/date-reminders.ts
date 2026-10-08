@@ -112,6 +112,8 @@ export function renderReminder(
 ): string {
   const name = firstName(r.customerName);
   const what = r.kind === "custom" && r.label ? r.label : OCCASION_WORD[r.kind][locale];
+  // A birthday or anniversary saved for someone ("Mamá Rosa") names them.
+  const whose = r.kind !== "custom" && r.label?.trim() ? r.label.trim() : "";
   const when = new Date(r.occurrenceDate + "T00:00:00Z").toLocaleDateString(
     locale === "es" ? "es-ES" : "en-US",
     { month: "long", day: "numeric", timeZone: "UTC" },
@@ -119,8 +121,8 @@ export function renderReminder(
 
   const body =
     locale === "es"
-      ? `${name ? `Hola ${name}, ` : ""}se acerca ${r.kind === "custom" && r.label ? r.label : `un ${what}`} el ${when}. ¿Te lo preparamos? Responde y lo dejamos listo. — Diva Flowers`
-      : `${name ? `Hi ${name}, ` : ""}a ${what} is coming up on ${when}. Want us to have something ready? Reply and we will. — Diva Flowers`;
+      ? `${name ? `Hola ${name}, ` : ""}se acerca ${whose ? `el ${what} de ${whose}` : r.kind === "custom" && r.label ? r.label : `un ${what}`} el ${when}. ¿Te lo preparamos? Responde y lo dejamos listo. — Diva Flowers`
+      : `${name ? `Hi ${name}, ` : ""}${whose ? `${whose}'s ${what}` : `a ${what}`} is coming up on ${when}. Want us to have something ready? Reply and we will. — Diva Flowers`;
 
   return `${body.replace(/\s{2,}/g, " ").trim()} ${OPT_OUT_FOOTER[locale]}`;
 }

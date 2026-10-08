@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import AdminButton from "@/components/admin/dashboard/AdminButton";
+import ModalShell from "./ModalShell";
 
 type Props = { locale: string; onClose: () => void };
 
@@ -38,29 +39,26 @@ export default function NewAccountModal({ locale, onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-20 flex items-center justify-center bg-ink/30 p-4" onClick={onClose}>
-      <div className="w-full max-w-md rounded-xl bg-bone p-5 shadow-xl" onClick={(e) => e.stopPropagation()}>
-        <h2 className="mb-4 text-lg font-semibold">{t("new_account")}</h2>
-        <div className="space-y-3">
-          <label className="block text-sm"><span className="mb-1 block text-xs font-semibold">{t("form_name")}</span>
-            <input autoFocus value={name} onChange={(e) => setName(e.target.value)} className={INPUT} /></label>
-          <label className="block text-sm"><span className="mb-1 block text-xs font-semibold">{t("form_billing_name")}</span>
-            <input value={billingName} onChange={(e) => setBillingName(e.target.value)} className={INPUT} /></label>
-          <label className="block text-sm"><span className="mb-1 block text-xs font-semibold">{t("form_billing_phone")}</span>
-            <input inputMode="tel" value={billingPhone} onChange={(e) => setBillingPhone(e.target.value)} className={INPUT} /></label>
-          <label className="block text-sm"><span className="mb-1 block text-xs font-semibold">{t("form_billing_email")}</span>
-            <input inputMode="email" value={billingEmail} onChange={(e) => setBillingEmail(e.target.value)} className={INPUT} /></label>
-          <label className="block text-sm"><span className="mb-1 block text-xs font-semibold">{t("form_locale")}</span>
-            <select value={lang} onChange={(e) => setLang(e.target.value as "en" | "es")} className={INPUT}>
-              <option value="es">Español</option><option value="en">English</option>
-            </select></label>
-        </div>
-        {error && <p className="mt-3 text-sm text-error">{error}</p>}
-        <div className="mt-5 flex justify-end gap-2">
-          <AdminButton variant="secondary" disabled={busy} onClick={onClose}>{t("cancel")}</AdminButton>
-          <AdminButton variant="primary" disabled={busy || name.trim().length === 0} onClick={submit}>{t("create")}</AdminButton>
-        </div>
+    <ModalShell title={t("new_account")} onClose={onClose}>
+      <div className="space-y-3">
+        <label className="block text-sm"><span className="mb-1 block text-xs font-semibold">{t("form_name")}</span>
+          <input autoFocus value={name} onChange={(e) => setName(e.target.value)} className={INPUT} /></label>
+        <label className="block text-sm"><span className="mb-1 block text-xs font-semibold">{t("form_billing_name")}</span>
+          <input value={billingName} onChange={(e) => setBillingName(e.target.value)} className={INPUT} /></label>
+        <label className="block text-sm"><span className="mb-1 block text-xs font-semibold">{t("form_billing_phone")}</span>
+          <input inputMode="tel" value={billingPhone} onChange={(e) => setBillingPhone(e.target.value)} className={INPUT} /></label>
+        <label className="block text-sm"><span className="mb-1 block text-xs font-semibold">{t("form_billing_email")}</span>
+          <input inputMode="email" value={billingEmail} onChange={(e) => setBillingEmail(e.target.value)} className={INPUT} /></label>
+        <label className="block text-sm"><span className="mb-1 block text-xs font-semibold">{t("form_locale")}</span>
+          <select value={lang} onChange={(e) => setLang(e.target.value as "en" | "es")} className={INPUT}>
+            <option value="es">Español</option><option value="en">English</option>
+          </select></label>
       </div>
-    </div>
+      {error && <p className="mt-3 text-sm text-error">{error}</p>}
+      <div className="mt-5 flex justify-end gap-2">
+        <AdminButton variant="secondary" disabled={busy} onClick={onClose}>{t("cancel")}</AdminButton>
+        <AdminButton variant="primary" disabled={busy || name.trim().length === 0} onClick={submit}>{t("create")}</AdminButton>
+      </div>
+    </ModalShell>
   );
 }

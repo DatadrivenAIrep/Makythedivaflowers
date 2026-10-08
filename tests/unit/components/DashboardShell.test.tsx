@@ -25,4 +25,22 @@ describe("DashboardShell", () => {
     render(<DashboardShell locale="es" smsUnread={0}><div /></DashboardShell>);
     expect(screen.queryByLabelText(/sms_unread_badge/)).toBeNull();
   });
+
+  it("marks the current section so the tab row can keep it in view", () => {
+    render(<DashboardShell locale="es"><div>content</div></DashboardShell>);
+    expect(screen.getByText("nav_bandeja")).toHaveAttribute("aria-current", "page");
+    expect(screen.getByText("nav_accounts")).not.toHaveAttribute("aria-current");
+  });
+
+  it("pins new order outside the scrolling tab row", () => {
+    render(<DashboardShell locale="es"><div>content</div></DashboardShell>);
+    const newOrder = screen.getByRole("link", { name: "nav_new_order" });
+    expect(newOrder).toHaveAttribute("href", "/es/admin/intake");
+    expect(screen.getByRole("navigation")).not.toContainElement(newOrder);
+  });
+
+  it("names the refresh button even when its label is hidden on phones", () => {
+    render(<DashboardShell locale="es" onRefresh={() => {}}><div>content</div></DashboardShell>);
+    expect(screen.getByRole("button", { name: "refresh" })).toBeInTheDocument();
+  });
 });

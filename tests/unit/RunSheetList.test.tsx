@@ -77,4 +77,23 @@ describe("RunSheetList", () => {
       screen.queryByText(/^(Albertson|Roslyn|Manhasset|Great Neck|Port Washington)$/),
     ).toBeNull();
   });
+
+  it("by zone: groups under zone headers (nearest first, Sin zona last) with counts", () => {
+    const orders = [
+      deliveryOrder("x", "Reci Sin", "90210"),
+      deliveryOrder("r1", "Reci Ros1", "11576"),
+      deliveryOrder("a", "Reci Alb", "11507"),
+      deliveryOrder("r2", "Reci Ros2", "11577"),
+    ];
+    wrap(<RunSheetList orders={orders} locale="es" view="zone" onOpen={() => {}} onAdvance={() => {}} />);
+    const headers = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
+    expect(headers).toEqual(["Albertson · 1", "Roslyn · 2", "Sin zona · 1"]);
+    // rows are the same cards with their actions
+    expect(screen.getAllByRole("link", { name: /Cómo llegar/i })).toHaveLength(4);
+  });
+
+  it("by time (default): keeps slot headers", () => {
+    wrap(<RunSheetList orders={[deliveryOrder("d", "Reci Dos", "11507")]} locale="es" onOpen={() => {}} onAdvance={() => {}} />);
+    expect(screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent)).toEqual(["Mediodía · 1"]);
+  });
 });

@@ -25,6 +25,12 @@ const payload: MetricsPayload = {
 };
 
 describe("MetricsView", () => {
+  it("links the house-accounts card to the accounts list", () => {
+    wrap(<MetricsView locale="es" initial={payload} />);
+    const link = screen.getByText("Por cobrar en cuentas").closest("a");
+    expect(link?.getAttribute("href")).toBe("/es/admin/accounts");
+  });
+
   it("renders KPI values, range buttons, and the two ranked tables", () => {
     wrap(<MetricsView locale="es" initial={payload} />);
     expect(screen.getByText("$3,600.00")).toBeDefined(); // revenue

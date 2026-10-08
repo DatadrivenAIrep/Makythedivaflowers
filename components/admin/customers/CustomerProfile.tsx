@@ -283,7 +283,13 @@ export default function CustomerProfile({ locale, initial, suggestions }: Props)
         ))}
       </div>
 
-      <ImportantDates customerId={customer.id} initial={data.dates} locale={locale} />
+      <ImportantDates
+        customerId={customer.id}
+        initial={data.dates}
+        initialSuggestions={data.dateSuggestions ?? []}
+        locale={locale}
+        onDatesChange={(dates) => setData((d) => ({ ...d, dates }))}
+      />
       <PreferenceChips customerId={customer.id} initial={data.preferences} suggestions={suggestions} />
 
       <section className="mb-3 rounded border border-ink/10 bg-bone p-3 text-sm">
@@ -334,7 +340,7 @@ export default function CustomerProfile({ locale, initial, suggestions }: Props)
         </div>
       </section>
 
-      <RecipientList locale={locale} senderPhone={customer.phone} recipients={data.recipients ?? []} />
+      <RecipientList locale={locale} senderPhone={customer.phone} recipients={data.recipients ?? []} dates={data.dates} />
 
       <section className="mb-3 rounded border border-ink/10 bg-bone p-3">
         <div className="mb-2 text-xs uppercase tracking-wide text-ink/50">{t("order_history")}</div>

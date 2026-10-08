@@ -9,8 +9,17 @@ import {
   type DateKind,
 } from "@/lib/customer-dates";
 import type { ImportantDate } from "@/lib/customer-dates-storage";
+import type { DateSuggestion } from "@/lib/date-suggestions";
 
-type Props = { customerId: string; initial: ImportantDate[]; locale: string };
+type Props = {
+  customerId: string;
+  initial: ImportantDate[];
+  locale: string;
+  /** Yearly patterns found in the order history (lib/date-suggestions). */
+  initialSuggestions?: DateSuggestion[];
+  /** Lets the profile keep other sections (e.g. the recipients list) in sync. */
+  onDatesChange?: (dates: ImportantDate[]) => void;
+};
 
 const KIND_ICONS: Record<DateKind, typeof Cake> = {
   birthday: Cake,
@@ -19,9 +28,14 @@ const KIND_ICONS: Record<DateKind, typeof Cake> = {
 };
 const MONTHS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-export default function ImportantDates({ customerId, initial, locale }: Props) {
+export default function ImportantDates({ customerId, initial, locale, initialSuggestions = [], onDatesChange }: Props) {
   const t = useTranslations("admin_customers");
-  const [dates, setDates] = useState<ImportantDate[]>(initial);
+  const [dates, setDatesState] = useState<ImportantDate[]>(initial);
+  const [suggestions, setSuggestions] = useState<DateSuggestion[]>(initialSuggestions);
+  function setDates(next: ImportantDate[]) {
+    setDatesState(next);
+    onDatesChange?.(next);
+  }
   const [kind, setKind] = useState<DateKind>("birthday");
   const [month, setMonth] = useState(1);
   const [day, setDay] = useState(1);
@@ -68,6 +82,23 @@ export default function ImportantDates({ customerId, initial, locale }: Props) {
       setError(true);
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function resolveSuggestion(key: string, choice: "birthday" | "anniversary" | "dismiss") {
+    try {
+      const res = await fetch(`/api/admin/customers/${customerId}/date-suggestions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(choice === "dismiss" ? { action: "dismiss", key } : { action: "save", key, kind: choice }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      const out = (await res.json()) as { dates: ImportantDate[]; dateSuggestions: DateSuggestion[] };
+      setDates(out.dates);
+      setSuggestions(out.dateSuggestions);
+      setError(false);
+    } catch {
+      setError(true);
     }
   }
 
@@ -128,6 +159,46 @@ export default function ImportantDates({ customerId, initial, locale }: Props) {
               </div>
             );
           })}
+        </div>
+      )}
+      {suggestions.length > 0 && (
+        <div className="mb-3 rounded border border-rouge/30 bg-rouge/[0.04] p-2">
+          <div className="mb-1.5 text-xs font-semibold text-rouge">{t("date_suggestions_title")}</div>
+          <ul className="flex flex-col gap-1.5">
+            {suggestions.map((s) => (
+              <li key={s.key} className="flex flex-wrap items-center gap-2 text-sm">
+                <Star size={14} weight="bold" className="text-rouge" />
+                <span className="flex-1 min-w-48">
+                  {t("date_suggestion_text", {
+                    name: s.recipientName,
+                    date: formatMonthDay(s.month, s.day, locale),
+                    years: s.years.join(", "),
+                  })}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => void resolveSuggestion(s.key, "birthday")}
+                  className="min-h-9 rounded-lg border border-ink/20 px-2.5 text-xs hover:bg-ink/5"
+                >
+                  {t("date_suggestion_birthday")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void resolveSuggestion(s.key, "anniversary")}
+                  className="min-h-9 rounded-lg border border-ink/20 px-2.5 text-xs hover:bg-ink/5"
+                >
+                  {t("date_suggestion_anniversary")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void resolveSuggestion(s.key, "dismiss")}
+                  className="min-h-9 px-2 text-xs text-ink/50 underline hover:text-ink"
+                >
+                  {t("date_suggestion_dismiss")}
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
       <form onSubmit={(e) => void submit(e)} className="flex flex-wrap items-center gap-2 text-sm">

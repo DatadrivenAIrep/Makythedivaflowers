@@ -6,6 +6,7 @@ import AdminButton from "@/components/admin/dashboard/AdminButton";
 import { formatDateTime } from "@/lib/format-datetime";
 import { relativeTime } from "@/lib/relative-time";
 import { SMS_READ_EVENT } from "@/components/admin/dashboard/useUnreadSmsCount";
+import ConversationContext from "@/components/admin/messages/ConversationContext";
 import type { Conversation, ThreadMessage } from "@/lib/conversation-storage";
 
 // Only these templates have `tpl_*` labels in admin_messages — next-intl throws on an
@@ -89,8 +90,16 @@ export default function MessagesInbox({ locale }: { locale: string }) {
       .catch(() => {});
   }, [loadList]);
 
+  // Read through a ref so selecting doesn't re-create the callback (and re-run the deep link) on every list poll.
+  const conversationsRef = useRef<Conversation[]>([]);
+  useEffect(() => {
+    conversationsRef.current = conversations;
+  }, [conversations]);
+
   const selectConversation = useCallback((key: string, unread = 0) => {
     setSelectedKey(key);
+    // Show the list's copy right away so the header and context never belong to the previous conversation.
+    setSelectedConv(conversationsRef.current.find((c) => c.key === key) ?? null);
     setThreadLoading(true);
     setThread([]);
     if (unread > 0) markRead(key);
@@ -126,14 +135,14 @@ export default function MessagesInbox({ locale }: { locale: string }) {
   }, [conversations, search]);
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div className="mx-auto max-w-5xl xl:max-w-6xl">
       <header className="mb-1 flex items-center gap-2">
         <ChatCircleText size={26} weight="duotone" className="text-rouge" />
         <h1 className="font-display text-3xl text-ink">{t("title")}</h1>
       </header>
       <p className="mb-4 text-sm text-ink/60">{t("intro")}</p>
 
-      <div className="flex h-[calc(100vh-13rem)] min-h-[420px] overflow-hidden rounded-bento border border-ink/10 bg-white shadow-sm">
+      <div className="flex h-[calc(100vh-15.5rem)] min-h-[420px] overflow-hidden rounded-bento border border-ink/10 bg-white shadow-sm">
         {/* Conversation list */}
         <div
           className={`w-full flex-col border-ink/10 md:flex md:w-80 md:shrink-0 md:border-r ${
@@ -220,9 +229,15 @@ export default function MessagesInbox({ locale }: { locale: string }) {
                   </AdminButton>
                 )}
               </div>
-              <div className="flex-1 space-y-3 overflow-y-auto p-4">
-                {!threadLoading &&
-                  thread.map((msg) => <Bubble key={msg.id} msg={msg} locale={locale} t={t} />)}
+              {/* Context sits above the thread on narrow screens and to its right on wide ones. */}
+              <div className="flex min-h-0 flex-1 flex-col xl:flex-row-reverse">
+                {selectedConv?.phone && (
+                  <ConversationContext key={selectedConv.phone} locale={locale} phone={selectedConv.phone} />
+                )}
+                <div className="min-h-0 flex-1 space-y-3 overflow-y-auto p-4">
+                  {!threadLoading &&
+                    thread.map((msg) => <Bubble key={msg.id} msg={msg} locale={locale} t={t} />)}
+                </div>
               </div>
             </>
           )}

@@ -17,6 +17,8 @@ export type ImportantDate = {
   month: number;
   day: number;
   year?: number;
+  /** Last 10 digits of the recipient this date belongs to, when it came from an order. */
+  recipientPhone?: string;
   createdAt: string;
   next: NextOccurrence;
 };
@@ -41,6 +43,7 @@ type DateRow = {
   month: number;
   day: number;
   year: number | null;
+  recipient_phone: string | null;
   created_at: string;
 };
 
@@ -57,6 +60,7 @@ function rowToDate(r: DateRow, now: Date): ImportantDate {
     month: r.month,
     day: r.day,
     year: r.year ?? undefined,
+    recipientPhone: r.recipient_phone ?? undefined,
     createdAt: r.created_at,
     next: nextOccurrence(r.month, r.day, now),
   };
@@ -68,6 +72,7 @@ export type ImportantDateInput = {
   month: number;
   day: number;
   year?: number;
+  recipientPhone?: string;
 };
 
 export function addImportantDate(
@@ -78,8 +83,8 @@ export function addImportantDate(
   runMigrations();
   getDb()
     .prepare(
-      `INSERT INTO customer_important_dates (id, customer_id, kind, label, month, day, year, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO customer_important_dates (id, customer_id, kind, label, month, day, year, recipient_phone, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
     .run(
       newId(),
@@ -89,6 +94,7 @@ export function addImportantDate(
       input.month,
       input.day,
       input.year ?? null,
+      input.recipientPhone || null,
       now.toISOString(),
     );
   return listDatesFor(customerId, now);
@@ -211,4 +217,51 @@ export function listUpcomingOccasions(
       (a, b) =>
         a.next.daysUntil - b.next.daysUntil || a.customerName.localeCompare(b.customerName),
     );
+}
+
+/** Suggestion keys (lib/date-suggestions) the shop turned down for this customer. */
+export function listDismissedSuggestions(customerId: string): Set<string> {
+  runMigrations();
+  const rows = getDb()
+    .prepare("SELECT suggestion_key FROM date_suggestion_dismissals WHERE customer_id = ?")
+    .all(customerId) as Array<{ suggestion_key: string }>;
+  return new Set(rows.map((r) => r.suggestion_key));
+}
+
+export function dismissSuggestion(customerId: string, key: string, now: Date = new Date()): void {
+  runMigrations();
+  getDb()
+    .prepare(
+      `INSERT OR IGNORE INTO date_suggestion_dismissals (customer_id, suggestion_key, created_at)
+       VALUES (?, ?, ?)`,
+    )
+    .run(customerId, key, now.toISOString());
+}
+
+/**
+ * Saves "every year on this day" for one of the customer's recipients, from the
+ * delivery date of an order. Returns false (and saves nothing) when the customer
+ * already has that kind of date for that recipient.
+ */
+export function rememberRecipientDate(
+  customerId: string,
+  input: { kind: "birthday" | "anniversary"; recipientName: string; recipientPhone?: string; ymd: string },
+  now: Date = new Date(),
+): boolean {
+  const m = /^\d{4}-(\d{2})-(\d{2})$/.exec(input.ymd);
+  const name = input.recipientName.trim();
+  if (!m || !name) return false;
+  const phone = (input.recipientPhone ?? "").replace(/\D/g, "").slice(-10);
+  const already = listDatesFor(customerId, now).some(
+    (d) =>
+      d.kind === input.kind &&
+      ((phone.length === 10 && d.recipientPhone === phone) || (d.label ?? "").trim().toLowerCase() === name.toLowerCase()),
+  );
+  if (already) return false;
+  addImportantDate(
+    customerId,
+    { kind: input.kind, label: name, month: Number(m[1]), day: Number(m[2]), recipientPhone: phone.length === 10 ? phone : undefined },
+    now,
+  );
+  return true;
 }

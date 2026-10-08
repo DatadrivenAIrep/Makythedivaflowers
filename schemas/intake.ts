@@ -106,6 +106,8 @@ export const intakeSchema = z.object({
   internalNotes: z.string().max(400).optional(),
   // The order is for a funeral: the message card prints in the sympathy design.
   funeral: z.boolean().optional(),
+  // Save the delivery day as this recipient's birthday/anniversary on the buyer's profile.
+  rememberDate: z.enum(["birthday", "anniversary"]).optional(),
   giftCardCode: z.string().min(1).max(50).optional(),
   // Only the code travels from the client. The discount is always recomputed on
   // the server from the live promo, so a tampered request cannot set its price.

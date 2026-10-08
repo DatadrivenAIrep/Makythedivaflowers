@@ -39,12 +39,12 @@ export default function MetricsView({ locale, initial }: Props) {
   }
 
   const k = data.kpis;
-  const kpis = [
+  const kpis: Array<{ key: string; value: string; sub?: string; href?: string }> = [
     { key: "kpi_revenue", value: money(k.revenueCents), sub: `${t("kpi_outstanding")}: ${money(k.outstandingCents)}` },
     { key: "kpi_orders", value: String(k.orderCount) },
     { key: "kpi_aov", value: money(k.aovCents) },
     { key: "kpi_repeat_rate", value: `${k.repeatRatePct}%`, sub: t("kpi_repeat_rate_note") },
-    { key: "kpi_house_accounts", value: money(k.houseAccountsCents), sub: t("kpi_house_accounts_sub", { n: k.houseAccountsOverdueCount, amount: money(k.houseAccountsOverdueCents) }) },
+    { key: "kpi_house_accounts", href: `/${locale}/admin/accounts`, value: money(k.houseAccountsCents), sub: t("kpi_house_accounts_sub", { n: k.houseAccountsOverdueCount, amount: money(k.houseAccountsOverdueCents) }) },
   ];
 
   const productRows: RankRow[] = data.topProducts.map((p) => ({
@@ -85,7 +85,7 @@ export default function MetricsView({ locale, initial }: Props) {
 
       <div className="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
         {kpis.map((c) => (
-          <KpiCard key={c.key} label={t(c.key)} value={c.value} sub={c.sub} />
+          <KpiCard key={c.key} label={t(c.key)} value={c.value} sub={c.sub} href={c.href} />
         ))}
       </div>
 
