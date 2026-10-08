@@ -6,6 +6,7 @@ import { PRODUCTS } from "@/data/products";
 import { saveOrder, listOrders, type ListOrdersFilters } from "@/lib/order-storage";
 import { enqueuePrintJob } from "@/lib/print-queue";
 import { upsertOnOrder } from "@/lib/customer-storage";
+import { rememberRecipientDate } from "@/lib/customer-dates-storage";
 import { dispatchOrderReceived } from "@/lib/order-dispatch";
 import { validateForRedemption, redeem } from "@/lib/gift-card-storage";
 import { validatePromo, redeemPromo } from "@/lib/promo";
@@ -213,6 +214,22 @@ export async function POST(req: Request) {
       redeemPromo(promoId, order.id, order.totals.discountCents);
     } catch (e) {
       console.error("[promo] intake redeem failed for order", order.id, e);
+    }
+  }
+
+  // "Recordar esta fecha": the delivery day becomes a yearly date on the buyer's
+  // profile, which the reminder cron texts them about a week ahead. Best-effort —
+  // the order is already saved. A gift to oneself is not a date to remember.
+  if (input.rememberDate && recipient && "window" in input.fulfillment && recipient.phone !== customer.phone) {
+    try {
+      rememberRecipientDate(customer.id, {
+        kind: input.rememberDate,
+        recipientName: recipient.name,
+        recipientPhone: recipient.phone,
+        ymd: input.fulfillment.window.date,
+      });
+    } catch (e) {
+      console.error(JSON.stringify({ event: "remember_date_failed", orderId: order.id, error: String(e) }));
     }
   }
 

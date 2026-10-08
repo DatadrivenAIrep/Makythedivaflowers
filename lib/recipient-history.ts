@@ -2,6 +2,7 @@ import "server-only";
 import { getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import type { Address } from "@/types/address";
+import { addressKey } from "@/lib/address-key";
 
 // Recipients have no table of their own: every order already stores who it went
 // to, so their history is read straight from `orders`. Phones are stored as
@@ -22,6 +23,8 @@ export type KnownRecipient = {
   lastAddress?: Address;
   /** Every distinct delivery address, most recently used first. */
   addresses: PastAddress[];
+  /** Day (YYYY-MM-DD) of every order to this recipient, newest first. */
+  days: string[];
   orderCount: number;
   /** Delivery/pickup date (YYYY-MM-DD), or the order's creation day for in-store. */
   lastDate: string;
@@ -35,7 +38,7 @@ export type RecipientSender = {
   orderCount: number;
 };
 
-export type RecipientProfile = Omit<KnownRecipient, "lastOrderId"> & {
+export type RecipientProfile = Omit<KnownRecipient, "lastOrderId" | "days"> & {
   senders: RecipientSender[];
 };
 
@@ -93,12 +96,6 @@ function parseAddress(json: string | null): Address | undefined {
   }
 }
 
-// Same street + apt + ZIP is the same place, however it was capitalized or spaced.
-function addressKey(a: Address): string {
-  const norm = (v: string | undefined) => (v ?? "").toLowerCase().replace(/[.,#]/g, "").replace(/\s+/g, " ").trim();
-  return `${norm(a.street1)}|${norm(a.street2)}|${(a.zip ?? "").slice(0, 5)}`;
-}
-
 /** Distinct delivery addresses across rows (newest first); each keeps its latest spelling. */
 function pastAddresses(rows: Row[]): PastAddress[] {
   const byKey = new Map<string, PastAddress>();
@@ -123,6 +120,7 @@ function summarize(rows: Row[]): KnownRecipient {
     phone: last10(latest.recipient_phone),
     ...(lastAddress ? { lastAddress } : {}),
     addresses,
+    days: rows.map((r) => r.day),
     orderCount: rows.length,
     lastDate: latest.day,
     lastOrderId: latest.id,
