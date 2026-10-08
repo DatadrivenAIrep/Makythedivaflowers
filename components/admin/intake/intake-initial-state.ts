@@ -1,4 +1,5 @@
 import type { CartLine, OrderTotals } from "@/types/order";
+import { localYmd } from "@/lib/format-datetime";
 import type { CustomerSnapshot } from "./CustomerBlock";
 import type { FulfillmentState } from "./FulfillmentBlock";
 import type { PaymentState } from "./PaymentBlock";
@@ -19,7 +20,7 @@ export const INITIAL_PAYMENT: PaymentState = { status: "pending" };
 
 /** Bare calendar day (YYYY-MM-DD) for the delivery-window default. */
 export function todayYmd(): string {
-  return new Date().toISOString().slice(0, 10);
+  return localYmd();
 }
 
 /** Factory (not a constant) so the window date is recomputed to "today" on each reset. */

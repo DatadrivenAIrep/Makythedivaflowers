@@ -6,6 +6,7 @@ import OrderDetailDrawer from "./OrderDetailDrawer";
 import AdminButton from "./AdminButton";
 import RunSheetList, { type RunSheetViewMode } from "./RunSheetList";
 import type { Order } from "@/types/order";
+import { localYmd } from "@/lib/format-datetime";
 
 type RunSheetResp = { date: string; orders: Order[] };
 
@@ -19,7 +20,7 @@ function readStoredView(): RunSheetViewMode {
   }
 }
 
-function todayISO(): string { return new Date().toISOString().slice(0, 10); }
+function todayISO(): string { return localYmd(); }
 
 export default function RunSheetView({ locale }: { locale: string }) {
   const t = useTranslations("admin_dashboard");

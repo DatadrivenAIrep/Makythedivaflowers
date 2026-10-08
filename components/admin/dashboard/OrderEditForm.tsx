@@ -8,6 +8,7 @@ import CartLines from "@/components/admin/intake/CartLines";
 import CartTotals from "@/components/admin/intake/CartTotals";
 import { PRODUCTS } from "@/data/products";
 import type { OrderEditPatch } from "@/lib/order-edit";
+import { localYmd } from "@/lib/format-datetime";
 
 function orderToFulfillmentState(o: Order): FulfillmentState {
   const f = o.fulfillment;
@@ -17,7 +18,7 @@ function orderToFulfillmentState(o: Order): FulfillmentState {
     address: f.method === "delivery" ? { ...f.address }
       : { street1: "", city: "", state: "NY", zip: "", country: "US" },
     window: f.method !== "in-store" ? { ...f.window }
-      : { date: new Date().toISOString().slice(0, 10), slot: "midday" },
+      : { date: localYmd(), slot: "midday" },
     cardMessage: f.cardMessage ?? "",
     funeral: o.funeral ?? false,
   };

@@ -10,6 +10,7 @@ import { resolveLine, firstThumb } from "./product-lookup";
 import { formatClock } from "@/lib/format";
 import AdminButton from "./AdminButton";
 import type { Order } from "@/types/order";
+import { localYmd } from "@/lib/format-datetime";
 
 type Translator = (key: string) => string;
 
@@ -56,7 +57,7 @@ function recipientText(o: Order, t: Translator): string {
 
 function whenText(o: Order, t: Translator, to: Translator, locale: string): string {
   if (o.fulfillment.method === "in-store") return t("now");
-  const today = new Date().toISOString().slice(0, 10);
+  const today = localYmd();
   const w = o.fulfillment.window;
   const prefix = w.date === today ? t("today") : w.date;
   const when = formatClock(w.time, locale === "en" ? "en" : "es") ?? to("slot." + w.slot);
