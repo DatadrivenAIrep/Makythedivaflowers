@@ -255,6 +255,14 @@
       }
     },
     "categories_title": "Find your bloom.",
+    "behind_scenes": {
+      "eyebrow": "Behind the scenes",
+      "title": "Every arrangement passes through Maky’s hands.",
+      "body": "From the cooler to the workbench to your door — this is how an arrangement comes together at Diva Flowers, stem by stem.",
+      "cta": "Watch the full film",
+      "pause": "Pause video",
+      "play": "Play video"
+    },
     "editorial_split": {
       "eyebrow": "Visit the studio",
       "title": "Built around our floral arch on Willis Ave.",
@@ -549,6 +557,13 @@
     },
     "press": {
       "eyebrow": "As seen in"
+    },
+    "making_of": {
+      "eyebrow": "In the workshop",
+      "title": "How an arrangement comes to life.",
+      "body": "An unfiltered look at an ordinary day: Maky picks flowers from the cooler, builds a white hydrangea-and-rose arrangement, and a colorful basket heads out the door for delivery.",
+      "play": "Play the film",
+      "video_label": "Video: Maky builds two arrangements in the Diva Flowers workshop"
     }
   },
   "contact": {

@@ -9,6 +9,7 @@ import { CategoryStrip } from "@/components/home/CategoryStrip";
 import { OccasionStrip } from "@/components/home/OccasionStrip";
 import { GiftAssuranceBar } from "@/components/conversion/GiftAssuranceBar";
 import { SocialProof } from "@/components/home/SocialProof";
+import { BehindTheScenes } from "@/components/home/BehindTheScenes";
 import { EditorialSplit } from "@/components/home/EditorialSplit";
 import { Verticals } from "@/components/home/Verticals";
 import { SympathyShowcase } from "@/components/home/SympathyShowcase";
@@ -50,6 +51,7 @@ export default async function Home({ params }: { params: Promise<{ locale: Local
       <CategoryStrip locale={locale} />
       <SympathyShowcase locale={locale} />
       <Verticals locale={locale} />
+      <BehindTheScenes locale={locale} />
       <EditorialSplit locale={locale} />
       <StudioVisit locale={locale} />
       <NewsletterField />
