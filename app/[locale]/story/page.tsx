@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { StoryHero } from "@/components/story/StoryHero";
 import { ArchSection } from "@/components/story/ArchSection";
 import { FounderPortrait } from "@/components/story/FounderPortrait";
+import { MakingOfFilm } from "@/components/story/MakingOfFilm";
 import { PressLogos } from "@/components/story/PressLogos";
 import type { Locale } from "@/types/locale";
 import { localeAlternates } from "@/lib/seo/alternates";
@@ -21,6 +22,7 @@ export default async function StoryPage({ params }: { params: Promise<{ locale: 
       <StoryHero locale={locale} />
       <ArchSection locale={locale} />
       <FounderPortrait locale={locale} />
+      <MakingOfFilm locale={locale} />
       <PressLogos locale={locale} />
     </main>
   );
