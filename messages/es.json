@@ -259,7 +259,7 @@
       "eyebrow": "Detrás de cámaras",
       "title": "Cada arreglo pasa por las manos de Maky.",
       "body": "Del refrigerador a la mesa de trabajo y hasta la puerta: así nace un arreglo en Diva Flowers, tallo por tallo.",
-      "cta": "Ver el video completo",
+      "cta": "Ver los videos",
       "pause": "Pausar video",
       "play": "Reproducir video"
     },
@@ -561,9 +561,12 @@
     "making_of": {
       "eyebrow": "En el taller",
       "title": "Así nace un arreglo.",
-      "body": "Un día normal en el taller, sin filtros: Maky elige las flores en el refrigerador, arma un arreglo blanco de hortensias y rosas, y una canasta de colores sale lista para entregar.",
+      "body": "Un día normal en el taller, sin filtros: Maky arma un arreglo blanco de hortensias y rosas, y una canasta de colores que sale lista para entregar.",
       "play": "Ver el video",
-      "video_label": "Video: Maky arma dos arreglos en el taller de Diva Flowers"
+      "blanco_title": "El arreglo blanco",
+      "blanco_label": "Video: Maky arma un arreglo blanco de hortensias y rosas",
+      "colorido_title": "La canasta de colores",
+      "colorido_label": "Video: Maky arma una canasta de flores de colores, del refrigerador a la entrega"
     }
   },
   "contact": {

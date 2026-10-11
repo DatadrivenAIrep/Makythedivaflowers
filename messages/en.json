@@ -259,7 +259,7 @@
       "eyebrow": "Behind the scenes",
       "title": "Every arrangement passes through Maky’s hands.",
       "body": "From the cooler to the workbench to your door — this is how an arrangement comes together at Diva Flowers, stem by stem.",
-      "cta": "Watch the full film",
+      "cta": "Watch the films",
       "pause": "Pause video",
       "play": "Play video"
     },
@@ -561,9 +561,12 @@
     "making_of": {
       "eyebrow": "In the workshop",
       "title": "How an arrangement comes to life.",
-      "body": "An unfiltered look at an ordinary day: Maky picks flowers from the cooler, builds a white hydrangea-and-rose arrangement, and a colorful basket heads out the door for delivery.",
+      "body": "An unfiltered look at an ordinary day in the workshop: Maky builds a white hydrangea-and-rose arrangement, and a colorful basket that heads out the door for delivery.",
       "play": "Play the film",
-      "video_label": "Video: Maky builds two arrangements in the Diva Flowers workshop"
+      "blanco_title": "The white arrangement",
+      "blanco_label": "Video: Maky builds a white hydrangea-and-rose arrangement",
+      "colorido_title": "The colorful basket",
+      "colorido_label": "Video: Maky builds a colorful flower basket, from the cooler to delivery"
     }
   },
   "contact": {
