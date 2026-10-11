@@ -1257,6 +1257,7 @@
     "channel_whatsapp": "WhatsApp",
     "channel_event": "Evento",
     "customer_label": "Cliente",
+    "language_label": "Idioma de los mensajes",
     "customer_phone_placeholder": "Teléfono",
     "customer_name_placeholder": "Nombre",
     "customer_email_placeholder": "Email (opcional)",

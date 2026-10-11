@@ -13,6 +13,8 @@ export const INITIAL_CUSTOMER: CustomerSnapshot = {
   phone: "",
   email: "",
   messagingChannel: "sms",
+  // New customers get English texts unless staff pick Español.
+  locale: "en",
   buyerAddress: undefined,
 };
 
