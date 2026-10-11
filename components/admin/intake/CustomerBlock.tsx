@@ -1,10 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import type { Address } from "@/types/address";
 import type { MessagingChannel } from "@/types/order";
 import type { KnownRecipient, RecipientProfile } from "@/lib/recipient-history";
 import ChannelPicker from "./ChannelPicker";
+import LanguagePicker, { type MessageLocale } from "./LanguagePicker";
 import AddressAutocomplete from "./AddressAutocomplete";
 
 export type CustomerSnapshot = {
@@ -12,6 +13,8 @@ export type CustomerSnapshot = {
   phone: string;
   email: string;
   messagingChannel: MessagingChannel;
+  /** Language of the automatic texts/emails. Optional so drafts saved before it still load (they read as English). */
+  locale?: MessageLocale;
   buyerAddress?: Address;
 };
 
@@ -32,10 +35,14 @@ export default function CustomerBlock({ value, onChange, onApplyAddress, onPickR
   const [recipients, setRecipients] = useState<KnownRecipient[]>([]);
   const [asRecipient, setAsRecipient] = useState<RecipientProfile | null>(null);
   const [showAll, setShowAll] = useState(false);
+  // Once staff pick a language by hand, a phone lookup must not override it.
+  const localePicked = useRef(false);
 
   useEffect(() => {
     const digits = value.phone.replace(/\D/g, "");
     if (digits.length < 10) {
+      // A cleared phone is a new order: let the next customer's saved language apply.
+      localePicked.current = false;
       setMatch(null);
       setRecipients([]);
       setAsRecipient(null);
@@ -67,6 +74,7 @@ export default function CustomerBlock({ value, onChange, onApplyAddress, onPickR
           name: value.name || c.name,
           email: value.email || c.email || "",
           buyerAddress: value.buyerAddress ?? c.buyerAddress,
+          locale: !localePicked.current && (c.locale === "en" || c.locale === "es") ? c.locale : value.locale,
           // Adopt the saved channel only if user is still on default.
           messagingChannel:
             value.messagingChannel === "sms" && c.messagingChannel
@@ -115,6 +123,13 @@ export default function CustomerBlock({ value, onChange, onApplyAddress, onPickR
         value={value.messagingChannel}
         onChange={(v: MessagingChannel) => onChange({ ...value, messagingChannel: v })}
         emailAvailable={value.email.trim().length > 0}
+      />
+      <LanguagePicker
+        value={value.locale ?? "en"}
+        onChange={(v) => {
+          localePicked.current = true;
+          onChange({ ...value, locale: v });
+        }}
       />
       <div className="mt-3">
         <label className="block text-[11px] uppercase tracking-widest text-mute-400 mb-2">{t("buyer_address_label")}</label>

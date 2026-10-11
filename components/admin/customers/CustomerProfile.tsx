@@ -12,6 +12,7 @@ import SegmentBadge from "./SegmentBadge";
 import ImportantDates from "./ImportantDates";
 import PreferenceChips from "./PreferenceChips";
 import RecipientList from "./RecipientList";
+import { LANGUAGE_CHIPS, type MessageLocale } from "@/components/admin/intake/LanguagePicker";
 import type { PreferencesMap } from "@/lib/customer-dates-storage";
 
 type Props = { locale: string; initial: CustomerProfileData; suggestions: PreferencesMap };
@@ -36,6 +37,7 @@ export default function CustomerProfile({ locale, initial, suggestions }: Props)
   const [savingName, setSavingName] = useState(false);
   const [openOrderId, setOpenOrderId] = useState<string | null>(null);
   const [error, setError] = useState(false);
+  const [savingLocale, setSavingLocale] = useState(false);
 
   const { customer, metrics, tags, orders } = data;
   const digits = customer.phone.replace(/\D/g, "");
@@ -49,6 +51,25 @@ export default function CustomerProfile({ locale, initial, suggestions }: Props)
       setError(false);
     } catch {
       setError(true);
+    }
+  }
+
+  async function saveLocale(locale: MessageLocale) {
+    if (locale === (data.customer.locale ?? "en")) return;
+    setSavingLocale(true);
+    try {
+      const res = await fetch(`/api/admin/customers/${customer.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ locale }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      setData((d) => ({ ...d, customer: { ...d.customer, locale } }));
+      setError(false);
+    } catch {
+      setError(true);
+    } finally {
+      setSavingLocale(false);
     }
   }
 
@@ -206,7 +227,28 @@ export default function CustomerProfile({ locale, initial, suggestions }: Props)
             <> · <a href={`mailto:${customer.email}`} className="underline">{customer.email}</a></>
           )}
           {customer.messagingChannel && <> · {t("channel_label")}: {customer.messagingChannel}</>}
-          {customer.locale && <> · {t("locale_label")}: {customer.locale.toUpperCase()}</>}
+        </div>
+        <div className="mt-2 flex flex-wrap items-center gap-1.5 text-sm" role="radiogroup" aria-labelledby="profile-locale-label">
+          <span id="profile-locale-label" className="mr-1 text-xs uppercase tracking-wide text-ink/50">{t("locale_label")}</span>
+          {LANGUAGE_CHIPS.map((c) => {
+            // No saved language reads as English, which is what the messages fall back to.
+            const active = (customer.locale ?? "en") === c.id;
+            return (
+              <button
+                key={c.id}
+                type="button"
+                role="radio"
+                aria-checked={active}
+                disabled={savingLocale}
+                onClick={() => void saveLocale(c.id)}
+                className={`min-h-9 rounded-full px-3 text-xs transition disabled:opacity-50 ${
+                  active ? "bg-ink text-bone" : "border border-ink/20 hover:bg-ink/5"
+                }`}
+              >
+                {c.label}
+              </button>
+            );
+          })}
         </div>
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <span className="text-xs uppercase tracking-wide text-ink/50">{t("tags")}</span>

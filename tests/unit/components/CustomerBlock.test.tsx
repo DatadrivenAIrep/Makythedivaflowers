@@ -73,3 +73,37 @@ describe("CustomerBlock recipients", () => {
     expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ name: "Carmen" }));
   });
 });
+
+describe("CustomerBlock message language", () => {
+  it("starts in English and lets staff switch to Español", () => {
+    const onChange = vi.fn();
+    render(<CustomerBlock value={{ ...snap, locale: "en" }} onChange={onChange} onApplyAddress={() => {}} onPickRecipient={() => {}} />);
+    expect(screen.getByRole("radio", { name: "English" }).getAttribute("aria-checked")).toBe("true");
+    fireEvent.click(screen.getByRole("radio", { name: "Español" }));
+    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ locale: "es" }));
+  });
+
+  it("adopts a returning customer's saved language", async () => {
+    vi.spyOn(global, "fetch").mockResolvedValue(new Response(JSON.stringify({
+      found: true, customer: { name: "Juan", orderCount: 2, locale: "es" }, recipients: [], asRecipient: null,
+    }), { status: 200 }));
+    const onChange = vi.fn();
+    render(<CustomerBlock value={{ ...snap, phone: "5165550100", locale: "en" }} onChange={onChange} onApplyAddress={() => {}} onPickRecipient={() => {}} />);
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ locale: "es" })));
+  });
+
+  it("keeps a language staff picked by hand when the lookup comes back", async () => {
+    let resolve!: (r: Response) => void;
+    vi.spyOn(global, "fetch").mockReturnValue(new Promise<Response>((r) => { resolve = r; }));
+    const onChange = vi.fn();
+    const { rerender } = render(
+      <CustomerBlock value={{ ...snap, phone: "5165550100", locale: "en" }} onChange={onChange} onApplyAddress={() => {}} onPickRecipient={() => {}} />,
+    );
+    fireEvent.click(screen.getByRole("radio", { name: "English" })); // explicit pick
+    rerender(<CustomerBlock value={{ ...snap, phone: "5165550100", locale: "en" }} onChange={onChange} onApplyAddress={() => {}} onPickRecipient={() => {}} />);
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+    resolve(new Response(JSON.stringify({ found: true, customer: { name: "Juan", orderCount: 2, locale: "es" }, recipients: [], asRecipient: null }), { status: 200 }));
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ name: "Juan" })));
+    expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ locale: "en" }));
+  });
+});

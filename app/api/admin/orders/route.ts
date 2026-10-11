@@ -113,7 +113,9 @@ export async function POST(req: Request) {
   const order: Order = {
     id: newId(),
     source: input.source,
-    locale: "en",
+    // Same language as the customer's messages: the card's QR caption, the payment
+    // pages and the printed sheet follow it, like a web order's.
+    locale: input.customer.locale ?? "en",
     customerId: customer.id,
     lines: input.lines as CartLine[],
     fulfillment,

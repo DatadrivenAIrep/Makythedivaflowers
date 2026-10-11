@@ -334,7 +334,8 @@ export default function IntakeForm({ products }: { products: Product[] }) {
           name: customer.name,
           email: customer.email || undefined,
           messagingChannel: customer.messagingChannel,
-          locale,
+          // The customer's language, not the panel's: it drives every automatic message.
+          locale: customer.locale ?? "en",
           buyerAddress: customer.buyerAddress,
         },
         fulfillment: toOrderFulfillment(fulfillment),

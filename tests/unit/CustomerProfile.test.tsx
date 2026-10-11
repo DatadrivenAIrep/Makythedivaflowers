@@ -113,6 +113,19 @@ describe("CustomerProfile", () => {
       expect(await screen.findByText("Robyn Vega")).toBeDefined();
     });
 
+    it("switches the customer's message language", async () => {
+      const user = userEvent.setup();
+      wrap(<CustomerProfile locale="es" initial={profile} suggestions={emptyPrefs} />);
+      // No saved language reads as English.
+      expect(screen.getByRole("radio", { name: "English" })).toHaveAttribute("aria-checked", "true");
+      await user.click(screen.getByRole("radio", { name: "Español" }));
+      await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+      const [url, init] = fetchMock.mock.calls[0];
+      expect(url).toBe("/api/admin/customers/c1");
+      expect(JSON.parse(init.body)).toEqual({ locale: "es" });
+      await waitFor(() => expect(screen.getByRole("radio", { name: "Español" })).toHaveAttribute("aria-checked", "true"));
+    });
+
     it("cancels without touching the record", async () => {
       const user = userEvent.setup();
       wrap(<CustomerProfile locale="es" initial={profile} suggestions={emptyPrefs} />);
