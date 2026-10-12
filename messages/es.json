@@ -1963,6 +1963,7 @@
     "unknown_zone": "Sin zona",
     "not_available": "—",
     "empty": "Sin datos en este rango.",
+    "load_error": "No se pudo actualizar. Se muestran los datos anteriores.",
     "range_7d": "7 días",
     "kpi_new_customers": "Clientes nuevos",
     "kpi_pending": "Por cobrar",

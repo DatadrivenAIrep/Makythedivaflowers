@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { METRICS_RANGES, type MetricsRange } from "@/lib/metrics/period";
 import type { MetricsPayload } from "@/lib/metrics-storage";
@@ -26,18 +26,25 @@ export default function MetricsView({ locale, initial }: Props) {
   const [tab, setTab] = useState<TabId>("sales");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const latest = useRef(0);
 
   async function pick(r: MetricsRange) {
+    const id = ++latest.current;
+    const shownRange = data.range; // the period of the data on screen when this request starts
     setRange(r);
     setLoading(true);
     try {
       const res = await fetch(`/api/admin/metrics?range=${r}&locale=${locale}`, { cache: "no-store" });
       if (!res.ok) throw new Error(String(res.status));
-      setData((await res.json()) as MetricsPayload);
+      const next = (await res.json()) as MetricsPayload;
+      if (id !== latest.current) return; // a newer request superseded this one
+      setData(next);
       setError(false);
+      setLoading(false);
     } catch {
+      if (id !== latest.current) return;
+      setRange(shownRange); // pills must match the data actually shown
       setError(true);
-    } finally {
       setLoading(false);
     }
   }
@@ -67,7 +74,11 @@ export default function MetricsView({ locale, initial }: Props) {
         </div>
       </div>
 
-      {error && <div className="mb-3 rounded bg-rose-50 p-3 text-sm text-rose-800">{t("empty")}</div>}
+      {error && (
+        <div role="alert" className="mb-3 rounded bg-rose-50 p-3 text-sm text-rose-800">
+          {t("load_error")}
+        </div>
+      )}
 
       <div className={`transition-opacity ${loading ? "opacity-60" : ""}`} aria-busy={loading}>
         <div className="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">

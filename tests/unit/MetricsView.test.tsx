@@ -98,4 +98,38 @@ describe("MetricsView", () => {
     await waitFor(() => expect(screen.getByText("12")).toBeDefined());
     expect(String(spy.mock.calls[0][0])).toBe("/api/admin/metrics?range=7d&locale=es");
   });
+
+  it("ignores a stale response when periods are switched quickly", async () => {
+    const resolvers: Record<string, (r: Response) => void> = {};
+    vi.spyOn(global, "fetch").mockImplementation(
+      (input) =>
+        new Promise<Response>((resolve) => {
+          resolvers[new URL(String(input), "http://x").searchParams.get("range") as string] = resolve;
+        }),
+    );
+    const body = (range: string, orders: number) =>
+      new Response(JSON.stringify({ ...payload, range, kpis: { ...payload.kpis, orders: { value: orders, delta: { kind: "none" } } } }), { status: 200 });
+    wrap(<MetricsView locale="es" initial={payload} />);
+    fireEvent.click(screen.getByRole("button", { name: "90 días" }));
+    fireEvent.click(screen.getByRole("button", { name: "7 días" }));
+    resolvers["7d"](body("7d", 12));
+    await waitFor(() => expect(screen.getByText("12")).toBeDefined());
+    resolvers["90d"](body("90d", 777));
+    await new Promise((r) => setTimeout(r, 20));
+    expect(screen.queryByText("777")).toBeNull();
+    expect(screen.getByText("12")).toBeDefined();
+    expect(screen.getByRole("button", { name: "7 días" }).getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByRole("button", { name: "90 días" }).getAttribute("aria-pressed")).toBe("false");
+  });
+
+  it("keeps the old data, warns, and restores the pill when the fetch fails", async () => {
+    vi.spyOn(global, "fetch").mockImplementation(async () => new Response("{}", { status: 500 }));
+    wrap(<MetricsView locale="es" initial={payload} />);
+    fireEvent.click(screen.getByRole("button", { name: "7 días" }));
+    const alert = await screen.findByRole("alert");
+    expect(alert.textContent).toBe("No se pudo actualizar. Se muestran los datos anteriores.");
+    expect(screen.getByText("96")).toBeDefined();
+    expect(screen.getByRole("button", { name: "30 días" }).getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByRole("button", { name: "7 días" }).getAttribute("aria-pressed")).toBe("false");
+  });
 });
