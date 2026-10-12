@@ -348,7 +348,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
                 <span className="text-right">−{money(order.totals.discountCents)}</span>
               </>
             )}
-            <span>{t("tax")}</span><span className="text-right">{money(order.totals.taxCents)}</span>
+            <span>{t("tax")}{order.taxExempt ? ` · ${t("tax_exempt_short", { cert: order.taxExempt.cert })}` : ""}</span><span className="text-right">{money(order.totals.taxCents)}</span>
             {order.totals.tipCents > 0 && (
               <>
                 {/* Shown separately because it is not revenue — it is owed to
