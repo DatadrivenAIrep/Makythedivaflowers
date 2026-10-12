@@ -11,6 +11,8 @@ export type ThreadMessage = {
   text: string;
   template?: string;
   status?: string;
+  /** Outbound MMS image, as a same-origin path. */
+  mediaUrl?: string;
   at: string;
 };
 export type RawEvent = ThreadMessage & {
@@ -86,6 +88,7 @@ type MsgRow = {
   body: string | null;
   status: string;
   created_at: string;
+  media_url: string | null;
 };
 type CampRow = { id: string; customer_id: string; phone: string; status: string; created_at: string; body_es: string };
 type InRow = {
@@ -129,13 +132,19 @@ function nameFor(
   return resolved;
 }
 
+/** Admin previews load the photo same-origin, whatever host the MMS used. */
+function relativeMedia(url: string | null): string | undefined {
+  if (!url) return undefined;
+  try { return new URL(url).pathname; } catch { return url.startsWith("/") ? url : undefined; }
+}
+
 function fetchEvents(limit: number): RawEvent[] {
   const db = getDb();
   const events: RawEvent[] = [];
   const phoneCache = new Map<string, NameForResult>();
   const msgs = db
     .prepare(
-      `SELECT id, customer_id, to_phone, template, body, status, created_at
+      `SELECT id, customer_id, to_phone, template, body, status, created_at, media_url
        FROM messages ORDER BY created_at DESC LIMIT ?`,
     )
     .all(limit) as MsgRow[];
@@ -149,6 +158,7 @@ function fetchEvents(limit: number): RawEvent[] {
       text: m.body ?? "",
       template: m.template,
       status: m.status,
+      mediaUrl: relativeMedia(m.media_url),
       at: m.created_at,
     });
   }
