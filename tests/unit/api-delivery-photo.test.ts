@@ -91,6 +91,7 @@ it("stores the photo and serves it by token", async () => {
   expect(img.headers.get("content-type")).toBe("image/jpeg");
   expect(img.headers.get("cache-control")).toBe("private, max-age=86400");
   expect(img.headers.get("x-robots-tag")).toBe("noindex");
+  expect(img.headers.get("x-content-type-options")).toBe("nosniff");
   expect(Buffer.from(await img.arrayBuffer()).equals(JPEG)).toBe(true);
 });
 

@@ -19,6 +19,7 @@ export async function GET(
       "Content-Length": String(data.length),
       "Cache-Control": "private, max-age=86400",
       "X-Robots-Tag": "noindex",
+      "X-Content-Type-Options": "nosniff",
     },
   });
 }
