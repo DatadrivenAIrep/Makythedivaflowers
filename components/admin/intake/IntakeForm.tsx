@@ -11,9 +11,12 @@ import CartLines from "./CartLines";
 import CartTotals from "./CartTotals";
 import PromoField, { type AppliedPromo } from "./PromoField";
 import PaymentBlock, { type PaymentState } from "./PaymentBlock";
+import TaxExemptToggle from "./TaxExemptToggle";
 import { canRememberDate, toOrderFulfillment } from "./FulfillmentBlock";
 import DraftsDrawer from "./DraftsDrawer";
 import type { DraftPayload } from "@/types/draft";
+import type { DefaultExemption, TaxExemptRequest } from "@/types/tax-exempt";
+import { isRequestExempt } from "@/lib/tax-exempt";
 import { PRODUCTS } from "@/data/products";
 import { cartSubtotalCents } from "@/lib/cart-helpers";
 import { computeDeliveryCentsForAddress, resolveOrderTotals } from "@/lib/totals";
@@ -39,6 +42,7 @@ function SectionCard({ title, children }: { title: string; children: ReactNode }
 
 export default function IntakeForm({ products }: { products: Product[] }) {
   const t = useTranslations("admin_intake");
+  const tx = useTranslations("admin_tax_exempt");
   const locale = useLocale() as "en" | "es";
   const channels: { id: Channel; label: string }[] = [
     { id: "walk-in", label: t("channel_walk_in") },
@@ -52,6 +56,8 @@ export default function IntakeForm({ products }: { products: Product[] }) {
   const [lines, setLines] = useState<CartLine[]>([]);
   const [override, setOverride] = useState<Partial<OrderTotals>>({});
   const [promo, setPromo] = useState<AppliedPromo | null>(null);
+  // Staff's explicit exemption choice for this order; undefined = follow the default.
+  const [taxExempt, setTaxExempt] = useState<TaxExemptRequest | undefined>(undefined);
   const router = useRouter();
   const searchParams = useSearchParams();
   const okOrderId = searchParams.get("ok");
@@ -163,6 +169,24 @@ export default function IntakeForm({ products }: { products: Product[] }) {
       .catch(() => {});
     return () => { cancelled = true; };
   }, [phoneDigits]);
+
+  // The certificate that applies by default: the house account's when the order
+  // is charged to one, else the buyer's (resolved server-side).
+  const [exemptInfo, setExemptInfo] = useState<{ default: DefaultExemption | null; expired: boolean }>({ default: null, expired: false });
+  const exemptAccountId = payment.status === "account" ? payment.accountId : "";
+  useEffect(() => {
+    if (phoneDigits.length < 10 && !exemptAccountId) { setExemptInfo({ default: null, expired: false }); return; }
+    let cancelled = false;
+    const qs = new URLSearchParams({ phone: phoneDigits, accountId: exemptAccountId });
+    fetch(`/api/admin/tax-exempt/default?${qs}`, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: { default?: DefaultExemption | null; expired?: boolean } | null) => {
+        if (!cancelled) setExemptInfo({ default: d?.default ?? null, expired: !!d?.expired });
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [phoneDigits, exemptAccountId]);
+  const exemptOn = isRequestExempt(exemptInfo.default, taxExempt);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [draftId, setDraftId] = useState<string | null>(null);
@@ -222,6 +246,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
     setLines(init.lines);
     setOverride(init.override);
     setPromo(null);
+    setTaxExempt(undefined);
     setGiftCardCode(init.giftCardCode);
     setPayment(init.payment);
     setPaymentKey((k) => k + 1);
@@ -231,7 +256,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
   }
 
   function currentPayload(): DraftPayload {
-    return { version: 1, channel, customer, fulfillment, lines, override, giftCardCode, promoCode: promo?.code ?? "", payment };
+    return { version: 1, channel, customer, fulfillment, lines, override, giftCardCode, promoCode: promo?.code ?? "", payment, taxExempt };
   }
 
   function draftLabel(): string {
@@ -312,6 +337,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
         ? { code: payload.promoCode, discountCents: payload.override?.discountCents ?? 0 }
         : null,
     );
+    setTaxExempt(payload.taxExempt);
     setGiftCardCode(payload.giftCardCode ?? "");
     setPayment(payload.payment ?? { ...INITIAL_PAYMENT });
     setPaymentKey((k) => k + 1);
@@ -323,6 +349,10 @@ export default function IntakeForm({ products }: { products: Product[] }) {
     setError(null);
     if (payment.status === "pending" && payment.deposit && payment.deposit.amountCents >= liveTotalCents) {
       setError(t("deposit_too_big"));
+      return;
+    }
+    if (exemptOn && !exemptInfo.default && !taxExempt?.cert?.trim()) {
+      setError(tx("cert_required"));
       return;
     }
     setSubmitting(true);
@@ -346,6 +376,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
         giftCardCode: payment.status === "account" ? undefined : (giftCardCode || undefined),
         promoCode: promo?.code || undefined,
         payment,
+        ...(taxExempt ? { taxExempt } : {}),
       };
       const res = await fetch("/api/admin/orders", {
         method: "POST",
@@ -384,6 +415,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
     fulfillmentMethod: fulfillment.method,
     address: fulfillment.method === "delivery" ? fulfillment.address : undefined,
     override,
+    taxExempt: exemptOn,
   }).totalCents;
 
   return (
@@ -496,6 +528,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
               <div className="mt-4"><CartLines lines={lines} onChangeLines={setLines} /></div>
             </SectionCard>
             <SectionCard title={t("section_payment")}>
+              <TaxExemptToggle fallback={exemptInfo.default} expired={exemptInfo.expired} value={taxExempt} onChange={setTaxExempt} />
               <CartTotals
                 lines={lines}
                 fulfillmentMethod={fulfillment.method}
@@ -503,6 +536,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
                 deliveryCity={fulfillment.address.city}
                 override={override}
                 onOverride={setOverride}
+                taxExempt={exemptOn}
               />
               <div className="mt-4">
                 <PromoField
