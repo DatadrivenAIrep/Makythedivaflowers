@@ -77,6 +77,9 @@ neutra ("Sin novedades en este período").
 
 - Ingresos = `amount_paid_cents` (cobrado), igual que hoy; órdenes canceladas fuera de órdenes y
   ticket; reembolsadas fuera de ingresos.
+- Cliente nuevo = cliente cuyo **primer** pedido (el más antiguo con `customer_id`, o por teléfono
+  de contacto si no está ligado) cae dentro del período; "que repite" = el resto de compradores del
+  período. Los ingresos de cada grupo suman los de sus órdenes del período.
 - **Zona horaria de la tienda** (`America/New_York`, `shopDateStr`) para días, semanas, meses y día
   de la semana. Hoy se agrupa por UTC (un pedido de 9 pm cae al día siguiente) — se corrige.
 - Período anterior: mismo largo inmediatamente antes; "año pasado" en la gráfica: las mismas fechas
