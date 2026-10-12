@@ -9,7 +9,7 @@ import { runMigrations } from "@/lib/db-migrate";
 const requireAdminMock = vi.fn();
 vi.mock("@/lib/admin-auth", () => ({ requireAdmin: (...a: unknown[]) => requireAdminMock(...a) }));
 
-import { POST } from "@/app/api/admin/orders/[id]/delivery-photo/route";
+import { POST, DELETE } from "@/app/api/admin/orders/[id]/delivery-photo/route";
 import { GET } from "@/app/api/delivery-photo/[token]/route";
 
 let dir: string;
@@ -33,6 +33,8 @@ function upload(id: string, bytes: Buffer, type = "image/jpeg") {
   form.set("height", "1200");
   return POST(new Request("http://x", { method: "POST", body: form }), { params: Promise.resolve({ id }) });
 }
+const del = (id: string) =>
+  DELETE(new Request("http://x", { method: "DELETE" }), { params: Promise.resolve({ id }) });
 const get = (token: string) => GET(new Request("http://x"), { params: Promise.resolve({ token }) });
 
 beforeEach(() => {
@@ -98,4 +100,49 @@ it("404 for unknown and malformed tokens, same body", async () => {
   expect(a.status).toBe(404);
   expect(b.status).toBe(404);
   expect(await a.text()).toBe(await b.text());
+});
+
+it("DELETE: 401 without a session", async () => {
+  requireAdminMock.mockReturnValue(false);
+  seed("o1");
+  expect((await del("o1")).status).toBe(401);
+});
+
+it("DELETE: 404 for an unknown order", async () => {
+  const res = await del("nope");
+  expect(res.status).toBe(404);
+  expect(await res.json()).toEqual({ error: "not_found" });
+});
+
+it("DELETE: 400 already_delivered and the photo is kept", async () => {
+  seed("o1");
+  const { token } = (await (await upload("o1", JPEG)).json()) as { token: string };
+  getDb().prepare(`UPDATE orders SET fulfillment_status = 'delivered' WHERE id = 'o1'`).run();
+  const res = await del("o1");
+  expect(res.status).toBe(400);
+  expect(await res.json()).toEqual({ error: "already_delivered" });
+  expect((await get(token)).status).toBe(200);
+});
+
+it("DELETE: 400 for a canceled order", async () => {
+  seed("o1", "delivery", "canceled");
+  const res = await del("o1");
+  expect(res.status).toBe(400);
+  expect(await res.json()).toEqual({ error: "already_delivered" });
+});
+
+it("DELETE: removes the photo (public token then 404s)", async () => {
+  seed("o1");
+  const { token } = (await (await upload("o1", JPEG)).json()) as { token: string };
+  const res = await del("o1");
+  expect(res.status).toBe(200);
+  expect(await res.json()).toEqual({ deleted: true });
+  expect((await get(token)).status).toBe(404);
+});
+
+it("DELETE: idempotent when there is no photo", async () => {
+  seed("o1");
+  const res = await del("o1");
+  expect(res.status).toBe(200);
+  expect(await res.json()).toEqual({ deleted: false });
 });

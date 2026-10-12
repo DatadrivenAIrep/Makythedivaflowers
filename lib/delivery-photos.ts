@@ -68,6 +68,15 @@ export function getDeliveryPhoto(orderId: string): DeliveryPhoto | undefined {
   return row ? toPhoto(row) : undefined;
 }
 
+/** Drop the order's photo (row + file). True if there was one. Safe to call repeatedly. */
+export function deleteDeliveryPhoto(orderId: string): boolean {
+  const existing = getDeliveryPhoto(orderId);
+  if (!existing) return false;
+  getDb().prepare(`DELETE FROM delivery_photos WHERE order_id = ?`).run(orderId);
+  try { fs.unlinkSync(fileFor(existing.token)); } catch { /* already gone */ }
+  return true;
+}
+
 export function listDeliveryPhotoOrderIds(orderIds: string[]): Set<string> {
   if (orderIds.length === 0) return new Set();
   runMigrations();

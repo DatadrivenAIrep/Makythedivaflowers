@@ -57,6 +57,7 @@ describe("DeliverSheet", () => {
     await waitFor(() => expect(done).toHaveBeenCalled());
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(fetchMock.mock.calls[0][0]).toBe("/api/admin/orders/o1/fulfillment");
+    expect(fetchMock.mock.calls.some((c) => (c[1] as RequestInit | undefined)?.method === "DELETE")).toBe(false);
   });
 
   it("with photo: uploads, then PATCHes", async () => {
@@ -107,5 +108,76 @@ describe("DeliverSheet", () => {
     wrap();
     pickPhoto();
     await waitFor(() => screen.getByText("No se pudo leer la foto."));
+  });
+
+  async function uploadThenFailPatch(deleteResponse: () => Response) {
+    let patchCalls = 0;
+    fetchMock.mockImplementation(async (url: string, init?: RequestInit) => {
+      if (init?.method === "DELETE") return deleteResponse();
+      if (url.endsWith("/delivery-photo")) return new Response(JSON.stringify({ token: "t", url: "/api/delivery-photo/t" }));
+      patchCalls++;
+      return patchCalls === 1 ? new Response("{}", { status: 500 }) : new Response("{}");
+    });
+    const done = wrap();
+    pickPhoto();
+    await waitFor(() => screen.getByRole("button", { name: "Confirmar entrega" }));
+    fireEvent.click(screen.getByRole("button", { name: "Confirmar entrega" }));
+    await waitFor(() => screen.getByText("No se pudo marcar como entregado."));
+    fireEvent.click(screen.getByRole("button", { name: "Entregar sin foto" }));
+    return done;
+  }
+
+  it("deliver without photo after an upload discards the stored photo first", async () => {
+    const done = await uploadThenFailPatch(() => new Response(JSON.stringify({ deleted: true })));
+    await waitFor(() => expect(done).toHaveBeenCalled());
+    const calls = fetchMock.mock.calls.map((c) => `${(c[1] as RequestInit | undefined)?.method ?? "GET"} ${c[0]}`);
+    expect(calls).toEqual([
+      "POST /api/admin/orders/o1/delivery-photo",
+      "PATCH /api/admin/orders/o1/fulfillment",
+      "DELETE /api/admin/orders/o1/delivery-photo",
+      "PATCH /api/admin/orders/o1/fulfillment",
+    ]);
+  });
+
+  it("does not deliver if discarding the stored photo fails", async () => {
+    const done = await uploadThenFailPatch(() => new Response("{}", { status: 500 }));
+    await waitFor(() => screen.getByText("No se pudo marcar como entregado."));
+    expect(done).not.toHaveBeenCalled();
+    const patches = fetchMock.mock.calls.filter((c) => (c[1] as RequestInit | undefined)?.method === "PATCH");
+    expect(patches).toHaveLength(1);
+  });
+
+  it("closing after an upload fires a best-effort DELETE", async () => {
+    const onClose = vi.fn();
+    render(
+      <NextIntlClientProvider locale="es" messages={esMessages as Record<string, unknown>}>
+        <DeliverSheet order={order} onDelivered={() => {}} onClose={onClose} prepare={prepare} />
+      </NextIntlClientProvider>,
+    );
+    pickPhoto();
+    await waitFor(() => screen.getByRole("button", { name: "Confirmar entrega" }));
+    // upload ok, PATCH fails so the sheet stays open; the DELETE failing must not matter
+    fetchMock.mockImplementation(async (url: string, init?: RequestInit) => {
+      if (init?.method === "DELETE") return new Response("{}", { status: 500 });
+      if (url.endsWith("/delivery-photo")) return new Response(JSON.stringify({ token: "t" }));
+      return new Response("{}", { status: 500 });
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Confirmar entrega" }));
+    await waitFor(() => screen.getByText("No se pudo marcar como entregado."));
+    fireEvent.click(screen.getByRole("button", { name: "Cancelar" }));
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(fetchMock.mock.calls.some((c) => (c[1] as RequestInit | undefined)?.method === "DELETE")).toBe(true);
+  });
+
+  it("closing with nothing uploaded sends no DELETE", () => {
+    const onClose = vi.fn();
+    render(
+      <NextIntlClientProvider locale="es" messages={esMessages as Record<string, unknown>}>
+        <DeliverSheet order={order} onDelivered={() => {}} onClose={onClose} prepare={prepare} />
+      </NextIntlClientProvider>,
+    );
+    fireEvent.click(screen.getAllByRole("button", { name: "Cancelar" })[0]);
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

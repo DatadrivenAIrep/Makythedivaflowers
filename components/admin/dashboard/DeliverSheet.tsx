@@ -58,6 +58,27 @@ export default function DeliverSheet({ order, onDelivered, onClose, prepare = pr
     onDelivered();
   }
 
+  /** A photo already uploaded must not reach the customer if staff now deliver without it. */
+  async function deliverWithoutPhoto() {
+    if (uploadedRef.current) {
+      setPhase({ kind: "delivering" });
+      const res = await fetch(`/api/admin/orders/${order.id}/delivery-photo`, { method: "DELETE" }).catch(() => null);
+      if (!res?.ok) { setPhase({ kind: "error", message: "deliver_failed" }); return; }
+      uploadedRef.current = false;
+      setPhoto(null);
+    }
+    await markDelivered();
+  }
+
+  function close() {
+    // Best effort: leave no orphaned photo that a later delivery would send.
+    if (uploadedRef.current) {
+      uploadedRef.current = false;
+      void fetch(`/api/admin/orders/${order.id}/delivery-photo`, { method: "DELETE" }).catch(() => null);
+    }
+    onClose();
+  }
+
   async function confirmWithPhoto() {
     if (photo && !uploadedRef.current) {
       setPhase({ kind: "uploading" });
@@ -87,7 +108,7 @@ export default function DeliverSheet({ order, onDelivered, onClose, prepare = pr
             </h2>
             {f && <p className="text-sm text-ink/70">{f.recipient.name} · {f.address.street1}</p>}
           </div>
-          <button type="button" aria-label={t("cancel")} onClick={onClose} disabled={busy} className="p-1 text-ink/60"><X size={20} /></button>
+          <button type="button" aria-label={t("cancel")} onClick={close} disabled={busy} className="p-1 text-ink/60"><X size={20} /></button>
         </div>
 
         <input
@@ -114,8 +135,8 @@ export default function DeliverSheet({ order, onDelivered, onClose, prepare = pr
             <>
               <AdminButton variant="primary" icon={Camera} className="w-full" onClick={() => inputRef.current?.click()}>{t("take_photo")}</AdminButton>
               <p className="text-center text-xs text-ink/50">{t("photo_hint")}</p>
-              <AdminButton variant="secondary" className="w-full" onClick={() => void markDelivered()}>{t("without_photo")}</AdminButton>
-              <AdminButton variant="secondary" className="w-full" onClick={onClose}>{t("cancel")}</AdminButton>
+              <AdminButton variant="secondary" className="w-full" onClick={() => void deliverWithoutPhoto()}>{t("without_photo")}</AdminButton>
+              <AdminButton variant="secondary" className="w-full" onClick={close}>{t("cancel")}</AdminButton>
             </>
           )}
           {phase.kind === "preview" && (
@@ -129,7 +150,7 @@ export default function DeliverSheet({ order, onDelivered, onClose, prepare = pr
               <AdminButton variant="primary" className="w-full" onClick={retry}>
                 {phase.message === "decode_failed" ? t("retake") : t("retry")}
               </AdminButton>
-              <AdminButton variant="secondary" className="w-full" onClick={() => void markDelivered()}>{t("without_photo")}</AdminButton>
+              <AdminButton variant="secondary" className="w-full" onClick={() => void deliverWithoutPhoto()}>{t("without_photo")}</AdminButton>
             </>
           )}
         </div>

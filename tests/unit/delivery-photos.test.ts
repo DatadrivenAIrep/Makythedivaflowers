@@ -6,7 +6,7 @@ import path from "node:path";
 import { closeDb, getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import {
-  saveDeliveryPhoto, getDeliveryPhoto, readDeliveryPhotoByToken, listDeliveryPhotoOrderIds,
+  saveDeliveryPhoto, getDeliveryPhoto, deleteDeliveryPhoto, readDeliveryPhotoByToken, listDeliveryPhotoOrderIds,
   deliveryPhotoUrl, deliveryPhotoPath, mmsMediaAllowed, MAX_DELIVERY_PHOTO_BYTES,
 } from "@/lib/delivery-photos";
 
@@ -66,6 +66,27 @@ describe("saveDeliveryPhoto", () => {
   it("rejects files over the limit", () => {
     const big = Buffer.concat([JPEG, Buffer.alloc(MAX_DELIVERY_PHOTO_BYTES)]);
     expect(saveDeliveryPhoto("o1", big, { width: 1, height: 1 })).toEqual({ ok: false, error: "too_large" });
+  });
+});
+
+describe("deleteDeliveryPhoto", () => {
+  it("removes the row and the file and returns true", () => {
+    const r = saveDeliveryPhoto("o1", JPEG, { width: 1, height: 1 });
+    if (!r.ok) throw new Error("expected ok");
+    expect(deleteDeliveryPhoto("o1")).toBe(true);
+    expect(getDeliveryPhoto("o1")).toBeUndefined();
+    expect(fs.existsSync(path.join(dir, `${r.token}.jpg`))).toBe(false);
+    expect(readDeliveryPhotoByToken(r.token)).toBeUndefined();
+  });
+  it("returns false when there was none", () => {
+    expect(deleteDeliveryPhoto("o1")).toBe(false);
+  });
+  it("still removes the row if the file is already gone", () => {
+    const r = saveDeliveryPhoto("o1", JPEG, { width: 1, height: 1 });
+    if (!r.ok) throw new Error("expected ok");
+    fs.unlinkSync(path.join(dir, `${r.token}.jpg`));
+    expect(deleteDeliveryPhoto("o1")).toBe(true);
+    expect(getDeliveryPhoto("o1")).toBeUndefined();
   });
 });
 

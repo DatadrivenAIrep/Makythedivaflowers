@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin-auth";
 import { getOrder } from "@/lib/order-storage";
-import { saveDeliveryPhoto, deliveryPhotoPath, MAX_DELIVERY_PHOTO_BYTES } from "@/lib/delivery-photos";
+import { saveDeliveryPhoto, deleteDeliveryPhoto, deliveryPhotoPath, MAX_DELIVERY_PHOTO_BYTES } from "@/lib/delivery-photos";
 
 export const runtime = "nodejs";
 
@@ -37,4 +37,19 @@ export async function POST(
     return NextResponse.json({ error: result.error }, { status: result.error === "too_large" ? 413 : 400 });
   }
   return NextResponse.json({ token: result.token, url: deliveryPhotoPath(result.token) });
+}
+
+/** Discard a photo uploaded for this order (staff chose "without photo" or backed out). */
+export async function DELETE(
+  req: Request,
+  ctx: { params: Promise<{ id: string }> },
+): Promise<Response> {
+  if (!requireAdmin(req)) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  const { id } = await ctx.params;
+  const order = await getOrder(id);
+  if (!order) return NextResponse.json({ error: "not_found" }, { status: 404 });
+  // Never remove proof once the order is delivered.
+  if (order.status === "delivered" || order.status === "canceled")
+    return NextResponse.json({ error: "already_delivered" }, { status: 400 });
+  return NextResponse.json({ deleted: deleteDeliveryPhoto(id) });
 }
