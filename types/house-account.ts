@@ -1,3 +1,5 @@
+import type { TaxExemption } from "@/types/tax-exempt";
+
 export type AccountCadence = "weekly" | "biweekly" | "monthly";
 export type SendChannel = "sms" | "email" | "both";
 export type AccountStatus = "active" | "paused" | "closed";
@@ -18,6 +20,7 @@ export type HouseAccount = {
   statementChannel: SendChannel;
   status: AccountStatus;
   notes?: string;
+  taxExemption: TaxExemption;
   createdAt: string;
   updatedAt: string;
 };

@@ -6,12 +6,13 @@ import esMessages from "@/messages/es.json";
 import AccountsView from "@/components/admin/accounts/AccountsView";
 import type { AccountListItem } from "@/lib/house-account-storage";
 import type { UpcomingSend } from "@/lib/house-account-sends";
+import { NO_EXEMPTION } from "@/types/tax-exempt";
 
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), replace: vi.fn(), refresh: vi.fn() }) }));
 
 const account: AccountListItem = {
   id: "ha_1", name: "Hotel Roslyn", locale: "es", cadence: "monthly", issueDay: 1, termsDays: 15, reminderPlan: [],
-  statementChannel: "both", status: "active", createdAt: "2026-09-01T12:00:00Z", updatedAt: "2026-09-01T12:00:00Z",
+  statementChannel: "both", status: "active", taxExemption: NO_EXEMPTION, createdAt: "2026-09-01T12:00:00Z", updatedAt: "2026-09-01T12:00:00Z",
   balanceCents: 70000, oldestOpen: { id: "hst_1", number: "ST-1001", dueDate: "2026-09-30", dueCents: 70000 },
   overdue: true, lastPaymentAt: null, nextIssueDate: "2026-11-01",
 };

@@ -4,6 +4,8 @@ import { runMigrations } from "@/lib/db-migrate";
 import { getCustomerById, getByPhoneUS, normalizePhone, type Customer } from "@/lib/customer-storage";
 import { getSetting } from "@/lib/settings-storage";
 import { shopDateStr } from "@/lib/tv-slots";
+import { normalizeExemptionInput } from "@/lib/tax-exempt";
+import { NO_EXEMPTION } from "@/types/tax-exempt";
 import {
   resolveDefaults, parseReminderPlan, anchorFor, nextIssueDate, SETTING_HOUSE_ACCOUNT_DEFAULTS,
 } from "@/lib/house-account-plan";
@@ -15,7 +17,9 @@ type Row = {
   id: string; name: string; billing_name: string | null; billing_phone: string | null;
   billing_email: string | null; locale: string; cadence: string; issue_day: number;
   anchor_date: string | null; terms_days: number; reminder_plan_json: string;
-  statement_channel: string; status: string; notes: string | null; created_at: string; updated_at: string;
+  statement_channel: string; status: string; notes: string | null;
+  tax_exempt: number; tax_exempt_cert: string | null; tax_exempt_expires: string | null;
+  created_at: string; updated_at: string;
 };
 
 export function newId(prefix: string): string {
@@ -38,6 +42,7 @@ export function rowToAccount(r: Row): HouseAccount {
     statementChannel: r.statement_channel as SendChannel,
     status: r.status as AccountStatus,
     notes: r.notes ?? undefined,
+    taxExemption: { exempt: r.tax_exempt === 1, cert: r.tax_exempt_cert ?? null, expires: r.tax_exempt_expires ?? null },
     createdAt: r.created_at,
     updatedAt: r.updated_at,
   };
@@ -55,6 +60,7 @@ export type CreateAccountInput = {
   reminderPlan?: ReminderStep[];
   statementChannel?: SendChannel;
   notes?: string;
+  taxExemption?: { exempt: boolean; cert?: string | null; expires?: string | null };
 };
 
 function assertIssueDay(cadence: AccountCadence, issueDay: number): void {
@@ -85,16 +91,19 @@ export function createAccount(input: CreateAccountInput, today: string = shopDat
   if (!Number.isInteger(termsDays) || termsDays < 0) throw new Error("terms_invalid");
   const plan = input.reminderPlan ?? defaults.reminderPlan;
   const anchor = cadence === "biweekly" ? anchorFor(issueDay, today) : null;
+  const ex = normalizeExemptionInput(input.taxExemption ?? NO_EXEMPTION);
   const id = newId("ha");
   const now = new Date().toISOString();
   getDb().prepare(
     `INSERT INTO house_accounts (id, name, billing_name, billing_phone, billing_email, locale, cadence, issue_day,
-       anchor_date, terms_days, reminder_plan_json, statement_channel, status, notes, created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?)`,
+       anchor_date, terms_days, reminder_plan_json, statement_channel, status, notes,
+       tax_exempt, tax_exempt_cert, tax_exempt_expires, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?, ?, ?)`,
   ).run(
     id, name, cleanText(input.billingName), cleanPhone(input.billingPhone), cleanText(input.billingEmail),
     input.locale ?? "en", cadence, issueDay, anchor, termsDays, JSON.stringify(plan),
-    input.statementChannel ?? defaults.statementChannel, cleanText(input.notes), now, now,
+    input.statementChannel ?? defaults.statementChannel, cleanText(input.notes),
+    ex.exempt ? 1 : 0, ex.cert, ex.expires, now, now,
   );
   return getAccount(id)!;
 }
@@ -122,11 +131,13 @@ export function updateAccount(id: string, patch: AccountPatch, today: string = s
   const anchor = cadence === "biweekly"
     ? (cadenceOrDayChanged || !cur.anchorDate ? anchorFor(issueDay, today) : cur.anchorDate)
     : null;
+  const ex = patch.taxExemption !== undefined ? normalizeExemptionInput(patch.taxExemption) : cur.taxExemption;
   const now = new Date().toISOString();
   getDb().prepare(
     `UPDATE house_accounts SET name = ?, billing_name = ?, billing_phone = ?, billing_email = ?, locale = ?,
        cadence = ?, issue_day = ?, anchor_date = ?, terms_days = ?, reminder_plan_json = ?, statement_channel = ?,
-       status = ?, notes = ?, updated_at = ? WHERE id = ?`,
+       status = ?, notes = ?, tax_exempt = ?, tax_exempt_cert = ?, tax_exempt_expires = ?,
+       updated_at = ? WHERE id = ?`,
   ).run(
     name,
     patch.billingName !== undefined ? cleanText(patch.billingName) : (cur.billingName ?? null),
@@ -138,6 +149,7 @@ export function updateAccount(id: string, patch: AccountPatch, today: string = s
     patch.statementChannel ?? cur.statementChannel,
     patch.status ?? cur.status,
     patch.notes !== undefined ? cleanText(patch.notes) : (cur.notes ?? null),
+    ex.exempt ? 1 : 0, ex.cert, ex.expires,
     now, id,
   );
   return getAccount(id);
