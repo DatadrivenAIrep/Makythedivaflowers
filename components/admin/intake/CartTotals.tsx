@@ -134,6 +134,12 @@ export default function CartTotals({
           <span className="tabular-nums">−${(discountCents / 100).toFixed(2)}</span>
         </div>
       )}
+      {tipCents > 0 && (
+        <div className="flex justify-between items-center text-mute-600 py-1">
+          <span>{t("totals_tip")}</span>
+          <span className="tabular-nums">${(tipCents / 100).toFixed(2)}</span>
+        </div>
+      )}
       {taxExempt ? (
         <div className="flex justify-between items-center text-mute-600 py-1">
           <span>{t("totals_tax")}</span>

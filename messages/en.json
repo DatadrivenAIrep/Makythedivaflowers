@@ -1351,6 +1351,7 @@
     "totals_delivery": "Delivery",
     "totals_tax": "Tax",
     "totals_discount": "Discount",
+    "totals_tip": "Tip",
     "totals_total": "Total",
     "totals_prompt": "{label} $",
     "totals_delivery_unresolved": "Set fee",
