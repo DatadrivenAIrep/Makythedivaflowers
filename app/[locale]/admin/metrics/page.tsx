@@ -13,7 +13,7 @@ export default async function AdminMetricsPage({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "admin_metrics" });
   const labels = { customProducts: t("custom_products"), unknownZone: t("unknown_zone") };
-  const initial = getMetrics("90d", new Date(), locale, labels);
+  const initial = getMetrics("30d", new Date(), locale, labels);
   return (
     <DashboardShell locale={locale}>
       <MetricsView locale={locale} initial={initial} />

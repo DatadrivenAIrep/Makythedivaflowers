@@ -32,6 +32,7 @@ export type UpcomingOccasion = {
   phone: string;
   kind: DateKind;
   label?: string;
+  recipientPhone?: string;
   next: NextOccurrence;
 };
 
@@ -187,7 +188,7 @@ export function listUpcomingOccasions(
   runMigrations();
   const rows = getDb()
     .prepare(
-      `SELECT d.id AS date_id, d.customer_id, d.kind, d.label, d.month, d.day,
+      `SELECT d.id AS date_id, d.customer_id, d.kind, d.label, d.month, d.day, d.recipient_phone,
               c.name AS customer_name, c.phone
        FROM customer_important_dates d
        JOIN customers c ON c.id = d.customer_id`,
@@ -199,6 +200,7 @@ export function listUpcomingOccasions(
     label: string | null;
     month: number;
     day: number;
+    recipient_phone: string | null;
     customer_name: string;
     phone: string;
   }>;
@@ -210,6 +212,7 @@ export function listUpcomingOccasions(
       phone: r.phone,
       kind: r.kind as DateKind,
       label: r.label ?? undefined,
+      ...(r.recipient_phone ? { recipientPhone: r.recipient_phone } : {}),
       next: nextOccurrence(r.month, r.day, now),
     }))
     .filter((o) => o.next.daysUntil <= withinDays)

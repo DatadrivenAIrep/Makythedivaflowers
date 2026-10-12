@@ -2,11 +2,11 @@ import { NextResponse } from "next/server";
 import esMessages from "@/messages/es.json";
 import enMessages from "@/messages/en.json";
 import { getMetrics } from "@/lib/metrics-storage";
-import type { MetricsRange } from "@/lib/metrics";
+import { METRICS_RANGES, type MetricsRange } from "@/lib/metrics/period";
 
 export const runtime = "nodejs";
 
-const RANGES = new Set<string>(["30d", "90d", "ytd", "all"]);
+const RANGES = new Set<string>(METRICS_RANGES);
 
 export async function GET(req: Request): Promise<Response> {
   const sp = new URL(req.url).searchParams;
