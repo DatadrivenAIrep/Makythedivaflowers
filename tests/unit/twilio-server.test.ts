@@ -57,3 +57,18 @@ describe("getTwilioClient", () => {
     expect(second).not.toBe(first);
   });
 });
+
+describe("sendSms mediaUrl", () => {
+  it("passes mediaUrl as an array to messages.create", async () => {
+    vi.stubEnv("TWILIO_ACCOUNT_SID", "ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+    vi.stubEnv("TWILIO_AUTH_TOKEN", "test_token_value_at_least_32_chars");
+    vi.stubEnv("TWILIO_PHONE_NUMBER", "+15165550000");
+    const client = getTwilioClient()!;
+    const create = vi.spyOn(client.messages, "create").mockResolvedValue({ sid: "SM1" } as never);
+    const { sendSms } = await import("@/lib/twilio-server");
+    await sendSms("5165550100", "hi", { mediaUrl: "https://x.test/p.jpg" });
+    expect(create).toHaveBeenCalledWith(expect.objectContaining({ mediaUrl: ["https://x.test/p.jpg"], body: "hi" }));
+    await sendSms("5165550100", "hi");
+    expect(create.mock.calls[1][0]).not.toHaveProperty("mediaUrl");
+  });
+});

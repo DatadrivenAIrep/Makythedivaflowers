@@ -174,3 +174,13 @@ describe("whatsappContentVars", () => {
     expect(slots["3"]).toBe("1042");
   });
 });
+
+describe("delivered photo line", () => {
+  const v = { buyer_name: "Ana", recipient_name: "Lola", total: "$50.00", shop_phone: "(516) 484-3456" };
+  it("adds the photo line only when has_photo is set", () => {
+    expect(renderSmsBody("delivered", "en", v)).not.toContain("photo");
+    expect(renderSmsBody("delivered", "en", { ...v, has_photo: "1" })).toContain("Here's a photo of the delivery 📷");
+    expect(renderSmsBody("delivered", "es", { ...v, has_photo: "1" })).toContain("Aquí tienes una foto de la entrega 📷");
+    expect(renderSmsBody("delivered", "es", v)).not.toContain("foto");
+  });
+});

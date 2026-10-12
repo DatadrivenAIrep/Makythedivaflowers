@@ -30,12 +30,19 @@ export function e164(phone: string): string {
   return `+${digits}`;
 }
 
-export async function sendSms(to: string, body: string): Promise<{ sid: string }> {
+export async function sendSms(
+  to: string,
+  body: string,
+  opts?: { mediaUrl?: string },
+): Promise<{ sid: string }> {
   const c = getTwilioClient();
   if (!c) throw new Error("twilio_not_configured");
   const from = twilioPhoneNumber();
   if (!from) throw new Error("twilio_from_missing");
-  const msg = await c.messages.create({ to: e164(to), from, body });
+  const msg = await c.messages.create({
+    to: e164(to), from, body,
+    ...(opts?.mediaUrl ? { mediaUrl: [opts.mediaUrl] } : {}),
+  });
   return { sid: msg.sid };
 }
 

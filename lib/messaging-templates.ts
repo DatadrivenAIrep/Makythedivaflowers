@@ -18,6 +18,8 @@ export type TemplateVars = {
   /** Gift card SMS only: the redeemable code and who it is from. */
   code?: string;
   from_label?: string;
+  /** "delivered" only: set when the MMS carries the delivery photo. */
+  has_photo?: "1";
 };
 
 /** "Ana sent you" / "You received" — the gift SMS reads naturally either way. */
@@ -69,7 +71,7 @@ const BODIES: Record<"en" | "es", Record<MessageTemplate, (v: TemplateVars) => s
     ready_for_pickup: (v) =>
       `Hi${named(v)}! Your Diva Flowers order${numbered(v)} is ready for pickup. See you soon! — Maky · ${v.shop_phone}`,
     delivered: (v) =>
-      `Delivered! Your Diva Flowers order has arrived. Thank you! — Maky · ${v.shop_phone}`,
+      `Delivered! Your Diva Flowers order has arrived.${v.has_photo ? " Here's a photo of the delivery 📷" : ""} Thank you! — Maky · ${v.shop_phone}`,
     review_request: (v) =>
       `Hi${named(v)}, thanks for choosing Diva Flowers! Would you leave us a quick Google review? ${v.link ?? ""} — Maky`,
     gift_card_issued: (v) =>
@@ -87,7 +89,7 @@ const BODIES: Record<"en" | "es", Record<MessageTemplate, (v: TemplateVars) => s
     ready_for_pickup: (v) =>
       `¡Hola${named(v)}! Tu pedido${numbered(v)} de Diva Flowers está listo para recoger. ¡Te esperamos! — Maky · ${v.shop_phone}`,
     delivered: (v) =>
-      `¡Entregado! Tu pedido de Diva Flowers ya llegó. ¡Gracias por tu compra! — Maky · ${v.shop_phone}`,
+      `¡Entregado! Tu pedido de Diva Flowers ya llegó.${v.has_photo ? " Aquí tienes una foto de la entrega 📷" : ""} ¡Gracias por tu compra! — Maky · ${v.shop_phone}`,
     review_request: (v) =>
       `¡Hola${named(v)}! Gracias por elegir Diva Flowers 🌸 ¿Nos dejas una reseña en Google? ${v.link ?? ""} — Maky`,
     gift_card_issued: (v) =>
