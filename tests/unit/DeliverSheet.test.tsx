@@ -110,11 +110,48 @@ describe("DeliverSheet", () => {
     await waitFor(() => screen.getByText("No se pudo leer la foto."));
   });
 
-  async function uploadThenFailPatch(deleteResponse: () => Response) {
+  const method = (c: unknown[]) => (c[1] as RequestInit | undefined)?.method ?? "GET";
+  const bodyOf = (c: unknown[]) => JSON.parse(String((c[1] as RequestInit).body));
+
+  it("without photo sends one PATCH with photo:false", async () => {
+    const done = wrap();
+    fireEvent.click(screen.getByRole("button", { name: "Entregar sin foto" }));
+    await waitFor(() => expect(done).toHaveBeenCalled());
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(method(fetchMock.mock.calls[0])).toBe("PATCH");
+    expect(bodyOf(fetchMock.mock.calls[0])).toEqual({ status: "delivered", photo: false });
+  });
+
+  it("with photo the confirm PATCH does not carry photo:false", async () => {
+    const done = wrap();
+    pickPhoto();
+    await waitFor(() => screen.getByRole("button", { name: "Confirmar entrega" }));
+    fireEvent.click(screen.getByRole("button", { name: "Confirmar entrega" }));
+    await waitFor(() => expect(done).toHaveBeenCalled());
+    expect(bodyOf(fetchMock.mock.calls[1])).toEqual({ status: "delivered" });
+  });
+
+  it("upload failure then 'sin foto': a single PATCH photo:false, no DELETE", async () => {
+    fetchMock.mockImplementation(async (url: string, init?: RequestInit) =>
+      url.endsWith("/delivery-photo") ? new Response("{}", { status: 500 })
+        : (init?.method === "PATCH" ? new Response("{}") : new Response("{}", { status: 500 })));
+    const done = wrap();
+    pickPhoto();
+    await waitFor(() => screen.getByRole("button", { name: "Confirmar entrega" }));
+    fireEvent.click(screen.getByRole("button", { name: "Confirmar entrega" }));
+    await waitFor(() => screen.getByText("No se pudo subir la foto. Revisa la señal."));
+    fireEvent.click(screen.getByRole("button", { name: "Entregar sin foto" }));
+    await waitFor(() => expect(done).toHaveBeenCalled());
+    const patches = fetchMock.mock.calls.filter((c) => method(c) === "PATCH");
+    expect(patches).toHaveLength(1);
+    expect(bodyOf(patches[0])).toEqual({ status: "delivered", photo: false });
+    expect(fetchMock.mock.calls.some((c) => method(c) === "DELETE")).toBe(false);
+  });
+
+  it("upload ok, PATCH fails, 'sin foto' sends photo:false without any DELETE", async () => {
     let patchCalls = 0;
-    fetchMock.mockImplementation(async (url: string, init?: RequestInit) => {
-      if (init?.method === "DELETE") return deleteResponse();
-      if (url.endsWith("/delivery-photo")) return new Response(JSON.stringify({ token: "t", url: "/api/delivery-photo/t" }));
+    fetchMock.mockImplementation(async (url: string) => {
+      if (url.endsWith("/delivery-photo")) return new Response(JSON.stringify({ token: "t" }));
       patchCalls++;
       return patchCalls === 1 ? new Response("{}", { status: 500 }) : new Response("{}");
     });
@@ -124,27 +161,71 @@ describe("DeliverSheet", () => {
     fireEvent.click(screen.getByRole("button", { name: "Confirmar entrega" }));
     await waitFor(() => screen.getByText("No se pudo marcar como entregado."));
     fireEvent.click(screen.getByRole("button", { name: "Entregar sin foto" }));
-    return done;
-  }
-
-  it("deliver without photo after an upload discards the stored photo first", async () => {
-    const done = await uploadThenFailPatch(() => new Response(JSON.stringify({ deleted: true })));
     await waitFor(() => expect(done).toHaveBeenCalled());
-    const calls = fetchMock.mock.calls.map((c) => `${(c[1] as RequestInit | undefined)?.method ?? "GET"} ${c[0]}`);
-    expect(calls).toEqual([
-      "POST /api/admin/orders/o1/delivery-photo",
-      "PATCH /api/admin/orders/o1/fulfillment",
-      "DELETE /api/admin/orders/o1/delivery-photo",
-      "PATCH /api/admin/orders/o1/fulfillment",
+    const patches = fetchMock.mock.calls.filter((c) => method(c) === "PATCH");
+    expect(patches.map(bodyOf)).toEqual([{ status: "delivered" }, { status: "delivered", photo: false }]);
+    expect(fetchMock.mock.calls.some((c) => method(c) === "DELETE")).toBe(false);
+  });
+
+  it("deliver_failed after 'sin foto': Reintentar re-sends photo:false", async () => {
+    let patchCalls = 0;
+    fetchMock.mockImplementation(async () => {
+      patchCalls++;
+      return patchCalls === 1 ? new Response("{}", { status: 500 }) : new Response("{}");
+    });
+    const done = wrap();
+    fireEvent.click(screen.getByRole("button", { name: "Entregar sin foto" }));
+    await waitFor(() => screen.getByText("No se pudo marcar como entregado."));
+    fireEvent.click(screen.getByRole("button", { name: "Reintentar" }));
+    await waitFor(() => expect(done).toHaveBeenCalled());
+    expect(fetchMock.mock.calls.map(bodyOf)).toEqual([
+      { status: "delivered", photo: false },
+      { status: "delivered", photo: false },
     ]);
   });
 
-  it("does not deliver if discarding the stored photo fails", async () => {
-    const done = await uploadThenFailPatch(() => new Response("{}", { status: 500 }));
+  it("an upload that times out / aborts is an upload failure", async () => {
+    fetchMock.mockImplementation(async (url: string) => {
+      if (url.endsWith("/delivery-photo")) throw new DOMException("timed out", "TimeoutError");
+      return new Response("{}");
+    });
+    const done = wrap();
+    pickPhoto();
+    await waitFor(() => screen.getByRole("button", { name: "Confirmar entrega" }));
+    fireEvent.click(screen.getByRole("button", { name: "Confirmar entrega" }));
+    await waitFor(() => screen.getByText("No se pudo subir la foto. Revisa la señal."));
+    expect(done).not.toHaveBeenCalled();
+    expect(screen.getByRole("button", { name: "Entregar sin foto" })).toBeDefined();
+    // every request carries an abort signal
+    expect((fetchMock.mock.calls[0][1] as RequestInit).signal).toBeInstanceOf(AbortSignal);
+  });
+
+  it("a PATCH that times out is a delivery failure", async () => {
+    fetchMock.mockImplementation(async () => { throw new DOMException("aborted", "AbortError"); });
+    const done = wrap();
+    fireEvent.click(screen.getByRole("button", { name: "Entregar sin foto" }));
     await waitFor(() => screen.getByText("No se pudo marcar como entregado."));
     expect(done).not.toHaveBeenCalled();
-    const patches = fetchMock.mock.calls.filter((c) => (c[1] as RequestInit | undefined)?.method === "PATCH");
-    expect(patches).toHaveLength(1);
+  });
+
+  it("a double tap on 'Entregar sin foto' sends one PATCH", async () => {
+    const done = wrap();
+    const btn = screen.getByRole("button", { name: "Entregar sin foto" });
+    fireEvent.click(btn);
+    fireEvent.click(btn);
+    await waitFor(() => expect(done).toHaveBeenCalled());
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("a double tap on 'Confirmar entrega' sends one upload and one PATCH", async () => {
+    const done = wrap();
+    pickPhoto();
+    await waitFor(() => screen.getByRole("button", { name: "Confirmar entrega" }));
+    const btn = screen.getByRole("button", { name: "Confirmar entrega" });
+    fireEvent.click(btn);
+    fireEvent.click(btn);
+    await waitFor(() => expect(done).toHaveBeenCalled());
+    expect(fetchMock.mock.calls.map((c) => method(c))).toEqual(["POST", "PATCH"]);
   });
 
   it("closing after an upload fires a best-effort DELETE", async () => {

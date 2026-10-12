@@ -21,6 +21,17 @@ type Phase =
   | { kind: "delivering" }
   | { kind: "error"; message: "decode_failed" | "upload_failed" | "deliver_failed" };
 
+const UPLOAD_TIMEOUT_MS = 30_000;
+const PATCH_TIMEOUT_MS = 20_000;
+
+/** A signal that aborts after `ms`, so a hung connection ends in a failure phase instead of a spinner. */
+function timeoutSignal(ms: number): AbortSignal {
+  if (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") return AbortSignal.timeout(ms);
+  const ctrl = new AbortController();
+  setTimeout(() => ctrl.abort(), ms);
+  return ctrl.signal;
+}
+
 export default function DeliverSheet({ order, onDelivered, onClose, prepare = prepareDeliveryPhoto }: Props) {
   const t = useTranslations("admin_deliver");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -29,6 +40,10 @@ export default function DeliverSheet({ order, onDelivered, onClose, prepare = pr
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   // Set once the upload succeeded, so a PATCH retry never re-uploads.
   const uploadedRef = useRef(false);
+  // Which delivery the last failure came from, so Reintentar never resurrects the photo path.
+  const withoutPhotoRef = useRef(false);
+  // Re-entrancy guard: a double tap must not fire two requests.
+  const busyRef = useRef(false);
 
   useEffect(() => () => { if (previewUrl) URL.revokeObjectURL(previewUrl); }, [previewUrl]);
 
@@ -41,6 +56,7 @@ export default function DeliverSheet({ order, onDelivered, onClose, prepare = pr
       const prepared = await prepare(file);
       setPhoto(prepared);
       uploadedRef.current = false;
+      withoutPhotoRef.current = false;
       setPreviewUrl(URL.createObjectURL(prepared.blob));
       setPhase({ kind: "preview" });
     } catch {
@@ -48,53 +64,67 @@ export default function DeliverSheet({ order, onDelivered, onClose, prepare = pr
     }
   }
 
-  async function markDelivered() {
+  async function markDelivered(withoutPhoto: boolean) {
     setPhase({ kind: "delivering" });
+    // "sin foto" tells the server to drop any stored photo in the same request, so a photo
+    // whose upload response was lost (or whose sheet was abandoned) can never reach the customer.
     const res = await fetch(`/api/admin/orders/${order.id}/fulfillment`, {
       method: "PATCH", headers: { "content-type": "application/json" },
-      body: JSON.stringify({ status: "delivered" }),
+      body: JSON.stringify(withoutPhoto ? { status: "delivered", photo: false } : { status: "delivered" }),
+      signal: timeoutSignal(PATCH_TIMEOUT_MS),
     }).catch(() => null);
     if (!res?.ok) { setPhase({ kind: "error", message: "deliver_failed" }); return; }
     onDelivered();
   }
 
-  /** A photo already uploaded must not reach the customer if staff now deliver without it. */
   async function deliverWithoutPhoto() {
-    if (uploadedRef.current) {
-      setPhase({ kind: "delivering" });
-      const res = await fetch(`/api/admin/orders/${order.id}/delivery-photo`, { method: "DELETE" }).catch(() => null);
-      if (!res?.ok) { setPhase({ kind: "error", message: "deliver_failed" }); return; }
-      uploadedRef.current = false;
-      setPhoto(null);
+    if (busyRef.current) return;
+    busyRef.current = true;
+    try {
+      withoutPhotoRef.current = true;
+      await markDelivered(true);
+    } finally {
+      busyRef.current = false;
     }
-    await markDelivered();
   }
 
   function close() {
     // Best effort: leave no orphaned photo that a later delivery would send.
     if (uploadedRef.current) {
       uploadedRef.current = false;
-      void fetch(`/api/admin/orders/${order.id}/delivery-photo`, { method: "DELETE" }).catch(() => null);
+      void fetch(`/api/admin/orders/${order.id}/delivery-photo`, {
+        method: "DELETE", signal: timeoutSignal(PATCH_TIMEOUT_MS),
+      }).catch(() => null);
     }
     onClose();
   }
 
   async function confirmWithPhoto() {
-    if (photo && !uploadedRef.current) {
-      setPhase({ kind: "uploading" });
-      const form = new FormData();
-      form.set("file", new File([photo.blob], "delivery.jpg", { type: "image/jpeg" }));
-      form.set("width", String(photo.width));
-      form.set("height", String(photo.height));
-      const res = await fetch(`/api/admin/orders/${order.id}/delivery-photo`, { method: "POST", body: form }).catch(() => null);
-      if (!res?.ok) { setPhase({ kind: "error", message: "upload_failed" }); return; }
-      uploadedRef.current = true;
+    if (busyRef.current) return;
+    busyRef.current = true;
+    try {
+      withoutPhotoRef.current = false;
+      if (photo && !uploadedRef.current) {
+        setPhase({ kind: "uploading" });
+        const form = new FormData();
+        form.set("file", new File([photo.blob], "delivery.jpg", { type: "image/jpeg" }));
+        form.set("width", String(photo.width));
+        form.set("height", String(photo.height));
+        const res = await fetch(`/api/admin/orders/${order.id}/delivery-photo`, {
+          method: "POST", body: form, signal: timeoutSignal(UPLOAD_TIMEOUT_MS),
+        }).catch(() => null);
+        if (!res?.ok) { setPhase({ kind: "error", message: "upload_failed" }); return; }
+        uploadedRef.current = true;
+      }
+      await markDelivered(false);
+    } finally {
+      busyRef.current = false;
     }
-    await markDelivered();
   }
 
   function retry() {
     if (phase.kind === "error" && phase.message === "decode_failed") { inputRef.current?.click(); return; }
+    if (withoutPhotoRef.current) { void deliverWithoutPhoto(); return; }
     void confirmWithPhoto();
   }
 

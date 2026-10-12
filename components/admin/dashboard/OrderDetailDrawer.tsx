@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   WhatsappLogo, ArrowsClockwise, Check, CheckCircle,
   Package, Truck, XCircle, X, Pencil, Eye, Printer, FileText, Storefront, Star, HandCoins, Buildings,
@@ -71,6 +71,9 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
   const [accountPickOpen, setAccountPickOpen] = useState(false);
   const [accountErr, setAccountErr] = useState<string | null>(null);
   const [delivering, setDelivering] = useState(false);
+  // Mirrors `delivering` for the document-level Escape handler (which must not close the drawer under the sheet).
+  const deliveringRef = useRef(false);
+  useEffect(() => { deliveringRef.current = delivering; }, [delivering]);
 
   useEffect(() => {
     let cancelled = false;
@@ -82,7 +85,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
         void fetch(`/api/admin/orders/${orderId}/ack`, { method: "POST" });
       }
     })();
-    function onKey(e: KeyboardEvent) { if (e.key === "Escape") onClose(); }
+    function onKey(e: KeyboardEvent) { if (e.key === "Escape" && !deliveringRef.current) onClose(); }
     document.addEventListener("keydown", onKey);
     return () => { cancelled = true; document.removeEventListener("keydown", onKey); };
   }, [orderId, onClose]);
