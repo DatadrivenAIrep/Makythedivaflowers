@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from "next-intl";
 import esMessages from "@/messages/es.json";
 import CustomersList from "@/components/admin/customers/CustomersList";
 import type { CustomerListResult } from "@/lib/customer-storage";
+import { NO_EXEMPTION } from "@/types/tax-exempt";
 
 afterEach(() => {
   cleanup();
@@ -29,7 +30,7 @@ const metrics = {
 const initial: CustomerListResult = {
   customers: [{
     id: "ana", name: "Ana Flores", phone: "5165550001", orderCount: 1,
-    firstSeenAt: "2026-01-01T00:00:00Z", lastSeenAt: "2026-01-01T00:00:00Z", tags: [], metrics,
+    firstSeenAt: "2026-01-01T00:00:00Z", lastSeenAt: "2026-01-01T00:00:00Z", taxExemption: NO_EXEMPTION, tags: [], metrics,
   }],
   stats: { total: 1, newThisMonth: 0, repeatRatePct: 0, atRiskCount: 0, lapsedCount: 1 },
   nextCursor: null,

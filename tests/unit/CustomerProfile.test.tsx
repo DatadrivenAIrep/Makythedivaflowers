@@ -6,6 +6,7 @@ import esMessages from "@/messages/es.json";
 import CustomerProfile from "@/components/admin/customers/CustomerProfile";
 import type { CustomerProfileData } from "@/lib/customer-profile";
 import type { Order } from "@/types/order";
+import { NO_EXEMPTION } from "@/types/tax-exempt";
 
 function wrap(ui: React.ReactNode) {
   return render(
@@ -29,7 +30,7 @@ const profile: CustomerProfileData = {
   customer: {
     id: "c1", name: "Ana Flores", phone: "5165550001", email: "ana@x.com",
     orderCount: 2, firstSeenAt: "2026-01-01T00:00:00Z", lastSeenAt: "2026-06-30T10:00:00Z",
-    notes: "Prefiere tulipanes",
+    notes: "Prefiere tulipanes", taxExemption: NO_EXEMPTION,
     lastAddress: { street1: "1 Main St", city: "Albertson", state: "NY", zip: "11507", country: "US" },
   },
   metrics: {

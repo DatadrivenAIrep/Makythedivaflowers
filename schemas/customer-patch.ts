@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { taxExemptionInput } from "@/schemas/tax-exempt";
 
 export const customerPatchSchema = z
   .object({
@@ -7,6 +8,7 @@ export const customerPatchSchema = z
     email: z.string().trim().email().or(z.literal("")).optional(),
     messagingChannel: z.enum(["sms", "whatsapp", "email", "none"]).optional(),
     locale: z.enum(["en", "es"]).optional(),
+    taxExemption: taxExemptionInput.optional(),
   })
   .refine((v) => Object.keys(v).length > 0, { message: "empty_patch" });
 
