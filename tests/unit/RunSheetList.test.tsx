@@ -96,4 +96,10 @@ describe("RunSheetList", () => {
     wrap(<RunSheetList orders={[deliveryOrder("d", "Reci Dos", "11507")]} locale="es" onOpen={() => {}} onAdvance={() => {}} />);
     expect(screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent)).toEqual(["Mediodía · 1"]);
   });
+
+  it("shows the photo badge on delivered rows that have a photo", () => {
+    const o = { ...deliveryOrder("d", "Reci Dos", "11507"), status: "delivered" as const };
+    wrap(<RunSheetList orders={[o]} locale="es" photoOrderIds={["d"]} onOpen={() => {}} onAdvance={() => {}} />);
+    expect(screen.getByText("Con foto")).toBeDefined();
+  });
 });
