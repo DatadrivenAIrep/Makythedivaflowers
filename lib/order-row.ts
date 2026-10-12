@@ -39,6 +39,8 @@ export type OrderRow = {
   promo_code: string | null;
   house_account_id: string | null;
   funeral: number;
+  tax_exempt: number;
+  tax_exempt_cert: string | null;
   discount_cents: number | null;
   tip_cents: number | null;
   order_number: number | null;
@@ -88,6 +90,8 @@ export function orderToRow(o: Order): OrderRow {
     promo_code: o.promoCode ?? null,
     house_account_id: o.houseAccountId ?? null,
     funeral: o.funeral ? 1 : 0,
+    tax_exempt: o.taxExempt ? 1 : 0,
+    tax_exempt_cert: o.taxExempt?.cert ?? null,
     order_number: o.orderNumber ?? null,
     created_at: o.createdAt,
     updated_at: o.updatedAt,
@@ -161,6 +165,7 @@ export function rowToOrder(r: OrderRow): Order {
     ...(r.promo_code != null ? { promoCode: r.promo_code } : {}),
     ...(r.house_account_id != null ? { houseAccountId: r.house_account_id } : {}),
     ...(r.funeral === 1 ? { funeral: true } : {}),
+    ...(r.tax_exempt === 1 ? { taxExempt: { cert: r.tax_exempt_cert ?? "" } } : {}),
     createdAt: r.created_at,
     updatedAt: r.updated_at,
   };

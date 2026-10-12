@@ -124,6 +124,8 @@ export type Order = {
   houseAccountId?: string;
   /** The order is for a funeral: the message card prints in the sympathy design. */
   funeral?: boolean;
+  /** Sales-tax exempt: snapshot of the certificate used, frozen at order time. */
+  taxExempt?: { cert: string };
   takenBy?: string;
   internalNotes?: string;
   /** Buyer opted in to transactional SMS (order + delivery updates) at checkout. */
