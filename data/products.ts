@@ -4763,7 +4763,7 @@ export const PRODUCTS: Product[] = [
       { src: "/products/personal-tribute.jpg", alt: { en: "Tall blue-and-white funeral tribute of roses with hand-lettered sashes on an easel", es: "Tributo fúnebre alto de rosas en azul y blanco con bandas rotuladas sobre atril" }, aspect: "4/5" },
     ],
     variants: [
-      { id: "standing", label: { en: "Standing tribute", es: "Tributo en atril" }, priceCents: 19999 },
+      { id: "standing", label: { en: "Standing tribute", es: "Tributo en atril" }, priceCents: 39999 },
     ],
     tags: ["new"],
     occasions: ["sympathy"],
