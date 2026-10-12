@@ -2162,5 +2162,22 @@
       "error_amount_max": "Para más de {max}, llama a la tienda y lo armamos.",
       "error_generic": "No se pudo procesar. Revisa los datos e intenta de nuevo."
     }
+  },
+  "admin_deliver": {
+    "title": "Entregar pedido",
+    "take_photo": "Tomar foto",
+    "without_photo": "Entregar sin foto",
+    "cancel": "Cancelar",
+    "retake": "Repetir",
+    "confirm": "Confirmar entrega",
+    "uploading": "Subiendo foto…",
+    "delivering": "Marcando entregado…",
+    "decode_failed": "No se pudo leer la foto.",
+    "upload_failed": "No se pudo subir la foto. Revisa la señal.",
+    "deliver_failed": "No se pudo marcar como entregado.",
+    "retry": "Reintentar",
+    "photo_hint": "La foto se le envía al cliente con el mensaje de entregado.",
+    "photo_section": "Foto de entrega",
+    "photo_badge": "Con foto"
   }
 }
