@@ -40,7 +40,7 @@ describe("editOrder and tax exemption", () => {
 
   it("an exempt order with a discount and a tip keeps them and stays tax-free after an unrelated edit", async () => {
     await saveOrder(base("x5", { totals: { subtotalCents: 5000, deliveryCents: 0, discountCents: 500, tipCents: 300, taxCents: 0, totalCents: 4800 } }));
-    const { order } = await editOrder("x5", { internalNotes: "nota" }, "maky");
+    const { order } = await editOrder("x5", { cardMessage: "Con cariño" }, "maky");
     expect(order.totals.taxCents).toBe(0);
     expect(order.totals.discountCents).toBe(500);
     expect(order.totals.tipCents).toBe(300);
