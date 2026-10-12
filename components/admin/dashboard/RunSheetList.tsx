@@ -96,10 +96,10 @@ function RunSheetRow({ o, lang, onOpen, onAdvance, hasPhoto }: RowProps) {
         <AdminButton variant="secondary" icon={NavigationArrow} href={mapsDirectionsUrl(f.address)} target="_blank" rel="noreferrer" onClick={(e: React.MouseEvent) => e.stopPropagation()}>{t("action_directions")}</AdminButton>
         <AdminButton variant="secondary" icon={Phone} href={`tel:${f.recipient.phone}`} onClick={(e) => e.stopPropagation()}>{f.recipient.phone}</AdminButton>
         {o.status !== "delivered" && o.status !== "out-for-delivery" && (
-          <AdminButton variant="secondary" icon={Truck} onClick={() => onAdvance(o.id, "out-for-delivery")}>{t("action_en_route")}</AdminButton>
+          <AdminButton variant="secondary" icon={Truck} className="col-span-2 sm:col-auto" onClick={() => onAdvance(o.id, "out-for-delivery")}>{t("action_en_route")}</AdminButton>
         )}
         {o.status !== "delivered" && (
-          <AdminButton variant="primary" icon={CheckCircle} className="col-span-2 min-h-11 justify-center sm:min-h-0" onClick={() => onAdvance(o.id, "delivered")}>{t("action_delivered")}</AdminButton>
+          <AdminButton variant="primary" icon={CheckCircle} className="col-span-2 sm:col-auto" onClick={() => onAdvance(o.id, "delivered")}>{t("action_delivered")}</AdminButton>
         )}
       </div>
     </li>
