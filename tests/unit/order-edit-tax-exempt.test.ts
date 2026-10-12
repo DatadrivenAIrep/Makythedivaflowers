@@ -38,10 +38,21 @@ describe("editOrder and tax exemption", () => {
     expect(order.taxExempt).toEqual({ cert: "CUS-1" });
   });
 
+  it("an exempt order with a discount and a tip keeps them and stays tax-free after an unrelated edit", async () => {
+    await saveOrder(base("x5", { totals: { subtotalCents: 5000, deliveryCents: 0, discountCents: 500, tipCents: 300, taxCents: 0, totalCents: 4800 } }));
+    const { order } = await editOrder("x5", { internalNotes: "nota" }, "maky");
+    expect(order.totals.taxCents).toBe(0);
+    expect(order.totals.discountCents).toBe(500);
+    expect(order.totals.tipCents).toBe(300);
+    expect(order.totals.totalCents).toBe(4800);
+    expect(order.taxExempt).toEqual({ cert: "CUS-1" });
+  });
+
   it("switching it off adds tax and records the change", async () => {
     await saveOrder(base("x2"));
     const { order } = await editOrder("x2", { taxExempt: { taxExempt: false } }, "maky");
     expect(order.totals.taxCents).toBe(Math.round(5000 * 0.08625));
+    expect(order.totals.totalCents).toBe(5000 + Math.round(5000 * 0.08625));
     expect((await getOrder("x2"))?.taxExempt).toBeUndefined();
     const diff = (await listOrderHistory("x2"))[0].changes?.find((c) => c.field === "taxExempt");
     expect(diff).toMatchObject({ before: "sí · CUS-1", after: "no" });
