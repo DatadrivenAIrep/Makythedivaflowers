@@ -13,11 +13,13 @@ import { validatePromo, redeemPromo } from "@/lib/promo";
 import { buyerHasPaidOrder } from "@/lib/buyer-history";
 import { getAccount, linkContact } from "@/lib/house-account-storage";
 import { recordCharge } from "@/lib/house-account-ledger";
+import { resolveDefaultExemption, resolveOrderExemption } from "@/lib/tax-exempt";
+import { shopDateStr } from "@/lib/tv-slots";
 import type { Order, OrderFulfillment, CartLine } from "@/types/order";
 
 export const runtime = "nodejs";
 
-function computeTotals(input: IntakeInput, discountCents = 0): Order["totals"] {
+function computeTotals(input: IntakeInput, discountCents = 0, taxExempt = false): Order["totals"] {
   return resolveOrderTotals({
     lines: input.lines as CartLine[],
     fulfillmentMethod: input.fulfillment.method,
@@ -25,6 +27,7 @@ function computeTotals(input: IntakeInput, discountCents = 0): Order["totals"] {
     // The promo discount is authoritative from the server; a client-sent
     // discountCents in totalsOverride is stripped by intakeSchema and ignored.
     override: discountCents > 0 ? { ...input.totalsOverride, discountCents } : input.totalsOverride,
+    taxExempt,
   });
 }
 
@@ -71,6 +74,21 @@ export async function POST(req: Request) {
     locale: input.customer.locale,
     buyerAddress: input.customer.buyerAddress,
   });
+
+  // Sales-tax exemption: the account's certificate when charged to one, else the
+  // buyer's; staff may switch it off, or on with a certificate for a one-off.
+  const exemption = resolveOrderExemption({
+    fallback: resolveDefaultExemption({
+      account: houseAccount?.taxExemption,
+      customer: customer.taxExemption,
+      today: shopDateStr(new Date()),
+    }),
+    requested: input.taxExempt,
+  });
+  if (!exemption.ok) {
+    return NextResponse.json({ errors: { formErrors: [exemption.error] } }, { status: 400 });
+  }
+  const taxExempt = exemption.exemption;
 
   // --- Promo code (optional) ---
   // Only the code arrives from the client; the discount is recomputed here from
@@ -126,13 +144,14 @@ export async function POST(req: Request) {
     },
     promoId,
     promoCode,
-    totals: computeTotals(input, promoDiscountCents),
+    totals: computeTotals(input, promoDiscountCents, taxExempt !== null),
     status: "pending",
     paymentStatus: input.payment.status === "paid" ? "paid" : "pending",
     paymentMethod: input.payment.status === "paid" ? input.payment.method : input.payment.status === "account" ? "house-account" : undefined,
     paidAt: input.payment.status === "paid" ? now : undefined,
     houseAccountId: houseAccount?.id,
     ...(input.funeral ? { funeral: true } : {}),
+    ...(taxExempt ? { taxExempt } : {}),
     takenBy: "maky",
     internalNotes: input.internalNotes,
     createdAt: now,

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { CARD_MESSAGE_MAX } from "@/lib/card-message-fit";
+import { taxExemptRequest } from "@/schemas/tax-exempt";
 
 const phone = z
   .string()
@@ -112,6 +113,9 @@ export const intakeSchema = z.object({
   // Only the code travels from the client. The discount is always recomputed on
   // the server from the live promo, so a tampered request cannot set its price.
   promoCode: z.string().min(1).max(50).optional(),
+  // Staff's per-order choice. Absent = the customer's/account's certificate on
+  // file decides; the server always resolves the final exemption itself.
+  taxExempt: taxExemptRequest.optional(),
   payment,
 })
   .superRefine((data, ctx) => {
