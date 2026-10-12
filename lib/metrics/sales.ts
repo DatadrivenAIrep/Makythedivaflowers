@@ -1,5 +1,5 @@
 // Ventas tab: revenue by channel, products by revenue, promos and gift cards. Pure.
-import { bucketKey, bucketKeys, delta, type Delta, type Period } from "@/lib/metrics/period";
+import { bucketKey, bucketKeys, delta, inPeriod, type Delta, type Period } from "@/lib/metrics/period";
 import { isLive, revenueOf, type MetricOrder } from "@/lib/metrics/orders";
 
 export const CHANNELS = ["web", "phone", "whatsapp", "walk-in", "event"] as const;
@@ -20,6 +20,7 @@ export function channelTrend(orders: MetricOrder[], period: Period): ChannelBuck
   const index = new Map(keys.map((k, i) => [k, i]));
   const buckets: ChannelBucket[] = keys.map((key) => ({ key, ...emptyChannels() }));
   for (const o of orders) {
+    if (!inPeriod(o.day, period.start, period.end)) continue;
     const i = index.get(bucketKey(o.day, period.granularity));
     if (i !== undefined) buckets[i][channelOf(o.source)] += revenueOf(o);
   }

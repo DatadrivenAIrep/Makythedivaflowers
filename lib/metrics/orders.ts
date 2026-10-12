@@ -23,7 +23,14 @@ export type MetricOrder = OrderMetricRow & {
   houseAccount: boolean;
 };
 
-export const isLive = (o: MetricOrder) => o.fulfillmentStatus !== "canceled";
+/**
+ * A real order: not canceled, and not an abandoned web checkout (a web order that never
+ * got paid is noise, the same rule lib/order-visibility.ts applies). Shop-taken orders
+ * may wait for payment and stay live.
+ */
+export const isLive = (o: MetricOrder) =>
+  o.fulfillmentStatus !== "canceled" &&
+  !(o.source === "web" && o.paymentStatus !== "paid" && o.paymentStatus !== "refunded");
 export const countsAsRevenue = (o: MetricOrder) => isLive(o) && o.paymentStatus !== "refunded";
 export const revenueOf = (o: MetricOrder) => (countsAsRevenue(o) ? o.amountPaidCents : 0);
 
@@ -57,12 +64,17 @@ export function salesTrend(orders: MetricOrder[], period: Period): TrendPoint[] 
   for (const o of orders) {
     if (!isLive(o)) continue;
     const rev = revenueOf(o);
-    const cur = index.get(bucketKey(o.day, period.granularity));
-    if (cur !== undefined) {
-      points[cur].revenueCents += rev;
-      points[cur].orders += 1;
+    // Both lines only cover days up to the period's end (and from its start), so a
+    // partial current bucket is compared with the same days of last year.
+    if (inPeriod(o.day, period.start, period.end)) {
+      const cur = index.get(bucketKey(o.day, period.granularity));
+      if (cur !== undefined) {
+        points[cur].revenueCents += rev;
+        points[cur].orders += 1;
+      }
     }
-    const prev = index.get(bucketKey(shiftYears(o.day, 1), period.granularity));
+    const shifted = shiftYears(o.day, 1);
+    const prev = inPeriod(shifted, period.start, period.end) ? index.get(bucketKey(shifted, period.granularity)) : undefined;
     if (prev !== undefined) {
       points[prev].prevRevenueCents += rev;
       points[prev].prevOrders += 1;
@@ -76,8 +88,9 @@ export function pendingPayments(orders: MetricOrder[]): { count: number; cents: 
   let count = 0;
   let cents = 0;
   for (const o of orders) {
-    if (!countsAsRevenue(o) || o.houseAccount) continue;
-    const open = o.totalCents - o.amountPaidCents;
+    if (!countsAsRevenue(o) || o.houseAccount || o.paymentStatus === "paid") continue;
+    // A gift card pays part (or all) of the total without touching amount_paid.
+    const open = o.totalCents - o.amountPaidCents - o.giftCardCents;
     if (open > 0) {
       count += 1;
       cents += open;

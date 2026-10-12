@@ -86,4 +86,31 @@ describe("getMetrics", () => {
   it("always returns at least one insight", () => {
     expect(getMetrics("7d", NOW, "es", LABELS).insights.length).toBeGreaterThan(0);
   });
+
+  it("ignores abandoned web checkouts everywhere", () => {
+    // A web cart that never got paid: no revenue, but also no order, no balance, no booked slot.
+    seed({
+      at: "2026-10-10T15:00:00Z", source: "web", payment: "pending", status: "received",
+      total: 8000, paid: 0, windowDate: "2026-10-14", slot: "midday", phone: "5165550777", name: "Fantasma",
+    });
+    seed({ at: "2026-10-10T16:00:00Z", paid: 5000 });
+    const m = getMetrics("30d", NOW, "es", LABELS);
+    expect(m.kpis.orders.value).toBe(1);
+    expect(m.kpis.pendingCount).toBe(0);
+    expect(m.kpis.pendingCents).toBe(0);
+    expect(m.operations.upcoming.every((d) => d.count === 0)).toBe(true);
+    expect(m.operations.heatmap.total).toBe(0);
+    expect(m.customers.top.map((c) => c.name)).not.toContain("Fantasma");
+    expect(m.sales.channels.find((c) => c.channel === "web")?.orders).toBe(0);
+  });
+
+  it("flags the weekday peak using the deliveries in the period, not the orders created in it", () => {
+    for (let i = 0; i < 20; i += 1) {
+      seed({ at: "2026-08-01T15:00:00Z", windowDate: "2026-10-03", slot: "midday" }); // placed long ago, delivered in the period
+    }
+    const m = getMetrics("30d", NOW, "es", LABELS);
+    expect(m.kpis.orders.value).toBe(0);
+    expect(m.operations.heatmap.total).toBe(20);
+    expect(m.insights.map((i) => i.id)).toContain("peak_day");
+  });
 });

@@ -1,6 +1,6 @@
 // Calendar math for the metrics screen, always in the shop's own time zone.
 // Pure (no DB, no server-only) so client components can import the types.
-import { addDaysStr, shopDateStr } from "@/lib/tv-slots";
+import { SHOP_TZ, addDaysStr } from "@/lib/tv-slots";
 
 export type MetricsRange = "7d" | "30d" | "90d" | "ytd" | "all";
 export const METRICS_RANGES: readonly MetricsRange[] = ["7d", "30d", "90d", "ytd", "all"];
@@ -18,9 +18,12 @@ export type Period = {
 
 const ROLLING_DAYS: Partial<Record<MetricsRange, number>> = { "7d": 7, "30d": 30, "90d": 90 };
 
-/** Shop-local calendar day of an ISO instant. */
+// Building an Intl.DateTimeFormat costs ~40µs and this runs once per order per request.
+const SHOP_DAY_FORMAT = new Intl.DateTimeFormat("en-CA", { timeZone: SHOP_TZ, year: "numeric", month: "2-digit", day: "2-digit" });
+
+/** Shop-local calendar day of an ISO instant (YYYY-MM-DD, same as shopDateStr). */
 export function shopDay(iso: string): string {
-  return shopDateStr(new Date(iso));
+  return SHOP_DAY_FORMAT.format(new Date(iso));
 }
 
 function isLeap(y: number): boolean {

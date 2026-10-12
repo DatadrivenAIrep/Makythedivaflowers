@@ -201,7 +201,7 @@ export function getMetrics(range: MetricsRange, now: Date, locale: "en" | "es", 
         : null,
       atRiskCount: stats.atRiskCount,
       peakDay: peakDay(heatmap),
-      ordersInPeriod: curStats.orderCount,
+      ordersInPeriod: heatmap.total, // the peak is read from deliveries, so gate it on them too
       channelShift: shift ? { channel: shift.channel, pts: shift.shareDeltaPts as number } : null,
     }),
     sales: {

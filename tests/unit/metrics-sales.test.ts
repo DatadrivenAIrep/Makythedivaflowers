@@ -24,6 +24,17 @@ describe("channelTrend", () => {
   });
 });
 
+describe("channelTrend inside the period", () => {
+  it("ignores days before the period starts even if their bucket is shown (90d first week)", () => {
+    const p = resolvePeriod("90d", "2026-10-12");
+    const b = channelTrend([
+      mo({ day: "2026-07-14", source: "web", amountPaidCents: 7000 }),
+      mo({ day: p.start as string, source: "web", amountPaidCents: 1000 }),
+    ], p);
+    expect(b[0].web).toBe(1000);
+  });
+});
+
 describe("channelShares", () => {
   it("gives every channel in fixed order with its share and change in points", () => {
     const cur = [mo({ day: "2026-10-01", source: "web", amountPaidCents: 6000 }), mo({ day: "2026-10-01", source: "phone", amountPaidCents: 4000 })];

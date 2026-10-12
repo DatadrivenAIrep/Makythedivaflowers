@@ -1,5 +1,5 @@
 // tests/unit/metrics-period.test.ts
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import {
   resolvePeriod, shopDay, shiftYears, inPeriod, bucketKey, bucketKeys, delta,
 } from "@/lib/metrics/period";
@@ -30,6 +30,15 @@ describe("shopDay", () => {
   it("uses New York time: 9:30 pm EDT is still the same day", () => {
     expect(shopDay("2026-10-13T01:30:00.000Z")).toBe("2026-10-12");
     expect(shopDay("2026-10-12T15:00:00.000Z")).toBe("2026-10-12");
+  });
+  it("reuses one formatter instead of building one per order", () => {
+    const spy = vi.spyOn(Intl, "DateTimeFormat");
+    try {
+      for (let i = 0; i < 5; i += 1) shopDay("2026-10-13T01:30:00.000Z");
+      expect(spy).not.toHaveBeenCalled();
+    } finally {
+      spy.mockRestore();
+    }
   });
 });
 
