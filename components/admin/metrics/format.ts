@@ -23,3 +23,11 @@ export function bucketLabel(key: string, g: Granularity, locale: string): string
   }
   return new Date(`${key}T12:00:00Z`).toLocaleDateString(intl(locale), { day: "numeric", month: "short", timeZone: "UTC" }).replace(".", "");
 }
+
+/**
+ * Whether bucket `i` gets an x-axis label: every `every`th one, plus always the last. A regular
+ * label too close to the last one is dropped so the two never overlap ("11 oct12 oct").
+ */
+export function showAxisLabel(i: number, last: number, every: number): boolean {
+  return i === last || (i % every === 0 && last - i >= Math.ceil(every / 2));
+}

@@ -51,14 +51,16 @@ export function buildInsights(input: InsightInput): Insight[] {
   }
   if (input.upcomingDates7 > 0) {
     out.push({
-      id: "upcoming_dates", icon: "🎂", key: input.upcomingDates7 === 1 ? "insight_upcoming_dates_one" : "insight_upcoming_dates",
+      id: "upcoming_dates", icon: "🎂", key: "insight_upcoming_dates",
       values: { n: input.upcomingDates7 }, refs: {}, action: { kind: "tab", tab: "customers" },
     });
   }
   if (input.holiday && input.holiday.lastYearCents > 0) {
+    const today = input.holiday.daysUntil === 0;
     out.push({
-      id: "holiday_ahead", icon: "📅", key: "insight_holiday",
-      values: { days: input.holiday.daysUntil, amountCents: input.holiday.lastYearCents }, refs: { holiday: input.holiday.id },
+      id: "holiday_ahead", icon: "📅", key: today ? "insight_holiday_today" : "insight_holiday",
+      values: today ? { amountCents: input.holiday.lastYearCents } : { days: input.holiday.daysUntil, amountCents: input.holiday.lastYearCents },
+      refs: { holiday: input.holiday.id },
     });
   }
   if (input.atRiskCount > 0) {

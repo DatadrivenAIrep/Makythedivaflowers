@@ -57,4 +57,15 @@ describe("buildInsights", () => {
     });
     expect(out.map((i) => i.id)).toEqual(["none"]);
   });
+
+  it("uses a single key for dates (ICU plural handles n = 1)", () => {
+    const out = buildInsights({ ...quiet, upcomingDates7: 1 });
+    expect(out[0]).toMatchObject({ id: "upcoming_dates", key: "insight_upcoming_dates", values: { n: 1 } });
+  });
+
+  it("announces a holiday that is today instead of 'in 0 days'", () => {
+    const out = buildInsights({ ...quiet, holiday: { id: "halloween", daysUntil: 0, lastYearCents: 230000 } });
+    expect(out[0]).toMatchObject({ id: "holiday_ahead", key: "insight_holiday_today", values: { amountCents: 230000 }, refs: { holiday: "halloween" } });
+    expect(out[0].values.days).toBeUndefined();
+  });
 });

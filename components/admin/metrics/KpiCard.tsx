@@ -6,7 +6,7 @@ type Props = { label: string; value: string; delta?: Delta; sub?: string; href?:
 
 function DeltaBadge({ delta }: { delta: Delta }) {
   const t = useTranslations("admin_metrics");
-  if (delta.kind === "none") return null;
+  if (delta.kind === "none") return <span className="text-xs text-ink/40">—</span>;
   if (delta.kind === "new") return <span className="text-xs font-semibold text-success">{t("delta_new")}</span>;
   if (delta.pct === 0) return <span className="text-xs text-ink/50">= 0%</span>;
   const up = delta.pct > 0;

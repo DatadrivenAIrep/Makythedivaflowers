@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { CHANNELS, type ChannelBucket, type ChannelShare } from "@/lib/metrics/sales";
 import type { Granularity } from "@/lib/metrics/period";
-import { CHANNEL_COLOR, bucketLabel, money } from "./format";
+import { CHANNEL_COLOR, bucketLabel, money, showAxisLabel } from "./format";
 
 type Props = { buckets: ChannelBucket[]; shares: ChannelShare[]; granularity: Granularity; locale: string };
 
@@ -65,7 +65,7 @@ export default function ChannelColumns({ buckets, shares, granularity, locale }:
                     />
                   );
                 })}
-                {(i % labelEvery === 0 || i === buckets.length - 1) && (
+                {showAxisLabel(i, buckets.length - 1, labelEvery) && (
                   <text x={cx} y={H - 8} textAnchor="middle" fontSize={10} fill="#6F685B">{bucketLabel(b.key, granularity, locale)}</text>
                 )}
               </g>

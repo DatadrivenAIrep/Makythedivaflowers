@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import type { TrendPoint } from "@/lib/metrics/orders";
 import type { Granularity } from "@/lib/metrics/period";
-import { bucketLabel, money } from "./format";
+import { bucketLabel, money, showAxisLabel } from "./format";
 
 type Props = { points: TrendPoint[]; granularity: Granularity; locale: string };
 type Metric = "revenue" | "orders";
@@ -94,7 +94,7 @@ export default function SalesTrendChart({ points, granularity, locale }: Props) 
             <polyline points={line(prev)} fill="none" stroke="#BAB1A2" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
             <polyline points={line(cur)} fill="none" stroke="#B8345E" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
             {points.map((p, i) =>
-              i % labelEvery === 0 || i === last ? (
+              showAxisLabel(i, last, labelEvery) ? (
                 <text key={p.key} x={x(i)} y={H - 8} textAnchor="middle" fontSize={10} fill="#6F685B">
                   {bucketLabel(p.key, granularity, locale)}
                 </text>

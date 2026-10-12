@@ -7,6 +7,7 @@ import SalesTrendChart from "@/components/admin/metrics/SalesTrendChart";
 import ChannelColumns from "@/components/admin/metrics/ChannelColumns";
 import HeatmapGrid from "@/components/admin/metrics/Heatmap";
 import UpcomingLoad from "@/components/admin/metrics/UpcomingLoad";
+import { addDaysStr } from "@/lib/tv-slots";
 import { money, bucketLabel } from "@/components/admin/metrics/format";
 
 const wrap = (ui: React.ReactNode) =>
@@ -35,6 +36,13 @@ describe("KpiCard", () => {
   it("says 'nuevo' when there was nothing before", () => {
     wrap(<KpiCard label="Órdenes" value="3" delta={{ kind: "new" }} />);
     expect(screen.getByText("nuevo")).toBeDefined();
+  });
+});
+
+describe("KpiCard empty delta", () => {
+  it("shows a dash when there is no comparison", () => {
+    const { container } = wrap(<KpiCard label="Órdenes" value="0" delta={{ kind: "none" }} />);
+    expect(container.textContent).toContain("—");
   });
 });
 
@@ -143,5 +151,27 @@ describe("chart accessibility and axes (fix round 1)", () => {
     );
     expect(screen.getByRole("img", { name: "oct · $10,000" })).toBeDefined();
     expect(screen.getByRole("group", { name: "Ventas por canal" })).toBeDefined();
+  });
+});
+
+describe("x-axis labels do not collide (final fix)", () => {
+  const days = Array.from({ length: 30 }, (_, i) => addDaysStr("2026-09-13", i));
+  const axisLabels = (c: HTMLElement) => Array.from(c.querySelectorAll("svg text")).map((n) => n.textContent);
+  it("hides the label just before the last one in the trend chart", () => {
+    const pts = days.map((key) => ({ key, revenueCents: 1000, orders: 1, prevRevenueCents: 500, prevOrders: 1 }));
+    const { container } = wrap(<SalesTrendChart points={pts} granularity="day" locale="es" />);
+    const labels = axisLabels(container);
+    expect(days[29]).toBe("2026-10-12");
+    expect(labels).toContain("12 oct");
+    expect(labels).not.toContain("11 oct");
+  });
+  it("hides the label just before the last one in the channel columns", () => {
+    const zero = { web: 0, phone: 0, whatsapp: 0, "walk-in": 0, event: 0 };
+    const { container } = wrap(
+      <ChannelColumns granularity="day" locale="es" shares={[]} buckets={days.map((key) => ({ key, ...zero, web: 1000 }))} />,
+    );
+    const labels = axisLabels(container);
+    expect(labels).toContain("12 oct");
+    expect(labels).not.toContain("11 oct");
   });
 });
