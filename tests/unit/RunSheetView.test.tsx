@@ -90,3 +90,20 @@ describe("RunSheetView view toggle", () => {
     }
   });
 });
+
+describe("RunSheetView deliver", () => {
+  beforeEach(() => {
+    localStorage.clear();
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ date: "2026-07-04", orders, photoOrderIds: [] }))));
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("Entregada opens the deliver sheet instead of PATCHing", async () => {
+    wrap();
+    await waitFor(() => expect(screen.getByText("Reci Ros")).toBeDefined());
+    fireEvent.click(screen.getAllByRole("button", { name: "Entregada" })[0]);
+    expect(screen.getByRole("dialog", { name: "Entregar pedido" })).toBeDefined();
+    const calls = (fetch as unknown as ReturnType<typeof vi.fn>).mock.calls.map((c) => String(c[0]));
+    expect(calls.some((u) => u.includes("/fulfillment"))).toBe(false);
+  });
+});

@@ -2162,5 +2162,22 @@
       "error_amount_max": "For more than {max}, call the shop and we will set it up.",
       "error_generic": "That did not go through. Check the details and try again."
     }
+  },
+  "admin_deliver": {
+    "title": "Deliver order",
+    "take_photo": "Take photo",
+    "without_photo": "Deliver without photo",
+    "cancel": "Cancel",
+    "retake": "Retake",
+    "confirm": "Confirm delivery",
+    "uploading": "Uploading photo…",
+    "delivering": "Marking delivered…",
+    "decode_failed": "Couldn't read the photo.",
+    "upload_failed": "Couldn't upload the photo. Check your signal.",
+    "deliver_failed": "Couldn't mark as delivered.",
+    "retry": "Retry",
+    "photo_hint": "The photo is sent to the customer with the delivered message.",
+    "photo_section": "Delivery photo",
+    "photo_badge": "Photo"
   }
 }

@@ -95,3 +95,18 @@ describe("sendMessage", () => {
     expect(row.body).toContain("Hi Sofia");
   });
 });
+
+describe("sendMessage mediaUrl", () => {
+  const media = "https://makythedivaflowers.com/api/delivery-photo/" + "a".repeat(32);
+
+  it("stores media_url on an sms row (dry-run)", async () => {
+    await sendMessage({ ...baseReq, template: "delivered", mediaUrl: media });
+    expect(recentMessagesForOrder("do_test", 1)[0].mediaUrl).toBe(media);
+  });
+
+  it("does not store media_url for whatsapp", async () => {
+    vi.stubEnv("TWILIO_TEMPLATE_DELIVERED_EN", "HXdel");
+    await sendMessage({ ...baseReq, channel: "whatsapp", template: "delivered", mediaUrl: media });
+    expect(recentMessagesForOrder("do_test", 1)[0].mediaUrl).toBeUndefined();
+  });
+});

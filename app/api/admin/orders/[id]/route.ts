@@ -11,6 +11,7 @@ import { requireAdmin } from "@/lib/admin-auth";
 import { getAccount } from "@/lib/house-account-storage";
 import { entriesForOrder } from "@/lib/house-account-ledger";
 import { digitalCardView, getByOrder as getDigitalCard } from "@/lib/digital-cards";
+import { getDeliveryPhoto, deliveryPhotoPath } from "@/lib/delivery-photos";
 
 export const runtime = "nodejs";
 
@@ -31,10 +32,12 @@ export async function GET(
   const houseAccount = acct
     ? { id: acct.id, name: acct.name, billed: entriesForOrder(id).some((e) => e.kind === "charge" && !!e.statementId) }
     : null;
+  const photo = getDeliveryPhoto(id);
   return NextResponse.json({
     order, customer, messages, history, houseAccount,
     balanceCents: orderBalanceCents(order),
     digitalCard: card ? digitalCardView(card) : null,
+    deliveryPhoto: photo ? { url: deliveryPhotoPath(photo.token), createdAt: photo.createdAt } : null,
   });
 }
 

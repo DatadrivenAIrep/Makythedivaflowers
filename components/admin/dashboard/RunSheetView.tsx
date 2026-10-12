@@ -4,11 +4,12 @@ import { useTranslations } from "next-intl";
 import DashboardShell from "./DashboardShell";
 import OrderDetailDrawer from "./OrderDetailDrawer";
 import AdminButton from "./AdminButton";
+import DeliverSheet from "./DeliverSheet";
 import RunSheetList, { type RunSheetViewMode } from "./RunSheetList";
 import type { Order } from "@/types/order";
 import { localYmd } from "@/lib/format-datetime";
 
-type RunSheetResp = { date: string; orders: Order[] };
+type RunSheetResp = { date: string; orders: Order[]; photoOrderIds?: string[] };
 
 export const RUN_SHEET_VIEW_KEY = "diva_run_sheet_view";
 
@@ -28,6 +29,8 @@ export default function RunSheetView({ locale }: { locale: string }) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
   const [drawerOrderId, setDrawerOrderId] = useState<string | null>(null);
+  const [photoOrderIds, setPhotoOrderIds] = useState<string[]>([]);
+  const [delivering, setDelivering] = useState<Order | null>(null);
   // Starts at "time" on the server and first render (no hydration mismatch),
   // then picks up the remembered choice.
   const [view, setView] = useState<RunSheetViewMode>("time");
@@ -45,12 +48,18 @@ export default function RunSheetView({ locale }: { locale: string }) {
       const res = await fetch(`/api/admin/orders/run-sheet?date=${d}`, { cache: "no-store" });
       const body = (await res.json()) as RunSheetResp;
       setOrders(body.orders);
+      setPhotoOrderIds(body.photoOrderIds ?? []);
     } finally { setLoading(false); }
   }, []);
 
   useEffect(() => { void fetchSheet(date); }, [date, fetchSheet]);
 
   async function advance(orderId: string, status: "out-for-delivery" | "delivered") {
+    if (status === "delivered") {
+      // Every run-sheet row is a delivery order: offer the optional photo.
+      const o = orders.find((x) => x.id === orderId);
+      if (o) { setDelivering(o); return; }
+    }
     await fetch(`/api/admin/orders/${orderId}/fulfillment`, {
       method: "PATCH", headers: { "content-type": "application/json" },
       body: JSON.stringify({ status }),
@@ -62,7 +71,7 @@ export default function RunSheetView({ locale }: { locale: string }) {
 
   return (
     <DashboardShell locale={locale}>
-      <div className="mb-4 flex flex-wrap items-center gap-3">
+      <div className="mb-4 flex flex-wrap items-center gap-2 sm:gap-3">
         <input
           type="date"
           value={date}
@@ -85,7 +94,7 @@ export default function RunSheetView({ locale }: { locale: string }) {
             </button>
           ))}
         </div>
-        <span className="ml-auto text-sm text-ink/60">
+        <span className="w-full text-sm text-ink/60 sm:ml-auto sm:w-auto">
           {orders.length} {t("deliveries_count")} · {delivered} {t("completed_count")}
         </span>
       </div>
@@ -95,7 +104,15 @@ export default function RunSheetView({ locale }: { locale: string }) {
         <p className="rounded border border-ink/10 bg-bone p-4 text-sm text-ink/60">{t("no_deliveries")}</p>
       )}
 
-      <RunSheetList orders={orders} locale={locale} view={view} onOpen={setDrawerOrderId} onAdvance={advance} />
+      <RunSheetList orders={orders} locale={locale} view={view} photoOrderIds={photoOrderIds} onOpen={setDrawerOrderId} onAdvance={advance} />
+
+      {delivering && (
+        <DeliverSheet
+          order={delivering}
+          onClose={() => setDelivering(null)}
+          onDelivered={() => { setDelivering(null); void fetchSheet(date); }}
+        />
+      )}
 
       {drawerOrderId && (
         <OrderDetailDrawer

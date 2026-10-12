@@ -68,3 +68,6 @@ test-results/
 /data/diva.sqlite-wal
 /data/diva.sqlite-shm
 /data/diva.e2e.sqlite*
+
+# Proof-of-delivery photos (runtime uploads, persistent like the DB)
+/data/delivery-photos/

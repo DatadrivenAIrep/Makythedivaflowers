@@ -1,5 +1,5 @@
 "use client";
-import { Truck, CheckCircle, Phone, NoteBlank, NavigationArrow } from "@phosphor-icons/react/dist/ssr";
+import { Truck, CheckCircle, Phone, NoteBlank, NavigationArrow, Camera } from "@phosphor-icons/react/dist/ssr";
 import { useTranslations } from "next-intl";
 import AdminButton from "./AdminButton";
 import { resolveLine } from "./product-lookup";
@@ -38,12 +38,14 @@ type RowProps = {
   lang: "en" | "es";
   onOpen: (orderId: string) => void;
   onAdvance: Advance;
+  hasPhoto: boolean;
 };
 
 // One delivery card with its actions. Shared by both views (by time / by zone)
 // so per-order rendering never drifts between them.
-function RunSheetRow({ o, lang, onOpen, onAdvance }: RowProps) {
+function RunSheetRow({ o, lang, onOpen, onAdvance, hasPhoto }: RowProps) {
   const t = useTranslations("admin_dashboard");
+  const tp = useTranslations("admin_deliver");
   const to = useTranslations("admin_orders");
   if (o.fulfillment.method !== "delivery") return null;
   const f = o.fulfillment;
@@ -54,7 +56,7 @@ function RunSheetRow({ o, lang, onOpen, onAdvance }: RowProps) {
     <li className={`rounded-lg border border-ink/10 bg-bone p-3 text-sm shadow-sm ${done ? "opacity-60" : ""}`}>
       <div className="flex items-start gap-2">
         <div className="flex-1 cursor-pointer" onClick={() => onOpen(o.id)}>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <span className="font-semibold">{f.recipient.name}</span>
             <span className="text-xs text-ink/40">#{o.id.slice(-6)}</span>
             {f.window.time && (
@@ -70,7 +72,12 @@ function RunSheetRow({ o, lang, onOpen, onAdvance }: RowProps) {
                 : (o.amountPaidCents ?? 0) > 0 ? t("collect_amount", { amount: money(o.totals.totalCents - (o.amountPaidCents ?? 0)) })
                 : t("collect")}
             </span>
-            <span className="ml-auto text-xs text-ink/60">{to("fulfillment_status." + o.status)} · {money(o.totals.totalCents)}</span>
+            {done && hasPhoto && (
+              <span className="inline-flex items-center gap-0.5 rounded bg-sky-100 px-1.5 py-0.5 text-[10px] text-sky-800">
+                <Camera size={11} weight="bold" /> {tp("photo_badge")}
+              </span>
+            )}
+            <span className="text-xs text-ink/60 sm:ml-auto">{to("fulfillment_status." + o.status)} · {money(o.totals.totalCents)}</span>
           </div>
           <div className="mt-1 text-ink/80">
             {f.address.street1}, {f.address.city} {f.address.zip}
@@ -85,14 +92,14 @@ function RunSheetRow({ o, lang, onOpen, onAdvance }: RowProps) {
           )}
         </div>
       </div>
-      <div className="mt-2 flex flex-wrap gap-2 border-t border-ink/5 pt-2">
+      <div className="mt-2 grid grid-cols-2 gap-2 border-t border-ink/5 pt-2 sm:flex sm:flex-wrap">
         <AdminButton variant="secondary" icon={NavigationArrow} href={mapsDirectionsUrl(f.address)} target="_blank" rel="noreferrer" onClick={(e: React.MouseEvent) => e.stopPropagation()}>{t("action_directions")}</AdminButton>
         <AdminButton variant="secondary" icon={Phone} href={`tel:${f.recipient.phone}`} onClick={(e) => e.stopPropagation()}>{f.recipient.phone}</AdminButton>
         {o.status !== "delivered" && o.status !== "out-for-delivery" && (
-          <AdminButton variant="secondary" icon={Truck} onClick={() => onAdvance(o.id, "out-for-delivery")}>{t("action_en_route")}</AdminButton>
+          <AdminButton variant="secondary" icon={Truck} className="col-span-2 sm:col-auto" onClick={() => onAdvance(o.id, "out-for-delivery")}>{t("action_en_route")}</AdminButton>
         )}
         {o.status !== "delivered" && (
-          <AdminButton variant="primary" icon={CheckCircle} onClick={() => onAdvance(o.id, "delivered")}>{t("action_delivered")}</AdminButton>
+          <AdminButton variant="primary" icon={CheckCircle} className="col-span-2 sm:col-auto" onClick={() => onAdvance(o.id, "delivered")}>{t("action_delivered")}</AdminButton>
         )}
       </div>
     </li>
@@ -108,11 +115,13 @@ type Props = {
   view?: RunSheetViewMode;
   onOpen: (orderId: string) => void;
   onAdvance: Advance;
+  /** Ids of orders with a stored delivery photo. */
+  photoOrderIds?: string[];
 };
 
 type Group = { key: string; title: string; orders: Order[] };
 
-export default function RunSheetList({ orders, locale, view = "time", onOpen, onAdvance }: Props) {
+export default function RunSheetList({ orders, locale, view = "time", photoOrderIds = [], onOpen, onAdvance }: Props) {
   const t = useTranslations("admin_dashboard");
   const to = useTranslations("admin_orders");
   const lang = locale === "en" ? "en" : "es";
@@ -144,7 +153,7 @@ export default function RunSheetList({ orders, locale, view = "time", onOpen, on
           </h2>
           <ul className="space-y-2">
             {group.orders.map((o) => (
-              <RunSheetRow key={o.id} o={o} lang={lang} onOpen={onOpen} onAdvance={onAdvance} />
+              <RunSheetRow key={o.id} o={o} lang={lang} onOpen={onOpen} onAdvance={onAdvance} hasPhoto={photoOrderIds.includes(o.id)} />
             ))}
           </ul>
         </section>

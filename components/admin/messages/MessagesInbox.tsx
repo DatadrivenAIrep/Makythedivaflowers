@@ -269,6 +269,12 @@ function Bubble({ msg, locale, t }: { msg: ThreadMessage; locale: string; t: Tra
           outbound ? `rounded-tr-sm ${outboundBg}` : "rounded-tl-sm border border-ink/10 bg-bone"
         }`}
       >
+        {msg.mediaUrl && (
+          <a href={msg.mediaUrl} target="_blank" rel="noreferrer" className="mb-2 block">
+            {/* eslint-disable-next-line @next/next/no-img-element -- private token URL */}
+            <img src={msg.mediaUrl} alt="" className="max-h-48 rounded-lg object-cover" />
+          </a>
+        )}
         <p className="whitespace-pre-wrap">{text}</p>
         <div className="mt-1 flex flex-wrap items-center gap-x-1.5 text-[11px] text-ink/50">
           {meta && <span>{meta}</span>}

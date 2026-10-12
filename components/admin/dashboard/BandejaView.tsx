@@ -4,6 +4,7 @@ import { WarningCircle, CheckCircle } from "@phosphor-icons/react/dist/ssr";
 import { useTranslations } from "next-intl";
 import DashboardShell from "./DashboardShell";
 import OrderDetailDrawer from "./OrderDetailDrawer";
+import DeliverSheet from "./DeliverSheet";
 import PendingCard, { type PendingReason, type PendingActionId } from "./PendingCard";
 import AdminButton from "./AdminButton";
 import AttentionDrawer from "./AttentionDrawer";
@@ -23,6 +24,7 @@ export default function BandejaView({ locale }: { locale: string }) {
   const audioUnlockedRef = useRef(false);
   const [drawerOrderId, setDrawerOrderId] = useState<string | null>(null);
   const [attnId, setAttnId] = useState<string | null>(null);
+  const [delivering, setDelivering] = useState<Order | null>(null);
   const [muted, setMuted] = useState(false);
   const mutedRef = useRef(false);
   mutedRef.current = muted;
@@ -99,11 +101,18 @@ export default function BandejaView({ locale }: { locale: string }) {
           body: JSON.stringify({ method: "cash" }), // default; drawer can offer a picker later
         });
         await refresh(); return;
-      case "advance_preparing":
-      case "advance_out":
       case "advance_delivered": {
-        const status = action === "advance_preparing" ? "preparing"
-          : action === "advance_out" ? "out-for-delivery" : "delivered";
+        const order = queue.find((q) => q.orderId === orderId)?.order as Order | undefined;
+        if (order?.fulfillment.method === "delivery") { setDelivering(order); return; }
+        await fetch(`/api/admin/orders/${orderId}/fulfillment`, {
+          method: "PATCH", headers: { "content-type": "application/json" },
+          body: JSON.stringify({ status: "delivered" }),
+        });
+        await refresh(); return;
+      }
+      case "advance_preparing":
+      case "advance_out": {
+        const status = action === "advance_preparing" ? "preparing" : "out-for-delivery";
         await fetch(`/api/admin/orders/${orderId}/fulfillment`, {
           method: "PATCH", headers: { "content-type": "application/json" },
           body: JSON.stringify({ status }),
@@ -211,6 +220,13 @@ export default function BandejaView({ locale }: { locale: string }) {
             orderId={drawerOrderId}
             onClose={() => setDrawerOrderId(null)}
             onChanged={() => { void refresh(); }}
+          />
+        )}
+        {delivering && (
+          <DeliverSheet
+            order={delivering}
+            onClose={() => setDelivering(null)}
+            onDelivered={() => { setDelivering(null); void refresh(); }}
           />
         )}
         {attnId && (

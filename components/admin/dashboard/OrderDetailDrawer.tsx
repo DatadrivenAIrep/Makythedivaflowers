@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   WhatsappLogo, ArrowsClockwise, Check, CheckCircle,
   Package, Truck, XCircle, X, Pencil, Eye, Printer, FileText, Storefront, Star, HandCoins, Buildings,
@@ -14,6 +14,7 @@ import AdminButton from "./AdminButton";
 import OrderEditForm from "./OrderEditForm";
 import OrderHistoryList from "./OrderHistoryList";
 import DigitalCardSection from "./DigitalCardSection";
+import DeliverSheet from "./DeliverSheet";
 import AccountSearch from "@/components/admin/accounts/AccountSearch";
 import type { Order, OrderChange } from "@/types/order";
 import type { OrderEditPatch } from "@/lib/order-edit";
@@ -32,6 +33,7 @@ type DetailResp = {
   balanceCents?: number;
   digitalCard?: DigitalCardView | null;
   houseAccount?: { id: string; name: string; billed: boolean } | null;
+  deliveryPhoto?: { url: string; createdAt: string } | null;
 };
 
 type Props = {
@@ -52,6 +54,7 @@ const FULFILLMENT_STEP_IDS = ["pending", "preparing", "out-for-delivery", "deliv
 
 export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props) {
   const t = useTranslations("admin_orders");
+  const td = useTranslations("admin_deliver");
   const locale = useLocale();
   const [data, setData] = useState<DetailResp | null>(null);
   const [noteDraft, setNoteDraft] = useState("");
@@ -67,6 +70,10 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
   const [depositErr, setDepositErr] = useState<string | null>(null);
   const [accountPickOpen, setAccountPickOpen] = useState(false);
   const [accountErr, setAccountErr] = useState<string | null>(null);
+  const [delivering, setDelivering] = useState(false);
+  // Mirrors `delivering` for the document-level Escape handler (which must not close the drawer under the sheet).
+  const deliveringRef = useRef(false);
+  useEffect(() => { deliveringRef.current = delivering; }, [delivering]);
 
   useEffect(() => {
     let cancelled = false;
@@ -78,10 +85,16 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
         void fetch(`/api/admin/orders/${orderId}/ack`, { method: "POST" });
       }
     })();
-    function onKey(e: KeyboardEvent) { if (e.key === "Escape") onClose(); }
+    function onKey(e: KeyboardEvent) { if (e.key === "Escape" && !deliveringRef.current) onClose(); }
     document.addEventListener("keydown", onKey);
     return () => { cancelled = true; document.removeEventListener("keydown", onKey); };
   }, [orderId, onClose]);
+
+  async function reload() {
+    const refreshed = await fetch(`/api/admin/orders/${orderId}`, { cache: "no-store" });
+    setData((await refreshed.json()) as DetailResp);
+    onChanged();
+  }
 
   async function call(method: string, url: string, body?: unknown) {
     setBusy(true);
@@ -90,11 +103,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
         method, headers: { "content-type": "application/json" },
         body: body ? JSON.stringify(body) : undefined,
       });
-      if (res.ok) {
-        const refreshed = await fetch(`/api/admin/orders/${orderId}`, { cache: "no-store" });
-        setData((await refreshed.json()) as DetailResp);
-        onChanged();
-      }
+      if (res.ok) await reload();
     } finally { setBusy(false); }
   }
 
@@ -115,9 +124,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
       const d = (await res.json().catch(() => ({ ok: false }))) as { ok: boolean; reason?: string; error?: string };
       if (d.ok) {
         setReviewMsg({ ok: true, text: t("review_sent") });
-        const refreshed = await fetch(`/api/admin/orders/${orderId}`, { cache: "no-store" });
-        setData((await refreshed.json()) as DetailResp);
-        onChanged();
+        await reload();
       } else {
         setReviewMsg({ ok: false, text: reviewErr(String(d.reason ?? d.error ?? "")) });
       }
@@ -387,6 +394,18 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
           </div>
         </section>
 
+        {data.deliveryPhoto && (
+          <section className="mb-3 rounded border border-ink/10 bg-bone p-3 text-sm">
+            <div className="mb-2 text-xs uppercase tracking-wide text-ink/50">
+              {td("photo_section")} · {formatDateTime(data.deliveryPhoto.createdAt, locale)}
+            </div>
+            <a href={data.deliveryPhoto.url} target="_blank" rel="noreferrer">
+              {/* eslint-disable-next-line @next/next/no-img-element -- private token URL, not optimizable */}
+              <img src={data.deliveryPhoto.url} alt={td("photo_section")} className="max-h-64 w-full rounded bg-ink/5 object-contain" />
+            </a>
+          </section>
+        )}
+
         <section className="mb-3 rounded border border-ink/10 bg-bone p-3 text-sm">
           <div className="mb-2 text-xs uppercase tracking-wide text-ink/50">{t("messages", { count: messages.length })}</div>
           {messages.length === 0 && <div className="text-ink/50">{t("none_yet")}</div>}
@@ -462,7 +481,9 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
                     onClick={() => call("PATCH", `/api/admin/orders/${order.id}/fulfillment`, { status: "out-for-delivery" })}>{order.fulfillment.method === "pickup" ? t("ready_for_pickup") : t("out_for_delivery")}</AdminButton>
                 )}
                 <AdminButton variant="primary" icon={CheckCircle} disabled={busy}
-                  onClick={() => call("PATCH", `/api/admin/orders/${order.id}/fulfillment`, { status: "delivered" })}>{order.fulfillment.method === "pickup" ? t("picked_up") : t("delivered")}</AdminButton>
+                  onClick={() => order.fulfillment.method === "delivery"
+                    ? setDelivering(true)
+                    : call("PATCH", `/api/admin/orders/${order.id}/fulfillment`, { status: "delivered" })}>{order.fulfillment.method === "pickup" ? t("picked_up") : t("delivered")}</AdminButton>
               </>
             )}
             <AdminButton variant="secondary" icon={WhatsappLogo}
@@ -556,6 +577,13 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
             </div>
           )}
         </footer>
+        {delivering && (
+          <DeliverSheet
+            order={order}
+            onClose={() => setDelivering(false)}
+            onDelivered={() => { setDelivering(false); void reload(); }}
+          />
+        )}
         </>)}
       </div>
     </div>

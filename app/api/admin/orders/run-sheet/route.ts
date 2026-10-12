@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { listDeliveriesForDate } from "@/lib/order-storage";
+import { listDeliveryPhotoOrderIds } from "@/lib/delivery-photos";
 
 export const runtime = "nodejs";
 
@@ -14,5 +15,6 @@ export async function GET(req: Request): Promise<Response> {
     return NextResponse.json({ error: "invalid_date" }, { status: 400 });
   }
   const orders = await listDeliveriesForDate(date);
-  return NextResponse.json({ date, orders });
+  const photoOrderIds = [...listDeliveryPhotoOrderIds(orders.map((o) => o.id))];
+  return NextResponse.json({ date, orders, photoOrderIds });
 }

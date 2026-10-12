@@ -6,6 +6,13 @@ const getByPhoneMock = vi.fn();
 vi.mock("@/lib/customer-storage", () => ({ getByPhone: (...a: unknown[]) => getByPhoneMock(...a) }));
 const hasRecentSuccessMock = vi.fn();
 vi.mock("@/lib/message-storage", () => ({ hasRecentSuccess: (...a: unknown[]) => hasRecentSuccessMock(...a) }));
+const getDeliveryPhotoMock = vi.fn();
+const mmsAllowedMock = vi.fn();
+vi.mock("@/lib/delivery-photos", () => ({
+  getDeliveryPhoto: (...a: unknown[]) => getDeliveryPhotoMock(...a),
+  deliveryPhotoUrl: (t: string) => `https://makythedivaflowers.com/api/delivery-photo/${t}`,
+  mmsMediaAllowed: () => mmsAllowedMock(),
+}));
 const getSettingMock = vi.fn();
 vi.mock("@/lib/settings-storage", () => ({
   getSetting: (...a: unknown[]) => getSettingMock(...a),
@@ -49,6 +56,8 @@ beforeEach(() => {
   getByPhoneMock.mockReset().mockReturnValue({ id: "cus_1", messagingChannel: "sms" });
   hasRecentSuccessMock.mockReset().mockReturnValue(false);
   getSettingMock.mockReset().mockReturnValue("https://g.page/r/test/review");
+  getDeliveryPhotoMock.mockReset().mockReturnValue(undefined);
+  mmsAllowedMock.mockReset().mockReturnValue(true);
 });
 
 describe("dispatchOutForDelivery", () => {
@@ -107,6 +116,34 @@ describe("dispatchDelivered", () => {
   it("skips a pickup order (no auto SMS on pickup collection)", async () => {
     await dispatchDelivered(order("pickup"));
     expect(sendMessageMock).not.toHaveBeenCalled();
+  });
+  const TOK = "b".repeat(32);
+  it("attaches the photo as MMS when one exists", async () => {
+    getDeliveryPhotoMock.mockReturnValue({ orderId: "do_1", token: TOK });
+    await dispatchDelivered(order("delivery"));
+    expect(sendMessageMock).toHaveBeenCalledWith(expect.objectContaining({
+      template: "delivered",
+      mediaUrl: `https://makythedivaflowers.com/api/delivery-photo/${TOK}`,
+      vars: expect.objectContaining({ has_photo: "1" }),
+    }));
+  });
+  it("sends plain text when there is no photo", async () => {
+    await dispatchDelivered(order("delivery"));
+    const req = sendMessageMock.mock.calls[0][0];
+    expect(req.mediaUrl).toBeUndefined();
+    expect(req.vars.has_photo).toBeUndefined();
+  });
+  it("no media on the whatsapp channel", async () => {
+    getByPhoneMock.mockReturnValue({ id: "cus_1", messagingChannel: "whatsapp" });
+    getDeliveryPhotoMock.mockReturnValue({ orderId: "do_1", token: TOK });
+    await dispatchDelivered(order("delivery"));
+    expect(sendMessageMock.mock.calls[0][0].mediaUrl).toBeUndefined();
+  });
+  it("no media when the site url is not public https", async () => {
+    mmsAllowedMock.mockReturnValue(false);
+    getDeliveryPhotoMock.mockReturnValue({ orderId: "do_1", token: TOK });
+    await dispatchDelivered(order("delivery"));
+    expect(sendMessageMock.mock.calls[0][0].mediaUrl).toBeUndefined();
   });
 });
 

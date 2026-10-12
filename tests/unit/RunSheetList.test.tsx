@@ -96,4 +96,16 @@ describe("RunSheetList", () => {
     wrap(<RunSheetList orders={[deliveryOrder("d", "Reci Dos", "11507")]} locale="es" onOpen={() => {}} onAdvance={() => {}} />);
     expect(screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent)).toEqual(["Mediodía · 1"]);
   });
+
+  it("shows the photo badge on delivered rows that have a photo", () => {
+    const o = { ...deliveryOrder("d", "Reci Dos", "11507"), status: "delivered" as const };
+    wrap(<RunSheetList orders={[o]} locale="es" photoOrderIds={["d"]} onOpen={() => {}} onAdvance={() => {}} />);
+    expect(screen.getByText("Con foto")).toBeDefined();
+  });
+
+  it("makes En camino and Entregada full-width on phones", () => {
+    wrap(<RunSheetList orders={[deliveryOrder("d", "Reci Dos", "11507")]} locale="es" onOpen={() => {}} onAdvance={() => {}} />);
+    expect(screen.getByRole("button", { name: "En camino" }).className).toContain("col-span-2");
+    expect(screen.getByRole("button", { name: "Entregada" }).className).toContain("col-span-2");
+  });
 });
