@@ -63,8 +63,8 @@ same conditional-spread pattern as `funeral`).
 - `resolveDefaultExemption({ account, customer, today })` → `{ cert } | null`.
   Precedence: if the order is charged to a house account whose exemption is valid → the
   account's cert; else the buyer customer's valid exemption → its cert; else null.
-- `resolveOrderExemption({ default, requested })` where `requested` is what staff sent:
-  - `requested === undefined` → the default.
+- `resolveOrderExemption({ fallback, requested })` where `requested` is what staff sent:
+  - `requested === undefined` → the fallback (default).
   - `requested.taxExempt === false` → null (staff switched it off).
   - `requested.taxExempt === true` → `{ cert: requested.cert ?? default?.cert }`; if no
     cert results, it is a validation error (`tax_exempt_cert_required`).
