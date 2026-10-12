@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import AdminButton from "@/components/admin/dashboard/AdminButton";
 import ModalShell from "./ModalShell";
+import TaxExemptFields from "@/components/admin/TaxExemptFields";
+import { localYmd } from "@/lib/format-datetime";
+import { NO_EXEMPTION, type TaxExemption } from "@/types/tax-exempt";
 
 type Props = { locale: string; onClose: () => void };
 
@@ -18,6 +21,7 @@ export default function NewAccountModal({ locale, onClose }: Props) {
   const [billingPhone, setBillingPhone] = useState("");
   const [billingEmail, setBillingEmail] = useState("");
   const [lang, setLang] = useState<"en" | "es">(locale === "es" ? "es" : "en");
+  const [taxExemption, setTaxExemption] = useState<TaxExemption>(NO_EXEMPTION);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,7 +32,7 @@ export default function NewAccountModal({ locale, onClose }: Props) {
       const res = await fetch("/api/admin/accounts", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ name, billingName: billingName || undefined, billingPhone: billingPhone || undefined, billingEmail, locale: lang }),
+        body: JSON.stringify({ name, billingName: billingName || undefined, billingPhone: billingPhone || undefined, billingEmail, locale: lang, taxExemption }),
       });
       if (!res.ok) { setError(t("error_generic")); return; }
       const { account } = (await res.json()) as { account: { id: string } };
@@ -53,11 +57,12 @@ export default function NewAccountModal({ locale, onClose }: Props) {
           <select value={lang} onChange={(e) => setLang(e.target.value as "en" | "es")} className={INPUT}>
             <option value="es">Español</option><option value="en">English</option>
           </select></label>
+        <TaxExemptFields value={taxExemption} onChange={setTaxExemption} today={localYmd()} idPrefix="newacct" />
       </div>
       {error && <p className="mt-3 text-sm text-error">{error}</p>}
       <div className="mt-5 flex justify-end gap-2">
         <AdminButton variant="secondary" disabled={busy} onClick={onClose}>{t("cancel")}</AdminButton>
-        <AdminButton variant="primary" disabled={busy || name.trim().length === 0} onClick={submit}>{t("create")}</AdminButton>
+        <AdminButton variant="primary" disabled={busy || name.trim().length === 0 || (taxExemption.exempt && !taxExemption.cert?.trim())} onClick={submit}>{t("create")}</AdminButton>
       </div>
     </ModalShell>
   );

@@ -1965,6 +1965,26 @@
     "not_available": "—",
     "empty": "No data in this range."
   },
+  "admin_tax_exempt": {
+    "title": "Sales tax",
+    "toggle": "Tax exempt",
+    "cert": "Certificate #",
+    "expires": "Expires (optional)",
+    "status_active": "Exempt",
+    "status_expired": "Certificate expired",
+    "status_missing_cert": "Missing certificate #",
+    "save": "Save",
+    "saved": "Saved",
+    "cert_required": "Enter the certificate number.",
+    "badge": "Tax exempt",
+    "intake_on": "Tax exempt · Cert #{cert} ({source})",
+    "source_account": "account",
+    "source_customer": "customer",
+    "source_order": "this order",
+    "intake_cert_placeholder": "Certificate #",
+    "intake_expired_note": "This customer's certificate expired — tax applies.",
+    "exempt_row": "exempt"
+  },
   "admin_pipeline": {
     "title": "Pipeline",
     "stage_nuevo": "New",

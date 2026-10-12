@@ -1965,6 +1965,26 @@
     "not_available": "—",
     "empty": "Sin datos en este rango."
   },
+  "admin_tax_exempt": {
+    "title": "Impuesto",
+    "toggle": "Exento de impuesto",
+    "cert": "Nº de certificado",
+    "expires": "Vence (opcional)",
+    "status_active": "Exento",
+    "status_expired": "Certificado vencido",
+    "status_missing_cert": "Falta el nº de certificado",
+    "save": "Guardar",
+    "saved": "Guardado",
+    "cert_required": "Escribe el número de certificado.",
+    "badge": "Exento de tax",
+    "intake_on": "Exento de tax · Cert #{cert} ({source})",
+    "source_account": "cuenta",
+    "source_customer": "cliente",
+    "source_order": "esta orden",
+    "intake_cert_placeholder": "Nº de certificado",
+    "intake_expired_note": "El certificado de este cliente venció: se cobra tax.",
+    "exempt_row": "exento"
+  },
   "admin_pipeline": {
     "title": "Pipeline",
     "stage_nuevo": "Nuevo",

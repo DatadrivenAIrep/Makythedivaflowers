@@ -3,12 +3,15 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import AdminButton from "@/components/admin/dashboard/AdminButton";
 import { offsetToRow, rowToOffset, type ReminderWhen } from "./send-label";
+import TaxExemptFields from "@/components/admin/TaxExemptFields";
+import { localYmd } from "@/lib/format-datetime";
+import type { TaxExemption } from "@/types/tax-exempt";
 import type { HouseAccount, AccountCadence, SendChannel, ReminderStep } from "@/types/house-account";
 
 export type PlanPatch = {
   name: string; billingName: string; billingPhone: string; billingEmail: string; locale: "en" | "es";
   cadence: AccountCadence; issueDay: number; termsDays: number; statementChannel: SendChannel;
-  reminderPlan: ReminderStep[]; notes: string;
+  reminderPlan: ReminderStep[]; notes: string; taxExemption: TaxExemption;
 };
 type Props = { account: HouseAccount; busy: boolean; onSave: (patch: PlanPatch) => Promise<boolean>; onCancel?: () => void };
 const WHENS: ReminderWhen[] = ["before", "on", "after"];
@@ -43,7 +46,7 @@ export default function PlanEditor({ account, busy, onSave, onCancel }: Props) {
     name: account.name, billingName: account.billingName ?? "", billingPhone: account.billingPhone ?? "",
     billingEmail: account.billingEmail ?? "", locale: account.locale, cadence: account.cadence, issueDay: account.issueDay,
     termsDays: account.termsDays, statementChannel: account.statementChannel,
-    notes: account.notes ?? "",
+    notes: account.notes ?? "", taxExemption: account.taxExemption,
   });
   const [saved, setSaved] = useState(false);
 
@@ -118,9 +121,12 @@ export default function PlanEditor({ account, busy, onSave, onCancel }: Props) {
         </ul>
         <button type="button" onClick={() => { setSaved(false); setRows((rs) => [...rs, { when: "on", days: "0", channel: "sms" }]); }} className="mt-2 text-xs text-rouge underline">{t("add_step")}</button>
       </div>
+      <div className="md:col-span-2">
+        <TaxExemptFields value={f.taxExemption} onChange={(v) => set("taxExemption", v)} today={localYmd()} idPrefix="acct" />
+      </div>
       <div className="md:col-span-2">{field(t("form_notes"), <textarea value={f.notes} onChange={(e) => set("notes", e.target.value)} rows={2} className={INPUT} />)}</div>
       <div className="flex items-center gap-3 md:col-span-2">
-        <AdminButton variant="primary" disabled={busy || f.name.trim().length === 0} onClick={async () => setSaved(await onSave({ ...f, reminderPlan: rows.map(toStep) }))}>{t("save")}</AdminButton>
+        <AdminButton variant="primary" disabled={busy || f.name.trim().length === 0 || (f.taxExemption.exempt && !f.taxExemption.cert?.trim())} onClick={async () => setSaved(await onSave({ ...f, reminderPlan: rows.map(toStep) }))}>{t("save")}</AdminButton>
         {onCancel && <AdminButton variant="secondary" disabled={busy} onClick={onCancel}>{t("cancel")}</AdminButton>}
         {saved && <span className="text-xs text-success">{t("saved")}</span>}
       </div>
