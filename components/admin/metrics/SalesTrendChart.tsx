@@ -21,13 +21,17 @@ function niceMax(v: number): number {
 export default function SalesTrendChart({ points, granularity, locale }: Props) {
   const t = useTranslations("admin_metrics");
   const [metric, setMetric] = useState<Metric>("revenue");
-  const [active, setActive] = useState<number | null>(null);
+  const [rawActive, setActive] = useState<number | null>(null);
   const title = t("trend_title_ly");
   const cur = points.map((p) => (metric === "revenue" ? p.revenueCents : p.orders));
   const prev = points.map((p) => (metric === "revenue" ? p.prevRevenueCents : p.prevOrders));
   const fmt = (v: number, compact = false) => (metric === "revenue" ? money(v, compact) : String(Math.round(v)));
-  const max = niceMax(Math.max(0, ...cur, ...prev));
+  const peak = Math.max(0, ...cur, ...prev);
+  // Orders: a multiple of 4 (at least 4) so the quarter ticks are distinct integers.
+  const max = metric === "revenue" ? niceMax(peak) : Math.max(4, Math.ceil(peak / 4) * 4);
   const n = points.length;
+  // The props can shrink under an open tooltip; never index past the end.
+  const active = rawActive !== null && rawActive < n ? rawActive : null;
   const last = n - 1;
   const x = (i: number) => (n === 1 ? L + PW / 2 : L + (PW * i) / (n - 1));
   const y = (v: number) => T + PH * (1 - v / max);
@@ -69,14 +73,14 @@ export default function SalesTrendChart({ points, granularity, locale }: Props) 
             role="img"
             aria-label={title}
             tabIndex={0}
-            className="block touch-none outline-none focus-visible:ring-2 focus-visible:ring-rouge/40"
+            className="block touch-pan-y outline-none focus-visible:ring-2 focus-visible:ring-rouge/40"
             onPointerMove={(e) => pick(e.clientX, e.currentTarget.getBoundingClientRect())}
             onPointerDown={(e) => pick(e.clientX, e.currentTarget.getBoundingClientRect())}
             onPointerLeave={() => setActive(null)}
             onFocus={() => setActive((a) => a ?? last)}
             onBlur={() => setActive(null)}
             onKeyDown={(e) => {
-              if (e.key === "ArrowLeft") setActive((a) => Math.max(0, (a ?? last) - 1));
+              if (e.key === "ArrowLeft") setActive((a) => Math.min(last, Math.max(0, (a ?? last) - 1)));
               if (e.key === "ArrowRight") setActive((a) => Math.min(last, (a ?? last) + 1));
             }}
           >

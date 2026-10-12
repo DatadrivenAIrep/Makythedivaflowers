@@ -24,7 +24,7 @@ export default function HeatmapGrid({ heatmap }: { heatmap: Heatmap }) {
             {heatmap.counts.map((row, d) => {
               const k = step(row[s]);
               return (
-                <td key={d} className="h-9 rounded-md" style={{ background: k < 0 ? "#EDE8E0" : RAMP[k], color: k >= 3 ? "#FFFFFF" : "#0E0D0C" }}>
+                <td key={d} className="h-9 rounded-md" style={{ background: k < 0 ? "#EDE8E0" : RAMP[k], color: k >= 4 ? "#FFFFFF" : "#0E0D0C" }}>
                   {row[s]}
                 </td>
               );

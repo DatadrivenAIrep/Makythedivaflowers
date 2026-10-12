@@ -12,7 +12,8 @@ const PW = W - L - R, PH = H - T - B, GAP = 2;
 
 export default function ChannelColumns({ buckets, shares, granularity, locale }: Props) {
   const t = useTranslations("admin_metrics");
-  const [active, setActive] = useState<number | null>(null);
+  const [rawActive, setActive] = useState<number | null>(null);
+  const active = rawActive !== null && rawActive < buckets.length ? rawActive : null;
   const totals = buckets.map((b) => CHANNELS.reduce((s, c) => s + b[c], 0));
   const max = Math.max(1, ...totals);
   const band = PW / Math.max(1, buckets.length);
@@ -24,7 +25,7 @@ export default function ChannelColumns({ buckets, shares, granularity, locale }:
     <div>
       <div className="mb-2 text-xs uppercase tracking-wide text-ink/50">{t("channels_title")}</div>
       <div className="relative">
-        <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label={t("channels_title")} className="block">
+        <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="group" aria-label={t("channels_title")} className="block">
           {[0, 0.5, 1].map((f) => (
             <g key={f}>
               <line x1={L} x2={W - R} y1={T + PH * (1 - f)} y2={T + PH * (1 - f)} stroke="#EDE8E0" />
@@ -39,6 +40,8 @@ export default function ChannelColumns({ buckets, shares, granularity, locale }:
               <g
                 key={b.key}
                 tabIndex={0}
+                role="img"
+                aria-label={`${bucketLabel(b.key, granularity, locale)} · ${money(totals[i])}`}
                 onPointerEnter={() => setActive(i)}
                 onPointerLeave={() => setActive(null)}
                 onFocus={() => setActive(i)}

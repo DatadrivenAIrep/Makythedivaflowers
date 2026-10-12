@@ -98,3 +98,50 @@ describe("HeatmapGrid and UpcomingLoad", () => {
     expect(screen.getByText(/14 pedidos/)).toBeDefined();
   });
 });
+
+describe("chart accessibility and axes (fix round 1)", () => {
+  it("keeps orders-mode ticks distinct for a small peak", () => {
+    const small = [
+      { key: "2026-09", revenueCents: 100, orders: 0, prevRevenueCents: 0, prevOrders: 0 },
+      { key: "2026-10", revenueCents: 200, orders: 1, prevRevenueCents: 0, prevOrders: 0 },
+    ];
+    const { container } = wrap(<SalesTrendChart points={small} granularity="month" locale="es" />);
+    fireEvent.click(screen.getByRole("button", { name: "Órdenes" }));
+    const ticks = Array.from(container.querySelectorAll("svg text")).slice(0, 5).map((n) => n.textContent);
+    expect(new Set(ticks).size).toBe(5);
+    expect(ticks.every((v) => /^\d+$/.test(v ?? ""))).toBe(true);
+  });
+  it("lets a touch drag scroll the page vertically", () => {
+    wrap(<SalesTrendChart points={points} granularity="month" locale="es" />);
+    const plot = screen.getByRole("img", { name: "Ventas · este año vs año pasado" });
+    expect(plot.getAttribute("class")).toContain("touch-pan-y");
+  });
+  it("makes an upcoming-load bar focusable and shows its value on focus", () => {
+    wrap(
+      <UpcomingLoad
+        locale="es"
+        days={Array.from({ length: 14 }, (_, i) => ({ date: `2026-10-${String(12 + i).padStart(2, "0")}`, count: i === 5 ? 14 : 2 }))}
+      />,
+    );
+    const bars = screen.getAllByRole("img");
+    expect(bars.length).toBe(14);
+    const bar = bars[5];
+    expect(bar.getAttribute("tabindex")).toBe("0");
+    expect(bar.getAttribute("aria-label")).toContain("14 pedidos");
+    expect(screen.getByRole("status").textContent).toBe("");
+    fireEvent.focus(bar);
+    expect(screen.getByRole("status").textContent).toContain("14 pedidos");
+  });
+  it("names each channel bucket group", () => {
+    const zero = { web: 0, phone: 0, whatsapp: 0, "walk-in": 0, event: 0 };
+    wrap(
+      <ChannelColumns
+        granularity="month" locale="es"
+        buckets={[{ key: "2026-10", ...zero, web: 600000, phone: 400000 }]}
+        shares={[]}
+      />,
+    );
+    expect(screen.getByRole("img", { name: "oct · $10,000" })).toBeDefined();
+    expect(screen.getByRole("group", { name: "Ventas por canal" })).toBeDefined();
+  });
+});
