@@ -174,10 +174,14 @@ export default function IntakeForm({ products }: { products: Product[] }) {
   // is charged to one, else the buyer's (resolved server-side).
   const [exemptInfo, setExemptInfo] = useState<{ default: DefaultExemption | null; expired: boolean }>({ default: null, expired: false });
   const exemptAccountId = payment.status === "account" ? payment.accountId : "";
+  // Same phone the server resolves the order with (app/api/admin/orders): the
+  // buyer's when it has 10+ digits, else the recipient's (who picks up).
+  const recipientDigits = fulfillment.method === "in-store" ? "" : fulfillment.recipient.phone.replace(/\D/g, "");
+  const exemptPhone = phoneDigits.length >= 10 ? phoneDigits : recipientDigits;
   useEffect(() => {
-    if (phoneDigits.length < 10 && !exemptAccountId) { setExemptInfo({ default: null, expired: false }); return; }
+    if (exemptPhone.length < 10 && !exemptAccountId) { setExemptInfo({ default: null, expired: false }); return; }
     let cancelled = false;
-    const qs = new URLSearchParams({ phone: phoneDigits, accountId: exemptAccountId });
+    const qs = new URLSearchParams({ phone: exemptPhone, accountId: exemptAccountId });
     fetch(`/api/admin/tax-exempt/default?${qs}`, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then((d: { default?: DefaultExemption | null; expired?: boolean } | null) => {
@@ -185,7 +189,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
       })
       .catch(() => {});
     return () => { cancelled = true; };
-  }, [phoneDigits, exemptAccountId]);
+  }, [exemptPhone, exemptAccountId]);
   const exemptOn = isRequestExempt(exemptInfo.default, taxExempt);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);

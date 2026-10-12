@@ -5,7 +5,7 @@ import { cartSubtotalCents } from "@/lib/cart-helpers";
 import { PRODUCTS } from "@/data/products";
 import { saveOrder, listOrders, type ListOrdersFilters } from "@/lib/order-storage";
 import { enqueuePrintJob } from "@/lib/print-queue";
-import { upsertOnOrder } from "@/lib/customer-storage";
+import { getByPhoneUS, upsertOnOrder } from "@/lib/customer-storage";
 import { rememberRecipientDate } from "@/lib/customer-dates-storage";
 import { dispatchOrderReceived } from "@/lib/order-dispatch";
 import { validateForRedemption, redeem } from "@/lib/gift-card-storage";
@@ -63,6 +63,25 @@ export async function POST(req: Request) {
   const contactPhone =
     input.customer.phone && input.customer.phone.length >= 10 ? input.customer.phone : (recipient?.phone ?? "");
 
+  // Sales-tax exemption: the account's certificate when charged to one, else the
+  // buyer's; staff may switch it off, or on with a certificate for a one-off.
+  // Resolved before the upsert with the SAME fuzzy phone lookup as the intake
+  // toggle (GET /api/admin/tax-exempt/default), and so a rejected request does
+  // not bump the customer.
+  const exemptCustomer = contactPhone ? getByPhoneUS(contactPhone) : null;
+  const exemption = resolveOrderExemption({
+    fallback: resolveDefaultExemption({
+      account: houseAccount?.taxExemption,
+      customer: exemptCustomer?.taxExemption,
+      today: shopDateStr(new Date()),
+    }),
+    requested: input.taxExempt,
+  });
+  if (!exemption.ok) {
+    return NextResponse.json({ errors: { formErrors: [exemption.error] } }, { status: 400 });
+  }
+  const taxExempt = exemption.exemption;
+
   const customer = upsertOnOrder({
     name: contactName,
     phone: contactPhone,
@@ -74,21 +93,6 @@ export async function POST(req: Request) {
     locale: input.customer.locale,
     buyerAddress: input.customer.buyerAddress,
   });
-
-  // Sales-tax exemption: the account's certificate when charged to one, else the
-  // buyer's; staff may switch it off, or on with a certificate for a one-off.
-  const exemption = resolveOrderExemption({
-    fallback: resolveDefaultExemption({
-      account: houseAccount?.taxExemption,
-      customer: customer.taxExemption,
-      today: shopDateStr(new Date()),
-    }),
-    requested: input.taxExempt,
-  });
-  if (!exemption.ok) {
-    return NextResponse.json({ errors: { formErrors: [exemption.error] } }, { status: 400 });
-  }
-  const taxExempt = exemption.exemption;
 
   // --- Promo code (optional) ---
   // Only the code arrives from the client; the discount is recomputed here from

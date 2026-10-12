@@ -32,11 +32,11 @@ async function post(b: unknown) {
   const { POST } = await import("@/app/api/admin/orders/route");
   return POST(new Request("http://t", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(b) }));
 }
-function seedExemptCustomer(cert = "CUS-1", expires: string | null = null) {
+function seedExemptCustomer(cert = "CUS-1", expires: string | null = null, phone = PHONE) {
   getDb().prepare(
     `INSERT INTO customers (id, name, phone, order_count, first_seen_at, last_seen_at, tax_exempt, tax_exempt_cert, tax_exempt_expires)
      VALUES ('c1', 'Iglesia San Juan', ?, 0, '2026-01-01T00:00:00Z', '2026-01-01T00:00:00Z', 1, ?, ?)`,
-  ).run(PHONE, cert, expires);
+  ).run(phone, cert, expires);
 }
 
 describe("intake with tax exemption", () => {
@@ -90,6 +90,39 @@ describe("intake with tax exemption", () => {
     seedExemptCustomer();
     const order = await getOrder((await (await post(body({ totalsOverride: { taxCents: 431 } }))).json()).orderId);
     expect(order?.totals.taxCents).toBe(0);
+  });
+});
+
+describe("intake resolves the exemption with the same phone lookup as the toggle", () => {
+  it("finds a customer stored with the leading 1 when staff type 10 digits", async () => {
+    seedExemptCustomer("CUS-11", null, "1" + PHONE);
+    const res = await post(body());
+    expect(res.status).toBe(201);
+    const order = await getOrder((await res.json()).orderId);
+    expect(order?.totals.taxCents).toBe(0);
+    expect(order?.totals.totalCents).toBe(SUBTOTAL);
+    expect(order?.taxExempt).toEqual({ cert: "CUS-11" });
+  });
+
+  it("pickup without a buyer phone uses the recipient's exemption", async () => {
+    seedExemptCustomer();
+    const res = await post(body({ customer: { name: "", phone: "", messagingChannel: "none" } }));
+    expect(res.status).toBe(201);
+    const order = await getOrder((await res.json()).orderId);
+    expect(order?.taxExempt).toEqual({ cert: "CUS-1" });
+    expect(order?.totals.taxCents).toBe(0);
+  });
+
+  it("a rejected request (certificate required) does not bump the customer", async () => {
+    getDb().prepare(
+      `INSERT INTO customers (id, name, phone, order_count, first_seen_at, last_seen_at) VALUES ('c2', 'Ana', ?, 3, '2026-01-01T00:00:00Z', '2026-01-01T00:00:00Z')`,
+    ).run(PHONE);
+    const res = await post(body({ taxExempt: { taxExempt: true } }));
+    expect(res.status).toBe(400);
+    const row = getDb().prepare("SELECT order_count FROM customers WHERE id = 'c2'").get() as { order_count: number };
+    expect(row.order_count).toBe(3);
+    const n = getDb().prepare("SELECT COUNT(*) AS n FROM customers").get() as { n: number };
+    expect(n.n).toBe(1);
   });
 });
 
