@@ -62,7 +62,13 @@ function applyPatch(cur: Order, patch: OrderEditPatch): Order {
     lines,
     fulfillmentMethod: method,
     address: method === "delivery" ? { zip: (address as Address).zip, city: (address as Address).city } : undefined,
-    override: patch.totalsOverride,
+    // Discount and tip are not editable here (the PATCH schema strips them), so
+    // they carry over from the stored order instead of silently dropping to 0.
+    override: {
+      discountCents: cur.totals.discountCents,
+      tipCents: cur.totals.tipCents,
+      ...patch.totalsOverride,
+    },
   });
 
   const next: Order = {
