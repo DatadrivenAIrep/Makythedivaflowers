@@ -22,7 +22,7 @@ export type InvoiceStrings = {
   giftCard: string; paid: string; deposit: string; balanceDue: string; credit: string;
   status: Record<InvoiceStatus, string>;
   methods: Record<PaymentMethod, string>;
-  thanks: string; print: string;
+  thanks: string; print: string; viewOnline: string;
 };
 
 export const INVOICE_STRINGS: Record<"en" | "es", InvoiceStrings> = {
@@ -34,7 +34,7 @@ export const INVOICE_STRINGS: Record<"en" | "es", InvoiceStrings> = {
     giftCard: "Gift card", paid: "Paid", deposit: "Deposit", balanceDue: "Balance due", credit: "Credit",
     status: { paid: "Paid", refunded: "Refunded", balance_due: "Balance due", canceled: "Canceled" },
     methods: { cash: "Cash", zelle: "Zelle", "card-terminal": "Card", ach: "ACH", stripe: "Card (online)", "gift-card": "Gift card", "house-account": "House account" },
-    thanks: "Thank you for choosing Maky The Diva Flowers.", print: "Print / Save PDF",
+    thanks: "Thank you for choosing Maky The Diva Flowers.", print: "Print / Save PDF", viewOnline: "View or print this invoice online",
   },
   es: {
     title: "Factura", number: "Factura #", issued: "Emitida", ordered: "Fecha de la orden",
@@ -44,7 +44,7 @@ export const INVOICE_STRINGS: Record<"en" | "es", InvoiceStrings> = {
     giftCard: "Tarjeta de regalo", paid: "Pagado", deposit: "Depósito", balanceDue: "Saldo pendiente", credit: "Saldo a favor",
     status: { paid: "Pagada", refunded: "Reembolsada", balance_due: "Saldo pendiente", canceled: "Cancelada" },
     methods: { cash: "Efectivo", zelle: "Zelle", "card-terminal": "Tarjeta", ach: "ACH", stripe: "Tarjeta (en línea)", "gift-card": "Tarjeta de regalo", "house-account": "A cuenta" },
-    thanks: "Gracias por elegir Maky The Diva Flowers.", print: "Imprimir / Guardar PDF",
+    thanks: "Gracias por elegir Maky The Diva Flowers.", print: "Imprimir / Guardar PDF", viewOnline: "Ver o imprimir esta factura en línea",
   },
 };
 

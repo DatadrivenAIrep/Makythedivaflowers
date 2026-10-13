@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import {
   WhatsappLogo, ArrowsClockwise, Check, CheckCircle,
-  Package, Truck, XCircle, X, Pencil, Eye, Printer, FileText, Storefront, Star, HandCoins, Buildings,
+  Package, Truck, XCircle, X, Pencil, Eye, Printer, FileText, Storefront, Star, HandCoins, Buildings, PaperPlaneTilt,
 } from "@phosphor-icons/react/dist/ssr";
 import { useTranslations, useLocale } from "next-intl";
 import { formatDateTime } from "@/lib/format-datetime";
@@ -15,6 +15,7 @@ import OrderEditForm from "./OrderEditForm";
 import OrderHistoryList from "./OrderHistoryList";
 import DigitalCardSection from "./DigitalCardSection";
 import DeliverSheet from "./DeliverSheet";
+import InvoiceSendPanel from "./InvoiceSendPanel";
 import AccountSearch from "@/components/admin/accounts/AccountSearch";
 import type { Order, OrderChange } from "@/types/order";
 import type { OrderEditPatch } from "@/lib/order-edit";
@@ -71,6 +72,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
   const [accountPickOpen, setAccountPickOpen] = useState(false);
   const [accountErr, setAccountErr] = useState<string | null>(null);
   const [delivering, setDelivering] = useState(false);
+  const [invoiceSendOpen, setInvoiceSendOpen] = useState(false);
   // Mirrors `delivering` for the document-level Escape handler (which must not close the drawer under the sheet).
   const deliveringRef = useRef(false);
   useEffect(() => { deliveringRef.current = delivering; }, [delivering]);
@@ -224,12 +226,24 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
                 <AdminButton variant="secondary" icon={Pencil} disabled={busy} onClick={() => setEditing(true)}>{t("edit")}</AdminButton>
                 <AdminButton variant="secondary" icon={Eye} href={`/api/admin/orders/${order.id}/sheet`} target="_blank" rel="noreferrer">{t("preview")}</AdminButton>
                 <AdminButton variant="secondary" icon={FileText} href={`/api/admin/orders/${order.id}/invoice`} target="_blank" rel="noreferrer">{t("invoice")}</AdminButton>
+                <AdminButton variant="secondary" icon={PaperPlaneTilt} aria-pressed={invoiceSendOpen}
+                  onClick={() => setInvoiceSendOpen((v) => !v)}>{t("invoice_send")}</AdminButton>
                 <AdminButton variant="secondary" icon={Printer} disabled={busy} onClick={reprint}>{t("reprint")}</AdminButton>
               </>
             )}
             <AdminButton variant="secondary" icon={X} onClick={onClose} aria-label={t("close")}>{t("close")}</AdminButton>
           </div>
         </header>
+
+        {!editing && invoiceSendOpen && (
+          <InvoiceSendPanel
+            orderId={order.id}
+            defaultPhone={order.contact.phone ?? ""}
+            defaultEmail={order.contact.email ?? ""}
+            onClose={() => setInvoiceSendOpen(false)}
+            onSent={() => void reload()}
+          />
+        )}
 
         {!editing && onAccount && data.houseAccount && (
           <div className="mb-3 flex items-center justify-between gap-2 rounded bg-sky-50 px-3 py-2 text-sm font-semibold text-sky-800">

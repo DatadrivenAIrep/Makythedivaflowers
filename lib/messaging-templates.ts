@@ -20,6 +20,8 @@ export type TemplateVars = {
   from_label?: string;
   /** "delivered" only: set when the MMS carries the delivery photo. */
   has_photo?: "1";
+  /** "invoice" only: the invoice number, e.g. "INV-1042". */
+  invoice_number?: string;
 };
 
 /** "Ana sent you" / "You received" — the gift SMS reads naturally either way. */
@@ -76,6 +78,8 @@ const BODIES: Record<"en" | "es", Record<MessageTemplate, (v: TemplateVars) => s
       `Hi${named(v)}, thanks for choosing Diva Flowers! Would you leave us a quick Google review? ${v.link ?? ""} — Maky`,
     gift_card_issued: (v) =>
       `Hi${recipientNamed(v)}! ${giftOpener(v, "en")} a ${v.total} Diva Flowers gift card. Code: ${v.code ?? ""}. Use it at ${v.link ?? ""} or call ${v.shop_phone}. Reply STOP to opt out.`,
+    invoice: (v) =>
+      `Hi${named(v)}, here is your Diva Flowers invoice ${v.invoice_number ?? ""} (${v.total}): ${v.link ?? ""} — Maky · ${v.shop_phone}`,
   },
   es: {
     order_received: (v) =>
@@ -94,6 +98,8 @@ const BODIES: Record<"en" | "es", Record<MessageTemplate, (v: TemplateVars) => s
       `¡Hola${named(v)}! Gracias por elegir Diva Flowers 🌸 ¿Nos dejas una reseña en Google? ${v.link ?? ""} — Maky`,
     gift_card_issued: (v) =>
       `¡Hola${recipientNamed(v)}! ${giftOpener(v, "es")} una gift card de Diva Flowers por ${v.total}. Código: ${v.code ?? ""}. Úsala en ${v.link ?? ""} o llama al ${v.shop_phone}. Responde STOP para no recibir más mensajes.`,
+    invoice: (v) =>
+      `Hola${named(v)}, aquí está tu factura de Diva Flowers ${v.invoice_number ?? ""} (${v.total}): ${v.link ?? ""} — Maky · ${v.shop_phone}`,
   },
 };
 
@@ -126,6 +132,8 @@ export function whatsappContentVars(
       return { "1": vars.buyer_name, "2": vars.link ?? "" };
     case "gift_card_issued":
       return { "1": vars.recipient_name, "2": vars.total, "3": vars.code ?? "" };
+    case "invoice":
+      return { "1": vars.buyer_name, "2": vars.invoice_number ?? "", "3": vars.link ?? "" };
   }
 }
 
