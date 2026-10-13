@@ -11,7 +11,8 @@ export type MessageTemplate =
   | "ready_for_pickup"
   | "delivered"
   | "review_request"
-  | "gift_card_issued";
+  | "gift_card_issued"
+  | "invoice";
 export type MessageStatus = "queued" | "sent" | "failed" | "skipped";
 
 export type Message = {
