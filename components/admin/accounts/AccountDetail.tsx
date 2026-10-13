@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { ArrowLeft, HandCoins, Receipt, PauseCircle, PlayCircle, XCircle, PlusMinus } from "@phosphor-icons/react/dist/ssr";
 import { shopDateStr } from "@/lib/tv-slots";
+import { localYmd } from "@/lib/format-datetime";
+import { isExemptionValid } from "@/lib/tax-exempt";
 import AdminButton from "@/components/admin/dashboard/AdminButton";
 import OrderDetailDrawer from "@/components/admin/dashboard/OrderDetailDrawer";
 import type { AccountDetailData } from "@/lib/house-account-detail";
@@ -34,6 +36,7 @@ function Section({ title, action, children }: { title: string; action?: React.Re
 
 export default function AccountDetail({ locale, initial }: Props) {
   const t = useTranslations("admin_accounts");
+  const tx = useTranslations("admin_tax_exempt");
   const [data, setData] = useState<AccountDetailData>(initial);
   const [busy, setBusy] = useState(false);
   const [flash, setFlash] = useState<{ ok: boolean; text: string } | null>(null);
@@ -175,6 +178,7 @@ export default function AccountDetail({ locale, initial }: Props) {
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-semibold">{account.name}</h1>
             <AccountStatusBadge status={account.status} />
+            {isExemptionValid(account.taxExemption, localYmd()) && <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] text-emerald-700">{tx("badge")}</span>}
             {overdue && <span className="rounded-full bg-rose-100 px-2 py-0.5 text-xs font-semibold text-rose-700">{t("overdue")}</span>}
           </div>
           <div className={`mt-1 text-lg tabular-nums ${data.balanceCents > 0 ? (overdue ? "text-rose-700" : "text-amber-800") : "text-ink/70"}`}>

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { taxExemptionInput } from "@/schemas/tax-exempt";
 
 export const reminderStep = z.object({
   offsetDays: z.number().int().min(-60).max(120),
@@ -17,6 +18,7 @@ export const accountBody = z.object({
   reminderPlan: z.array(reminderStep).max(10).optional(),
   statementChannel: z.enum(["sms", "email", "both"]).optional(),
   notes: z.string().max(1000).optional(),
+  taxExemption: taxExemptionInput.optional(),
 });
 export type AccountBody = z.infer<typeof accountBody>;
 

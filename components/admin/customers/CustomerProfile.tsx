@@ -3,7 +3,10 @@ import Link from "next/link";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, WhatsappLogo, Phone, X, PencilSimple } from "@phosphor-icons/react/dist/ssr";
-import { formatDate } from "@/lib/format-datetime";
+import { formatDate, localYmd } from "@/lib/format-datetime";
+import { isExemptionValid } from "@/lib/tax-exempt";
+import type { TaxExemption } from "@/types/tax-exempt";
+import TaxExemptFields from "@/components/admin/TaxExemptFields";
 import type { CustomerProfileData } from "@/lib/customer-profile";
 import type { Address } from "@/types/address";
 import type { Order } from "@/types/order";
@@ -27,10 +30,15 @@ function itemCount(o: Order): number {
 
 export default function CustomerProfile({ locale, initial, suggestions }: Props) {
   const t = useTranslations("admin_customers");
+  const tx = useTranslations("admin_tax_exempt");
   const [data, setData] = useState<CustomerProfileData>(initial);
   const [notesDraft, setNotesDraft] = useState(initial.customer.notes ?? "");
   const [savingNotes, setSavingNotes] = useState(false);
   const [notesSaved, setNotesSaved] = useState(false);
+  const [exemptDraft, setExemptDraft] = useState<TaxExemption>(initial.customer.taxExemption);
+  const [savingExempt, setSavingExempt] = useState(false);
+  const [exemptSaved, setExemptSaved] = useState(false);
+  const [exemptError, setExemptError] = useState(false);
   const [tagDraft, setTagDraft] = useState("");
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState(initial.customer.name);
@@ -71,6 +79,23 @@ export default function CustomerProfile({ locale, initial, suggestions }: Props)
     } finally {
       setSavingLocale(false);
     }
+  }
+
+  async function saveExempt() {
+    setSavingExempt(true); setExemptSaved(false); setExemptError(false);
+    try {
+      const res = await fetch(`/api/admin/customers/${customer.id}`, {
+        method: "PATCH", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ taxExemption: exemptDraft }),
+      });
+      if (res.status === 400) { setExemptError(true); return; }
+      if (!res.ok) throw new Error(String(res.status));
+      const body = (await res.json()) as { customer: CustomerProfileData["customer"] };
+      setData((d) => ({ ...d, customer: body.customer }));
+      setExemptDraft(body.customer.taxExemption);
+      setExemptSaved(true);
+      setError(false);
+    } catch { setError(true); } finally { setSavingExempt(false); }
   }
 
   async function saveNotes() {
@@ -202,6 +227,7 @@ export default function CustomerProfile({ locale, initial, suggestions }: Props)
           ) : (
             <>
               <h1 className="text-xl font-semibold">{customer.name}</h1>
+              {isExemptionValid(customer.taxExemption, localYmd()) && <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] text-emerald-700">{tx("badge")}</span>}
               <button
                 type="button"
                 aria-label={t("edit_name")}
@@ -354,6 +380,17 @@ export default function CustomerProfile({ locale, initial, suggestions }: Props)
           ) : (
             t("no_address")
           )}
+        </div>
+      </section>
+
+      <section className="mb-3 rounded border border-ink/10 bg-bone p-3">
+        <div className="mb-1 text-xs uppercase tracking-wide text-ink/50">{tx("title")}</div>
+        <TaxExemptFields value={exemptDraft} onChange={(v) => { setExemptDraft(v); setExemptSaved(false); setExemptError(false); }} today={localYmd()} idPrefix="crm" />
+        <div className="mt-2 flex items-center gap-2">
+          <button type="button" disabled={savingExempt} onClick={() => void saveExempt()}
+            className="min-h-11 rounded-lg bg-rouge px-4 text-sm text-bone disabled:opacity-50">{tx("save")}</button>
+          {exemptSaved && <span className="text-xs text-emerald-700">{tx("saved")}</span>}
+          {exemptError && <span className="text-xs text-rouge">{tx("cert_required")}</span>}
         </div>
       </section>
 

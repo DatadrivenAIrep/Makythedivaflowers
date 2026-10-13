@@ -1,11 +1,12 @@
 import { describe, it, expect, vi } from "vitest";
 import { buildStatementHtml, notFoundPage, voidPage } from "@/lib/house-statement-html";
 import type { Statement, HouseAccount } from "@/types/house-account";
+import { NO_EXEMPTION } from "@/types/tax-exempt";
 
 const account: HouseAccount = {
   id: "ha_1", name: "Hotel <b>Roslyn</b>", billingName: "Ana", billingPhone: "5165550100", billingEmail: "ap@hotel.com",
   locale: "es", cadence: "monthly", issueDay: 1, termsDays: 15, reminderPlan: [], statementChannel: "both",
-  status: "active", createdAt: "2026-09-01T12:00:00Z", updatedAt: "2026-09-01T12:00:00Z",
+  status: "active", taxExemption: NO_EXEMPTION, createdAt: "2026-09-01T12:00:00Z", updatedAt: "2026-09-01T12:00:00Z",
 };
 const statement: Statement = {
   id: "hst_1", accountId: "ha_1", number: "ST-1001", code: "AbCdEfGh", periodStart: "2026-09-01", periodEnd: "2026-09-30",

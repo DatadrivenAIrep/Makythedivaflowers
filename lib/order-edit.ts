@@ -2,12 +2,14 @@ import "server-only";
 import { getOrder, updateOrder } from "@/lib/order-storage";
 import { recordOrderChange } from "@/lib/order-history";
 import { resolveOrderTotals } from "@/lib/totals";
+import { resolveOrderExemption } from "@/lib/tax-exempt";
 import { PRODUCTS } from "@/data/products";
 import type {
   Order, OrderFulfillment, CartLine, FieldDiff, OrderTotals,
   Recipient, DeliveryWindow, OrderChange,
 } from "@/types/order";
 import type { Address } from "@/types/address";
+import type { TaxExemptRequest } from "@/types/tax-exempt";
 
 export type OrderEditPatch = {
   contact?: { name?: string; email?: string; phone?: string };
@@ -19,6 +21,7 @@ export type OrderEditPatch = {
   funeral?: boolean;
   lines?: CartLine[];
   totalsOverride?: Partial<OrderTotals>;
+  taxExempt?: TaxExemptRequest;
 };
 
 function money(c: number): string { return `$${(c / 100).toFixed(2)}`; }
@@ -58,11 +61,22 @@ function applyPatch(cur: Order, patch: OrderEditPatch): Order {
   const lines = patch.lines ?? cur.lines;
   if (lines.length === 0) throw new Error("order must have at least one item");
 
+  // The stored snapshot is the default: an edit never re-adds tax by accident.
+  const exemption = resolveOrderExemption({ fallback: cur.taxExempt ?? null, requested: patch.taxExempt });
+  if (!exemption.ok) throw new Error(exemption.error);
+
   const totals = resolveOrderTotals({
     lines,
     fulfillmentMethod: method,
     address: method === "delivery" ? { zip: (address as Address).zip, city: (address as Address).city } : undefined,
-    override: patch.totalsOverride,
+    // Discount and tip are not editable here (the PATCH schema strips them), so
+    // they carry over from the stored order instead of silently dropping to 0.
+    override: {
+      discountCents: cur.totals.discountCents,
+      tipCents: cur.totals.tipCents,
+      ...patch.totalsOverride,
+    },
+    taxExempt: exemption.exemption !== null,
   });
 
   const next: Order = {
@@ -74,6 +88,8 @@ function applyPatch(cur: Order, patch: OrderEditPatch): Order {
   };
   if (patch.funeral === true) next.funeral = true;
   if (patch.funeral === false) delete next.funeral;
+  if (exemption.exemption) next.taxExempt = exemption.exemption;
+  else delete next.taxExempt;
   return next;
 }
 
@@ -101,6 +117,8 @@ export function diffOrders(before: Order, after: Order): FieldDiff[] {
 
   push("cardMessage", "Mensaje de tarjeta", before.fulfillment.cardMessage ?? null, after.fulfillment.cardMessage ?? null);
   push("funeral", "Funeral", before.funeral ? "sí" : "no", after.funeral ? "sí" : "no");
+  const ex = (o: Order) => (o.taxExempt ? `sí · ${o.taxExempt.cert}` : "no");
+  push("taxExempt", "Exento de impuesto", ex(before), ex(after));
 
   if (JSON.stringify(before.lines) !== JSON.stringify(after.lines)) {
     diffs.push({ field: "lines", label: "Artículos", before: linesSummary(before.lines), after: linesSummary(after.lines) });

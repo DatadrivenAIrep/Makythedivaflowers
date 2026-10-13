@@ -6,6 +6,9 @@ import FulfillmentBlock, { type FulfillmentState, toOrderFulfillment } from "@/c
 import ProductPicker from "@/components/admin/intake/ProductPicker";
 import CartLines from "@/components/admin/intake/CartLines";
 import CartTotals from "@/components/admin/intake/CartTotals";
+import TaxExemptToggle from "@/components/admin/intake/TaxExemptToggle";
+import { isRequestExempt } from "@/lib/tax-exempt";
+import type { DefaultExemption, TaxExemptRequest } from "@/types/tax-exempt";
 import { PRODUCTS } from "@/data/products";
 import type { OrderEditPatch } from "@/lib/order-edit";
 import { localYmd } from "@/lib/format-datetime";
@@ -33,12 +36,18 @@ export default function OrderEditForm({
   onSave: (patch: OrderEditPatch) => void;
 }) {
   const t = useTranslations("admin_orders");
+  const tx = useTranslations("admin_tax_exempt");
   const [contact, setContact] = useState({
     name: order.contact.name ?? "", email: order.contact.email ?? "", phone: order.contact.phone,
   });
   const [fulfillment, setFulfillment] = useState<FulfillmentState>(orderToFulfillmentState(order));
   const [lines, setLines] = useState<CartLine[]>(order.lines);
   const [override, setOverride] = useState<Partial<OrderTotals>>({});
+  // undefined = keep the order's stored exemption snapshot (the PATCH default).
+  const [taxExempt, setTaxExempt] = useState<TaxExemptRequest | undefined>(undefined);
+  const exemptFallback: DefaultExemption | null = order.taxExempt ? { cert: order.taxExempt.cert, source: "order" } : null;
+  const exemptOn = isRequestExempt(exemptFallback, taxExempt);
+  const [certError, setCertError] = useState(false);
 
   function addLine(line: CartLine) {
     setLines((prev) => {
@@ -55,6 +64,9 @@ export default function OrderEditForm({
   }
 
   function submit() {
+    // The server would 400 a one-off exemption without a certificate; say so here.
+    if (exemptOn && !exemptFallback && !taxExempt?.cert?.trim()) { setCertError(true); return; }
+    setCertError(false);
     const f = toOrderFulfillment(fulfillment);
     const patch: OrderEditPatch = {
       contact: { name: contact.name || undefined, email: contact.email || undefined, phone: contact.phone },
@@ -66,6 +78,7 @@ export default function OrderEditForm({
       ...(f.method === "delivery" ? { address: f.address } : {}),
       ...(f.method !== "in-store" ? { window: f.window } : {}),
       ...(Object.keys(override).length ? { totalsOverride: override } : {}),
+      ...(taxExempt ? { taxExempt } : {}),
     };
     onSave(patch);
   }
@@ -85,6 +98,8 @@ export default function OrderEditForm({
 
       <ProductPicker products={PRODUCTS} onAdd={addLine} />
       <CartLines lines={lines} onChangeLines={setLines} />
+      <TaxExemptToggle fallback={exemptFallback} value={taxExempt} onChange={(v) => { setTaxExempt(v); setCertError(false); }} />
+      {certError && <p className="text-sm text-error">{tx("cert_required")}</p>}
       <CartTotals
         lines={lines}
         fulfillmentMethod={fulfillment.method}
@@ -92,6 +107,9 @@ export default function OrderEditForm({
         deliveryCity={fulfillment.address.city}
         override={override}
         onOverride={setOverride}
+        taxExempt={exemptOn}
+        baseDiscountCents={order.totals.discountCents}
+        baseTipCents={order.totals.tipCents}
       />
 
       <div className="flex gap-2">

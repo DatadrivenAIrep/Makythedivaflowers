@@ -227,3 +227,14 @@ describe("buildInvoiceModel", () => {
     }
   });
 });
+
+describe("tax exempt invoice", () => {
+  it("labels the tax row with the certificate", () => {
+    const m = buildInvoiceModel(order({
+      taxExempt: { cert: "ST-119-42" },
+      totals: { subtotalCents: 41800, deliveryCents: 1500, discountCents: 0, tipCents: 0, taxCents: 0, totalCents: 43300 },
+    }), { now: NOW });
+    const tax = m.totals.find((r) => r.label.startsWith("Sales tax (NY)"));
+    expect(tax).toEqual({ label: "Sales tax (NY) — Exempt · Cert #ST-119-42", cents: 0 });
+  });
+});

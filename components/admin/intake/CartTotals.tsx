@@ -13,6 +13,11 @@ type Props = {
   deliveryCity: string;
   override: Partial<OrderTotals>;
   onOverride: (next: Partial<OrderTotals>) => void;
+  /** Tax-exempt order: tax is $0 and can't be overridden (mirrors resolveOrderTotals). */
+  taxExempt?: boolean;
+  /** Discount/tip already on the order (edit form); an override on either still wins. */
+  baseDiscountCents?: number;
+  baseTipCents?: number;
 };
 
 function EditableAmount({ cents, computed, onSet, onClear }: { cents: number; computed: number; onSet: (v: number) => void; onClear: () => void }) {
@@ -47,32 +52,37 @@ function EditableAmount({ cents, computed, onSet, onClear }: { cents: number; co
   );
 }
 
-export default function CartTotals({ lines, fulfillmentMethod, deliveryZip, deliveryCity, override, onOverride }: Props) {
+export default function CartTotals({
+  lines, fulfillmentMethod, deliveryZip, deliveryCity, override, onOverride,
+  taxExempt = false, baseDiscountCents = 0, baseTipCents = 0,
+}: Props) {
   const t = useTranslations("admin_intake");
+  const tx = useTranslations("admin_tax_exempt");
   const resolvedDelivery = useMemo(
     () => (fulfillmentMethod === "delivery" ? computeDeliveryCentsForAddress({ zip: deliveryZip, city: deliveryCity }) : 0),
     [fulfillmentMethod, deliveryZip, deliveryCity],
   );
   const computed = useMemo(
-    () => computeOrderTotals(cartSubtotalCents(lines, PRODUCTS), resolvedDelivery ?? 0),
-    [lines, resolvedDelivery],
+    () => computeOrderTotals(cartSubtotalCents(lines, PRODUCTS), resolvedDelivery ?? 0, 0, 0, { taxExempt }),
+    [lines, resolvedDelivery, taxExempt],
   );
   // Cascade: overriding subtotal/delivery flows into tax + total (matches the
   // server's resolveOrderTotals). Only an explicit override on a field pins it.
   const subtotalCents = override.subtotalCents ?? computed.subtotalCents;
   const deliveryCents = override.deliveryCents ?? computed.deliveryCents;
-  // Staff intake has neither a promo-code nor a tip flow yet, so both are
-  // whatever the override carries (normally nothing). Kept in the cascade so
-  // this mirrors the server's resolveOrderTotals rather than drifting from it.
+  // Discount/tip: the override wins, else the order's own (edit form; 0 on
+  // intake). Kept in the cascade so this mirrors the server's
+  // resolveOrderTotals rather than drifting from it.
   const recomputed = computeOrderTotals(
     subtotalCents,
     deliveryCents,
-    override.discountCents ?? 0,
-    override.tipCents ?? 0,
+    override.discountCents ?? baseDiscountCents,
+    override.tipCents ?? baseTipCents,
+    { taxExempt },
   );
   const discountCents = recomputed.discountCents;
   const tipCents = recomputed.tipCents;
-  const taxCents = override.taxCents ?? recomputed.taxCents;
+  const taxCents = taxExempt ? 0 : (override.taxCents ?? recomputed.taxCents);
   const totalCents =
     override.totalCents ?? subtotalCents + deliveryCents - discountCents + taxCents + tipCents;
   const totals: OrderTotals = {
@@ -124,7 +134,18 @@ export default function CartTotals({ lines, fulfillmentMethod, deliveryZip, deli
           <span className="tabular-nums">−${(discountCents / 100).toFixed(2)}</span>
         </div>
       )}
-      {row(t("totals_tax"), "taxCents")}
+      {tipCents > 0 && (
+        <div className="flex justify-between items-center text-mute-600 py-1">
+          <span>{t("totals_tip")}</span>
+          <span className="tabular-nums">${(tipCents / 100).toFixed(2)}</span>
+        </div>
+      )}
+      {taxExempt ? (
+        <div className="flex justify-between items-center text-mute-600 py-1">
+          <span>{t("totals_tax")}</span>
+          <span className="tabular-nums">{`$0.00 · ${tx("exempt_row")}`}</span>
+        </div>
+      ) : row(t("totals_tax"), "taxCents")}
       <div className="flex justify-between items-center border-t border-mute-100 mt-2 pt-2.5 font-display text-base">
         <span>{t("totals_total")}</span>
         <EditableAmount cents={totals.totalCents} computed={natural.totalCents} onSet={set("totalCents")} onClear={clear("totalCents")} />

@@ -86,4 +86,12 @@ describe("editOrder", () => {
     const { order } = await editOrder("e7", { contact: { phone: "999" } }, "maky");
     expect(order.funeral).toBe(true);
   });
+
+  it("keeps the promo discount and the tip when an unrelated field is edited", async () => {
+    await saveOrder(baseOrder("e-dt", {
+      totals: { subtotalCents: 5000, deliveryCents: 1000, discountCents: 500, tipCents: 300, taxCents: 474, totalCents: 6274 },
+    }));
+    const { order } = await editOrder("e-dt", { cardMessage: "Con cariño" }, "maky");
+    expect(order.totals).toEqual({ subtotalCents: 5000, deliveryCents: 1000, discountCents: 500, tipCents: 300, taxCents: 474, totalCents: 6274 });
+  });
 });

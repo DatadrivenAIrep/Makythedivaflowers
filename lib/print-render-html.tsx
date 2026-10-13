@@ -41,6 +41,7 @@ const T = {
     discount: "Discount",
     delivery: "Delivery",
     tax: "Tax",
+    taxExempt: "Tax exempt",
     tip: "Tip",
     giftCard: "Gift card",
     paidAmount: "Paid",
@@ -70,6 +71,7 @@ const T = {
     discount: "Descuento",
     delivery: "Envío",
     tax: "Tax",
+    taxExempt: "Exento de tax",
     tip: "Propina",
     giftCard: "Gift card",
     paidAmount: "Pagado",
@@ -229,7 +231,7 @@ function Worksheet({ order }: { order: Order }) {
               ) : null}
               <tr className="totline">
                 <td></td>
-                <td>{t.tax}</td>
+                <td>{order.taxExempt ? `${t.taxExempt} · #${order.taxExempt.cert}` : t.tax}</td>
                 <td className="price">{m(order.totals.taxCents)}</td>
               </tr>
               {order.totals.tipCents > 0 ? (

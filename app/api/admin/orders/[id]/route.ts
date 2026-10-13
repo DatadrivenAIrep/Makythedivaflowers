@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { taxExemptRequest } from "@/schemas/tax-exempt";
 import { CARD_MESSAGE_MAX } from "@/lib/card-message-fit";
 import { getOrder } from "@/lib/order-storage";
 import { getDb } from "@/lib/db";
@@ -67,6 +68,7 @@ const patchSchema = z.object({
   funeral: z.boolean().optional(),
   lines: z.array(lineSchema).optional(),
   totalsOverride: totalsOverrideSchema.optional(),
+  taxExempt: taxExemptRequest.optional(),
 });
 
 export async function PATCH(

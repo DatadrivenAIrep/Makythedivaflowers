@@ -5,7 +5,7 @@ import { cartSubtotalCents } from "@/lib/cart-helpers";
 import { PRODUCTS } from "@/data/products";
 import { saveOrder, listOrders, type ListOrdersFilters } from "@/lib/order-storage";
 import { enqueuePrintJob } from "@/lib/print-queue";
-import { upsertOnOrder } from "@/lib/customer-storage";
+import { getByPhoneUS, upsertOnOrder } from "@/lib/customer-storage";
 import { rememberRecipientDate } from "@/lib/customer-dates-storage";
 import { dispatchOrderReceived } from "@/lib/order-dispatch";
 import { validateForRedemption, redeem } from "@/lib/gift-card-storage";
@@ -13,11 +13,13 @@ import { validatePromo, redeemPromo } from "@/lib/promo";
 import { buyerHasPaidOrder } from "@/lib/buyer-history";
 import { getAccount, linkContact } from "@/lib/house-account-storage";
 import { recordCharge } from "@/lib/house-account-ledger";
+import { resolveDefaultExemption, resolveOrderExemption } from "@/lib/tax-exempt";
+import { shopDateStr } from "@/lib/tv-slots";
 import type { Order, OrderFulfillment, CartLine } from "@/types/order";
 
 export const runtime = "nodejs";
 
-function computeTotals(input: IntakeInput, discountCents = 0): Order["totals"] {
+function computeTotals(input: IntakeInput, discountCents = 0, taxExempt = false): Order["totals"] {
   return resolveOrderTotals({
     lines: input.lines as CartLine[],
     fulfillmentMethod: input.fulfillment.method,
@@ -25,6 +27,7 @@ function computeTotals(input: IntakeInput, discountCents = 0): Order["totals"] {
     // The promo discount is authoritative from the server; a client-sent
     // discountCents in totalsOverride is stripped by intakeSchema and ignored.
     override: discountCents > 0 ? { ...input.totalsOverride, discountCents } : input.totalsOverride,
+    taxExempt,
   });
 }
 
@@ -59,6 +62,25 @@ export async function POST(req: Request) {
     input.customer.name && input.customer.name.trim() ? input.customer.name : (recipient?.name ?? "");
   const contactPhone =
     input.customer.phone && input.customer.phone.length >= 10 ? input.customer.phone : (recipient?.phone ?? "");
+
+  // Sales-tax exemption: the account's certificate when charged to one, else the
+  // buyer's; staff may switch it off, or on with a certificate for a one-off.
+  // Resolved before the upsert with the SAME fuzzy phone lookup as the intake
+  // toggle (GET /api/admin/tax-exempt/default), and so a rejected request does
+  // not bump the customer.
+  const exemptCustomer = contactPhone ? getByPhoneUS(contactPhone) : null;
+  const exemption = resolveOrderExemption({
+    fallback: resolveDefaultExemption({
+      account: houseAccount?.taxExemption,
+      customer: exemptCustomer?.taxExemption,
+      today: shopDateStr(new Date()),
+    }),
+    requested: input.taxExempt,
+  });
+  if (!exemption.ok) {
+    return NextResponse.json({ errors: { formErrors: [exemption.error] } }, { status: 400 });
+  }
+  const taxExempt = exemption.exemption;
 
   const customer = upsertOnOrder({
     name: contactName,
@@ -126,13 +148,14 @@ export async function POST(req: Request) {
     },
     promoId,
     promoCode,
-    totals: computeTotals(input, promoDiscountCents),
+    totals: computeTotals(input, promoDiscountCents, taxExempt !== null),
     status: "pending",
     paymentStatus: input.payment.status === "paid" ? "paid" : "pending",
     paymentMethod: input.payment.status === "paid" ? input.payment.method : input.payment.status === "account" ? "house-account" : undefined,
     paidAt: input.payment.status === "paid" ? now : undefined,
     houseAccountId: houseAccount?.id,
     ...(input.funeral ? { funeral: true } : {}),
+    ...(taxExempt ? { taxExempt } : {}),
     takenBy: "maky",
     internalNotes: input.internalNotes,
     createdAt: now,

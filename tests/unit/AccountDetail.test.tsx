@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 import esMessages from "@/messages/es.json";
 import AccountDetail from "@/components/admin/accounts/AccountDetail";
 import type { AccountDetailData } from "@/lib/house-account-detail";
+import { NO_EXEMPTION } from "@/types/tax-exempt";
 
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), replace: vi.fn(), refresh: vi.fn() }) }));
 
@@ -11,7 +12,7 @@ const data: AccountDetailData = {
   account: {
     id: "ha_1", name: "Hotel Roslyn", billingName: "Ana", billingPhone: "5165550100", billingEmail: "ap@hotel.com", locale: "es",
     cadence: "monthly", issueDay: 1, termsDays: 15, reminderPlan: [{ offsetDays: -3, channel: "sms" }], statementChannel: "both",
-    status: "active", createdAt: "2026-09-01T12:00:00Z", updatedAt: "2026-09-01T12:00:00Z",
+    status: "active", taxExemption: NO_EXEMPTION, createdAt: "2026-09-01T12:00:00Z", updatedAt: "2026-09-01T12:00:00Z",
   },
   balanceCents: 7000,
   statements: [{
