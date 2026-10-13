@@ -65,6 +65,7 @@ Run all commands in **PowerShell as Administrator**.
 | Service can't start | Antivirus blocking node.exe | Add `C:\Program Files\nodejs\node.exe` to the allowlist. |
 | Agent log shows `401 Unauthorized` | Wrong or expired token | Rotate as above. |
 | Agent log shows `ENOTFOUND` or network errors | Internet outage / DNS | Check the shop's connection. The agent retries automatically. |
+| Agent log shows `Failed to launch the browser process!` on every job | Chrome can't start (e.g. right after a reboot or a Chrome update) | The agent retries Chrome on its own (5s, 30s, 2min, then next job). If it keeps failing, open Chrome once by hand to finish any update, then `Restart-Service MakyPrintAgent`. Orders that failed meanwhile need **Re-print** from the admin panel. |
 | Pages print blank or with strange characters | Printer driver issue | Reinstall the printer driver from the manufacturer; rerun `npm run test-print`. |
 
 ## Updating the agent
