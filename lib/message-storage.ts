@@ -12,7 +12,8 @@ export type MessageTemplate =
   | "delivered"
   | "review_request"
   | "gift_card_issued"
-  | "invoice";
+  | "invoice"
+  | "payment_reminder";
 export type MessageStatus = "queued" | "sent" | "failed" | "skipped";
 
 export type Message = {

@@ -80,6 +80,8 @@ const BODIES: Record<"en" | "es", Record<MessageTemplate, (v: TemplateVars) => s
       `Hi${recipientNamed(v)}! ${giftOpener(v, "en")} a ${v.total} Diva Flowers gift card. Code: ${v.code ?? ""}. Use it at ${v.link ?? ""} or call ${v.shop_phone}. Reply STOP to opt out.`,
     invoice: (v) =>
       `Hi${named(v)}, here is your Diva Flowers invoice ${v.invoice_number ?? ""} (${v.total}): ${v.link ?? ""} — Maky · ${v.shop_phone}`,
+    payment_reminder: (v) =>
+      `Hi${named(v)}, a friendly reminder from Diva Flowers: order${numbered(v)} has a balance of ${v.total}. Pay here: ${v.link ?? ""} — Maky · ${v.shop_phone}`,
   },
   es: {
     order_received: (v) =>
@@ -100,6 +102,8 @@ const BODIES: Record<"en" | "es", Record<MessageTemplate, (v: TemplateVars) => s
       `¡Hola${recipientNamed(v)}! ${giftOpener(v, "es")} una gift card de Diva Flowers por ${v.total}. Código: ${v.code ?? ""}. Úsala en ${v.link ?? ""} o llama al ${v.shop_phone}. Responde STOP para no recibir más mensajes.`,
     invoice: (v) =>
       `Hola${named(v)}, aquí está tu factura de Diva Flowers ${v.invoice_number ?? ""} (${v.total}): ${v.link ?? ""} — Maky · ${v.shop_phone}`,
+    payment_reminder: (v) =>
+      `Hola${named(v)}, un recordatorio de Diva Flowers: tu orden${numbered(v)} tiene un saldo de ${v.total}. Puedes pagar aquí: ${v.link ?? ""} — Maky · ${v.shop_phone}`,
   },
 };
 
@@ -134,6 +138,8 @@ export function whatsappContentVars(
       return { "1": vars.recipient_name, "2": vars.total, "3": vars.code ?? "" };
     case "invoice":
       return { "1": vars.buyer_name, "2": vars.invoice_number ?? "", "3": vars.link ?? "" };
+    case "payment_reminder":
+      return { "1": vars.buyer_name, "2": vars.total, "3": vars.link ?? "" };
   }
 }
 
