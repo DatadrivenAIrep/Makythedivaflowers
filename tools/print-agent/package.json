@@ -8,6 +8,7 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
+    "test": "node --import tsx --test test/*.test.ts",
     "test-print": "tsx src/test-print.ts",
     "install-service": "node install-service.js",
     "uninstall-service": "node uninstall-service.js"
