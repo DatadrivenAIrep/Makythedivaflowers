@@ -47,6 +47,8 @@ const EXOTIC_SLUGS = new Set([
   "rainforest-rhapsody",
   "abundant-table",
   "autumn-orchard",
+  "crimson-zen",
+  "fuchsia-tropics",
 ]);
 
 // Exposed for tests: asserts that retired products don't linger in this set.
@@ -69,6 +71,10 @@ const CENTERPIECE_SLUGS = new Set([
   "garden-party",
   "natures-cornucopia",
   "neon-tropic",
+  "coral-chalice",
+  "mint-julep-trio",
+  "long-table-romance",
+  "tangerine-pop",
 ]);
 
 export const CENTERPIECE_SLUGS_FOR_TEST: ReadonlySet<string> = CENTERPIECE_SLUGS;
