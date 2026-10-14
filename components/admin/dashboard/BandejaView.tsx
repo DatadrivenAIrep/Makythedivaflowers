@@ -9,6 +9,7 @@ import PendingCard, { type PendingReason, type PendingActionId } from "./Pending
 import AdminButton from "./AdminButton";
 import AttentionDrawer from "./AttentionDrawer";
 import SmsInboxWidget from "./SmsInboxWidget";
+import ReceivablesSection from "./ReceivablesSection";
 import { unreadSmsTotal } from "./useUnreadSmsCount";
 import { useDashboardPolling } from "./useDashboardPolling";
 import type { Order } from "@/types/order";
@@ -25,6 +26,9 @@ export default function BandejaView({ locale }: { locale: string }) {
   const [drawerOrderId, setDrawerOrderId] = useState<string | null>(null);
   const [attnId, setAttnId] = useState<string | null>(null);
   const [delivering, setDelivering] = useState<Order | null>(null);
+  // Bumped whenever balances may have changed, so "Por cobrar" reloads.
+  const [receivablesVersion, setReceivablesVersion] = useState(0);
+  const bumpReceivables = () => setReceivablesVersion((v) => v + 1);
   const [muted, setMuted] = useState(false);
   const mutedRef = useRef(false);
   mutedRef.current = muted;
@@ -128,7 +132,7 @@ export default function BandejaView({ locale }: { locale: string }) {
       <DashboardShell
         locale={locale}
         lastUpdated={lastUpdated ? timeOf(lastUpdated) : undefined}
-        onRefresh={() => { void refresh(); }}
+        onRefresh={() => { void refresh(); bumpReceivables(); }}
         smsUnread={unreadSmsTotal(attention)}
       >
         {error && (
@@ -197,6 +201,8 @@ export default function BandejaView({ locale }: { locale: string }) {
           )}
         </section>
 
+        <ReceivablesSection locale={locale} version={receivablesVersion} onOpen={(id) => setDrawerOrderId(id)} />
+
         <section>
           <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-ink/60">
             {t("feed")} · {feed.length} {t("events")}
@@ -218,8 +224,8 @@ export default function BandejaView({ locale }: { locale: string }) {
         {drawerOrderId && (
           <OrderDetailDrawer
             orderId={drawerOrderId}
-            onClose={() => setDrawerOrderId(null)}
-            onChanged={() => { void refresh(); }}
+            onClose={() => { setDrawerOrderId(null); bumpReceivables(); }}
+            onChanged={() => { void refresh(); bumpReceivables(); }}
           />
         )}
         {delivering && (
