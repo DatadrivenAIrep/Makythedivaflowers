@@ -92,12 +92,28 @@ export function isCenterpieceProduct(p: Product): boolean {
   return CENTERPIECE_SLUGS.has(p.slug);
 }
 
-export type ShopSlug = ProductCategory | "roses" | "exotic" | "centerpieces";
+// The autumn collection the fall home hero links to: these named pieces plus
+// anything Maky marks for Sep–Nov, so new harvest arrangements join on their own.
+const FALL_SLUGS = new Set(["autumn-orchard", "autumns-cornucopia", "falling-leaves"]);
+const FALL_MONTHS = [9, 10, 11];
 
-/** What a shop page lists: three slugs are curated lists, the rest are real categories. */
+export const FALL_SLUGS_FOR_TEST: ReadonlySet<string> = FALL_SLUGS;
+
+export function isFallProduct(p: Product): boolean {
+  if (!p.active || p.giftExtra) return false;
+  if (!isInSeason(p)) return false;
+  if (FALL_SLUGS.has(p.slug)) return true;
+  const months = p.seasonMonths ?? [];
+  return months.length > 0 && months.every((m) => FALL_MONTHS.includes(m));
+}
+
+export type ShopSlug = ProductCategory | "roses" | "exotic" | "centerpieces" | "fall";
+
+/** What a shop page lists: four slugs are curated lists, the rest are real categories. */
 export function productsInShopCategory(products: Product[], slug: ShopSlug): Product[] {
   if (slug === "roses") return products.filter(isRoseProduct);
   if (slug === "exotic") return products.filter(isExoticProduct);
   if (slug === "centerpieces") return products.filter(isCenterpieceProduct);
+  if (slug === "fall") return products.filter(isFallProduct);
   return productsByCategory(products, slug);
 }

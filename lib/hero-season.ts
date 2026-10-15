@@ -10,7 +10,7 @@ export type HeroSeason = {
   key: HeroSeasonKey;
   video: string;
   poster: string;
-  /** next-intl namespace holding title/sub (and eyebrow, when seasonal). */
+  /** next-intl namespace holding title/sub/cta_primary (and eyebrow, when seasonal). */
   copyNamespace: "home.hero" | "home.hero_fall";
   /** Radial wash from the top-right corner over the video. */
   accent: string;
@@ -18,6 +18,8 @@ export type HeroSeason = {
   focus: string;
   /** "right": the subject owns the right half, so the copy moves left over a scrim. */
   subject: "behind" | "right";
+  /** Where the main button goes, under /<locale>. */
+  ctaPath: string;
 };
 
 const DEFAULT_HERO: HeroSeason = {
@@ -28,6 +30,7 @@ const DEFAULT_HERO: HeroSeason = {
   accent: "rgba(184,52,94,0.22)",
   focus: "50% 50%",
   subject: "behind",
+  ctaPath: "/shop/arrangements",
 };
 
 const FALL_HERO: HeroSeason = {
@@ -39,6 +42,7 @@ const FALL_HERO: HeroSeason = {
   // The arrangement sits on the right third of the frame.
   focus: "72% 50%",
   subject: "right",
+  ctaPath: "/shop/fall",
 };
 
 /** US Thanksgiving: the fourth Thursday of November, as "YYYY-MM-DD". */

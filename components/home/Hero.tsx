@@ -13,9 +13,12 @@ export async function Hero({ locale }: { locale: Locale }) {
   const season = heroSeason();
   const copy = await getTranslations(season.copyNamespace);
   const [heroLine1, heroLine2] = copy("title").split(/, (.+)/);
+  // With the subject on the right, the desktop button sits under the copy where
+  // the eye already is, instead of in the bottom bar (the cookie notice covers it).
+  const inlineCta = season.subject === "right";
 
   return (
-    <section className="relative min-h-[100dvh] overflow-hidden">
+    <section className="relative min-h-[calc(100dvh-var(--nav-offset))] overflow-hidden">
 
       {/* 1. Background — looping video with gradient fallback */}
       <div
@@ -73,9 +76,9 @@ export async function Hero({ locale }: { locale: Locale }) {
 
       {/* 3. Center hero text block */}
       <div
-        className={`relative z-20 min-h-[100dvh] flex flex-col px-6 ${
+        className={`relative z-20 min-h-[calc(100dvh-var(--nav-offset))] flex flex-col px-6 ${
           season.subject === "right"
-            ? "justify-end pb-44 lg:justify-center lg:pb-0 lg:pl-16 lg:pr-[50%]"
+            ? "justify-end pb-44 lg:justify-center lg:pt-36 lg:pb-24 lg:pl-16 lg:pr-[50%]"
             : "justify-center lg:pl-[30%] lg:pr-16"
         }`}
       >
@@ -103,6 +106,16 @@ export async function Hero({ locale }: { locale: Locale }) {
               {copy("sub")}
             </p>
           </div>
+          {inlineCta && (
+            <div className="hidden lg:block mt-10">
+              <MagneticButton
+                href={`/${locale}${season.ctaPath}`}
+                ariaLabel={copy("cta_primary")}
+              >
+                {copy("cta_primary")}
+              </MagneticButton>
+            </div>
+          )}
         </HeroReveal>
       </div>
 
@@ -124,12 +137,14 @@ export async function Hero({ locale }: { locale: Locale }) {
       <div className="absolute bottom-0 left-0 right-0 z-20 [background:var(--material-bg-dark)] [backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] [-webkit-backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] [box-shadow:inset_0_1px_0_var(--material-edge-dark)]">
         <div className="hidden lg:grid grid-cols-3 items-center py-5 px-8 gap-6">
           <div className="flex items-center">
-            <MagneticButton
-              href={`/${locale}/shop/arrangements`}
-              ariaLabel={t("cta_primary")}
-            >
-              {t("cta_primary")}
-            </MagneticButton>
+            {!inlineCta && (
+              <MagneticButton
+                href={`/${locale}${season.ctaPath}`}
+                ariaLabel={copy("cta_primary")}
+              >
+                {copy("cta_primary")}
+              </MagneticButton>
+            )}
           </div>
           <div className="flex items-center justify-center">
             <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-petal/50 border border-petal/15 px-3 py-1.5 rounded-full">
@@ -149,10 +164,10 @@ export async function Hero({ locale }: { locale: Locale }) {
         {/* Mobile bottom bar */}
         <div className="flex lg:hidden flex-col items-start gap-3 py-5 px-6">
           <MagneticButton
-            href={`/${locale}/shop/arrangements`}
-            ariaLabel={t("cta_primary")}
+            href={`/${locale}${season.ctaPath}`}
+            ariaLabel={copy("cta_primary")}
           >
-            {t("cta_primary")}
+            {copy("cta_primary")}
           </MagneticButton>
           <a
             href={`/${locale}/weddings`}
