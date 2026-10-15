@@ -14,10 +14,22 @@ function nthWeekday(year: number, month: number, weekday: number, nth: number): 
   return `${year}-${pad(month)}-${pad(day)}`;
 }
 
+/** Mother's Day (US): the second Sunday of May, as "YYYY-MM-DD". */
+export function mothersDay(year: number): string {
+  return nthWeekday(year, 5, 0, 2);
+}
+
+/** The coming Mother's Day: this year's until it has passed, then next year's. */
+export function nextMothersDay(today: string): string {
+  const year = Number(today.slice(0, 4));
+  const thisYear = mothersDay(year);
+  return today <= thisYear ? thisYear : mothersDay(year + 1);
+}
+
 export function holidaysForYear(y: number): Holiday[] {
   return [
     { id: "valentines", date: `${y}-02-14` },
-    { id: "mothers_day", date: nthWeekday(y, 5, 0, 2) },
+    { id: "mothers_day", date: mothersDay(y) },
     { id: "halloween", date: `${y}-10-31` },
     { id: "thanksgiving", date: nthWeekday(y, 11, 4, 4) },
     { id: "christmas", date: `${y}-12-25` },

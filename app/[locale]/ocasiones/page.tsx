@@ -59,7 +59,11 @@ export default async function OccasionsIndexPage({
   }));
   // Not occasions, but people shop them the same way: the seasonal collection
   // (fall, Christmas, Valentine's) when one runs and the exotics get cards alongside.
-  for (const link of occasionLinks().slice(OCCASION_NAV.length)) {
+  // Mother's Day already has its own card here all year, so its seasonal link is skipped.
+  const extras = occasionLinks()
+    .slice(OCCASION_NAV.length)
+    .filter((link) => !(OCCASIONS_ALL as string[]).includes(link.slug));
+  for (const link of extras) {
     items.push({
       slug: link.slug,
       label: link.label,
