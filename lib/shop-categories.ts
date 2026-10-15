@@ -53,7 +53,6 @@ const EXOTIC_SLUGS = new Set([
   "tropical-paradise",
   "rainforest-rhapsody",
   "abundant-table",
-  "autumn-orchard",
   "crimson-zen",
   "fuchsia-tropics",
   "peacock-paradise",

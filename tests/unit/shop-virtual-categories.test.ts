@@ -43,8 +43,13 @@ const CENTERPIECES = [
 ];
 
 describe("exotic category", () => {
-  it.each(["abundant-table", "autumn-orchard"])("now lists %s", (slug) => {
+  it.each(["abundant-table"])("now lists %s", (slug) => {
     expect(slugs(productsInShopCategory(PRODUCTS, "exotic"))).toContain(slug);
+  });
+
+  it("leaves Autumn Orchard to the fall collection", () => {
+    expect(slugs(productsInShopCategory(PRODUCTS, "exotic"))).not.toContain("autumn-orchard");
+    expect(slugs(productsInShopCategory(PRODUCTS, "fall"))).toContain("autumn-orchard");
   });
 
   it("only names products that exist and are on sale", () => {

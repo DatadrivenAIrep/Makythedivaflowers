@@ -15,7 +15,10 @@ export type OccasionNavItem = {
   /** Matches the `Occasion` union so the shop filter round-trips. */
   slug: Occasion;
   label: { en: string; es: string };
-  /** Real catalog photo of a piece tagged with this occasion. */
+  /**
+   * Cover photo of an active piece tagged with this occasion (a test checks it),
+   * so the card never shows, say, a sympathy orchid for "get well".
+   */
   img: string;
   /** Sympathy has a dedicated page; the rest deep-link into the filtered shop. */
   path: (locale: string) => string;
@@ -25,13 +28,13 @@ export const OCCASION_NAV: OccasionNavItem[] = [
   {
     slug: "birthday",
     label: { en: "Birthday", es: "Cumpleaños" },
-    img: "/products/cottage-garden-charm.jpg",
+    img: "/products/birthday-queen.jpg",
     path: (l) => `/${l}/ocasiones/birthday`,
   },
   {
     slug: "romance",
     label: { en: "Love & Romance", es: "Amor y Romance" },
-    img: "/products/hundred-roses.jpg",
+    img: "/products/magenta-majesty.jpg",
     path: (l) => `/${l}/ocasiones/romance`,
   },
   {
@@ -49,25 +52,25 @@ export const OCCASION_NAV: OccasionNavItem[] = [
   {
     slug: "congrats",
     label: { en: "Congratulations", es: "Felicitaciones" },
-    img: "/products/abundant-table.jpg",
+    img: "/products/vibrant-vibes.jpg",
     path: (l) => `/${l}/ocasiones/congrats`,
   },
   {
     slug: "get-well",
     label: { en: "Get well", es: "Mejórate pronto" },
-    img: "/products/phalaenopsis-white-single.webp",
+    img: "/products/sunshine-basket.jpg",
     path: (l) => `/${l}/ocasiones/get-well`,
   },
   {
     slug: "graduation",
     label: { en: "Graduation", es: "Graduación" },
-    img: "/products/botanic-fireworks.jpg",
+    img: "/products/springbling.jpg",
     path: (l) => `/${l}/ocasiones/graduation`,
   },
   {
     slug: "new-baby",
     label: { en: "New baby", es: "Recién nacido" },
-    img: "/products/butterfly-kiss.jpg",
+    img: "/products/baby-blue-teddy.jpg",
     path: (l) => `/${l}/ocasiones/new-baby`,
   },
   {
@@ -79,13 +82,31 @@ export const OCCASION_NAV: OccasionNavItem[] = [
   {
     slug: "thinking-of-you",
     label: { en: "Thinking of you", es: "Pienso en ti" },
-    img: "/products/lavender-serenade.jpg",
+    img: "/products/amethyst-snowdrop.jpg",
     path: (l) => `/${l}/ocasiones/thinking-of-you`,
   },
   {
     slug: "just-because",
     label: { en: "Just because", es: "Sin razón" },
-    img: "/products/rainforest-rhapsody.jpg",
+    img: "/products/aloha-aura.jpg",
     path: (l) => `/${l}/ocasiones/just-because`,
   },
 ];
+
+/** A link in the occasion lists. Like an occasion entry, but its slug is free. */
+export type OccasionLink = Omit<OccasionNavItem, "slug"> & { slug: string };
+
+/**
+ * Exotic is not an occasion (no occasion page, no filter value), but shoppers
+ * reach for the tropical pieces the same way, so every occasion list ends with
+ * a link to the exotic collection.
+ */
+export const EXOTIC_LINK: OccasionLink = {
+  slug: "exotic",
+  label: { en: "Exotic Flowers", es: "Flores Exóticas" },
+  img: "/products/paradise-found.jpg",
+  path: (l) => `/${l}/shop/exotic`,
+};
+
+/** What the home strip, the mega menu and the mobile drawer list. */
+export const OCCASION_LINKS: OccasionLink[] = [...OCCASION_NAV, EXOTIC_LINK];

@@ -4,9 +4,10 @@ import { setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/types/locale";
 import type { Occasion } from "@/types/product";
 import { OCCASIONS_ALL, OCCASION_CONTENT } from "@/data/occasion-content";
-import { OCCASION_NAV } from "@/lib/occasions-nav";
+import { EXOTIC_LINK, OCCASION_NAV } from "@/lib/occasions-nav";
 import { PRODUCTS } from "@/data/products";
 import { filterProducts } from "@/data/product-helpers";
+import { productsInShopCategory } from "@/lib/shop-categories";
 import { localeAlternates } from "@/lib/seo/alternates";
 import { BreadcrumbListLD } from "@/components/seo/BreadcrumbListLD";
 import { FloatingPhoto } from "@/components/product/FloatingPhoto";
@@ -31,14 +32,10 @@ export async function generateMetadata({
   };
 }
 
-/** Photo for an occasion: the nav list has one for the seven it carries. */
+/** Photo for an occasion: the nav list carries one for every occasion but Mother's Day. */
 const IMG_BY_SLUG = new Map(OCCASION_NAV.map((o) => [o.slug as string, o.img]));
 
 const FALLBACK_IMG: Partial<Record<Occasion, string>> = {
-  graduation: "/products/botanic-fireworks.jpg",
-  "new-baby": "/products/butterfly-kiss.jpg",
-  "thank-you": "/products/summer-confetti.jpg",
-  "thinking-of-you": "/products/lavender-serenade.jpg",
   "mothers-day": "/products/blush-enchantment.jpg",
 };
 
@@ -51,14 +48,24 @@ export default async function OccasionsIndexPage({
   setRequestLocale(locale);
   const es = locale === "es";
 
-  const items = OCCASIONS_ALL.map((slug) => ({
+  type Card = { slug: string; label: { en: string; es: string }; count: number; img: string; href: string };
+  const items: Card[] = OCCASIONS_ALL.map((slug) => ({
     slug,
-    content: OCCASION_CONTENT[slug],
+    label: OCCASION_CONTENT[slug].label,
     count: filterProducts(PRODUCTS, { occasion: slug }).length,
     img: IMG_BY_SLUG.get(slug) ?? FALLBACK_IMG[slug] ?? "/products/designers-choice.png",
     // Sympathy keeps its own dedicated page.
     href: slug === "sympathy" ? `/${locale}/sympathy` : `/${locale}/ocasiones/${slug}`,
   }));
+  // Not an occasion, but people shop the tropical pieces the same way: give
+  // them a card alongside, pointing at the exotic collection.
+  items.push({
+    slug: EXOTIC_LINK.slug,
+    label: EXOTIC_LINK.label,
+    count: productsInShopCategory(PRODUCTS, "exotic").length,
+    img: EXOTIC_LINK.img,
+    href: EXOTIC_LINK.path(locale),
+  });
 
   return (
     <main className="bg-bone text-ink">
@@ -105,7 +112,7 @@ export default async function OccasionsIndexPage({
                   />
                 </div>
                 <span className="mt-3 block font-display text-xl leading-tight tracking-tight text-ink transition-colors group-hover:text-rouge">
-                  {it.content.label[locale]}
+                  {it.label[locale]}
                 </span>
                 <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.16em] text-mute-500">
                   {it.count} {es ? "diseños" : "designs"}
