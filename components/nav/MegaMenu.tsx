@@ -5,7 +5,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { FloatingPhoto } from "@/components/product/FloatingPhoto";
 import type { Locale } from "@/types/locale";
 import { CATS, LABELS, shopCategoryHref } from "@/lib/shop-categories";
-import { OCCASION_LINKS } from "@/lib/occasions-nav";
+import { occasionLinks } from "@/lib/occasions-nav";
 
 type Props = { locale: Locale; label: string };
 
@@ -77,7 +77,7 @@ function MegaMenuImpl({ locale, label }: Props) {
                 {locale === "es" ? "Por ocasión" : "By occasion"}
               </p>
               <ul className="flex flex-wrap items-center gap-x-7 gap-y-3">
-                {OCCASION_LINKS.map((o) => (
+                {occasionLinks().map((o) => (
                   <li key={o.slug}>
                     <Link
                       role="menuitem"
