@@ -1,13 +1,15 @@
 "use client";
-import { memo } from "react";
+import { memo, type CSSProperties } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { motion, useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import type { Locale } from "@/types/locale";
-import type { Product } from "@/types/product";
-import { ProductImage } from "./ProductImage";
-import { BloomImage } from "@/components/motion/BloomImage";
+import type { Product, ProductImage as ProductImageT } from "@/types/product";
 import { startingPriceCents } from "@/data/product-helpers";
 import { formatMoneyCents } from "@/lib/format";
+import { fitInStage, productImageDims } from "@/lib/product-image-dims";
+import { SPRING } from "@/lib/motion";
 
 type Props = {
   product: Product;
@@ -17,8 +19,29 @@ type Props = {
   campaign?: string;
 };
 
+/** Every card draws its photo inside a 3:4 stage, the catalog's native format. */
+const STAGE_RATIO = 3 / 4;
+
+const ASPECT_TAG: Record<ProductImageT["aspect"], number> = {
+  "4/5": 4 / 5,
+  "1/1": 1,
+  "16/9": 16 / 9,
+};
+
+/**
+ * The whole photo, uncropped, as large as the stage allows and resting on its
+ * floor. Measured pixel sizes win; the catalog's coarse aspect tag is the fallback.
+ */
+function frameStyle(cover: ProductImageT): CSSProperties {
+  const dims = productImageDims(cover.src) ?? { width: ASPECT_TAG[cover.aspect] ?? STAGE_RATIO, height: 1 };
+  const { widthPct, heightPct } = fitInStage(dims, STAGE_RATIO);
+  return { width: `${widthPct}%`, height: `${heightPct}%`, left: `${(100 - widthPct) / 2}%`, bottom: 0 };
+}
+
 function ProductCardImpl({ product, locale, reduceMotion, priority, campaign }: Props) {
   const t = useTranslations("product");
+  const prefersReduced = useReducedMotion();
+  const still = reduceMotion || prefersReduced;
   const base = `/${locale}/product/${product.slug}`;
   const href = campaign ? `${base}?campaign=${encodeURIComponent(campaign)}` : base;
   const cover = product.images[0];
@@ -32,23 +55,25 @@ function ProductCardImpl({ product, locale, reduceMotion, priority, campaign }: 
 
   return (
     <Link href={href} data-testid="product-card" className="group block focus-visible:outline-none">
-      <div className="relative overflow-hidden rounded-t-[var(--radius-arch-top)] rounded-b-[var(--radius-product)] bg-mute-100 transition-shadow duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:shadow-[0_24px_60px_-30px_var(--color-rouge-glow)]">
-        {cover && reduceMotion ? (
-          <ProductImage
-            image={cover}
-            locale={locale}
-            priority={priority}
-            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-          />
-        ) : cover ? (
-          <BloomImage
-            src={cover.src}
-            alt={cover.alt[locale]}
-            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-            className="aspect-[4/5]"
-            priority={priority}
-          />
-        ) : null}
+      <div data-testid="product-stage" className="relative aspect-[3/4]">
+        {cover && (
+          <motion.div
+            data-testid="product-frame"
+            className="absolute mask-x-from-90% mask-y-from-90%"
+            style={frameStyle(cover)}
+            whileHover={still ? undefined : { y: -8, scale: 1.02 }}
+            transition={SPRING.default}
+          >
+            <Image
+              src={cover.src}
+              alt={cover.alt[locale]}
+              fill
+              sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+              priority={priority}
+              className="object-contain"
+            />
+          </motion.div>
+        )}
         {product.tags.includes("same-day") && (
           <span className="absolute bottom-3 left-3 rounded-full border border-ink/15 bg-bone/90 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-ink">
             {t("badge_today")}
