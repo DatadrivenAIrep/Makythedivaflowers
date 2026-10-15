@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { LocaleSwitcher } from "@/components/nav/LocaleSwitcher";
 import { CartButton } from "@/components/nav/CartButton";
 import { CATS, LABELS, shopCategoryHref } from "@/lib/shop-categories";
-import { OCCASION_NAV } from "@/lib/occasions-nav";
+import { OCCASION_LINKS } from "@/lib/occasions-nav";
 import type { Locale } from "@/types/locale";
 
 const NAV_LINKS = (locale: Locale) => [
@@ -123,7 +123,7 @@ export function MobileDrawer({
                   {locale === "es" ? "Por ocasión" : "By occasion"}
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {OCCASION_NAV.map((o) => (
+                  {OCCASION_LINKS.map((o) => (
                     <Link
                       key={o.slug}
                       href={o.path(locale)}

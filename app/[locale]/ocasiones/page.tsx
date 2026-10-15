@@ -4,7 +4,7 @@ import { setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/types/locale";
 import type { Occasion } from "@/types/product";
 import { OCCASIONS_ALL, OCCASION_CONTENT } from "@/data/occasion-content";
-import { OCCASION_NAV } from "@/lib/occasions-nav";
+import { EXOTIC_LINK, OCCASION_NAV } from "@/lib/occasions-nav";
 import { PRODUCTS } from "@/data/products";
 import { filterProducts } from "@/data/product-helpers";
 import { productsInShopCategory } from "@/lib/shop-categories";
@@ -60,11 +60,11 @@ export default async function OccasionsIndexPage({
   // Not an occasion, but people shop the tropical pieces the same way: give
   // them a card alongside, pointing at the exotic collection.
   items.push({
-    slug: "exotic",
-    label: { en: "Exotic Flowers", es: "Flores Exóticas" },
+    slug: EXOTIC_LINK.slug,
+    label: EXOTIC_LINK.label,
     count: productsInShopCategory(PRODUCTS, "exotic").length,
-    img: "/products/paradise-found.jpg",
-    href: `/${locale}/shop/exotic`,
+    img: EXOTIC_LINK.img,
+    href: EXOTIC_LINK.path(locale),
   });
 
   return (

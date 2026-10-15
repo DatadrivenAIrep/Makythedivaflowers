@@ -92,3 +92,21 @@ export const OCCASION_NAV: OccasionNavItem[] = [
     path: (l) => `/${l}/ocasiones/just-because`,
   },
 ];
+
+/** A link in the occasion lists. Like an occasion entry, but its slug is free. */
+export type OccasionLink = Omit<OccasionNavItem, "slug"> & { slug: string };
+
+/**
+ * Exotic is not an occasion (no occasion page, no filter value), but shoppers
+ * reach for the tropical pieces the same way, so every occasion list ends with
+ * a link to the exotic collection.
+ */
+export const EXOTIC_LINK: OccasionLink = {
+  slug: "exotic",
+  label: { en: "Exotic Flowers", es: "Flores Exóticas" },
+  img: "/products/paradise-found.jpg",
+  path: (l) => `/${l}/shop/exotic`,
+};
+
+/** What the home strip, the mega menu and the mobile drawer list. */
+export const OCCASION_LINKS: OccasionLink[] = [...OCCASION_NAV, EXOTIC_LINK];

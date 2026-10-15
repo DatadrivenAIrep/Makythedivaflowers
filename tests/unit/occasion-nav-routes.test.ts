@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { OCCASION_NAV } from "@/lib/occasions-nav";
+import { EXOTIC_LINK, OCCASION_LINKS, OCCASION_NAV } from "@/lib/occasions-nav";
+import { isExoticProduct } from "@/lib/shop-categories";
 import { OCCASIONS_ALL, OCCASION_CONTENT } from "@/data/occasion-content";
 import type { Occasion } from "@/types/product";
 import { PRODUCTS } from "@/data/products";
@@ -55,5 +56,12 @@ describe("occasion navigation", () => {
       expect(owner!.active, `${item.slug}: ${owner!.slug} is not on sale`).toBe(true);
       expect(owner!.occasions, `${item.slug}: ${owner!.slug} is not tagged for it`).toContain(item.slug);
     }
+  });
+
+  it("ends every occasion list with the exotic collection", () => {
+    expect(OCCASION_LINKS.at(-1)).toBe(EXOTIC_LINK);
+    expect(EXOTIC_LINK.path("es")).toBe("/es/shop/exotic");
+    const owner = PRODUCTS.find((p) => p.images[0]?.src === EXOTIC_LINK.img);
+    expect(owner && isExoticProduct(owner), `${EXOTIC_LINK.img} is not an exotic piece`).toBe(true);
   });
 });
