@@ -22,6 +22,7 @@ const FALL_COLLECTION = [
   "autumn-orchard",
   "autumns-cornucopia",
   "falling-leaves",
+  "harvest-table",
   "natures-cornucopia",
   "painted-garden",
   "pumpkin-spice",

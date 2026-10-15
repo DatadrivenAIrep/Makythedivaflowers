@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { OCCASION_NAV } from "@/lib/occasions-nav";
 import { OCCASIONS_ALL, OCCASION_CONTENT } from "@/data/occasion-content";
 import type { Occasion } from "@/types/product";
+import { PRODUCTS } from "@/data/products";
 
 /**
  * The nav is a promise of a page. These catch the two ways it can lie: a menu
@@ -44,6 +45,15 @@ describe("occasion navigation", () => {
   it("does not send a shopper to a bare query string any more", () => {
     for (const item of OCCASION_NAV) {
       expect(item.path("en")).not.toContain("?occasion=");
+    }
+  });
+
+  it("covers each occasion with a piece tagged for it", () => {
+    for (const item of OCCASION_NAV) {
+      const owner = PRODUCTS.find((p) => p.images[0]?.src === item.img);
+      expect(owner, `${item.slug}: ${item.img} is no product's cover`).toBeTruthy();
+      expect(owner!.active, `${item.slug}: ${owner!.slug} is not on sale`).toBe(true);
+      expect(owner!.occasions, `${item.slug}: ${owner!.slug} is not tagged for it`).toContain(item.slug);
     }
   });
 });
