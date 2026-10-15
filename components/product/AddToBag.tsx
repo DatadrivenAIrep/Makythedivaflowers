@@ -10,7 +10,7 @@ import type { Locale } from "@/types/locale";
 import { trackAddToCart } from "@/lib/analytics";
 import { resolvedLineToAnalyticsItem } from "@/lib/analytics-types";
 import { resolveCartLine } from "@/lib/cart-helpers";
-import { PRODUCTS } from "@/data/products";
+import { usePricedProducts } from "@/components/catalog/PricedCatalog";
 
 type Props = {
   productId: string;
@@ -23,6 +23,7 @@ type Props = {
 };
 
 function AddToBagImpl({ productId, variantId, addOnIds, totalCents, disabled, locale, cardMessage }: Props) {
+  const products = usePricedProducts();
   const add = useCartStore((s) => s.add);
   const setCardMessage = useCartStore((s) => s.setCardMessage);
   const showToast = useUIStore((s) => s.showToast);
@@ -37,7 +38,7 @@ function AddToBagImpl({ productId, variantId, addOnIds, totalCents, disabled, lo
     if (cardMessage && cardMessage.trim().length > 0) {
       setCardMessage(cardMessage);
     }
-    const resolved = resolveCartLine({ kind: "catalog", productId, variantId, addOnIds, qty: 1 }, PRODUCTS);
+    const resolved = resolveCartLine({ kind: "catalog", productId, variantId, addOnIds, qty: 1 }, products);
     if (resolved) {
       trackAddToCart(resolvedLineToAnalyticsItem(resolved));
     }

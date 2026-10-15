@@ -14,6 +14,7 @@ import type { Order } from "@/types/order";
 import { SITE } from "@/data/site";
 import { formatAddressLine, formatMoneyCents } from "@/lib/format";
 import { getLogoDataUri } from "@/lib/print-styles";
+import { getPricedProducts } from "@/lib/product-prices";
 import { buildInvoiceModel, type InvoiceModel, type InvoiceRow } from "@/lib/invoice";
 
 const STYLES = `
@@ -164,7 +165,7 @@ export async function buildInvoiceHtml(
   opts: { now?: Date; forEmail?: { link: string; logoUrl: string } } = {},
 ): Promise<string> {
   const renderToStaticMarkup = await loadRenderToStaticMarkup();
-  const m = buildInvoiceModel(order, { now: opts.now });
+  const m = buildInvoiceModel(order, { now: opts.now, products: getPricedProducts() });
   const email = opts.forEmail;
   const body = renderToStaticMarkup(
     <Invoice m={m} logoUri={email ? email.logoUrl : getLogoDataUri()} onlineLink={email?.link} />,

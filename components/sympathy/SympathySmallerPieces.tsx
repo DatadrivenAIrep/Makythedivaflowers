@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Locale } from "@/types/locale";
-import { PRODUCTS } from "@/data/products";
+import { getPricedProducts } from "@/lib/product-prices";
 import { SYMPATHY_PRODUCT_SLUGS } from "@/data/sympathy-pieces";
 import { pickLocalized } from "@/types/product";
 import { formatMoneyCents } from "@/lib/format";
@@ -58,7 +58,8 @@ function SympathyProductSection({
   slugs: readonly string[];
   copy: SectionCopy;
 }) {
-  const items = slugs.map((slug) => PRODUCTS.find((p) => p.slug === slug && p.active)).filter(
+  const products = getPricedProducts();
+  const items = slugs.map((slug) => products.find((p) => p.slug === slug && p.active)).filter(
     (p): p is NonNullable<typeof p> => Boolean(p),
   );
   if (items.length === 0) return null;

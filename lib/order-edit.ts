@@ -4,6 +4,7 @@ import { recordOrderChange } from "@/lib/order-history";
 import { resolveOrderTotals } from "@/lib/totals";
 import { resolveOrderExemption } from "@/lib/tax-exempt";
 import { PRODUCTS } from "@/data/products";
+import { getPricedProducts } from "@/lib/product-prices";
 import type {
   Order, OrderFulfillment, CartLine, FieldDiff, OrderTotals,
   Recipient, DeliveryWindow, OrderChange,
@@ -67,6 +68,7 @@ function applyPatch(cur: Order, patch: OrderEditPatch): Order {
 
   const totals = resolveOrderTotals({
     lines,
+    products: getPricedProducts(),
     fulfillmentMethod: method,
     address: method === "delivery" ? { zip: (address as Address).zip, city: (address as Address).city } : undefined,
     // Discount and tip are not editable here (the PATCH schema strips them), so

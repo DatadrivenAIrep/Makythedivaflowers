@@ -10,7 +10,7 @@ import { ClearCartOnMount } from "@/components/checkout/ClearCartOnMount";
 import { resolveCartLines } from "@/lib/cart-helpers";
 import { resolvedLineToAnalyticsItem, centsToDollars } from "@/lib/analytics-types";
 import { isOrderPaid } from "@/lib/order-paid";
-import { PRODUCTS } from "@/data/products";
+import { getPricedProducts } from "@/lib/product-prices";
 
 export const dynamic = "force-dynamic";
 
@@ -38,7 +38,7 @@ export default async function ConfirmationPage({
   const isPaid = isOrderPaid(order);
 
   if (isPaid) {
-    const resolved = resolveCartLines(order.lines, PRODUCTS);
+    const resolved = resolveCartLines(order.lines, getPricedProducts());
     return (
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-32 pb-24">
         <ClearCartOnMount />

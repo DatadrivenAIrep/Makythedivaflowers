@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FloatingPhoto } from "@/components/product/FloatingPhoto";
 import type { Locale } from "@/types/locale";
-import { PRODUCTS } from "@/data/products";
+import { getPricedProducts } from "@/lib/product-prices";
 import { SYMPATHY_PRODUCT_SLUGS } from "@/data/sympathy-pieces";
 import { pickLocalized } from "@/types/product";
 import { formatMoneyCents } from "@/lib/format";
@@ -21,8 +21,9 @@ const COPY = {
 } as const;
 
 export function SympathyShowcase({ locale }: { locale: Locale }) {
+  const products = getPricedProducts();
   const pieces = SYMPATHY_PRODUCT_SLUGS.map((slug) =>
-    PRODUCTS.find((p) => p.slug === slug && p.active),
+    products.find((p) => p.slug === slug && p.active),
   ).filter((p): p is NonNullable<typeof p> => Boolean(p));
   if (pieces.length === 0) return null;
 

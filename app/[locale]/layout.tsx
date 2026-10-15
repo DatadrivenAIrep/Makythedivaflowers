@@ -14,6 +14,18 @@ import { LocalBusinessLD } from "@/components/seo/LocalBusinessLD";
 import { ContactContextProvider } from "@/components/contact/ContactContextProvider";
 import { WelcomeOffer } from "@/components/conversion/WelcomeOffer";
 import { TextMakyTrigger } from "@/components/contact/TextMakyTrigger";
+import { PricedCatalogProvider } from "@/components/catalog/PricedCatalog";
+import { getAllPriceOverrides, type PriceOverride } from "@/lib/product-prices";
+
+function priceOverrides(): PriceOverride[] {
+  try {
+    return getAllPriceOverrides();
+  } catch (err) {
+    // Base prices beat a broken page; checkout still charges the override server-side.
+    console.error("[layout] price overrides unavailable", err);
+    return [];
+  }
+}
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -32,30 +44,32 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider locale={locale}>
-      <LocalBusinessLD />
-      <ContactContextProvider>
-        <LocaleChrome
-          topNav={
-            <TopNav
-              locale={locale as Locale}
-              navLinksSlot={<NavLinks locale={locale as Locale} />}
-              mobileMenuSlot={<MobileNavProvider locale={locale as Locale} />}
-            />
-          }
-          footer={<Footer locale={locale as Locale} />}
-          extras={
-            <>
-              <CartDrawerHost locale={locale as Locale} />
-              <ToastAddedToBag />
-              <AddToBagDelight />
-              <TextMakyTrigger />
-              <WelcomeOffer locale={locale as Locale} />
-            </>
-          }
-        >
-          {children}
-        </LocaleChrome>
-      </ContactContextProvider>
+      <PricedCatalogProvider overrides={priceOverrides()}>
+        <LocalBusinessLD />
+        <ContactContextProvider>
+          <LocaleChrome
+            topNav={
+              <TopNav
+                locale={locale as Locale}
+                navLinksSlot={<NavLinks locale={locale as Locale} />}
+                mobileMenuSlot={<MobileNavProvider locale={locale as Locale} />}
+              />
+            }
+            footer={<Footer locale={locale as Locale} />}
+            extras={
+              <>
+                <CartDrawerHost locale={locale as Locale} />
+                <ToastAddedToBag />
+                <AddToBagDelight />
+                <TextMakyTrigger />
+                <WelcomeOffer locale={locale as Locale} />
+              </>
+            }
+          >
+            {children}
+          </LocaleChrome>
+        </ContactContextProvider>
+      </PricedCatalogProvider>
     </NextIntlClientProvider>
   );
 }

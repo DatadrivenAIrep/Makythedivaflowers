@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/locale";
-import { PRODUCTS } from "@/data/products";
+import { getPricedProducts } from "@/lib/product-prices";
 import { formatMoneyCents } from "@/lib/format";
 import { Reveal } from "@/components/motion/Reveal";
 import { StaggerGroup, StaggerItem } from "@/components/motion/StaggerGroup";
@@ -17,7 +17,7 @@ const PHOTO_BY_VARIANT: Record<string, string> = {
 
 export async function OrchidsSizes({ locale }: { locale: Locale }) {
   const t = await getTranslations("orchids");
-  const product = PRODUCTS.find((p) => p.slug === SLUG);
+  const product = getPricedProducts().find((p) => p.slug === SLUG);
   if (!product) return null;
 
   return (

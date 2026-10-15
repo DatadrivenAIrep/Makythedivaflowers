@@ -2,7 +2,7 @@
 import type { CartLine, OrderTotals } from "@/types/order";
 import { findDeliveryZoneByZip, findDeliveryZoneByCity } from "@/lib/delivery-zones";
 import { cartSubtotalCents } from "@/lib/cart-helpers";
-import { PRODUCTS } from "@/data/products";
+import type { Product } from "@/types/product";
 
 // Used when the customer hasn't entered a ZIP yet. Display layer should pass
 // `deliveryPending` to render "—" instead of this number, but if it leaks
@@ -77,12 +77,14 @@ export function computeDeliveryCentsForAddress(address: {
  */
 export function resolveOrderTotals(input: {
   lines: CartLine[];
+  /** The catalog at today's prices (admin overrides applied). */
+  products: readonly Product[];
   fulfillmentMethod: "in-store" | "delivery" | "pickup";
   address?: { zip: string; city: string };
   override?: Partial<OrderTotals>;
   taxExempt?: boolean;
 }): OrderTotals {
-  const subtotal = cartSubtotalCents(input.lines, PRODUCTS);
+  const subtotal = cartSubtotalCents(input.lines, input.products);
   let delivery = 0;
   if (input.fulfillmentMethod === "delivery" && input.address) {
     delivery = computeDeliveryCentsForAddress(input.address) ?? 0;

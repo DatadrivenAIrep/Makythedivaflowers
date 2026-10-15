@@ -11,7 +11,7 @@ import { resolveCartLines, cartSubtotalCents } from "@/lib/cart-helpers";
 import { CartLineItem } from "@/components/cart/CartLineItem";
 import { CartEmpty } from "@/components/cart/CartEmpty";
 import { CartSummary } from "@/components/cart/CartSummary";
-import { PRODUCTS } from "@/data/products";
+import { usePricedProducts } from "@/components/catalog/PricedCatalog";
 import type { Locale } from "@/types/locale";
 import { SPRING } from "@/lib/motion";
 import { cn } from "@/lib/cn";
@@ -23,6 +23,7 @@ import { trackViewCart, trackRemoveFromCart } from "@/lib/analytics";
 import { resolvedLineToAnalyticsItem } from "@/lib/analytics-types";
 
 export function CartDrawer({ locale }: { locale: Locale }) {
+  const products = usePricedProducts();
   const t = useTranslations("cart");
   const lines = useCartStore((s) => s.lines);
   const setQty = useCartStore((s) => s.setQty);
@@ -33,8 +34,8 @@ export function CartDrawer({ locale }: { locale: Locale }) {
   const ref = useRef<HTMLElement | null>(null);
   const dragControls = useDragControls();
 
-  const resolved = useMemo(() => resolveCartLines(lines, PRODUCTS), [lines]);
-  const subtotal = useMemo(() => cartSubtotalCents(lines, PRODUCTS), [lines]);
+  const resolved = useMemo(() => resolveCartLines(lines, products), [lines, products]);
+  const subtotal = useMemo(() => cartSubtotalCents(lines, products), [lines, products]);
 
   useEffect(() => {
     if (!open) return;

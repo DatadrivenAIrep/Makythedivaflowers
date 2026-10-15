@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { CheckCircle } from "@phosphor-icons/react/dist/ssr";
 import { getTranslations } from "next-intl/server";
-import { PRODUCTS } from "@/data/products";
+import { getPricedProducts } from "@/lib/product-prices";
 import { SITE } from "@/data/site";
 import { resolveCartLines } from "@/lib/cart-helpers";
 import { ProductImage } from "@/components/product/ProductImage";
@@ -19,7 +19,7 @@ export async function ConfirmationView({ order, locale }: { order: Order; locale
   const referralCode = order.customerId
     ? (grantReferralCode(order.customerId)?.code ?? undefined)
     : undefined;
-  const resolved = resolveCartLines(order.lines, PRODUCTS);
+  const resolved = resolveCartLines(order.lines, getPricedProducts());
   const hasSubscription = resolved.some((r) => r.product.category === "subscriptions");
   const f = order.fulfillment;
   const windowLabel = "window" in f ? formatDeliveryWindow(f.window, locale) : "";
