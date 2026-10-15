@@ -67,8 +67,9 @@ The page server component adds `qr: string` (SVG data URI via
 - `lib/tv-showcase-storage.ts` (server-only): `getTvVisibility(): Map<string, boolean>`,
   `setTvVisibility(productId, visible)`. A broken DB read falls back to an empty
   map (defaults apply) rather than a blank TV.
-- API: `PUT /api/admin/tv-showcase` `{ productId, visible }` → 200 / 400 on unknown
-  product or non-boolean. Admin-gated by `proxy.ts` like every `/api/admin/*`.
+- API: `PUT /api/admin/tv-showcase` `{ productId, visible }` → 200; 400 on a bad
+  body (e.g. non-boolean `visible`); 404 on an unknown product (same as
+  `/api/admin/product-prices`). Admin-gated by `proxy.ts` like every `/api/admin/*`.
 - Admin → Products (`ProductPricesPage`): per product an **"En la TV"** switch
   showing the effective state (row or default). Products failing the photo gate
   show a disabled switch labelled "Foto de baja resolución".
