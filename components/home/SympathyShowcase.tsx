@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { FloatingPhoto } from "@/components/product/FloatingPhoto";
 import type { Locale } from "@/types/locale";
 import { PRODUCTS } from "@/data/products";
 import { SYMPATHY_PRODUCT_SLUGS } from "@/data/sympathy-pieces";
@@ -66,22 +66,25 @@ export function SympathyShowcase({ locale }: { locale: Locale }) {
                     <Link
                       href={`/${locale}/product/${p.slug}`}
                       tabIndex={copy === 1 ? -1 : undefined}
-                      className="group relative block h-64 w-52 overflow-hidden rounded-[var(--radius-bento)] border border-bone/10 bg-mute-100 md:h-80 md:w-64"
+                      className="group block w-52 md:w-64"
                     >
-                      {image && (
-                        <Image
-                          src={image.src}
-                          alt={copy === 1 ? "" : pickLocalized(image.alt, locale)}
-                          fill
-                          sizes="(min-width: 768px) 256px, 208px"
-                          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                        />
-                      )}
-                      <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 bg-gradient-to-t from-ink/80 via-ink/40 to-transparent px-4 pb-3 pt-10">
-                        <span className="font-display text-lg leading-tight text-bone">
+                      {/* The whole piece floats on a plaster card (its own photo
+                          background); name and price sit below on the dark band. */}
+                      <div className="relative h-64 rounded-[var(--radius-bento)] bg-mute-100 md:h-80">
+                        {image && (
+                          <FloatingPhoto
+                            src={image.src}
+                            alt={copy === 1 ? "" : pickLocalized(image.alt, locale)}
+                            sizes="(min-width: 768px) 256px, 208px"
+                            className="inset-x-3 top-4 bottom-3 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-1.5 motion-reduce:transform-none"
+                          />
+                        )}
+                      </div>
+                      <span className="mt-3 flex flex-col gap-1 px-1">
+                        <span className="truncate font-display text-lg leading-tight text-bone">
                           {pickLocalized(p.title, locale)}
                         </span>
-                        <span className="shrink-0 font-mono text-[11px] tracking-[0.08em] text-bone/85">
+                        <span className="font-mono text-[11px] tracking-[0.08em] text-bone/70">
                           {formatMoneyCents(startingPriceCents(p), locale)}
                         </span>
                       </span>
