@@ -37,7 +37,7 @@ describe("ReciprocityCard", () => {
     expect(screen.getByText("subscription_title")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /subscription_cta/ })).toHaveAttribute(
       "href",
-      "/en/shop/subscriptions",
+      "/en/subscriptions",
     );
   });
 

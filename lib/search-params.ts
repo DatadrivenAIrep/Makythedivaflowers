@@ -7,7 +7,7 @@ const OCCASIONS = [
 const COLORS = ["pink", "red", "white", "mixed", "green", "pastel"] as const;
 const SIZES = ["standard", "grand", "diva"] as const;
 const PRICES = ["under-100", "100-150", "150-200", "200-plus"] as const;
-const SORTS = ["newest", "price-asc", "price-desc", "staff-pick"] as const;
+const SORTS = ["recommended", "newest", "price-asc", "price-desc"] as const;
 
 function pickEnum<T extends readonly string[]>(
   list: T,
@@ -30,7 +30,8 @@ export function parseFilterParams(params: RawSearchParams): { filter: Filter; so
   const price = pickEnum(PRICES, first(params.price));
   const sameDayRaw = first(params.same_day);
   const sameDay = sameDayRaw === "1" || sameDayRaw === "true" ? true : undefined;
-  const sort = pickEnum(SORTS, first(params.sort)) ?? "newest";
+  // Unknown and retired values (the old "staff-pick") fall back to the default.
+  const sort = pickEnum(SORTS, first(params.sort)) ?? "recommended";
   const qRaw = first(params.q);
   const q = qRaw ? qRaw.trim().slice(0, 80) : undefined;
 
@@ -59,6 +60,6 @@ export function serializeFilterParams({
   if (filter.price) params.set("price", filter.price);
   if (filter.sameDay) params.set("same_day", "1");
   if (filter.q) params.set("q", filter.q);
-  if (sort !== "newest") params.set("sort", sort);
+  if (sort !== "recommended") params.set("sort", sort);
   return params.toString();
 }

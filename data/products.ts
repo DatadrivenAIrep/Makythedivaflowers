@@ -12,6 +12,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-ie01",
     slug: "ivory-and-emerald",
+    addedAt: "2026-08-17",
     title: { en: "Ivory & Emerald", es: "Marfil y Esmeralda" },
     category: "sympathy",
     blurb: {
@@ -40,7 +41,7 @@ export const PRODUCTS: Product[] = [
         subtitle: { en: "Grand scale · made to order", es: "Gran escala · por encargo" },
       },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["congrats", "sympathy"],
     colorFamily: ["white", "green"],
     active: true,
@@ -60,6 +61,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-m01",
     slug: "a-thousand-heartbeats",
+    addedAt: "2026-05-01",
     title: { en: "A Thousand Heartbeats", es: "Mil Latidos" },
     category: "arrangements",
     blurb: {
@@ -97,6 +99,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-m01",
     slug: "dozen-roses-bouquet",
+    addedAt: "2026-05-01",
     title: { en: "Dozen Roses Bouquet", es: "Ramo de Doce Rosas" },
     category: "bouquets",
     blurb: {
@@ -134,6 +137,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-m02",
     slug: "hundred-roses-vase",
+    addedAt: "2026-05-01",
     title: { en: "Hundred Roses Vase", es: "Cien Rosas en Jarrón" },
     category: "arrangements",
     blurb: {
@@ -171,6 +175,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-m02",
     slug: "sunburst-garden",
+    addedAt: "2026-05-01",
     title: { en: "Sunburst Garden", es: "Jardín al Sol" },
     category: "bouquets",
     blurb: {
@@ -208,6 +213,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-m03",
     slug: "rainforest-rhapsody",
+    addedAt: "2026-05-01",
     title: { en: "Rainforest Rhapsody", es: "Rapsodia Selvática" },
     category: "arrangements",
     blurb: {
@@ -245,6 +251,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-gif-m01",
     slug: "designers-choice",
+    addedAt: "2026-05-01",
     title: { en: "Designer's Choice", es: "A Elección de la Florista" },
     category: "gifts",
     blurb: {
@@ -282,6 +289,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-m03",
     slug: "velvet-sun",
+    addedAt: "2026-05-01",
     title: { en: "Velvet Sun", es: "Sol de Terciopelo" },
     category: "bouquets",
     blurb: {
@@ -319,6 +327,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-m04",
     slug: "katsobad",
+    addedAt: "2026-05-01",
     title: { en: "Katsobad", es: "Katsobad" },
     category: "bouquets",
     blurb: {
@@ -341,7 +350,7 @@ export const PRODUCTS: Product[] = [
       { id: "lush", label: { en: "Lush", es: "Generoso" }, priceCents: 19000 },
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 25700, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
-    tags: ["same-day", "new"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "congrats", "just-because", "graduation", "thank-you", "thinking-of-you"],
     colorFamily: ["mixed"],
     active: true,
@@ -358,6 +367,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b1-01",
     slug: "abundant-table",
+    addedAt: "2026-05-01",
     title: { en: "Abundant Table", es: "Mesa Abundante" },
     category: "arrangements",
     blurb: {
@@ -379,7 +389,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "candles", label: { en: "Add taper candle pair", es: "Añadir par de velas" }, priceCents: 2500 },
     ],
-    tags: ["new", "same-day", "staff-pick", "seasonal"],
+    tags: ["same-day", "staff-pick", "seasonal"],
     occasions: ["thank-you"],
     colorFamily: ["mixed"],
     active: true,
@@ -395,6 +405,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-01",
     slug: "all-my-love",
+    addedAt: "2026-05-01",
     title: { en: "All My Love", es: "Todo Mi Amor" },
     category: "bouquets",
     blurb: {
@@ -416,7 +427,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "champagne", label: { en: "Add Veuve Clicquot", es: "Añadir Veuve Clicquot" }, priceCents: 8900 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["red"],
     active: true,
@@ -431,6 +442,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b1-02",
     slug: "aloha-aura",
+    addedAt: "2026-05-01",
     title: { en: "Aloha Aura", es: "Aura Aloha" },
     category: "arrangements",
     blurb: {
@@ -449,7 +461,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "congrats", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["mixed"],
     active: true,
@@ -464,6 +476,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b1-03",
     slug: "amethyst-snowdrop",
+    addedAt: "2026-05-01",
     title: { en: "Amethyst Snowdrop", es: "Amatista Nevada" },
     category: "arrangements",
     blurb: {
@@ -482,7 +495,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 18000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["congrats", "mothers-day", "get-well", "thinking-of-you", "sympathy"],
     colorFamily: ["pastel", "white"],
     active: true,
@@ -497,6 +510,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-b1-01",
     slug: "angels-touch",
+    addedAt: "2026-05-01",
     title: { en: "Angel's Touch", es: "Caricia de Ángel" },
     category: "arrangements",
     blurb: {
@@ -515,7 +529,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "congrats", "just-because", "mothers-day", "get-well", "thank-you", "thinking-of-you"],
     colorFamily: ["white"],
     active: true,
@@ -530,6 +544,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b1-04",
     slug: "autumn-orchard",
+    addedAt: "2026-05-01",
     title: { en: "Autumn Orchard", es: "Huerto de Otoño" },
     category: "arrangements",
     blurb: {
@@ -548,7 +563,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day", "seasonal"],
+    tags: ["same-day", "seasonal"],
     occasions: ["thank-you"],
     colorFamily: ["mixed"],
     active: true,
@@ -563,6 +578,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b1-05",
     slug: "autumns-cornucopia",
+    addedAt: "2026-05-01",
     title: { en: "Autumn's Cornucopia", es: "Cornucopia de Otoño" },
     category: "arrangements",
     blurb: {
@@ -581,7 +597,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 13500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "seasonal"],
+    tags: ["seasonal"],
     occasions: ["thank-you"],
     colorFamily: ["mixed"],
     active: true,
@@ -596,6 +612,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-gif-b1-01",
     slug: "berry-bliss-basket",
+    addedAt: "2026-05-01",
     title: { en: "Berry Bliss Basket", es: "Canasta Frutos Rojos" },
     category: "gifts",
     blurb: {
@@ -617,7 +634,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "chocolates", label: { en: "Add dark chocolate truffles", es: "Añadir trufas de chocolate" }, priceCents: 2500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "get-well", "thinking-of-you"],
     colorFamily: ["red", "mixed"],
     active: true,
@@ -632,6 +649,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-02",
     slug: "blush-enchantment",
+    addedAt: "2026-05-01",
     title: { en: "Blush Enchantment", es: "Encanto Rubor" },
     category: "bouquets",
     blurb: {
@@ -650,7 +668,7 @@ export const PRODUCTS: Product[] = [
       { id: "lush", label: { en: "Lush", es: "Generoso" }, priceCents: 20000 },
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 22500, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "romance", "mothers-day", "get-well"],
     colorFamily: ["pink", "pastel"],
     active: true,
@@ -665,6 +683,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b1-06",
     slug: "botanic-fireworks",
+    addedAt: "2026-05-01",
     title: { en: "Botanic Fireworks", es: "Fuegos Botánicos" },
     category: "arrangements",
     blurb: {
@@ -683,7 +702,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "congrats", "just-because", "mothers-day", "get-well"],
     colorFamily: ["mixed"],
     active: true,
@@ -698,6 +717,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-gif-b1-02",
     slug: "botanical-basket",
+    addedAt: "2026-05-01",
     title: { en: "Botanical Basket", es: "Canasta Botánica" },
     category: "gifts",
     blurb: {
@@ -716,7 +736,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 10000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 13500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "get-well"],
     colorFamily: ["mixed", "green"],
     active: true,
@@ -731,6 +751,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-03",
     slug: "butterfly-kiss",
+    addedAt: "2026-05-01",
     title: { en: "Butterfly Kiss", es: "Beso de Mariposa" },
     category: "bouquets",
     blurb: {
@@ -749,7 +770,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "romance", "mothers-day", "get-well"],
     colorFamily: ["pastel"],
     active: true,
@@ -764,6 +785,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-pla-b1-01",
     slug: "cattleya-orchid",
+    addedAt: "2026-05-01",
     title: { en: "Cattleya Orchid", es: "Orquídea Cattleya" },
     category: "plants",
     blurb: {
@@ -782,7 +804,7 @@ export const PRODUCTS: Product[] = [
       { id: "standard", label: { en: "Standard (double stem)", es: "Estándar (dos tallos)" }, priceCents: 15000 },
       { id: "grand", label: { en: "Grand (triple stem)", es: "Grande (tres tallos)" }, priceCents: 17500 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "mothers-day"],
     colorFamily: ["pastel"],
     // Retired 2026-08-18: the copy claims a Cattleya orchid but the photo is a
@@ -801,6 +823,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-04",
     slug: "celeste-bloom",
+    addedAt: "2026-05-01",
     title: { en: "Celeste Bloom", es: "Celeste en Flor" },
     category: "bouquets",
     blurb: {
@@ -819,7 +842,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "romance", "mothers-day", "get-well"],
     colorFamily: ["white", "mixed"],
     active: true,
@@ -834,6 +857,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-b1-02",
     slug: "celestial-peace",
+    addedAt: "2026-05-01",
     title: { en: "Celestial Peace", es: "Paz Celestial" },
     category: "sympathy",
     blurb: {
@@ -852,7 +876,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 22000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 28000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["sympathy"],
     colorFamily: ["white"],
     active: true,
@@ -867,6 +891,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-05",
     slug: "cloud-nine",
+    addedAt: "2026-05-01",
     title: { en: "Cloud Nine", es: "Nube Nueve" },
     category: "bouquets",
     blurb: {
@@ -888,7 +913,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "champagne", label: { en: "Add Veuve Clicquot", es: "Añadir Veuve Clicquot" }, priceCents: 8900 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["thank-you"],
     colorFamily: ["white"],
     active: true,
@@ -903,6 +928,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b1-07",
     slug: "cottage-garden-charm",
+    addedAt: "2026-05-01",
     title: { en: "Cottage Garden Charm", es: "Encanto de Jardín de Cabaña" },
     category: "bouquets",
     blurb: {
@@ -921,7 +947,7 @@ export const PRODUCTS: Product[] = [
       { id: "lush", label: { en: "Lush", es: "Generoso" }, priceCents: 12500 },
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 16900, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "anniversary", "congrats", "just-because", "mothers-day", "graduation"],
     colorFamily: ["pink", "mixed"],
     active: true,
@@ -936,6 +962,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-06",
     slug: "darling-lucy",
+    addedAt: "2026-05-01",
     title: { en: "Darling Lucy", es: "Querida Lucy" },
     category: "bouquets",
     blurb: {
@@ -954,7 +981,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["romance", "mothers-day", "thank-you"],
     colorFamily: ["pink"],
     active: true,
@@ -969,6 +996,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-gif-b1-03",
     slug: "daydream-parcel",
+    addedAt: "2026-05-01",
     title: { en: "Daydream Parcel", es: "Paquete de Ensueño" },
     category: "gifts",
     blurb: {
@@ -987,7 +1015,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 9500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 13500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "congrats", "get-well", "new-baby"],
     colorFamily: ["pastel"],
     active: true,
@@ -1002,6 +1030,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b1-08",
     slug: "designers-choice-maky",
+    addedAt: "2026-05-01",
     title: { en: "Designer's Choice — Maky", es: "Elección del Diseñador — Maky" },
     category: "arrangements",
     blurb: {
@@ -1020,7 +1049,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 10000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "get-well", "graduation", "new-baby", "thank-you", "thinking-of-you", "sympathy"],
     colorFamily: ["mixed"],
     active: true,
@@ -1035,6 +1064,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-07",
     slug: "dew-kissed",
+    addedAt: "2026-05-01",
     title: { en: "Dew Kissed", es: "Rocío Fresco" },
     category: "bouquets",
     blurb: {
@@ -1053,7 +1083,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 11500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["mothers-day", "get-well"],
     colorFamily: ["white", "green"],
     active: true,
@@ -1068,6 +1098,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b1-09",
     slug: "dona-rosita",
+    addedAt: "2026-05-01",
     title: { en: "Doña Rosita", es: "Doña Rosita" },
     category: "arrangements",
     blurb: {
@@ -1086,7 +1117,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "congrats", "mothers-day", "new-baby", "thinking-of-you"],
     colorFamily: ["pink", "mixed"],
     active: true,
@@ -1101,6 +1132,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-08",
     slug: "dozen-roses-in-multi-color",
+    addedAt: "2026-05-01",
     title: { en: "Dozen Roses — Multi-Color", es: "Docena de Rosas — Multicolor" },
     category: "bouquets",
     blurb: {
@@ -1119,7 +1151,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand (24 roses)", es: "Grande (24 rosas)" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva (36 roses)", es: "Diva (36 rosas)" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "mothers-day", "thinking-of-you"],
     colorFamily: ["mixed"],
     active: false,
@@ -1134,6 +1166,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-09",
     slug: "dozen-roses-in-pink",
+    addedAt: "2026-05-01",
     title: { en: "Dozen Roses — Pink", es: "Docena de Rosas — Rosa" },
     category: "bouquets",
     blurb: {
@@ -1155,7 +1188,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "chocolates", label: { en: "Add chocolate truffles", es: "Añadir trufas de chocolate" }, priceCents: 2500 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "mothers-day", "thinking-of-you"],
     colorFamily: ["pink"],
     active: false,
@@ -1170,6 +1203,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-10",
     slug: "dozen-roses-in-vase",
+    addedAt: "2026-05-01",
     title: { en: "Dozen Roses in Vase", es: "Docena de Rosas en Florero" },
     category: "bouquets",
     blurb: {
@@ -1191,7 +1225,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "champagne", label: { en: "Add Veuve Clicquot", es: "Añadir Veuve Clicquot" }, priceCents: 8900 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "mothers-day", "thinking-of-you"],
     colorFamily: ["red"],
     active: false,
@@ -1206,6 +1240,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-11",
     slug: "dozen-roses-in-white",
+    addedAt: "2026-05-01",
     title: { en: "Dozen Roses — White", es: "Docena de Rosas — Blanca" },
     category: "bouquets",
     blurb: {
@@ -1224,7 +1259,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand (24 roses)", es: "Grande (24 rosas)" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva (36 roses)", es: "Diva (36 rosas)" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "mothers-day", "thinking-of-you", "sympathy"],
     colorFamily: ["white"],
     active: false,
@@ -1239,6 +1274,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-12",
     slug: "dozen-roses-in-yellow",
+    addedAt: "2026-05-01",
     title: { en: "Dozen Roses — Yellow", es: "Docena de Rosas — Amarilla" },
     category: "bouquets",
     blurb: {
@@ -1257,7 +1293,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand (24 roses)", es: "Grande (24 rosas)" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva (36 roses)", es: "Diva (36 rosas)" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "mothers-day", "thinking-of-you"],
     colorFamily: ["mixed"],
     active: false,
@@ -1272,6 +1308,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b1-10",
     slug: "dulce-vida",
+    addedAt: "2026-05-01",
     title: { en: "Dulce Vida", es: "Dulce Vida" },
     category: "arrangements",
     blurb: {
@@ -1290,7 +1327,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "congrats", "mothers-day", "new-baby", "thinking-of-you"],
     colorFamily: ["mixed", "pink"],
     active: true,
@@ -1305,6 +1342,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-13",
     slug: "dusky-bloom",
+    addedAt: "2026-05-01",
     title: { en: "Dusky Bloom", es: "Flor de Penumbra" },
     category: "bouquets",
     blurb: {
@@ -1323,7 +1361,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["anniversary", "graduation", "new-baby"],
     colorFamily: ["mixed", "pink"],
     active: true,
@@ -1339,6 +1377,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-01",
     slug: "eclipse-garden",
+    addedAt: "2026-05-01",
     title: { en: "Eclipse Garden", es: "Jardín Eclipse" },
     category: "arrangements",
     blurb: {
@@ -1357,7 +1396,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["congrats", "get-well"],
     colorFamily: ["mixed", "red"],
     active: true,
@@ -1372,6 +1411,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-02",
     slug: "encanto-pastel",
+    addedAt: "2026-05-01",
     title: { en: "Encanto Pastel", es: "Encanto Pastel" },
     category: "arrangements",
     blurb: {
@@ -1390,7 +1430,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 11000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "romance", "mothers-day"],
     colorFamily: ["pastel", "pink"],
     active: true,
@@ -1405,6 +1445,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b2-01",
     slug: "ethereal-charm",
+    addedAt: "2026-05-01",
     title: { en: "Ethereal Charm", es: "Encanto Etéreo" },
     category: "arrangements",
     blurb: {
@@ -1423,7 +1464,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["thank-you", "sympathy"],
     colorFamily: ["white", "green"],
     active: true,
@@ -1438,6 +1479,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-pla-b2-01",
     slug: "evergreen-horizon",
+    addedAt: "2026-05-01",
     title: { en: "Evergreen Horizon", es: "Horizonte Verde" },
     category: "plants",
     blurb: {
@@ -1456,7 +1498,7 @@ export const PRODUCTS: Product[] = [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 12500 },
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["thank-you"],
     colorFamily: ["green"],
     active: true,
@@ -1471,6 +1513,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-03",
     slug: "eye-candy",
+    addedAt: "2026-05-01",
     title: { en: "Eye Candy", es: "Eye Candy" },
     category: "arrangements",
     blurb: {
@@ -1489,7 +1532,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "congrats", "just-because"],
     colorFamily: ["pink", "mixed"],
     active: true,
@@ -1504,6 +1547,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-04",
     slug: "falling-leaves",
+    addedAt: "2026-05-01",
     title: { en: "Falling Leaves", es: "Hojas que Caen" },
     category: "arrangements",
     blurb: {
@@ -1522,7 +1566,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
-    tags: ["new", "seasonal", "same-day"],
+    tags: ["seasonal", "same-day"],
     occasions: ["thank-you"],
     colorFamily: ["mixed"],
     active: true,
@@ -1537,6 +1581,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-05",
     slug: "farmhouse-fresh",
+    addedAt: "2026-05-01",
     title: { en: "Farmhouse Fresh", es: "Fresco de Granja" },
     category: "bouquets",
     blurb: {
@@ -1555,7 +1600,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 11000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "congrats", "graduation", "thank-you"],
     colorFamily: ["white", "green"],
     active: true,
@@ -1570,6 +1615,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-06",
     slug: "flamingo-garden",
+    addedAt: "2026-05-01",
     title: { en: "Flamingo Garden", es: "Jardín Flamenco" },
     category: "arrangements",
     blurb: {
@@ -1588,7 +1634,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 20000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 25000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["anniversary", "romance", "mothers-day"],
     colorFamily: ["pink", "mixed"],
     active: true,
@@ -1603,6 +1649,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-07",
     slug: "floral-fiesta",
+    addedAt: "2026-05-01",
     title: { en: "Floral Fiesta", es: "Fiesta Floral" },
     category: "arrangements",
     blurb: {
@@ -1621,7 +1668,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 14000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 18000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["romance", "mothers-day", "thank-you"],
     colorFamily: ["mixed", "pink"],
     active: true,
@@ -1636,6 +1683,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b2-02",
     slug: "flores-dulces",
+    addedAt: "2026-05-01",
     title: { en: "Flores Dulces", es: "Flores Dulces" },
     category: "arrangements",
     blurb: {
@@ -1654,7 +1702,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "get-well"],
     colorFamily: ["pink", "pastel"],
     active: true,
@@ -1669,6 +1717,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b2-03",
     slug: "flower-pop",
+    addedAt: "2026-05-01",
     title: { en: "Flower Pop", es: "Flower Pop" },
     category: "bouquets",
     blurb: {
@@ -1687,7 +1736,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 10000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 14500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "graduation"],
     colorFamily: ["mixed"],
     active: true,
@@ -1702,6 +1751,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-gif-b2-01",
     slug: "gather-give",
+    addedAt: "2026-05-01",
     title: { en: "Gather & Give", es: "Reunir y Regalar" },
     category: "gifts",
     blurb: {
@@ -1723,7 +1773,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "card", label: { en: "Handwritten card", es: "Tarjeta escrita a mano" }, priceCents: 500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["thank-you"],
     colorFamily: ["mixed"],
     active: true,
@@ -1738,6 +1788,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b2-04",
     slug: "golden-hour",
+    addedAt: "2026-05-01",
     title: { en: "Golden Hour", es: "Hora Dorada" },
     category: "arrangements",
     blurb: {
@@ -1756,7 +1807,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 11500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "get-well"],
     colorFamily: ["mixed", "pastel"],
     active: true,
@@ -1771,6 +1822,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-08",
     slug: "hundred-roses-basket",
+    addedAt: "2026-05-01",
     title: { en: "Hundred Roses Basket", es: "Canasta de Cien Rosas" },
     category: "arrangements",
     blurb: {
@@ -1808,6 +1860,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-09",
     slug: "jade-lavender",
+    addedAt: "2026-05-01",
     title: { en: "Jade & Lavender", es: "Jade y Lavanda" },
     category: "arrangements",
     blurb: {
@@ -1826,7 +1879,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 11500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "romance", "mothers-day"],
     colorFamily: ["green", "pastel"],
     active: true,
@@ -1841,6 +1894,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-10",
     slug: "jungle-jewels",
+    addedAt: "2026-05-01",
     title: { en: "Jungle Jewels", es: "Joyas de la Selva" },
     category: "arrangements",
     blurb: {
@@ -1859,7 +1913,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 18000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["birthday", "mothers-day"],
     colorFamily: ["green", "mixed"],
     active: true,
@@ -1874,6 +1928,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-11",
     slug: "jungle-whirl",
+    addedAt: "2026-05-01",
     title: { en: "Jungle Whirl", es: "Remolino de Selva" },
     category: "arrangements",
     blurb: {
@@ -1892,7 +1947,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 16000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "congrats", "thank-you", "thinking-of-you"],
     colorFamily: ["mixed", "green"],
     active: true,
@@ -1907,6 +1962,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-gif-b2-02",
     slug: "lilac-breeze-basket",
+    addedAt: "2026-05-01",
     title: { en: "Lilac Breeze Basket", es: "Canasta Brisa de Lila" },
     category: "gifts",
     blurb: {
@@ -1925,7 +1981,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 11000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "congrats", "mothers-day", "thinking-of-you"],
     colorFamily: ["pastel", "white"],
     active: true,
@@ -1940,6 +1996,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-b2-01",
     slug: "lilies-for-lottie",
+    addedAt: "2026-05-01",
     title: { en: "Lilies for Lottie", es: "Lirios para Lottie" },
     category: "bouquets",
     blurb: {
@@ -1973,6 +2030,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-12",
     slug: "lush-horizons",
+    addedAt: "2026-05-01",
     title: { en: "Lush Horizons", es: "Horizontes Frondosos" },
     category: "arrangements",
     blurb: {
@@ -1991,7 +2049,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 27500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 35000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day"],
     colorFamily: ["green", "white"],
     active: true,
@@ -2006,6 +2064,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-13",
     slug: "luz-del-caribe",
+    addedAt: "2026-05-01",
     title: { en: "Luz del Caribe", es: "Luz del Caribe" },
     category: "arrangements",
     blurb: {
@@ -2024,7 +2083,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "get-well"],
     colorFamily: ["mixed"],
     active: true,
@@ -2039,6 +2098,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-14",
     slug: "magenta-majesty",
+    addedAt: "2026-05-01",
     title: { en: "Magenta Majesty", es: "Majestad Magenta" },
     category: "arrangements",
     blurb: {
@@ -2057,7 +2117,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 20000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 25000 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["anniversary", "romance", "mothers-day"],
     colorFamily: ["pink", "mixed"],
     active: true,
@@ -2072,6 +2132,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-15",
     slug: "maison-de-diva",
+    addedAt: "2026-05-01",
     title: { en: "Maison de Diva", es: "Maison de Diva" },
     category: "bouquets",
     blurb: {
@@ -2109,6 +2170,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-16",
     slug: "mango-tango",
+    addedAt: "2026-05-01",
     title: { en: "Mango Tango", es: "Mango Tango" },
     category: "arrangements",
     blurb: {
@@ -2127,7 +2189,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "mothers-day"],
     colorFamily: ["mixed", "pink"],
     active: true,
@@ -2142,6 +2204,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-17",
     slug: "midsomar",
+    addedAt: "2026-05-01",
     title: { en: "Midsomar", es: "Midsomar" },
     category: "arrangements",
     blurb: {
@@ -2160,7 +2223,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 13000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
-    tags: ["new", "seasonal", "same-day"],
+    tags: ["seasonal", "same-day"],
     occasions: ["thank-you"],
     colorFamily: ["white", "green"],
     active: true,
@@ -2175,6 +2238,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-pla-b2-02",
     slug: "monstera-mood",
+    addedAt: "2026-05-01",
     title: { en: "Monstera Mood", es: "Estado Monstera" },
     category: "sympathy",
     blurb: {
@@ -2193,7 +2257,7 @@ export const PRODUCTS: Product[] = [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 25000 },
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 27500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["sympathy"],
     colorFamily: ["green"],
     active: true,
@@ -2208,6 +2272,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-b2-02",
     slug: "natures-cornucopia",
+    addedAt: "2026-05-01",
     title: { en: "Nature's Cornucopia", es: "Cornucopia de la Naturaleza" },
     category: "arrangements",
     blurb: {
@@ -2242,6 +2307,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-18",
     slug: "neon-tropic",
+    addedAt: "2026-05-01",
     title: { en: "Neon Tropic", es: "Neón Tropical" },
     category: "arrangements",
     blurb: {
@@ -2260,7 +2326,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["thank-you"],
     colorFamily: ["pink", "green", "mixed"],
     active: true,
@@ -2275,6 +2341,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-pla-b2-03",
     slug: "opal-orchid",
+    addedAt: "2026-05-01",
     title: { en: "Opal Orchid", es: "Orquídea Ópalo" },
     category: "plants",
     blurb: {
@@ -2293,7 +2360,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 14500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 18500 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["white", "pastel"],
     // Retired 2026-08-18: the copy claims a double-stem phalaenopsis but the
@@ -2311,6 +2378,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-pla-orc-01",
     slug: "phalaenopsis-orchid",
+    addedAt: "2026-08-18",
     title: { en: "Phalaenopsis Orchid", es: "Orquídea Phalaenopsis" },
     category: "plants",
     blurb: {
@@ -2369,7 +2437,7 @@ export const PRODUCTS: Product[] = [
         subtitle: { en: "Twice the blooms, same care", es: "El doble de flores, el mismo cuidado" },
       },
     ],
-    tags: ["same-day", "new", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "congrats", "sympathy"],
     colorFamily: ["white", "pink"],
     active: true,
@@ -2388,6 +2456,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-01",
     slug: "paradise-found",
+    addedAt: "2026-05-01",
     title: { en: "Paradise Found", es: "Paraíso Encontrado" },
     category: "arrangements",
     blurb: {
@@ -2406,7 +2475,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "romance", "mothers-day", "thank-you"],
     colorFamily: ["mixed", "green"],
     active: true,
@@ -2421,6 +2490,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-02",
     slug: "pastel-poetry",
+    addedAt: "2026-05-01",
     title: { en: "Pastel Poetry", es: "Poesía en Pastel" },
     category: "bouquets",
     blurb: {
@@ -2439,7 +2509,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 11000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "graduation"],
     colorFamily: ["pastel", "pink"],
     active: true,
@@ -2454,6 +2524,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-03",
     slug: "peach-sunshine",
+    addedAt: "2026-05-01",
     title: { en: "Peach Sunshine", es: "Durazno y Sol" },
     category: "bouquets",
     blurb: {
@@ -2472,7 +2543,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 10500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 14500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "get-well"],
     colorFamily: ["pastel", "mixed"],
     active: true,
@@ -2487,6 +2558,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-04",
     slug: "petal-party",
+    addedAt: "2026-05-01",
     title: { en: "Petal Party", es: "Fiesta de Pétalos" },
     category: "bouquets",
     blurb: {
@@ -2508,7 +2580,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "balloons", label: { en: "Add birthday balloons", es: "Añadir globos de cumpleaños" }, priceCents: 1500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "new-baby"],
     colorFamily: ["pink", "mixed"],
     active: true,
@@ -2523,6 +2595,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-05",
     slug: "pink-opus",
+    addedAt: "2026-05-01",
     title: { en: "Pink Opus", es: "Opus Rosa" },
     category: "arrangements",
     blurb: {
@@ -2541,7 +2614,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 20000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 25000 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["anniversary", "romance", "mothers-day", "new-baby"],
     colorFamily: ["pink"],
     active: true,
@@ -2556,6 +2629,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-06",
     slug: "purple-haze",
+    addedAt: "2026-05-01",
     title: { en: "Purple Haze", es: "Bruma Púrpura" },
     category: "arrangements",
     blurb: {
@@ -2574,7 +2648,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 11000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["mothers-day"],
     colorFamily: ["mixed", "pink"],
     active: true,
@@ -2589,6 +2663,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-07",
     slug: "rainbow-reverie",
+    addedAt: "2026-05-01",
     title: { en: "Rainbow Reverie", es: "Ensueño Arcoíris" },
     category: "arrangements",
     blurb: {
@@ -2607,7 +2682,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["thank-you"],
     colorFamily: ["mixed"],
     active: true,
@@ -2622,6 +2697,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-08",
     slug: "santas-garden",
+    addedAt: "2026-05-01",
     title: { en: "Santa's Garden", es: "El Jardín de Santa" },
     category: "arrangements",
     blurb: {
@@ -2640,7 +2716,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "seasonal"],
+    tags: ["seasonal"],
     occasions: [],
     seasonMonths: [11, 12],
     colorFamily: ["red", "green", "white"],
@@ -2656,6 +2732,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-09",
     slug: "springbling",
+    addedAt: "2026-05-01",
     title: { en: "Springbling", es: "Brillo de Primavera" },
     category: "bouquets",
     blurb: {
@@ -2674,7 +2751,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 11000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15000 },
     ],
-    tags: ["new", "seasonal", "same-day"],
+    tags: ["seasonal", "same-day"],
     occasions: ["birthday", "graduation"],
     colorFamily: ["pastel", "mixed"],
     active: true,
@@ -2689,6 +2766,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-10",
     slug: "stem-theory",
+    addedAt: "2026-05-01",
     title: { en: "Stem Theory", es: "Teoría del Tallo" },
     category: "arrangements",
     blurb: {
@@ -2707,7 +2785,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 13500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 18500 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["birthday", "congrats", "get-well"],
     colorFamily: ["white", "green"],
     active: true,
@@ -2722,6 +2800,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-11",
     slug: "sugarplum",
+    addedAt: "2026-05-01",
     title: { en: "Sugarplum", es: "Ciruela Dulce" },
     category: "arrangements",
     blurb: {
@@ -2740,7 +2819,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 18500 },
     ],
-    tags: ["new", "seasonal"],
+    tags: ["seasonal"],
     occasions: ["birthday", "mothers-day"],
     colorFamily: ["pink", "mixed"],
     active: true,
@@ -2755,6 +2834,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-12",
     slug: "sunlit-tropics",
+    addedAt: "2026-05-01",
     title: { en: "Sunlit Tropics", es: "Trópico Iluminado" },
     category: "arrangements",
     blurb: {
@@ -2773,7 +2853,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "thank-you"],
     colorFamily: ["mixed", "pastel"],
     active: true,
@@ -2788,6 +2868,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-13",
     slug: "sunset-estate",
+    addedAt: "2026-05-01",
     title: { en: "Sunset Estate", es: "Hacienda al Atardecer" },
     category: "bouquets",
     blurb: {
@@ -2809,7 +2890,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "wine", label: { en: "Add bottle of red wine", es: "Añadir botella de vino tinto" }, priceCents: 4500 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["get-well", "graduation"],
     colorFamily: ["mixed", "pink"],
     active: true,
@@ -2824,6 +2905,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-gif-b3-14",
     slug: "sunshine-basket",
+    addedAt: "2026-05-01",
     title: { en: "Sunshine Basket", es: "Canasta de Sol" },
     category: "gifts",
     blurb: {
@@ -2842,7 +2924,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 10500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 14000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "congrats", "get-well"],
     colorFamily: ["mixed", "white"],
     active: true,
@@ -2857,6 +2939,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-15",
     slug: "talitas-bouquet",
+    addedAt: "2026-05-01",
     title: { en: "Talita's Bouquet", es: "El Ramo de Talita" },
     category: "bouquets",
     blurb: {
@@ -2875,7 +2958,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["romance", "sympathy"],
     colorFamily: ["pink", "white"],
     active: true,
@@ -2890,6 +2973,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-16",
     slug: "the-heart-you-hold",
+    addedAt: "2026-05-01",
     title: { en: "The Heart You Hold", es: "El Corazón que Llevas" },
     category: "bouquets",
     blurb: {
@@ -2911,7 +2995,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "chocolates", label: { en: "Add dark chocolate truffles", es: "Añadir trufas de chocolate oscuro" }, priceCents: 3500 },
     ],
-    tags: ["new", "staff-pick", "same-day"],
+    tags: ["staff-pick", "same-day"],
     occasions: ["anniversary", "romance", "just-because", "thinking-of-you"],
     colorFamily: ["red"],
     active: true,
@@ -2926,6 +3010,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-b3-17",
     slug: "thorn-grace",
+    addedAt: "2026-05-01",
     title: { en: "Thorn & Grace", es: "Espina y Gracia" },
     category: "arrangements",
     blurb: {
@@ -2944,7 +3029,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 18000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "mothers-day"],
     colorFamily: ["white", "green"],
     active: true,
@@ -2959,6 +3044,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-18",
     slug: "three-dozen-roses-in-vase",
+    addedAt: "2026-05-01",
     title: { en: "Three Dozen Roses in Vase", es: "Tres Docenas de Rosas en Florero" },
     category: "bouquets",
     blurb: {
@@ -2981,7 +3067,7 @@ export const PRODUCTS: Product[] = [
       { id: "champagne", label: { en: "Add Veuve Clicquot", es: "Añadir Veuve Clicquot" }, priceCents: 8900 },
       { id: "chocolates", label: { en: "Add dark chocolate truffles", es: "Añadir trufas de chocolate oscuro" }, priceCents: 1500 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["anniversary", "romance", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["red"],
     active: true,
@@ -2996,6 +3082,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-19",
     slug: "timeless-romance",
+    addedAt: "2026-05-01",
     title: { en: "Timeless Romance", es: "Romance Atemporal" },
     category: "bouquets",
     blurb: {
@@ -3017,7 +3104,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "champagne", label: { en: "Add Veuve Clicquot", es: "Añadir Veuve Clicquot" }, priceCents: 8900 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["anniversary", "romance", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["pink", "white"],
     active: true,
@@ -3032,6 +3119,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-20",
     slug: "tropic-thunder",
+    addedAt: "2026-05-01",
     title: { en: "Tropic Thunder", es: "Trueno Tropical" },
     category: "arrangements",
     blurb: {
@@ -3050,7 +3138,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 20000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 25000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "mothers-day", "thank-you"],
     colorFamily: ["pink", "red", "mixed"],
     active: true,
@@ -3065,6 +3153,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-21",
     slug: "tropical-paradise",
+    addedAt: "2026-05-01",
     title: { en: "Tropical Paradise", es: "Paraíso Tropical" },
     category: "arrangements",
     blurb: {
@@ -3083,7 +3172,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 20000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 25000 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["birthday", "mothers-day", "thank-you"],
     colorFamily: ["white", "pastel", "green"],
     active: true,
@@ -3098,6 +3187,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-22",
     slug: "two-dozen-roses-in-vase",
+    addedAt: "2026-05-01",
     title: { en: "Two Dozen Roses in Vase", es: "Dos Docenas de Rosas en Florero" },
     category: "bouquets",
     blurb: {
@@ -3120,7 +3210,7 @@ export const PRODUCTS: Product[] = [
       { id: "champagne", label: { en: "Add Veuve Clicquot", es: "Añadir Veuve Clicquot" }, priceCents: 8900 },
       { id: "chocolates", label: { en: "Add dark chocolate truffles", es: "Añadir trufas de chocolate oscuro" }, priceCents: 1500 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["anniversary", "romance", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["red"],
     active: true,
@@ -3135,6 +3225,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-23",
     slug: "under-the-mistletoe",
+    addedAt: "2026-05-01",
     title: { en: "Under the Mistletoe", es: "Bajo el Muérdago" },
     category: "arrangements",
     blurb: {
@@ -3153,7 +3244,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "seasonal", "same-day"],
+    tags: ["seasonal", "same-day"],
     occasions: [],
     seasonMonths: [11, 12],
     colorFamily: ["red", "green"],
@@ -3169,6 +3260,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-24",
     slug: "velvet-garden",
+    addedAt: "2026-05-01",
     title: { en: "Velvet Garden", es: "Jardín de Terciopelo" },
     category: "arrangements",
     blurb: {
@@ -3187,7 +3279,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 14000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 19000 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["birthday", "mothers-day"],
     colorFamily: ["red", "mixed"],
     active: true,
@@ -3202,6 +3294,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-25",
     slug: "vibrant-vibes",
+    addedAt: "2026-05-01",
     title: { en: "Vibrant Vibes", es: "Vibras Vibrantes" },
     category: "arrangements",
     blurb: {
@@ -3220,7 +3313,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 11000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "congrats", "get-well"],
     colorFamily: ["pink", "mixed"],
     active: true,
@@ -3235,6 +3328,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-26",
     slug: "viva-maky",
+    addedAt: "2026-05-01",
     title: { en: "Viva Maky", es: "Viva Maky" },
     category: "arrangements",
     blurb: {
@@ -3253,7 +3347,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Designer Grand", es: "Diseñadora Grande" }, priceCents: 17500 },
       { id: "diva", label: { en: "Designer Diva", es: "Diseñadora Diva" }, priceCents: 24500 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["birthday", "mothers-day"],
     colorFamily: ["mixed"],
     active: true,
@@ -3268,6 +3362,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-27",
     slug: "whispers-of-spring",
+    addedAt: "2026-05-01",
     title: { en: "Whispers of Spring", es: "Susurros de Primavera" },
     category: "arrangements",
     blurb: {
@@ -3286,7 +3381,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 11000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15000 },
     ],
-    tags: ["new", "seasonal", "same-day"],
+    tags: ["seasonal", "same-day"],
     occasions: ["get-well", "new-baby"],
     colorFamily: ["pastel", "white"],
     active: true,
@@ -3301,6 +3396,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-28",
     slug: "wildflower-meadow",
+    addedAt: "2026-05-01",
     title: { en: "Wildflower Meadow", es: "Pradera Silvestre" },
     category: "bouquets",
     blurb: {
@@ -3319,7 +3415,7 @@ export const PRODUCTS: Product[] = [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 10000 },
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 13500 },
     ],
-    tags: ["new", "same-day", "seasonal"],
+    tags: ["same-day", "seasonal"],
     occasions: ["birthday", "mothers-day", "thinking-of-you"],
     colorFamily: ["mixed", "pastel"],
     active: true,
@@ -3334,6 +3430,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-29",
     slug: "winter-moss",
+    addedAt: "2026-05-01",
     title: { en: "Winter Moss", es: "Musgo de Invierno" },
     category: "arrangements",
     blurb: {
@@ -3352,7 +3449,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 13500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 18000 },
     ],
-    tags: ["new", "seasonal", "staff-pick"],
+    tags: ["seasonal", "staff-pick"],
     occasions: ["thank-you"],
     colorFamily: ["green", "white"],
     active: true,
@@ -3368,6 +3465,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b4-01",
     slug: "soft-landing",
+    addedAt: "2026-09-03",
     title: { en: "Soft Landing", es: "Aterrizaje Suave" },
     category: "arrangements",
     blurb: {
@@ -3391,7 +3489,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["anniversary", "congrats", "just-because", "get-well", "new-baby", "thinking-of-you"],
     colorFamily: ["white", "pink", "pastel"],
     active: true,
@@ -3406,6 +3504,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b4-02",
     slug: "chantilly-cream",
+    addedAt: "2026-09-03",
     title: { en: "Chantilly Cream", es: "Crema Chantilly" },
     category: "arrangements",
     blurb: {
@@ -3437,7 +3536,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 12000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "anniversary", "congrats", "just-because", "get-well", "new-baby", "thinking-of-you"],
     colorFamily: ["white", "green", "pastel"],
     active: true,
@@ -3452,6 +3551,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b4-03",
     slug: "rose-quartz",
+    addedAt: "2026-09-03",
     title: { en: "Rose Quartz", es: "Cuarzo Rosa" },
     category: "arrangements",
     blurb: {
@@ -3491,7 +3591,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 12500 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "anniversary", "get-well", "thank-you", "thinking-of-you", "just-because"],
     colorFamily: ["pink", "white", "pastel"],
     active: true,
@@ -3506,6 +3606,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b4-04",
     slug: "pink-persuasion",
+    addedAt: "2026-09-03",
     title: { en: "Pink Persuasion", es: "Persuasión Rosa" },
     category: "arrangements",
     blurb: {
@@ -3553,7 +3654,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 11000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "just-because", "thinking-of-you"],
     colorFamily: ["pink", "green", "mixed"],
     active: true,
@@ -3568,6 +3669,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b4-05",
     slug: "cotton-candy",
+    addedAt: "2026-09-03",
     title: { en: "Cotton Candy", es: "Algodón de Azúcar" },
     category: "arrangements",
     blurb: {
@@ -3591,7 +3693,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 11500 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "congrats", "just-because", "get-well"],
     colorFamily: ["pink", "mixed", "pastel"],
     active: true,
@@ -3607,6 +3709,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-royal-01",
     slug: "birthday-queen",
+    addedAt: "2026-09-06",
     title: { en: "Birthday Queen", es: "Reina de Cumpleaños" },
     category: "bouquets",
     blurb: {
@@ -3626,7 +3729,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Sixty roses", es: "Sesenta rosas" }, priceCents: 35000 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["birthday", "romance", "anniversary", "congrats"],
     colorFamily: ["pink", "red", "mixed"],
     active: true,
@@ -3641,6 +3744,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-royal-01",
     slug: "peaches-and-cream",
+    addedAt: "2026-09-06",
     title: { en: "Peaches & Cream", es: "Duraznos y Crema" },
     category: "arrangements",
     blurb: {
@@ -3660,7 +3764,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 12000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "new-baby", "thank-you", "get-well", "just-because", "congrats"],
     colorFamily: ["pastel", "pink", "mixed"],
     active: true,
@@ -3675,6 +3779,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-royal-02",
     slug: "island-sunrise",
+    addedAt: "2026-09-11",
     title: { en: "Island Sunrise", es: "Amanecer Isleño" },
     category: "arrangements",
     blurb: {
@@ -3692,7 +3797,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 15000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "congrats", "thank-you", "get-well", "anniversary", "just-because"],
     colorFamily: ["mixed", "red"],
     active: true,
@@ -3707,6 +3812,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-royal-03",
     slug: "lavender-serenade",
+    addedAt: "2026-09-11",
     title: { en: "Lavender Serenade", es: "Serenata Lavanda" },
     category: "arrangements",
     blurb: {
@@ -3723,7 +3829,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 16500 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["romance", "anniversary", "birthday", "thank-you", "get-well", "just-because"],
     colorFamily: ["pink", "red", "mixed"],
     active: true,
@@ -3738,6 +3844,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-royal-04",
     slug: "sunflower-parade",
+    addedAt: "2026-09-11",
     title: { en: "Sunflower Parade", es: "Desfile de Girasoles" },
     category: "arrangements",
     blurb: {
@@ -3756,7 +3863,7 @@ export const PRODUCTS: Product[] = [
       { id: "set-3", label: { en: "Set of 3", es: "Set de 3" }, priceCents: 15000, subtitle: { en: "Three matching bowls", es: "Tres bowls a juego" } },
       { id: "set-5", label: { en: "Set of 5", es: "Set de 5" }, priceCents: 25000, subtitle: { en: "Five matching bowls", es: "Cinco bowls a juego" } },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["congrats", "birthday", "graduation", "thank-you", "get-well", "just-because"],
     colorFamily: ["mixed", "green"],
     active: true,
@@ -3771,6 +3878,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-royal-05",
     slug: "white-linen",
+    addedAt: "2026-09-11",
     title: { en: "White Linen", es: "Lino Blanco" },
     category: "arrangements",
     blurb: {
@@ -3787,7 +3895,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 15000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["anniversary", "sympathy", "congrats", "thank-you", "thinking-of-you", "just-because"],
     colorFamily: ["white", "green"],
     active: true,
@@ -3802,6 +3910,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-royal-06",
     slug: "sunday-morning",
+    addedAt: "2026-09-11",
     title: { en: "Sunday Morning", es: "Mañana de Domingo" },
     category: "arrangements",
     blurb: {
@@ -3818,7 +3927,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 7000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["new-baby", "get-well", "birthday", "thank-you", "thinking-of-you", "just-because"],
     colorFamily: ["pastel", "pink", "mixed"],
     active: true,
@@ -3833,6 +3942,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-royal-07",
     slug: "ballet-slipper",
+    addedAt: "2026-09-11",
     title: { en: "Ballet Slipper", es: "Zapatilla de Ballet" },
     category: "arrangements",
     blurb: {
@@ -3852,7 +3962,7 @@ export const PRODUCTS: Product[] = [
       { id: "no-orchid", label: { en: "Without orchid", es: "Sin orquídea" }, priceCents: 10000, subtitle: { en: "Roses, hydrangea, lisianthus", es: "Rosas, hortensia, lisianthus" } },
       { id: "with-orchid", label: { en: "With orchid", es: "Con orquídea" }, priceCents: 11000, subtitle: { en: "Adds sprays of pink dendrobium", es: "Suma varas de dendrobium rosa" } },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["new-baby", "anniversary", "birthday", "romance", "thank-you", "just-because"],
     colorFamily: ["pink", "pastel", "white"],
     active: true,
@@ -3867,6 +3977,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-royal-08",
     slug: "garden-party",
+    addedAt: "2026-09-11",
     title: { en: "Garden Party", es: "Fiesta de Jardín" },
     category: "arrangements",
     blurb: {
@@ -3883,7 +3994,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 15000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["anniversary", "congrats", "thank-you", "birthday", "new-baby", "just-because"],
     colorFamily: ["pastel", "pink", "white", "green"],
     active: true,
@@ -3898,6 +4009,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-royal-09",
     slug: "summer-confetti",
+    addedAt: "2026-09-11",
     title: { en: "Summer Confetti", es: "Confeti de Verano" },
     category: "arrangements",
     blurb: {
@@ -3914,7 +4026,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 15000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "congrats", "graduation", "get-well", "thank-you", "just-because"],
     colorFamily: ["mixed", "pink", "red"],
     active: true,
@@ -3929,6 +4041,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-royal-10",
     slug: "blue-lagoon",
+    addedAt: "2026-09-11",
     title: { en: "Blue Lagoon", es: "Laguna Azul" },
     category: "arrangements",
     blurb: {
@@ -3945,7 +4058,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 10000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "new-baby", "congrats", "graduation", "thank-you", "just-because"],
     colorFamily: ["mixed", "pastel"],
     active: true,
@@ -3960,6 +4073,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-royal-11",
     slug: "carnival",
+    addedAt: "2026-09-11",
     title: { en: "Carnival", es: "Carnaval" },
     category: "arrangements",
     blurb: {
@@ -3976,7 +4090,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 12000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "congrats", "graduation", "thank-you", "get-well", "just-because"],
     colorFamily: ["mixed", "pink", "green"],
     active: true,
@@ -3991,6 +4105,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-royal-01",
     slug: "serene-lavender",
+    addedAt: "2026-09-11",
     title: { en: "Serene Lavender", es: "Lavanda Serena" },
     category: "sympathy",
     blurb: {
@@ -4007,7 +4122,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 18000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["sympathy", "thinking-of-you"],
     colorFamily: ["white", "pastel", "mixed"],
     active: true,
@@ -4022,6 +4137,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "x-card-premium",
     slug: "premium-card",
+    addedAt: "2026-05-02",
     title: { en: "Premium handwritten card", es: "Tarjeta escrita a mano premium" },
     category: "gifts",
     giftExtra: true,
@@ -4051,6 +4167,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "x-vase-upgrade",
     slug: "glass-vase-upgrade",
+    addedAt: "2026-05-02",
     title: { en: "Glass vase upgrade", es: "Mejora a jarrón de vidrio" },
     category: "gifts",
     giftExtra: true,
@@ -4080,6 +4197,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "x-ribbon-silk",
     slug: "silk-ribbon",
+    addedAt: "2026-05-02",
     title: { en: "Silk ribbon", es: "Listón de seda" },
     category: "gifts",
     giftExtra: true,
@@ -4109,6 +4227,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "x-chocolates-mini",
     slug: "mini-chocolates",
+    addedAt: "2026-05-02",
     title: { en: "Mini chocolates (4 pieces)", es: "Mini chocolates (4 piezas)" },
     category: "gifts",
     giftExtra: true,
@@ -4138,6 +4257,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-rose-red-wrap",
     slug: "wrapped-red-roses",
+    addedAt: "2026-05-25",
     title: { en: "Wrapped Red Roses", es: "Rosas Rojas Wrapped" },
     category: "bouquets",
     blurb: {
@@ -4161,7 +4281,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "ceramic-base", label: { en: "Add ceramic base", es: "Añadir base cerámica" }, priceCents: 1500 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["red"],
     active: true,
@@ -4176,6 +4296,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-rose-color-wrap",
     slug: "wrapped-roses-colored",
+    addedAt: "2026-05-25",
     title: { en: "Wrapped Roses — Pick a Color", es: "Rosas Wrapped — Elige el Color" },
     category: "bouquets",
     blurb: {
@@ -4217,7 +4338,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "ceramic-base", label: { en: "Add ceramic base", es: "Añadir base cerámica" }, priceCents: 1500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["pink", "white", "mixed"],
     active: true,
@@ -4232,6 +4353,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-flag-roses",
     slug: "american-flag-roses",
+    addedAt: "2026-09-03",
     title: { en: "American Flag Roses", es: "Rosas Bandera Americana" },
     category: "bouquets",
     blurb: {
@@ -4262,7 +4384,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "grand", label: { en: "American flag bouquet", es: "Ramo bandera americana" }, priceCents: 40000 },
     ],
-    tags: ["new", "seasonal"],
+    tags: ["seasonal"],
     occasions: ["congrats", "graduation"],
     colorFamily: ["red", "white", "mixed"],
     active: true,
@@ -4277,6 +4399,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-100-roses",
     slug: "100-roses",
+    addedAt: "2026-09-03",
     title: { en: "100 Roses", es: "100 Rosas" },
     category: "bouquets",
     blurb: {
@@ -4307,7 +4430,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "grand", label: { en: "100 roses", es: "100 rosas" }, priceCents: 50000 },
     ],
-    tags: ["new"],
+    tags: [],
     occasions: ["birthday", "anniversary", "romance", "congrats", "mothers-day"],
     colorFamily: ["pink", "red", "mixed"],
     active: true,
@@ -4322,6 +4445,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-wreath-blue",
     slug: "tranquil-skies-wreath",
+    addedAt: "2026-10-07",
     title: { en: "Tranquil Skies Wreath", es: "Corona Cielo Sereno" },
     category: "sympathy",
     blurb: {
@@ -4342,7 +4466,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standing", label: { en: "Standing wreath", es: "Corona de pie" }, priceCents: 34999 },
     ],
-    tags: ["new"],
+    tags: [],
     occasions: ["sympathy"],
     colorFamily: ["white", "pastel"],
     active: true,
@@ -4357,6 +4481,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-cross-red",
     slug: "crimson-grace-cross",
+    addedAt: "2026-10-07",
     title: { en: "Crimson Grace Cross", es: "Cruz Gracia Carmesí" },
     category: "sympathy",
     blurb: {
@@ -4392,7 +4517,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standing", label: { en: "Standing cross", es: "Cruz de pie" }, priceCents: 39999 },
     ],
-    tags: ["new"],
+    tags: [],
     occasions: ["sympathy"],
     colorFamily: ["white", "red"],
     active: true,
@@ -4407,6 +4532,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-peach-spray",
     slug: "peach-tribute-spray",
+    addedAt: "2026-10-07",
     title: { en: "Peach Tribute Spray", es: "Tributo Melocotón" },
     category: "sympathy",
     blurb: {
@@ -4424,7 +4550,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 40000 },
     ],
-    tags: ["new"],
+    tags: [],
     occasions: ["sympathy"],
     colorFamily: ["pastel", "white"],
     active: true,
@@ -4439,6 +4565,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-heart-color",
     slug: "heart-in-full-color",
+    addedAt: "2026-10-07",
     title: { en: "Heart in Full Color", es: "Corazón de Colores" },
     category: "sympathy",
     blurb: {
@@ -4455,7 +4582,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standing", label: { en: "Standing heart", es: "Corazón en atril" }, priceCents: 30000 },
     ],
-    tags: ["new"],
+    tags: [],
     occasions: ["sympathy", "thank-you"],
     colorFamily: ["mixed"],
     active: true,
@@ -4470,6 +4597,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-beloved-heart",
     slug: "beloved-heart",
+    addedAt: "2026-10-07",
     title: { en: "Beloved Heart", es: "Corazón Amado" },
     category: "sympathy",
     blurb: {
@@ -4486,7 +4614,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standing", label: { en: "Standing heart", es: "Corazón en atril" }, priceCents: 49999 },
     ],
-    tags: ["new"],
+    tags: [],
     occasions: ["sympathy"],
     colorFamily: ["white", "red"],
     active: true,
@@ -4501,6 +4629,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-tender-heart",
     slug: "tender-heart",
+    addedAt: "2026-10-07",
     title: { en: "Tender Heart", es: "Corazón Tierno" },
     category: "sympathy",
     blurb: {
@@ -4517,7 +4646,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standing", label: { en: "Standing heart", es: "Corazón en atril" }, priceCents: 54999 },
     ],
-    tags: ["new"],
+    tags: [],
     occasions: ["sympathy"],
     colorFamily: ["pink"],
     active: true,
@@ -4532,6 +4661,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-crimson-heart",
     slug: "crimson-heart",
+    addedAt: "2026-10-07",
     title: { en: "Crimson Heart", es: "Corazón Carmesí" },
     category: "sympathy",
     blurb: {
@@ -4548,7 +4678,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standing", label: { en: "Standing heart", es: "Corazón en atril" }, priceCents: 54999 },
     ],
-    tags: ["new"],
+    tags: [],
     occasions: ["sympathy"],
     colorFamily: ["white", "red"],
     active: true,
@@ -4563,6 +4693,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-chapel-white",
     slug: "chapel-white",
+    addedAt: "2026-10-07",
     title: { en: "Chapel White", es: "Blanco de Capilla" },
     category: "sympathy",
     blurb: {
@@ -4579,7 +4710,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 39999 },
     ],
-    tags: ["new"],
+    tags: [],
     occasions: ["sympathy"],
     colorFamily: ["white"],
     active: true,
@@ -4594,6 +4725,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-golden-grace",
     slug: "golden-grace",
+    addedAt: "2026-10-07",
     title: { en: "Golden Grace", es: "Gracia Dorada" },
     category: "sympathy",
     blurb: {
@@ -4610,7 +4742,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 29999 },
     ],
-    tags: ["new"],
+    tags: [],
     occasions: ["sympathy"],
     colorFamily: ["mixed"],
     active: true,
@@ -4625,6 +4757,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-twilight-orchid",
     slug: "twilight-orchid",
+    addedAt: "2026-10-07",
     title: { en: "Twilight Orchid", es: "Orquídea de Crepúsculo" },
     category: "sympathy",
     blurb: {
@@ -4641,7 +4774,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 119999 },
     ],
-    tags: ["new"],
+    tags: [],
     occasions: ["sympathy"],
     colorFamily: ["pink", "pastel"],
     active: true,
@@ -4656,6 +4789,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-amethyst-orchid",
     slug: "amethyst-orchid",
+    addedAt: "2026-10-07",
     title: { en: "Amethyst Orchid", es: "Orquídea Amatista" },
     category: "sympathy",
     blurb: {
@@ -4672,7 +4806,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standing", label: { en: "Standing tribute", es: "Tributo en atril" }, priceCents: 149999 },
     ],
-    tags: ["new"],
+    tags: [],
     occasions: ["sympathy"],
     colorFamily: ["white", "pink"],
     active: true,
@@ -4687,6 +4821,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-sunflower-tribute",
     slug: "sunflower-tribute",
+    addedAt: "2026-10-07",
     title: { en: "Sunflower Tribute", es: "Tributo de Girasoles" },
     category: "sympathy",
     blurb: {
@@ -4703,7 +4838,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 49999 },
     ],
-    tags: ["new"],
+    tags: [],
     occasions: ["sympathy"],
     colorFamily: ["mixed"],
     active: true,
@@ -4718,6 +4853,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-blue-remembrance",
     slug: "blue-remembrance",
+    addedAt: "2026-10-07",
     title: { en: "Blue Remembrance", es: "Recuerdo Azul" },
     category: "sympathy",
     blurb: {
@@ -4734,7 +4870,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 49999 },
     ],
-    tags: ["new"],
+    tags: [],
     occasions: ["sympathy"],
     colorFamily: ["mixed"],
     active: true,
@@ -4749,6 +4885,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-personal-tribute",
     slug: "personal-tribute",
+    addedAt: "2026-10-07",
     title: { en: "Personal Tribute", es: "Tributo Personalizado" },
     category: "sympathy",
     blurb: {
@@ -4765,7 +4902,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standing", label: { en: "Standing tribute", es: "Tributo en atril" }, priceCents: 39999 },
     ],
-    tags: ["new"],
+    tags: [],
     occasions: ["sympathy"],
     colorFamily: ["mixed"],
     active: true,
@@ -4780,6 +4917,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-eternal-white",
     slug: "eternal-white",
+    addedAt: "2026-10-07",
     title: { en: "Eternal White", es: "Blanco Eterno" },
     category: "sympathy",
     blurb: {
@@ -4796,7 +4934,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standing", label: { en: "Casket spray", es: "Manto fúnebre" }, priceCents: 249999 },
     ],
-    tags: ["new"],
+    tags: [],
     occasions: ["sympathy"],
     colorFamily: ["white"],
     active: true,
@@ -4811,6 +4949,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-orchid-sunburst",
     slug: "orchid-sunburst-spray",
+    addedAt: "2026-10-08",
     title: { en: "Orchid Sunburst Spray", es: "Sol de Orquídeas" },
     category: "sympathy",
     blurb: {
@@ -4829,7 +4968,7 @@ export const PRODUCTS: Product[] = [
       { id: "with-orchids", label: { en: "With orchids", es: "Con orquídeas" }, priceCents: 69999, subtitle: { en: "Fuchsia and white dendrobium orchids throughout", es: "Orquídeas dendrobium fucsia y blancas por toda la pieza" } },
       { id: "no-orchids", label: { en: "Without orchids", es: "Sin orquídeas" }, priceCents: 39999, subtitle: { en: "Sunflowers, roses, and bells of Ireland", es: "Girasoles, rosas y campanas de Irlanda" } },
     ],
-    tags: ["new"],
+    tags: [],
     occasions: ["sympathy"],
     colorFamily: ["mixed"],
     active: true,
@@ -4844,6 +4983,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-blush-embrace",
     slug: "blush-embrace-spray",
+    addedAt: "2026-10-08",
     title: { en: "Blush Embrace Spray", es: "Abrazo Rubor" },
     category: "sympathy",
     blurb: {
@@ -4862,7 +5002,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 39999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["sympathy"],
     colorFamily: ["white", "pink"],
     active: true,
@@ -4877,6 +5017,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-garden-heart",
     slug: "garden-heart-wreath",
+    addedAt: "2026-10-08",
     title: { en: "Garden Heart Wreath", es: "Corazón Jardín Vivo" },
     category: "sympathy",
     blurb: {
@@ -4894,7 +5035,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standing", label: { en: "Standing heart", es: "Corazón en atril" }, priceCents: 49999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["sympathy"],
     colorFamily: ["mixed"],
     active: true,
@@ -4909,6 +5050,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-cloud-cross",
     slug: "cloud-cross",
+    addedAt: "2026-10-08",
     title: { en: "Cloud Cross", es: "Cruz de Nube" },
     category: "sympathy",
     blurb: {
@@ -4925,7 +5067,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standing", label: { en: "Standing cross", es: "Cruz de pie" }, priceCents: 39999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["sympathy"],
     colorFamily: ["white", "red"],
     active: true,
@@ -4940,6 +5082,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-paradise-basket",
     slug: "paradise-sympathy-basket",
+    addedAt: "2026-10-08",
     title: { en: "Paradise Sympathy Basket", es: "Canasta del Paraíso" },
     category: "sympathy",
     blurb: {
@@ -4956,7 +5099,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "basket", label: { en: "Sympathy basket", es: "Canasta de condolencias" }, priceCents: 19999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["sympathy"],
     colorFamily: ["mixed"],
     active: true,
@@ -4971,6 +5114,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-orchid-pedestal",
     slug: "orchid-pedestal",
+    addedAt: "2026-10-08",
     title: { en: "Orchid Pedestal", es: "Pedestal de Orquídeas" },
     category: "sympathy",
     blurb: {
@@ -4987,7 +5131,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "pedestal", label: { en: "Pedestal arrangement", es: "Arreglo en pedestal" }, priceCents: 119999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["sympathy"],
     colorFamily: ["pink", "pastel"],
     active: true,
@@ -5002,6 +5146,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-ruby-garden",
     slug: "ruby-garden",
+    addedAt: "2026-10-14",
     title: { en: "Ruby Garden", es: "Jardín Rubí" },
     category: "arrangements",
     blurb: {
@@ -5019,7 +5164,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 5999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "romance", "just-because", "thank-you", "congrats", "get-well", "new-baby", "graduation", "mothers-day", "thinking-of-you", "anniversary"],
     colorFamily: ["pink", "red"],
     active: true,
@@ -5034,6 +5179,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-morning-mist",
     slug: "morning-mist",
+    addedAt: "2026-10-14",
     title: { en: "Morning Mist", es: "Bruma de Mañana" },
     category: "arrangements",
     blurb: {
@@ -5050,7 +5196,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["get-well", "thinking-of-you", "new-baby", "birthday", "anniversary", "romance", "just-because", "thank-you", "congrats", "mothers-day", "graduation"],
     colorFamily: ["pastel", "white", "pink"],
     active: true,
@@ -5065,6 +5211,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-citrine-dream",
     slug: "citrine-dream",
+    addedAt: "2026-10-14",
     title: { en: "Citrine Dream", es: "Sueño Citrino" },
     category: "arrangements",
     blurb: {
@@ -5085,7 +5232,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 14999 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 19999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "congrats", "just-because", "graduation", "mothers-day", "anniversary", "romance", "thinking-of-you", "thank-you", "get-well", "new-baby"],
     colorFamily: ["mixed"],
     active: true,
@@ -5100,6 +5247,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-porcelain-blush",
     slug: "porcelain-blush",
+    addedAt: "2026-10-14",
     title: { en: "Porcelain Blush", es: "Rubor de Porcelana" },
     category: "arrangements",
     blurb: {
@@ -5117,7 +5265,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 24999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["thank-you", "thinking-of-you"],
     colorFamily: ["pink", "pastel"],
     active: true,
@@ -5132,6 +5280,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-coral-chalice",
     slug: "coral-chalice",
+    addedAt: "2026-10-14",
     title: { en: "Coral Chalice", es: "Cáliz Coral" },
     category: "arrangements",
     blurb: {
@@ -5149,7 +5298,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "thank-you", "thinking-of-you", "graduation", "anniversary", "romance", "just-because", "congrats", "get-well", "new-baby", "mothers-day"],
     colorFamily: ["pink", "pastel", "green"],
     active: true,
@@ -5164,6 +5313,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-mint-julep-trio",
     slug: "mint-julep-trio",
+    addedAt: "2026-10-14",
     title: { en: "Mint Julep Trio", es: "Trío Mint Julep" },
     category: "arrangements",
     blurb: {
@@ -5180,7 +5330,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "set-3", label: { en: "Set of 3", es: "Set de 3" }, priceCents: 14999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["thank-you", "congrats", "birthday", "just-because"],
     colorFamily: ["green", "white"],
     active: true,
@@ -5195,6 +5345,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-lilac-halo",
     slug: "lilac-halo",
+    addedAt: "2026-10-14",
     title: { en: "Lilac Halo", es: "Halo Lila" },
     category: "arrangements",
     blurb: {
@@ -5211,7 +5362,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 24999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["anniversary", "thinking-of-you", "birthday", "thank-you", "mothers-day", "graduation", "just-because", "congrats", "sympathy"],
     colorFamily: ["pastel", "white", "pink", "green"],
     active: true,
@@ -5226,6 +5377,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-pink-teddy-hug",
     slug: "pink-teddy-hug",
+    addedAt: "2026-10-14",
     title: { en: "Pink Teddy Hug", es: "Abrazo de Osito Rosa" },
     category: "arrangements",
     blurb: {
@@ -5242,7 +5394,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 14999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "new-baby", "just-because", "get-well", "congrats", "thank-you", "romance"],
     colorFamily: ["pink", "green", "mixed"],
     active: true,
@@ -5257,6 +5409,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-baby-blue-teddy",
     slug: "baby-blue-teddy",
+    addedAt: "2026-10-14",
     title: { en: "Baby Blue Teddy", es: "Osito Azul Cielo" },
     category: "arrangements",
     blurb: {
@@ -5273,7 +5426,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 11499 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["new-baby", "birthday", "get-well", "romance", "just-because", "thank-you", "congrats", "graduation", "thinking-of-you"],
     colorFamily: ["pastel", "white"],
     active: true,
@@ -5288,6 +5441,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-violet-hour",
     slug: "violet-hour",
+    addedAt: "2026-10-14",
     title: { en: "Violet Hour", es: "Hora Violeta" },
     category: "arrangements",
     blurb: {
@@ -5304,7 +5458,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "romance", "thank-you", "congrats", "get-well", "new-baby", "graduation", "mothers-day", "thinking-of-you", "just-because"],
     colorFamily: ["pink", "mixed", "green"],
     active: true,
@@ -5319,6 +5473,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-rose-confetti-dome",
     slug: "rose-confetti-dome",
+    addedAt: "2026-10-14",
     title: { en: "Rose Confetti Dome", es: "Cúpula Confeti de Rosas" },
     category: "arrangements",
     blurb: {
@@ -5337,7 +5492,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 24999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "congrats"],
     colorFamily: ["mixed", "red", "pink", "green"],
     active: true,
@@ -5352,6 +5507,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-painted-garden",
     slug: "painted-garden",
+    addedAt: "2026-10-14",
     title: { en: "Painted Garden", es: "Jardín Pintado" },
     category: "arrangements",
     blurb: {
@@ -5369,7 +5525,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 11999 },
     ],
-    tags: ["new", "same-day", "seasonal"],
+    tags: ["same-day", "seasonal"],
     occasions: ["birthday", "congrats", "just-because", "anniversary", "romance", "thinking-of-you", "mothers-day", "graduation", "thank-you", "get-well", "new-baby"],
     colorFamily: ["mixed", "pink", "red", "green"],
     active: true,
@@ -5385,6 +5541,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-emerald-whisper",
     slug: "emerald-whisper",
+    addedAt: "2026-10-14",
     title: { en: "Emerald Whisper", es: "Susurro Esmeralda" },
     category: "bouquets",
     blurb: {
@@ -5402,7 +5559,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "bouquet", label: { en: "Bouquet", es: "Ramo" }, priceCents: 11999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["anniversary", "congrats", "thank-you", "sympathy", "romance", "new-baby", "just-because", "birthday", "thinking-of-you"],
     colorFamily: ["green", "white"],
     active: true,
@@ -5417,6 +5574,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-long-table-romance",
     slug: "long-table-romance",
+    addedAt: "2026-10-14",
     title: { en: "Long Table Romance", es: "Mesa Romántica" },
     category: "arrangements",
     blurb: {
@@ -5434,7 +5592,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 19999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["anniversary", "thank-you", "mothers-day"],
     colorFamily: ["pastel", "pink"],
     active: true,
@@ -5449,6 +5607,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-pumpkin-spice",
     slug: "pumpkin-spice",
+    addedAt: "2026-10-14",
     title: { en: "Pumpkin Spice", es: "Calabaza y Especias" },
     category: "arrangements",
     blurb: {
@@ -5465,7 +5624,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 6999 },
     ],
-    tags: ["new", "same-day", "seasonal"],
+    tags: ["same-day", "seasonal"],
     occasions: ["thank-you", "just-because", "congrats", "get-well"],
     colorFamily: ["mixed"],
     active: true,
@@ -5481,6 +5640,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-sweet-fortune",
     slug: "sweet-fortune",
+    addedAt: "2026-10-14",
     title: { en: "Sweet Fortune", es: "Dulce Fortuna" },
     category: "bouquets",
     blurb: {
@@ -5497,7 +5657,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "bouquet", label: { en: "Bouquet", es: "Ramo" }, priceCents: 14999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "congrats", "anniversary", "graduation", "romance"],
     colorFamily: ["pink", "red", "mixed"],
     active: true,
@@ -5512,6 +5672,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-sunny-side-up",
     slug: "sunny-side-up",
+    addedAt: "2026-10-14",
     title: { en: "Sunny Side Up", es: "Lado Soleado" },
     category: "arrangements",
     blurb: {
@@ -5529,7 +5690,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 4999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "get-well", "just-because", "romance", "thank-you", "congrats", "graduation", "thinking-of-you"],
     colorFamily: ["mixed", "pink", "green"],
     active: true,
@@ -5544,6 +5705,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-pure-sunshine",
     slug: "pure-sunshine",
+    addedAt: "2026-10-14",
     title: { en: "Pure Sunshine", es: "Puro Sol" },
     category: "arrangements",
     blurb: {
@@ -5561,7 +5723,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 8999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["get-well", "birthday", "thinking-of-you", "thank-you"],
     colorFamily: ["mixed"],
     active: true,
@@ -5576,6 +5738,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-crimson-zen",
     slug: "crimson-zen",
+    addedAt: "2026-10-14",
     title: { en: "Crimson Zen", es: "Zen Carmesí" },
     category: "arrangements",
     blurb: {
@@ -5592,7 +5755,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 24999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["romance", "anniversary", "congrats", "thinking-of-you"],
     colorFamily: ["red", "mixed"],
     active: true,
@@ -5607,6 +5770,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-lavender-heights",
     slug: "lavender-heights",
+    addedAt: "2026-10-14",
     title: { en: "Lavender Heights", es: "Alturas Lavanda" },
     category: "arrangements",
     blurb: {
@@ -5624,7 +5788,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 17499 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["anniversary", "birthday", "romance", "just-because", "thank-you", "congrats", "get-well", "new-baby", "thinking-of-you", "mothers-day", "graduation", "sympathy"],
     colorFamily: ["mixed", "pastel", "pink", "red", "green"],
     active: true,
@@ -5639,6 +5803,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-tangerine-pop",
     slug: "tangerine-pop",
+    addedAt: "2026-10-14",
     title: { en: "Tangerine Pop", es: "Mandarina Pop" },
     category: "arrangements",
     blurb: {
@@ -5655,7 +5820,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 4999 },
     ],
-    tags: ["new", "same-day", "seasonal"],
+    tags: ["same-day", "seasonal"],
     occasions: ["birthday", "get-well", "congrats", "just-because", "thank-you", "graduation"],
     colorFamily: ["mixed"],
     active: true,
@@ -5671,6 +5836,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-fuchsia-tropics",
     slug: "fuchsia-tropics",
+    addedAt: "2026-10-14",
     title: { en: "Fuchsia Tropics", es: "Trópico Fucsia" },
     category: "arrangements",
     blurb: {
@@ -5687,7 +5853,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 18499 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "congrats", "romance", "anniversary", "just-because", "thank-you", "get-well", "new-baby", "thinking-of-you", "mothers-day", "graduation"],
     colorFamily: ["pink", "mixed", "green"],
     active: true,
@@ -5702,6 +5868,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-amethyst-velvet",
     slug: "amethyst-velvet",
+    addedAt: "2026-10-14",
     title: { en: "Amethyst Velvet", es: "Terciopelo Amatista" },
     category: "arrangements",
     blurb: {
@@ -5720,7 +5887,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 22499 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 24999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "thinking-of-you", "new-baby", "mothers-day", "graduation", "just-because", "thank-you", "congrats", "get-well", "romance"],
     colorFamily: ["pastel", "mixed"],
     active: true,
@@ -5735,6 +5902,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-rustic-harvest",
     slug: "rustic-harvest",
+    addedAt: "2026-10-14",
     title: { en: "Rustic Harvest", es: "Cosecha Rústica" },
     category: "arrangements",
     blurb: {
@@ -5752,7 +5920,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 7999 },
     ],
-    tags: ["new", "same-day", "seasonal"],
+    tags: ["same-day", "seasonal"],
     occasions: ["thank-you", "just-because", "birthday", "congrats", "get-well", "new-baby", "graduation", "thinking-of-you"],
     colorFamily: ["mixed"],
     active: true,
@@ -5768,6 +5936,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-apricot-orchid",
     slug: "apricot-orchid",
+    addedAt: "2026-10-14",
     title: { en: "Apricot Orchid", es: "Orquídea Albaricoque" },
     category: "arrangements",
     blurb: {
@@ -5787,7 +5956,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 22499 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 24999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["anniversary", "mothers-day", "thank-you", "just-because", "sympathy", "thinking-of-you", "romance", "birthday", "graduation", "congrats", "get-well", "new-baby"],
     colorFamily: ["pastel", "pink", "white", "mixed"],
     active: true,
@@ -5802,6 +5971,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-lilac-sorbet",
     slug: "lilac-sorbet",
+    addedAt: "2026-10-14",
     title: { en: "Lilac Sorbet", es: "Sorbete Lila" },
     category: "arrangements",
     blurb: {
@@ -5819,7 +5989,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 11999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "get-well", "just-because", "anniversary", "romance", "thinking-of-you", "thank-you", "congrats", "new-baby", "sympathy", "mothers-day", "graduation"],
     colorFamily: ["pastel", "mixed", "pink", "green"],
     active: true,
@@ -5834,6 +6004,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-oct-rainbow-gala",
     slug: "rainbow-gala",
+    addedAt: "2026-10-14",
     title: { en: "Rainbow Gala", es: "Gala Arcoíris" },
     category: "arrangements",
     blurb: {
@@ -5850,7 +6021,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 19999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "congrats", "graduation", "thinking-of-you", "romance", "anniversary", "just-because", "thank-you", "get-well", "new-baby", "mothers-day"],
     colorFamily: ["mixed", "green", "pink", "pastel"],
     active: true,
@@ -5865,6 +6036,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-pastel-grace-spray",
     slug: "pastel-grace-spray",
+    addedAt: "2026-10-14",
     title: { en: "Pastel Grace Spray", es: "Tributo Rosa Pastel" },
     category: "sympathy",
     blurb: {
@@ -5881,7 +6053,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 19999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["sympathy"],
     colorFamily: ["pink", "pastel"],
     active: true,
@@ -5896,6 +6068,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-garden-halo-wreath",
     slug: "garden-halo-wreath",
+    addedAt: "2026-10-14",
     title: { en: "Garden Halo Wreath", es: "Corona Halo de Jardín" },
     category: "sympathy",
     blurb: {
@@ -5912,7 +6085,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standing", label: { en: "Standing wreath", es: "Corona de pie" }, priceCents: 49999 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["sympathy"],
     colorFamily: ["pink", "mixed"],
     active: true,
@@ -5928,6 +6101,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-test-1usd",
     slug: "test-1-dollar",
+    addedAt: "2026-05-11",
     title: { en: "Test product — DO NOT BUY", es: "Producto de prueba — NO COMPRAR" },
     category: "gifts",
     giftExtra: true,

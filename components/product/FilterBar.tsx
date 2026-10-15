@@ -31,7 +31,7 @@ const OCCASIONS = [
 const COLORS = ["pink", "red", "white", "mixed", "green", "pastel"] as const;
 const SIZES = ["standard", "grand", "diva"] as const;
 const PRICES = ["under-100", "100-150", "150-200", "200-plus"] as const;
-const SORT_VALUES = ["newest", "price-asc", "price-desc", "staff-pick"] as const;
+const SORT_VALUES = ["recommended", "newest", "price-asc", "price-desc"] as const;
 
 type Copy = { [k: string]: { en: string; es: string } };
 
@@ -64,10 +64,10 @@ const COPY: Copy = {
   "100-150": { en: "$100–$150", es: "$100–$150" },
   "150-200": { en: "$150–$200", es: "$150–$200" },
   "200-plus": { en: "$200+", es: "$200+" },
+  recommended: { en: "Recommended", es: "Recomendados" },
   newest: { en: "Newest", es: "Más nuevos" },
   "price-asc": { en: "Price: low to high", es: "Precio: menor a mayor" },
   "price-desc": { en: "Price: high to low", es: "Precio: mayor a menor" },
-  "staff-pick": { en: "Staff picks", es: "Selección" },
 };
 
 function l(key: string, locale: Locale): string {
@@ -110,7 +110,7 @@ function FilterBarImpl({
   );
 
   const clearAll = useCallback(() => {
-    apply({ filter: {}, sort: "newest" });
+    apply({ filter: {}, sort: "recommended" });
   }, [apply]);
 
   const sortOptions = useMemo(
@@ -118,7 +118,7 @@ function FilterBarImpl({
     [locale],
   );
 
-  const hasAny = Object.keys(filter).length > 0 || sort !== "newest";
+  const hasAny = Object.keys(filter).length > 0 || sort !== "recommended";
 
   return (
     <div className="sticky top-[var(--nav-offset)] z-30 -mx-6 border-y border-[var(--border)] px-6 py-3 [background:var(--material-bg)] [backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] [-webkit-backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))]">

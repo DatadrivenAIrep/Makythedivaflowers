@@ -29,12 +29,16 @@ const slugs = (list: { slug: string }[]) => list.map((p) => p.slug).sort();
 const CENTERPIECES = [
   "autumn-orchard",
   "autumns-cornucopia",
+  "coral-chalice",
   "evergreen-horizon",
   "eye-candy",
   "falling-leaves",
   "garden-party",
+  "long-table-romance",
+  "mint-julep-trio",
   "natures-cornucopia",
   "neon-tropic",
+  "tangerine-pop",
 ];
 
 describe("exotic category", () => {
@@ -50,7 +54,7 @@ describe("exotic category", () => {
 });
 
 describe("centerpieces category", () => {
-  it("lists exactly the eight pieces Maky marked as centerpieces", () => {
+  it("lists exactly the pieces Maky marked as centerpieces", () => {
     expect(slugs(productsInShopCategory(PRODUCTS, "centerpieces"))).toEqual(CENTERPIECES);
   });
 

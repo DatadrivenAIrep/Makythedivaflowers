@@ -57,7 +57,7 @@ export function ReciprocityCard({ order, locale, referralCode }: Props) {
       <h2 className="font-display text-xl text-ink leading-tight">{t("subscription_title")}</h2>
       <p className="text-sm text-ink/75 max-w-[58ch]">{t("subscription_body")}</p>
       <Link
-        href={`/${locale}/shop/subscriptions`}
+        href={`/${locale}/subscriptions`}
         data-conv-event={CONV_EVENTS.reciprocity.subscription_click}
         className="inline-block font-mono text-[11px] uppercase tracking-[0.18em] text-rouge hover:underline mt-1"
       >

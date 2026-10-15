@@ -14,6 +14,13 @@ export const CATS = [
 
 export type CatSlug = (typeof CATS)[number]["slug"];
 
+// Sympathy and subscriptions have their own pages; their /shop/ URLs only redirect there.
+const OWN_PAGE = new Set(["sympathy", "subscriptions"]);
+
+export function shopCategoryHref(locale: string, slug: string): string {
+  return OWN_PAGE.has(slug) ? `/${locale}/${slug}` : `/${locale}/shop/${slug}`;
+}
+
 export const LABELS: Record<CatSlug, { en: string; es: string }> = {
   arrangements: { en: "Arrangements", es: "Arreglos" },
   bouquets: { en: "Bouquets", es: "Ramos" },

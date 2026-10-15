@@ -17,8 +17,11 @@ import { TrackEvent } from "@/components/analytics/TrackEvent";
 import type { AnalyticsItem } from "@/lib/analytics-types";
 import { productsInShopCategory, type ShopSlug } from "@/lib/shop-categories";
 import { getAllImageOverrides, applyImageOverrides } from "@/lib/product-images";
+import { getAllPriceOverrides, applyPriceOverrides } from "@/lib/product-prices";
+import { getSalesRanking } from "@/lib/product-sales";
 import { localeAlternates } from "@/lib/seo/alternates";
 
+// sympathy and subscriptions redirect (next.config) to their own pages.
 const ALLOWED: ShopSlug[] = [
   "arrangements",
   "bouquets",
@@ -28,7 +31,6 @@ const ALLOWED: ShopSlug[] = [
   "plants",
   "gifts",
   "sympathy",
-  "subscriptions",
 ];
 
 const CATEGORY_TITLES: Record<ShopSlug, { en: string; es: string }> = {
@@ -117,9 +119,12 @@ export default async function CategoryPage({
   const sp = await searchParams;
   const { filter, sort } = parseFilterParams(sp);
 
-  const products = applyImageOverrides(PRODUCTS, getAllImageOverrides());
+  const products = applyImageOverrides(
+    applyPriceOverrides(PRODUCTS, getAllPriceOverrides()),
+    getAllImageOverrides(),
+  );
   const all = productsInShopCategory(products, cat);
-  const filtered = sortProducts(filterProducts(all, filter), sort);
+  const filtered = sortProducts(filterProducts(all, filter), sort, { sales: getSalesRanking() });
 
   const isSympathy = cat === "sympathy";
   const isRoses = cat === "roses";
