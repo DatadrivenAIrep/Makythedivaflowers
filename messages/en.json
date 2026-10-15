@@ -1270,7 +1270,9 @@
     "back": "← Settings",
     "search_placeholder": "Search product...",
     "change_photo": "Change photo",
-    "reset_photo": "Restore original photo"
+    "reset_photo": "Restore original photo",
+    "tv_label": "On the TV",
+    "tv_low_res": "Low-resolution photo"
   },
   "admin_intake": {
     "page_subtitle": "Diva Flowers · iPad intake",
