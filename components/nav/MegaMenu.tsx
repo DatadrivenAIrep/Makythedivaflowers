@@ -2,7 +2,7 @@
 import { memo, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { BloomImage } from "@/components/motion/BloomImage";
+import { FloatingPhoto } from "@/components/product/FloatingPhoto";
 import type { Locale } from "@/types/locale";
 import { CATS, LABELS } from "@/lib/shop-categories";
 import { OCCASION_NAV } from "@/lib/occasions-nav";
@@ -51,23 +51,20 @@ function MegaMenuImpl({ locale, label }: Props) {
                   role="menuitem"
                   key={c.slug}
                   href={`/${locale}/shop/${c.slug}`}
-                  className="group relative aspect-[3/4] overflow-hidden rounded-[var(--radius-product)] bg-mute-100"
+                  className="group block"
                 >
-                  <BloomImage
-                    src={c.img}
-                    alt={LABELS[c.slug][locale]}
-                    className="h-full w-full"
-                    sizes="160px"
-                  />
-                  <div
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink/85 via-ink/40 to-transparent"
-                  />
-                  <div className="absolute inset-x-2 bottom-2">
-                    <span className="font-display text-base font-medium leading-tight tracking-tight text-bone [text-shadow:0_1px_3px_rgba(0,0,0,0.6)]">
-                      {LABELS[c.slug][locale]}
-                    </span>
+                  {/* Whole arrangement floating on plaster; name below. */}
+                  <div className="relative aspect-[3/4] rounded-[var(--radius-product)] bg-mute-100">
+                    <FloatingPhoto
+                      src={c.img}
+                      alt={LABELS[c.slug][locale]}
+                      sizes="160px"
+                      className="inset-x-2 top-3 bottom-2 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-1 motion-reduce:transform-none"
+                    />
                   </div>
+                  <span className="mt-2 block font-display text-base font-medium leading-tight tracking-tight text-ink transition-colors group-hover:text-rouge">
+                    {LABELS[c.slug][locale]}
+                  </span>
                 </Link>
               ))}
             </div>
