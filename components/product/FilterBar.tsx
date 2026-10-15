@@ -1,5 +1,5 @@
 "use client";
-import { memo, useCallback, useMemo } from "react";
+import { memo, useCallback, useId, useMemo, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { FilterChip } from "./FilterChip";
 import { SortDropdown } from "./SortDropdown";
@@ -82,6 +82,10 @@ function FilterBarImpl({
 }: Props) {
   const router = useRouter();
   const pathname = usePathname();
+  // Phones keep the chips folded behind one button: unfolded they run to eight
+  // or nine rows and push the arrangements off the first screen.
+  const [open, setOpen] = useState(false);
+  const panelId = useId();
 
   const apply = useCallback(
     (next: { filter: Filter; sort: Sort }) => {
@@ -118,70 +122,89 @@ function FilterBarImpl({
     [locale],
   );
 
+  const activeCount = Object.keys(filter).filter((k) => k !== "q").length;
   const hasAny = Object.keys(filter).length > 0 || sort !== "recommended";
 
   return (
-    <div className="sticky top-[var(--nav-offset)] z-30 -mx-6 border-y border-[var(--border)] px-6 py-3 [background:var(--material-bg)] [backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] [-webkit-backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))]">
-      <div className="mx-auto flex max-w-[var(--container-max)] flex-wrap items-center gap-x-6 gap-y-3">
-        <span className="font-mono text-[10px] uppercase tracking-wider text-mute-500">
+    // Not sticky: pinned under the nav it took a third of a phone screen (more
+    // with the chips open) away from the arrangements.
+    <div className="-mx-6 border-y border-[var(--border)] px-6 py-3">
+      <div className="mx-auto flex max-w-[var(--container-max)] flex-wrap items-center gap-x-3 gap-y-3 md:gap-x-6">
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          aria-expanded={open}
+          aria-controls={panelId}
+          className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] px-3 py-1.5 font-sans text-sm tracking-tight text-ink md:hidden"
+        >
+          {l("filter_label", locale)}
+          {activeCount > 0 && <span className="tabular-nums text-ink/60">({activeCount})</span>}
+          <span aria-hidden="true" className={`text-[10px] transition-transform ${open ? "rotate-180" : ""}`}>▾</span>
+        </button>
+        <span className="hidden font-mono text-[10px] uppercase tracking-wider text-mute-500 md:inline">
           {l("filter_label", locale)}
         </span>
 
-        {show.includes("occasion") &&
-          OCCASIONS.map((o) => (
-            <FilterChip
-              key={o}
-              label={l(o, locale)}
-              selected={filter.occasion === o}
-              onToggle={() => {
-                toggle("occasion", o);
-                trackOccasionSelected(o);
-              }}
-            />
-          ))}
+        <div
+          id={panelId}
+          className={`${open ? "flex" : "hidden"} order-last w-full flex-wrap items-center gap-x-6 gap-y-3 md:order-none md:contents`}
+        >
+          {show.includes("occasion") &&
+            OCCASIONS.map((o) => (
+              <FilterChip
+                key={o}
+                label={l(o, locale)}
+                selected={filter.occasion === o}
+                onToggle={() => {
+                  toggle("occasion", o);
+                  trackOccasionSelected(o);
+                }}
+              />
+            ))}
 
-        {show.includes("color") && (
-          <span className="ml-2 font-mono text-[10px] uppercase tracking-wider text-mute-500">
-            ·
-          </span>
-        )}
-        {show.includes("color") &&
-          COLORS.map((c) => (
-            <FilterChip
-              key={c}
-              label={l(c, locale)}
-              selected={filter.color === c}
-              onToggle={() => toggle("color", c)}
-            />
-          ))}
+          {show.includes("color") && (
+            <span className="ml-2 font-mono text-[10px] uppercase tracking-wider text-mute-500">
+              ·
+            </span>
+          )}
+          {show.includes("color") &&
+            COLORS.map((c) => (
+              <FilterChip
+                key={c}
+                label={l(c, locale)}
+                selected={filter.color === c}
+                onToggle={() => toggle("color", c)}
+              />
+            ))}
 
-        {show.includes("size") &&
-          SIZES.map((s) => (
-            <FilterChip
-              key={s}
-              label={l(s, locale)}
-              selected={filter.size === s}
-              onToggle={() => toggle("size", s)}
-            />
-          ))}
+          {show.includes("size") &&
+            SIZES.map((s) => (
+              <FilterChip
+                key={s}
+                label={l(s, locale)}
+                selected={filter.size === s}
+                onToggle={() => toggle("size", s)}
+              />
+            ))}
 
-        {show.includes("price") &&
-          PRICES.map((p) => (
-            <FilterChip
-              key={p}
-              label={l(p, locale)}
-              selected={filter.price === p}
-              onToggle={() => toggle("price", p)}
-            />
-          ))}
+          {show.includes("price") &&
+            PRICES.map((p) => (
+              <FilterChip
+                key={p}
+                label={l(p, locale)}
+                selected={filter.price === p}
+                onToggle={() => toggle("price", p)}
+              />
+            ))}
 
-        {show.includes("sameDay") && (
-          <FilterChip
-            label={l("same_day", locale)}
-            selected={Boolean(filter.sameDay)}
-            onToggle={() => toggle("sameDay", true)}
-          />
-        )}
+          {show.includes("sameDay") && (
+            <FilterChip
+              label={l("same_day", locale)}
+              selected={Boolean(filter.sameDay)}
+              onToggle={() => toggle("sameDay", true)}
+            />
+          )}
+        </div>
 
         <span className="ml-auto flex items-center gap-3">
           {hasAny && (

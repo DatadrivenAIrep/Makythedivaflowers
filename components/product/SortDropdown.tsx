@@ -14,7 +14,8 @@ type Props = {
 function SortDropdownImpl({ value, options, onChange, ariaLabel }: Props) {
   return (
     <label className="inline-flex items-center gap-2">
-      <span className="font-mono text-[10px] uppercase tracking-wider text-mute-500">
+      {/* Phones drop the caption so the sort fits beside "Filter"; the select keeps its aria-label. */}
+      <span className="hidden font-mono text-[10px] uppercase tracking-wider text-mute-500 md:inline">
         {ariaLabel}
       </span>
       <select
