@@ -13,14 +13,14 @@ import { enqueuePrintJob } from "@/lib/print-queue";
 import { sendPurchaseToGA4 } from "@/lib/analytics-server";
 import { resolveCartLines } from "@/lib/cart-helpers";
 import { resolvedLineToAnalyticsItem, centsToDollars } from "@/lib/analytics-types";
-import { PRODUCTS } from "@/data/products";
+import { getPricedProducts } from "@/lib/product-prices";
 import { recordStripeStatementPayment, recordPayment } from "@/lib/house-account-ledger";
 import type { Order } from "@/types/order";
 
 export const runtime = "nodejs";
 
 function orderToPurchasePayload(order: Order) {
-  const resolved = resolveCartLines(order.lines, PRODUCTS);
+  const resolved = resolveCartLines(order.lines, getPricedProducts());
   return {
     clientId: order.id,
     transaction_id: order.id,

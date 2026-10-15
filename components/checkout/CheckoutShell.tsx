@@ -23,7 +23,7 @@ import { useUIStore } from "@/lib/ui-store";
 import { checkoutSchema, type CheckoutInput } from "@/schemas/checkout";
 import { resolveCartLines, cartSubtotalCents } from "@/lib/cart-helpers";
 import { computeOrderTotals, computeDeliveryCentsForZip } from "@/lib/totals";
-import { PRODUCTS } from "@/data/products";
+import { usePricedProducts } from "@/components/catalog/PricedCatalog";
 import type { Locale } from "@/types/locale";
 import { SPRING } from "@/lib/motion";
 import {
@@ -84,6 +84,7 @@ function errorKey(code: string): string {
 }
 
 export function CheckoutShell({ locale }: { locale: Locale }) {
+  const products = usePricedProducts();
   const t = useTranslations("checkout");
   const router = useRouter();
   const reduce = useReducedMotion();
@@ -92,8 +93,8 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
   const cartCardMessage = useCartStore((s) => s.cardMessage);
   const closeDrawer = useUIStore((s) => s.closeDrawer);
 
-  const resolved = useMemo(() => resolveCartLines(lines, PRODUCTS), [lines]);
-  const subtotal = useMemo(() => cartSubtotalCents(lines, PRODUCTS), [lines]);
+  const resolved = useMemo(() => resolveCartLines(lines, products), [lines, products]);
+  const subtotal = useMemo(() => cartSubtotalCents(lines, products), [lines, products]);
 
   useEffect(() => {
     if (resolved.length === 0) return;

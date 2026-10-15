@@ -9,7 +9,7 @@ import CartTotals from "@/components/admin/intake/CartTotals";
 import TaxExemptToggle from "@/components/admin/intake/TaxExemptToggle";
 import { isRequestExempt } from "@/lib/tax-exempt";
 import type { DefaultExemption, TaxExemptRequest } from "@/types/tax-exempt";
-import { PRODUCTS } from "@/data/products";
+import { usePricedProducts } from "@/components/catalog/PricedCatalog";
 import type { OrderEditPatch } from "@/lib/order-edit";
 import { localYmd } from "@/lib/format-datetime";
 
@@ -35,6 +35,7 @@ export default function OrderEditForm({
   onCancel: () => void;
   onSave: (patch: OrderEditPatch) => void;
 }) {
+  const products = usePricedProducts();
   const t = useTranslations("admin_orders");
   const tx = useTranslations("admin_tax_exempt");
   const [contact, setContact] = useState({
@@ -96,7 +97,7 @@ export default function OrderEditForm({
 
       <FulfillmentBlock value={fulfillment} onChange={setFulfillment} />
 
-      <ProductPicker products={PRODUCTS} onAdd={addLine} />
+      <ProductPicker products={products} onAdd={addLine} />
       <CartLines lines={lines} onChangeLines={setLines} />
       <TaxExemptToggle fallback={exemptFallback} value={taxExempt} onChange={(v) => { setTaxExempt(v); setCertError(false); }} />
       {certError && <p className="text-sm text-error">{tx("cert_required")}</p>}

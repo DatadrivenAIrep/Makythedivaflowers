@@ -9,18 +9,19 @@ import { CartEmpty } from "@/components/cart/CartEmpty";
 import { CartUpsellStrip } from "@/components/conversion/CartUpsellStrip";
 import { Button } from "@/components/ui/Button";
 import { formatMoneyCents } from "@/lib/format";
-import { PRODUCTS } from "@/data/products";
+import { usePricedProducts } from "@/components/catalog/PricedCatalog";
 import type { Locale } from "@/types/locale";
 import { trackRemoveFromCart } from "@/lib/analytics";
 import { resolvedLineToAnalyticsItem } from "@/lib/analytics-types";
 
 export function CartPageList({ locale }: { locale: Locale }) {
+  const products = usePricedProducts();
   const t = useTranslations("cart");
   const lines = useCartStore((s) => s.lines);
   const setQty = useCartStore((s) => s.setQty);
   const remove = useCartStore((s) => s.remove);
-  const resolved = useMemo(() => resolveCartLines(lines, PRODUCTS), [lines]);
-  const subtotal = useMemo(() => cartSubtotalCents(lines, PRODUCTS), [lines]);
+  const resolved = useMemo(() => resolveCartLines(lines, products), [lines, products]);
+  const subtotal = useMemo(() => cartSubtotalCents(lines, products), [lines, products]);
 
   if (resolved.length === 0) {
     return <CartEmpty locale={locale} />;

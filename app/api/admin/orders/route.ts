@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { intakeSchema, type IntakeInput } from "@/schemas/intake";
 import { resolveOrderTotals, computeDeliveryCentsForAddress } from "@/lib/totals";
 import { cartSubtotalCents } from "@/lib/cart-helpers";
-import { PRODUCTS } from "@/data/products";
+import { getPricedProducts } from "@/lib/product-prices";
 import { saveOrder, listOrders, type ListOrdersFilters } from "@/lib/order-storage";
 import { enqueuePrintJob } from "@/lib/print-queue";
 import { getByPhoneUS, upsertOnOrder } from "@/lib/customer-storage";
@@ -22,6 +22,7 @@ export const runtime = "nodejs";
 function computeTotals(input: IntakeInput, discountCents = 0, taxExempt = false): Order["totals"] {
   return resolveOrderTotals({
     lines: input.lines as CartLine[],
+    products: getPricedProducts(),
     fulfillmentMethod: input.fulfillment.method,
     address: input.fulfillment.method === "delivery" ? input.fulfillment.address : undefined,
     // The promo discount is authoritative from the server; a client-sent
@@ -105,7 +106,7 @@ export async function POST(req: Request) {
     const address =
       input.fulfillment.method === "delivery" ? input.fulfillment.address : undefined;
     const promoSubtotal =
-      input.totalsOverride?.subtotalCents ?? cartSubtotalCents(input.lines as CartLine[], PRODUCTS);
+      input.totalsOverride?.subtotalCents ?? cartSubtotalCents(input.lines as CartLine[], getPricedProducts());
     const promoDelivery =
       input.totalsOverride?.deliveryCents ??
       (address ? computeDeliveryCentsForAddress(address) ?? 0 : 0);

@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { PencilSimple, Check, X, ArrowCounterClockwise, MagnifyingGlass, Camera } from "@phosphor-icons/react/dist/ssr";
 import type { Product } from "@/types/product";
-import type { PriceOverride } from "@/lib/product-prices";
+import type { PriceOverride } from "@/lib/price-overrides";
 import type { ImageOverride } from "@/lib/product-images";
 
 type Props = {

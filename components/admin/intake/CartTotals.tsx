@@ -1,7 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { PRODUCTS } from "@/data/products";
+import { usePricedProducts } from "@/components/catalog/PricedCatalog";
 import { cartSubtotalCents } from "@/lib/cart-helpers";
 import { computeOrderTotals, computeDeliveryCentsForAddress } from "@/lib/totals";
 import type { CartLine, OrderTotals } from "@/types/order";
@@ -56,6 +56,7 @@ export default function CartTotals({
   lines, fulfillmentMethod, deliveryZip, deliveryCity, override, onOverride,
   taxExempt = false, baseDiscountCents = 0, baseTipCents = 0,
 }: Props) {
+  const products = usePricedProducts();
   const t = useTranslations("admin_intake");
   const tx = useTranslations("admin_tax_exempt");
   const resolvedDelivery = useMemo(
@@ -63,8 +64,8 @@ export default function CartTotals({
     [fulfillmentMethod, deliveryZip, deliveryCity],
   );
   const computed = useMemo(
-    () => computeOrderTotals(cartSubtotalCents(lines, PRODUCTS), resolvedDelivery ?? 0, 0, 0, { taxExempt }),
-    [lines, resolvedDelivery, taxExempt],
+    () => computeOrderTotals(cartSubtotalCents(lines, products), resolvedDelivery ?? 0, 0, 0, { taxExempt }),
+    [lines, products, resolvedDelivery, taxExempt],
   );
   // Cascade: overriding subtotal/delivery flows into tax + total (matches the
   // server's resolveOrderTotals). Only an explicit override on a field pins it.

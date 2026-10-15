@@ -2,13 +2,11 @@ import "server-only";
 import { getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import type { Product } from "@/types/product";
+import { PRODUCTS } from "@/data/products";
+import { applyPriceOverrides, type PriceOverride } from "@/lib/price-overrides";
 
-export type PriceOverride = {
-  productId: string;
-  variantId: string;
-  priceCents: number;
-  updatedAt: string;
-};
+// The pure half lives in lib/price-overrides so client components can use it.
+export { applyPriceOverrides, type PriceOverride };
 
 type OverrideRow = {
   product_id: string;
@@ -48,21 +46,15 @@ export function deletePriceOverride(productId: string, variantId: string): void 
 }
 
 /**
- * Returns a new products array where each variant's priceCents is replaced
- * by its override when one exists. The original PRODUCTS array is NOT mutated.
+ * The catalog with every admin price override applied: what a product costs
+ * right now. Falls back to base prices if the overrides can't be read, so a
+ * receipt, SMS or print job never fails over a price display.
  */
-export function applyPriceOverrides(
-  products: readonly Product[],
-  overrides: PriceOverride[],
-): Product[] {
-  if (overrides.length === 0) return products as Product[];
-  const map = new Map(overrides.map((o) => [`${o.productId}::${o.variantId}`, o.priceCents]));
-  return products.map((p) => {
-    const patchedVariants = p.variants.map((v) => {
-      const key = `${p.id}::${v.id}`;
-      return map.has(key) ? { ...v, priceCents: map.get(key)! } : v;
-    });
-    const changed = patchedVariants.some((v, i) => v.priceCents !== p.variants[i].priceCents);
-    return changed ? { ...p, variants: patchedVariants } : p;
-  });
+export function getPricedProducts(): Product[] {
+  try {
+    return applyPriceOverrides(PRODUCTS, getAllPriceOverrides());
+  } catch (err) {
+    console.error("[product-prices] overrides unavailable, using base prices", err);
+    return PRODUCTS;
+  }
 }

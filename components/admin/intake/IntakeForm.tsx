@@ -17,7 +17,6 @@ import DraftsDrawer from "./DraftsDrawer";
 import type { DraftPayload } from "@/types/draft";
 import type { DefaultExemption, TaxExemptRequest } from "@/types/tax-exempt";
 import { isRequestExempt } from "@/lib/tax-exempt";
-import { PRODUCTS } from "@/data/products";
 import { cartSubtotalCents } from "@/lib/cart-helpers";
 import { computeDeliveryCentsForAddress, resolveOrderTotals } from "@/lib/totals";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -405,7 +404,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
 
   // Price context for the promo, resolved the same way the server does: a manual
   // subtotal/delivery override wins, else the live cart + address.
-  const promoSubtotalCents = override.subtotalCents ?? cartSubtotalCents(lines, PRODUCTS);
+  const promoSubtotalCents = override.subtotalCents ?? cartSubtotalCents(lines, products);
   const promoDeliveryCents =
     override.deliveryCents ??
     (fulfillment.method === "delivery"
@@ -416,6 +415,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
   // "balance due" hint.
   const liveTotalCents = resolveOrderTotals({
     lines,
+    products,
     fulfillmentMethod: fulfillment.method,
     address: fulfillment.method === "delivery" ? fulfillment.address : undefined,
     override,

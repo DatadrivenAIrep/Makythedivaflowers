@@ -5,7 +5,7 @@ import { customerStats, listCustomers } from "@/lib/customer-storage";
 import { listUpcomingOccasions } from "@/lib/customer-dates-storage";
 import type { DateKind } from "@/lib/customer-dates";
 import { findDeliveryZoneByZip } from "@/lib/delivery-zones";
-import { PRODUCTS } from "@/data/products";
+import { getPricedProducts } from "@/lib/product-prices";
 import { resolveCartLine } from "@/lib/cart-helpers";
 import { receivablesSummary } from "@/lib/house-account-storage";
 import { shopDateStr } from "@/lib/tv-slots";
@@ -124,6 +124,7 @@ function giftCardsIssuedCents(start: string | null, end: string): number {
 }
 
 function lineResolver(locale: "en" | "es", customLabel: string) {
+  const products = getPricedProducts();
   return (line: Record<string, unknown>): LineValue | null => {
     const qty = typeof line.qty === "number" ? line.qty : 0;
     if (line.kind === "custom") {
@@ -131,8 +132,8 @@ function lineResolver(locale: "en" | "es", customLabel: string) {
       return { key: "__custom__", name: customLabel, cents: price * qty };
     }
     if (line.kind !== "catalog" || typeof line.productId !== "string") return null;
-    const resolved = resolveCartLine(line as unknown as CartLine, PRODUCTS);
-    const product = resolved?.product ?? PRODUCTS.find((p) => p.id === line.productId);
+    const resolved = resolveCartLine(line as unknown as CartLine, products);
+    const product = resolved?.product ?? products.find((p) => p.id === line.productId);
     return { key: line.productId, name: product?.title[locale] ?? line.productId, cents: resolved ? resolved.lineTotalCents : 0 };
   };
 }

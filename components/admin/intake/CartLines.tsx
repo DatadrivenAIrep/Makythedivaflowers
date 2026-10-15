@@ -1,18 +1,19 @@
 "use client";
 import { useLocale } from "next-intl";
-import { PRODUCTS } from "@/data/products";
+import { usePricedProducts } from "@/components/catalog/PricedCatalog";
 import type { CartLine } from "@/types/order";
 
 function money(cents: number): string { return `$${(cents / 100).toFixed(2)}`; }
 
 export default function CartLines({ lines, onChangeLines }: { lines: CartLine[]; onChangeLines: (l: CartLine[]) => void }) {
+  const products = usePricedProducts();
   const locale = useLocale() as "en" | "es";
   function removeLine(i: number) { onChangeLines(lines.filter((_, idx) => idx !== i)); }
   return (
     <div className="bg-white border border-mute-100 rounded-2xl px-3.5">
       {lines.length === 0 && <div className="py-4 text-mute-400 text-sm">Sin productos todavía.</div>}
       {lines.map((l, i) => {
-        const product = l.kind === "catalog" ? PRODUCTS.find((p) => p.id === l.productId) : undefined;
+        const product = l.kind === "catalog" ? products.find((p) => p.id === l.productId) : undefined;
         const variant = l.kind === "catalog" ? product?.variants.find((v) => v.id === l.variantId) : undefined;
         const label = l.kind === "catalog" ? product?.title[locale] ?? l.productId : null;
         const unit = l.kind === "catalog" ? variant?.priceCents ?? 0 : l.priceCents;

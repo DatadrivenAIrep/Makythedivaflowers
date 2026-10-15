@@ -10,7 +10,7 @@ async function loadRenderToStaticMarkup() {
   return mod.renderToStaticMarkup;
 }
 import type { Order } from "@/types/order";
-import { PRODUCTS } from "@/data/products";
+import { getPricedProducts } from "@/lib/product-prices";
 import { SITE } from "@/data/site";
 import { resolveCartLine } from "@/lib/cart-helpers";
 import { baseSizeShort } from "@/lib/variant-measure";
@@ -98,6 +98,7 @@ function itemsDensity(lineCount: number): Density {
 }
 
 function Worksheet({ order }: { order: Order }) {
+  const products = getPricedProducts();
   const locale: Locale = order.locale;
   const t = T[locale];
   const m = (cents: number) => formatMoneyCents(cents, locale);
@@ -192,7 +193,7 @@ function Worksheet({ order }: { order: Order }) {
                     </tr>
                   );
                 }
-                const r = resolveCartLine(line, PRODUCTS);
+                const r = resolveCartLine(line, products);
                 if (!r) return null;
                 const thumb = density === "no-photos" ? null : getProductImageDataUri(r.product.images[0]?.src);
                 const base = baseSizeShort(r.product, r.variant);

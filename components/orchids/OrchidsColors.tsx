@@ -1,13 +1,13 @@
 // components/orchids/OrchidsColors.tsx
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/locale";
-import { PRODUCTS } from "@/data/products";
+import { getPricedProducts } from "@/lib/product-prices";
 import { Reveal } from "@/components/motion/Reveal";
 import { StaggerGroup, StaggerItem } from "@/components/motion/StaggerGroup";
 
 export async function OrchidsColors({ locale }: { locale: Locale }) {
   const t = await getTranslations("orchids");
-  const product = PRODUCTS.find((p) => p.slug === "phalaenopsis-orchid");
+  const product = getPricedProducts().find((p) => p.slug === "phalaenopsis-orchid");
   if (!product) return null;
 
   return (

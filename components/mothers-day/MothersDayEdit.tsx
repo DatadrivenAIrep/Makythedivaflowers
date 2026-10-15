@@ -1,4 +1,4 @@
-import { PRODUCTS } from "@/data/products";
+import { getPricedProducts } from "@/lib/product-prices";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import type { Locale } from "@/types/locale";
 
@@ -8,7 +8,7 @@ type Props = {
 };
 
 export function MothersDayEdit({ locale, slugs }: Props) {
-  const bySlug = new Map(PRODUCTS.map((p) => [p.slug, p]));
+  const bySlug = new Map(getPricedProducts().map((p) => [p.slug, p]));
   const products = slugs
     .map((s) => bySlug.get(s))
     .filter((p): p is NonNullable<typeof p> => Boolean(p && p.active));
