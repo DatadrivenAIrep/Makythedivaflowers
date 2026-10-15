@@ -1,11 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import { setConsent, COOKIE_NAME } from "@/lib/consent";
+import { isShopTvPath } from "@/lib/bare-paths";
 
 export function ConsentNotice() {
   const { locale } = useParams<{ locale: string }>();
+  const pathname = usePathname();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -13,7 +15,8 @@ export function ConsentNotice() {
     if (!hasCookie) setVisible(true);
   }, []);
 
-  if (!visible) return null;
+  // The shop TV has no one to click "Got it", so the banner never shows there.
+  if (!visible || isShopTvPath(pathname)) return null;
 
   function dismiss() {
     setConsent(true);
