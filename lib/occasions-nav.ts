@@ -31,13 +31,13 @@ export const OCCASION_NAV: OccasionNavItem[] = [
   {
     slug: "romance",
     label: { en: "Love & Romance", es: "Amor y Romance" },
-    img: "/products/a-thousand-heartbeats.jpg",
+    img: "/products/hundred-roses.jpg",
     path: (l) => `/${l}/ocasiones/romance`,
   },
   {
     slug: "anniversary",
     label: { en: "Anniversary", es: "Aniversario" },
-    img: "/products/hundred-roses-vase.png",
+    img: "/products/rose-quartz.jpg",
     path: (l) => `/${l}/ocasiones/anniversary`,
   },
   {
@@ -73,13 +73,13 @@ export const OCCASION_NAV: OccasionNavItem[] = [
   {
     slug: "thank-you",
     label: { en: "Thank you", es: "Gracias" },
-    img: "/products/abundant-table.jpg",
+    img: "/products/summer-confetti.jpg",
     path: (l) => `/${l}/ocasiones/thank-you`,
   },
   {
     slug: "thinking-of-you",
     label: { en: "Thinking of you", es: "Pienso en ti" },
-    img: "/products/jade-lavender.jpg",
+    img: "/products/lavender-serenade.jpg",
     path: (l) => `/${l}/ocasiones/thinking-of-you`,
   },
   {
