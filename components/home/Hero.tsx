@@ -5,11 +5,14 @@ import { MagneticButton } from "@/components/motion/MagneticButton";
 import { HeroReveal } from "@/components/home/HeroReveal";
 import { PulseDot } from "@/components/home/PulseDot";
 import { HeroMedia } from "@/components/home/HeroMedia";
+import { heroSeason } from "@/lib/hero-season";
 import type { Locale } from "@/types/locale";
 
 export async function Hero({ locale }: { locale: Locale }) {
   const t = await getTranslations("home.hero");
-  const [heroLine1, heroLine2] = t("title").split(/, (.+)/);
+  const season = heroSeason();
+  const copy = await getTranslations(season.copyNamespace);
+  const [heroLine1, heroLine2] = copy("title").split(/, (.+)/);
 
   return (
     <section className="relative min-h-[100dvh] overflow-hidden">
@@ -23,19 +26,26 @@ export async function Hero({ locale }: { locale: Locale }) {
             "linear-gradient(160deg, #1A1816 0%, #0E0D0C 55%, #2a0d1a 100%)",
         }}
       >
-        <HeroMedia src="/hero/divavideo.mp4" poster="/hero/divavideo-poster.jpg" />
+        <HeroMedia src={season.video} poster={season.poster} focus={season.focus} />
         {/* Legibility overlay — lighter overall, still anchored dark at the bottom for the CTAs */}
         <div
           aria-hidden
           className="absolute inset-0 bg-gradient-to-b from-charcoal/20 via-charcoal/15 to-charcoal/65"
         />
+        {/* Copy scrim — the subject fills the frame on phones and the right half on desktop */}
+        {season.subject === "right" && (
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-gradient-to-t from-charcoal/85 via-charcoal/45 to-charcoal/10 lg:bg-gradient-to-r lg:from-charcoal/80 lg:via-charcoal/40 lg:to-transparent"
+          />
+        )}
         {/* Brand accent — radial rouge wash from top-right */}
         <div
           aria-hidden
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 60% 50% at 85% 10%, rgba(184,52,94,0.22) 0%, transparent 70%)",
+              `radial-gradient(ellipse 60% 50% at 85% 10%, ${season.accent} 0%, transparent 70%)`,
           }}
         />
       </div>
@@ -46,7 +56,7 @@ export async function Hero({ locale }: { locale: Locale }) {
       {/* 2. Eyebrow pill — top-left */}
       <div className="absolute top-20 left-4 lg:top-28 lg:left-8 z-20">
         <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-bone/90 border border-bone/30 bg-charcoal/40 backdrop-blur-sm px-3 py-1.5 rounded-full inline-block">
-          Long Island, New York · Since 2014
+          {season.key === "default" ? "Long Island, New York · Since 2014" : copy("eyebrow")}
         </span>
       </div>
 
@@ -62,7 +72,13 @@ export async function Hero({ locale }: { locale: Locale }) {
       <PulseDot />
 
       {/* 3. Center hero text block */}
-      <div className="relative z-20 min-h-[100dvh] flex flex-col justify-center px-6 lg:pl-[30%] lg:pr-16">
+      <div
+        className={`relative z-20 min-h-[100dvh] flex flex-col px-6 ${
+          season.subject === "right"
+            ? "justify-end pb-44 lg:justify-center lg:pb-0 lg:pl-16 lg:pr-[50%]"
+            : "justify-center lg:pl-[30%] lg:pr-16"
+        }`}
+      >
         <HeroReveal>
           <div className="pb-2">
             <h1
@@ -84,7 +100,7 @@ export async function Hero({ locale }: { locale: Locale }) {
               className="font-sans text-bone/90 text-base max-w-[46ch] leading-relaxed mt-6"
               style={{ textShadow: "0 1px 12px rgba(14,13,12,0.6)" }}
             >
-              {t("sub")}
+              {copy("sub")}
             </p>
           </div>
         </HeroReveal>
