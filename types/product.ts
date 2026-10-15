@@ -29,7 +29,7 @@ export type ProductAddOn = {
   priceCents: number;
 };
 
-export type ProductTag = "new" | "same-day" | "staff-pick" | "seasonal";
+export type ProductTag = "same-day" | "staff-pick" | "seasonal";
 export type Occasion =
   | "birthday"
   | "anniversary"
@@ -56,6 +56,11 @@ export type SubscriptionCadence = "weekly" | "biweekly";
 export type Product = {
   id: string;
   slug: string;
+  /**
+   * Day the product joined the catalog (YYYY-MM-DD). Drives "Newest" and the
+   * "New" badge, so a new product must carry it (a test enforces it).
+   */
+  addedAt?: string;
   title: Localized;
   category: ProductCategory;
   giftExtra?: boolean;

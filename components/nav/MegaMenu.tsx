@@ -4,7 +4,7 @@ import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { FloatingPhoto } from "@/components/product/FloatingPhoto";
 import type { Locale } from "@/types/locale";
-import { CATS, LABELS } from "@/lib/shop-categories";
+import { CATS, LABELS, shopCategoryHref } from "@/lib/shop-categories";
 import { OCCASION_NAV } from "@/lib/occasions-nav";
 
 type Props = { locale: Locale; label: string };
@@ -50,7 +50,7 @@ function MegaMenuImpl({ locale, label }: Props) {
                 <Link
                   role="menuitem"
                   key={c.slug}
-                  href={`/${locale}/shop/${c.slug}`}
+                  href={shopCategoryHref(locale, c.slug)}
                   className="group block"
                 >
                   {/* Whole arrangement floating on plaster; name below. */}

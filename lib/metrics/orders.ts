@@ -28,11 +28,14 @@ export type MetricOrder = OrderMetricRow & {
  * got paid is noise, the same rule lib/order-visibility.ts applies). Shop-taken orders
  * may wait for payment and stay live.
  */
-export const isLive = (o: MetricOrder) =>
+/** The fields that decide whether an order is a real, paid sale. */
+export type SaleStatus = Pick<MetricOrder, "source" | "paymentStatus" | "fulfillmentStatus" | "amountPaidCents">;
+
+export const isLive = (o: SaleStatus) =>
   o.fulfillmentStatus !== "canceled" &&
   !(o.source === "web" && o.paymentStatus !== "paid" && o.paymentStatus !== "refunded");
-export const countsAsRevenue = (o: MetricOrder) => isLive(o) && o.paymentStatus !== "refunded";
-export const revenueOf = (o: MetricOrder) => (countsAsRevenue(o) ? o.amountPaidCents : 0);
+export const countsAsRevenue = (o: SaleStatus) => isLive(o) && o.paymentStatus !== "refunded";
+export const revenueOf = (o: SaleStatus) => (countsAsRevenue(o) ? o.amountPaidCents : 0);
 
 export function between(orders: MetricOrder[], start: string | null, end: string): MetricOrder[] {
   return orders.filter((o) => inPeriod(o.day, start, end));

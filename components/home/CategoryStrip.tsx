@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { CategoryOrbit } from "@/components/home/CategoryOrbit";
 import type { Locale } from "@/types/locale";
+import { shopCategoryHref } from "@/lib/shop-categories";
 
 const CATEGORIES = [
   { slug: "arrangements", img: "/products/island-sunrise.jpg", index: "01" },
@@ -19,7 +20,7 @@ export async function CategoryStrip({ locale }: { locale: Locale }) {
     img: c.img,
     index: c.index,
     name: t(`categories.${c.slug}`),
-    href: `/${locale}/shop/${c.slug}`,
+    href: shopCategoryHref(locale, c.slug),
   }));
 
   const eyebrow =

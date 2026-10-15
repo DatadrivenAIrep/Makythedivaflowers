@@ -5,6 +5,7 @@ import {
   sortProducts,
   productsByCategory,
   newestArrivals,
+  isNewArrival,
   type Filter,
   type Sort,
 } from "@/data/product-helpers";
@@ -142,10 +143,12 @@ describe("filterProducts", () => {
   });
 });
 
+const priced = (cents: number) => [{ id: "s", label: { en: "", es: "" }, priceCents: cents }];
+
 describe("sortProducts", () => {
-  const p1 = fx({ id: "p1", variants: [{ id: "s", label: { en: "", es: "" }, priceCents: 20000 }], tags: [] });
-  const p2 = fx({ id: "p2", variants: [{ id: "s", label: { en: "", es: "" }, priceCents: 10000 }], tags: ["new"] });
-  const p3 = fx({ id: "p3", variants: [{ id: "s", label: { en: "", es: "" }, priceCents: 30000 }], tags: [] });
+  const p1 = fx({ id: "p1", variants: priced(20000), addedAt: "2026-05-01" });
+  const p2 = fx({ id: "p2", variants: priced(10000), addedAt: "2026-10-14" });
+  const p3 = fx({ id: "p3", variants: priced(30000), addedAt: "2026-09-11" });
 
   it("price-asc", () => {
     expect(sortProducts([p1, p2, p3], "price-asc" as Sort).map((p) => p.id)).toEqual(["p2", "p1", "p3"]);
@@ -153,19 +156,58 @@ describe("sortProducts", () => {
   it("price-desc", () => {
     expect(sortProducts([p1, p2, p3], "price-desc" as Sort).map((p) => p.id)).toEqual(["p3", "p1", "p2"]);
   });
-  it("newest puts tagged 'new' first", () => {
-    expect(sortProducts([p1, p2, p3], "newest" as Sort).map((p) => p.id)[0]).toBe("p2");
+  it("newest orders by the day the product joined the catalog", () => {
+    expect(sortProducts([p1, p2, p3], "newest").map((p) => p.id)).toEqual(["p2", "p3", "p1"]);
   });
 });
 
-describe("sortProducts staff-pick", () => {
-  const p1 = fx({ id: "p1", variants: [{ id: "s", label: { en: "", es: "" }, priceCents: 20000 }], tags: [] });
-  const p2 = fx({ id: "p2", variants: [{ id: "s", label: { en: "", es: "" }, priceCents: 10000 }], tags: ["staff-pick"] });
-  const p3 = fx({ id: "p3", variants: [{ id: "s", label: { en: "", es: "" }, priceCents: 30000 }], tags: [] });
+describe("sortProducts recommended", () => {
+  const old = fx({ id: "old", addedAt: "2026-05-01" });
+  const fresh = fx({ id: "fresh", addedAt: "2026-10-14" });
+  const pick = fx({ id: "pick", addedAt: "2026-05-01", tags: ["staff-pick"] });
+  const premium = fx({ id: "premium", addedAt: "2026-10-14", variants: priced(108000) });
+  const funeral = fx({ id: "funeral", category: "sympathy", addedAt: "2026-10-14", tags: ["staff-pick"] });
+  const ids = (ps: Product[]) => ps.map((p) => p.id);
 
-  it("staff-pick puts tagged products first", () => {
-    const result = sortProducts([p1, p2, p3], "staff-pick" as Sort);
-    expect(result[0].id).toBe("p2");
+  it("without sales: staff picks, then newest, premium last", () => {
+    expect(ids(sortProducts([old, premium, fresh, pick], "recommended"))).toEqual(["pick", "fresh", "old", "premium"]);
+  });
+
+  it("sold products come first, by sales score, whatever their price", () => {
+    const sales = new Map([["old", 1], ["premium", 3]]);
+    expect(ids(sortProducts([pick, old, fresh, premium], "recommended", { sales }))).toEqual([
+      "premium", "old", "pick", "fresh",
+    ]);
+  });
+
+  it("demoteSympathy sends funeral pieces after everything else, even best sellers", () => {
+    const sales = new Map([["funeral", 9]]);
+    const r = sortProducts([funeral, old, premium], "recommended", { sales, demoteSympathy: true });
+    expect(ids(r)).toEqual(["old", "premium", "funeral"]);
+    expect(ids(sortProducts([old, funeral], "recommended", { sales }))[0]).toBe("funeral");
+  });
+});
+
+describe("size filter", () => {
+  const tiers = (...ids: string[]) => ids.map((id) => ({ id, label: { en: id, es: id }, priceCents: 10000 }));
+  const classic = fx({ id: "classic", variants: tiers("standard", "grand", "diva") });
+  const lush = fx({ id: "lush", variants: tiers("standard", "lush", "opulent") });
+  const single = fx({ id: "single", variants: tiers("standing") });
+
+  it("treats lush/opulent as the grand/diva tiers", () => {
+    expect(filterProducts([classic, lush, single], { size: "grand" }).map((p) => p.id)).toEqual(["classic", "lush"]);
+    expect(filterProducts([classic, lush, single], { size: "diva" }).map((p) => p.id)).toEqual(["classic", "lush"]);
+    expect(filterProducts([classic, lush, single], { size: "standard" }).map((p) => p.id)).toEqual(["classic", "lush"]);
+  });
+});
+
+describe("isNewArrival", () => {
+  const now = new Date("2026-10-15T12:00:00Z");
+  it("is new for 30 days after joining the catalog", () => {
+    expect(isNewArrival(fx({ addedAt: "2026-10-14" }), now)).toBe(true);
+    expect(isNewArrival(fx({ addedAt: "2026-09-15" }), now)).toBe(true);
+    expect(isNewArrival(fx({ addedAt: "2026-09-11" }), now)).toBe(false);
+    expect(isNewArrival(fx({}), now)).toBe(false);
   });
 });
 
@@ -181,15 +223,13 @@ describe("productsByCategory", () => {
 });
 
 describe("newestArrivals", () => {
-  const n1 = fx({ id: "n1", tags: ["new"] });
-  const n2 = fx({ id: "n2", tags: [] });
-  const n3 = fx({ id: "n3", tags: ["new"] });
-  const inact = fx({ id: "inact", tags: ["new"], active: false });
+  const n1 = fx({ id: "n1", addedAt: "2026-10-07" });
+  const n2 = fx({ id: "n2", addedAt: "2026-05-01" });
+  const n3 = fx({ id: "n3", addedAt: "2026-10-14" });
+  const inact = fx({ id: "inact", addedAt: "2026-10-15", active: false });
 
-  it("puts 'new'-tagged products first and excludes inactive", () => {
-    const result = newestArrivals([n2, n1, n3, inact]);
-    expect(result.map((p) => p.id)).not.toContain("inact");
-    expect(result[0].id === "n1" || result[0].id === "n3").toBe(true);
+  it("orders by date added and excludes inactive", () => {
+    expect(newestArrivals([n2, n1, n3, inact]).map((p) => p.id)).toEqual(["n3", "n1", "n2"]);
   });
 
   it("respects the limit", () => {

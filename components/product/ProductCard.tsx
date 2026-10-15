@@ -6,7 +6,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import type { Locale } from "@/types/locale";
 import type { Product, ProductImage as ProductImageT } from "@/types/product";
-import { startingPriceCents } from "@/data/product-helpers";
+import { isNewArrival, startingPriceCents } from "@/data/product-helpers";
 import { formatMoneyCents } from "@/lib/format";
 import { fitInStage, productImageDims } from "@/lib/product-image-dims";
 import { SPRING } from "@/lib/motion";
@@ -47,7 +47,7 @@ function ProductCardImpl({ product, locale, reduceMotion, priority, campaign }: 
   const cover = product.images[0];
   const fromPrice = formatMoneyCents(startingPriceCents(product), locale);
   const startingFrom = t("from_price");
-  const eyebrow = product.tags.includes("new")
+  const eyebrow = isNewArrival(product)
     ? t("badge_new")
     : product.tags.includes("staff-pick")
       ? t("badge_staff_pick")
