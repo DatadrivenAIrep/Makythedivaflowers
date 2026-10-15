@@ -10,9 +10,10 @@ type Props = {
 
 export function LocaleChrome({ topNav, footer, extras, children }: Props) {
   const pathname = usePathname();
-  const isAdmin = /^\/[^/]+\/admin(\/|$)/.test(pathname);
+  // Admin and the shop TV (/vitrina) run full-screen, without the site chrome.
+  const isBare = /^\/[^/]+\/(admin|vitrina)(\/|$)/.test(pathname);
 
-  if (isAdmin) return <>{children}</>;
+  if (isBare) return <>{children}</>;
 
   return (
     <>
