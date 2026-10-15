@@ -37,4 +37,9 @@ describe("heroSeason", () => {
     expect(fall.copyNamespace).toBe("home.hero_fall");
     expect(heroSeason(at("2026-12-10")).video).toBe("/hero/divavideo.mp4");
   });
+
+  it("sends the main button to the season's collection", () => {
+    expect(heroSeason(at("2026-10-14")).ctaPath).toBe("/shop/fall");
+    expect(heroSeason(at("2026-12-10")).ctaPath).toBe("/shop/arrangements");
+  });
 });
