@@ -10,12 +10,12 @@ type Role = "prev" | "current" | "next";
 
 const LOGO = (
   <Image
-    src="/logo-header.webp"
+    src="/brand/logo-square.webp"
     alt="Maky the Diva Flowers"
-    width={320}
-    height={96}
+    width={800}
+    height={800}
     priority
-    className="h-[6vh] w-auto mix-blend-multiply"
+    className="h-[20vh] w-auto mix-blend-multiply"
   />
 );
 
@@ -96,7 +96,7 @@ export default function Showcase({
   return (
     <div className="fixed inset-0 cursor-none overflow-hidden bg-mute-100 text-ink">
       {n === 0 ? (
-        <div className="flex h-full items-center justify-center [&_img]:h-[14vh]">{LOGO}</div>
+        <div className="flex h-full items-center justify-center [&_img]:h-[45vh]">{LOGO}</div>
       ) : (
         layersFor(slides, index).map(({ slide, role }) => (
           <section
@@ -154,7 +154,7 @@ export default function Showcase({
           </section>
         ))
       )}
-      {n > 0 && <div className="absolute right-[3vw] top-[4vh]">{LOGO}</div>}
+      {n > 0 && <div className="absolute right-[3vw] top-[3vh]">{LOGO}</div>}
     </div>
   );
 }
