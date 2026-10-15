@@ -92,3 +92,9 @@ body {
   }
 }
 
+
+/* Shop TV (/vitrina): slow push-in on the arrangement while its slide is up. */
+@keyframes tv-zoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.05); }
+}
