@@ -10,6 +10,7 @@
 // while every other occasion has one under /ocasiones/[slug]. Those pages carry
 // the guidance and FAQ; the filtered shop is one click further in.
 import type { Occasion } from "@/types/product";
+import { heroSeason } from "@/lib/hero-season";
 
 export type OccasionNavItem = {
   /** Matches the `Occasion` union so the shop filter round-trips. */
@@ -108,5 +109,19 @@ export const EXOTIC_LINK: OccasionLink = {
   path: (l) => `/${l}/shop/exotic`,
 };
 
-/** What the home strip, the mega menu and the mobile drawer list. */
-export const OCCASION_LINKS: OccasionLink[] = [...OCCASION_NAV, EXOTIC_LINK];
+/** The autumn collection, listed only while the fall hero runs (Sep 15 – Thanksgiving). */
+export const FALL_LINK: OccasionLink = {
+  slug: "fall",
+  label: { en: "Fall Flowers", es: "Flores de Otoño" },
+  img: "/products/pumpkin-spice.jpg",
+  path: (l) => `/${l}/shop/fall`,
+};
+
+/**
+ * What the home strip, the mega menu, the mobile drawer and /ocasiones list:
+ * the occasions, then the fall collection in season, then the exotics.
+ */
+export function occasionLinks(now: Date = new Date()): OccasionLink[] {
+  const fall = heroSeason(now).key === "fall";
+  return [...OCCASION_NAV, ...(fall ? [FALL_LINK] : []), EXOTIC_LINK];
+}

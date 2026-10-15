@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { EXOTIC_LINK, OCCASION_LINKS, OCCASION_NAV } from "@/lib/occasions-nav";
-import { isExoticProduct } from "@/lib/shop-categories";
+import { describe, it, expect, vi } from "vitest";
+import { EXOTIC_LINK, FALL_LINK, OCCASION_NAV, occasionLinks } from "@/lib/occasions-nav";
+import { isExoticProduct, isFallProduct } from "@/lib/shop-categories";
 import { OCCASIONS_ALL, OCCASION_CONTENT } from "@/data/occasion-content";
 import type { Occasion } from "@/types/product";
 import { PRODUCTS } from "@/data/products";
@@ -59,9 +59,26 @@ describe("occasion navigation", () => {
   });
 
   it("ends every occasion list with the exotic collection", () => {
-    expect(OCCASION_LINKS.at(-1)).toBe(EXOTIC_LINK);
+    expect(occasionLinks().at(-1)).toBe(EXOTIC_LINK);
     expect(EXOTIC_LINK.path("es")).toBe("/es/shop/exotic");
     const owner = PRODUCTS.find((p) => p.images[0]?.src === EXOTIC_LINK.img);
     expect(owner && isExoticProduct(owner), `${EXOTIC_LINK.img} is not an exotic piece`).toBe(true);
+  });
+
+  it("lists the fall collection only in the fall window", () => {
+    const at = (iso: string) => occasionLinks(new Date(iso)).map((l) => l.slug);
+    expect(at("2026-10-15T16:00:00Z")).toContain("fall");
+    expect(at("2026-10-15T16:00:00Z").slice(-2)).toEqual(["fall", "exotic"]);
+    expect(at("2026-12-10T16:00:00Z")).not.toContain("fall");
+    expect(at("2026-07-01T16:00:00Z")).not.toContain("fall");
+    expect(FALL_LINK.path("es")).toBe("/es/shop/fall");
+    const owner = PRODUCTS.find((p) => p.images[0]?.src === FALL_LINK.img);
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-10-15T16:00:00Z")); // fall pieces are only on sale in autumn
+    try {
+      expect(owner && isFallProduct(owner), `${FALL_LINK.img} is not a fall piece`).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { FloatingPhoto } from "@/components/product/FloatingPhoto";
 import { StaggerGroup, StaggerItem } from "@/components/motion/StaggerGroup";
-import { OCCASION_LINKS } from "@/lib/occasions-nav";
+import { occasionLinks } from "@/lib/occasions-nav";
 import type { Locale } from "@/types/locale";
 
 /**
@@ -39,7 +39,7 @@ export async function OccasionStrip({ locale }: { locale: Locale }) {
         as="ul"
         className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 md:gap-4 lg:grid-cols-7"
       >
-        {OCCASION_LINKS.map((o) => (
+        {occasionLinks().map((o) => (
           <StaggerItem as="li" key={o.slug}>
             <Link
               href={o.path(locale)}
