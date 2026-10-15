@@ -14,6 +14,8 @@ import { GoogleReviews } from "@/components/home/GoogleReviews";
 import { PetalRain } from "@/components/home/PetalRain";
 import { KineticMarquee } from "@/components/brand/KineticMarquee";
 import { localeAlternates } from "@/lib/seo/alternates";
+import { nextMothersDay } from "@/lib/metrics/holidays";
+import { shopDateStr } from "@/lib/tv-slots";
 
 const CURATED_SLUGS = [
   "angels-touch",
@@ -58,7 +60,8 @@ export default async function MothersDayPage({
     <main className="bg-bone text-ink">
       <MothersDayCutoffBanner
         cutoff={SITE.cutoff24}
-        deadlineAt="2026-05-10T18:00:00-04:00"
+        // The coming Mother's Day, 6 PM shop time (EDT in May): never last year's date.
+        deadlineAt={`${nextMothersDay(shopDateStr(new Date()))}T18:00:00-04:00`}
         label={t("cutoff_banner")}
         ctaLabel={t("hero_cta")}
       />

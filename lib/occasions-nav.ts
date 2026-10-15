@@ -12,6 +12,7 @@
 import type { Occasion } from "@/types/product";
 import { heroSeason, thanksgiving } from "@/lib/hero-season";
 import { shopDateStr } from "@/lib/tv-slots";
+import { mothersDay } from "@/lib/metrics/holidays";
 
 export type OccasionNavItem = {
   /** Matches the `Occasion` union so the shop filter round-trips. */
@@ -134,6 +135,14 @@ export const VALENTINES_LINK: OccasionLink = {
   path: (l) => `/${l}/shop/valentines`,
 };
 
+/** Mother's Day campaign page, from April 20 through the day itself (2nd Sunday of May). */
+export const MOTHERS_DAY_LINK: OccasionLink = {
+  slug: "mothers-day",
+  label: { en: "Mother's Day", es: "Día de la Madre" },
+  img: "/products/blush-enchantment.jpg",
+  path: (l) => `/${l}/mothers-day`,
+};
+
 /** The seasonal collection running today, if any (windows in the shop's timezone). */
 export function seasonalLink(now: Date = new Date()): OccasionLink | null {
   if (heroSeason(now).key === "fall") return FALL_LINK;
@@ -141,6 +150,7 @@ export function seasonalLink(now: Date = new Date()): OccasionLink | null {
   const year = today.slice(0, 4);
   if (today > thanksgiving(Number(year)) && today <= `${year}-12-25`) return CHRISTMAS_LINK;
   if (today >= `${year}-01-20` && today <= `${year}-02-14`) return VALENTINES_LINK;
+  if (today >= `${year}-04-20` && today <= mothersDay(Number(year))) return MOTHERS_DAY_LINK;
   return null;
 }
 

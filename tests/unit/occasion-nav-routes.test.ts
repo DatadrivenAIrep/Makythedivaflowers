@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
-import { CHRISTMAS_LINK, EXOTIC_LINK, FALL_LINK, OCCASION_NAV, VALENTINES_LINK, occasionLinks, seasonalLink } from "@/lib/occasions-nav";
+import { CHRISTMAS_LINK, EXOTIC_LINK, FALL_LINK, MOTHERS_DAY_LINK, OCCASION_NAV, VALENTINES_LINK, occasionLinks, seasonalLink } from "@/lib/occasions-nav";
+import { mothersDay, nextMothersDay } from "@/lib/metrics/holidays";
 import { isChristmasProduct, isExoticProduct, isFallProduct, isValentinesProduct, productsInShopCategory } from "@/lib/shop-categories";
 import { OCCASIONS_ALL, OCCASION_CONTENT } from "@/data/occasion-content";
 import type { Occasion } from "@/types/product";
@@ -110,5 +111,19 @@ describe("occasion navigation", () => {
     }
     expect(CHRISTMAS_LINK.path("es")).toBe("/es/shop/christmas");
     expect(VALENTINES_LINK.path("es")).toBe("/es/shop/valentines");
+  });
+
+  it("brings Mother's Day in from April 20 through the second Sunday of May", () => {
+    expect(mothersDay(2027)).toBe("2027-05-09");
+    expect(nextMothersDay("2026-10-15")).toBe("2027-05-09");
+    expect(nextMothersDay("2027-05-09")).toBe("2027-05-09");
+    const at = (iso: string) => seasonalLink(new Date(iso))?.slug ?? null;
+    expect(at("2027-04-19T16:00:00Z")).toBeNull();
+    expect(at("2027-04-20T16:00:00Z")).toBe("mothers-day");
+    expect(at("2027-05-09T16:00:00Z")).toBe("mothers-day");
+    expect(at("2027-05-10T16:00:00Z")).toBeNull();
+    expect(MOTHERS_DAY_LINK.path("es")).toBe("/es/mothers-day");
+    const owner = PRODUCTS.find((p) => p.images[0]?.src === MOTHERS_DAY_LINK.img);
+    expect(owner?.occasions).toContain("mothers-day");
   });
 });
