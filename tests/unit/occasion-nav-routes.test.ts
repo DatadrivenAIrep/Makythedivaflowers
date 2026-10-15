@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
-import { EXOTIC_LINK, FALL_LINK, OCCASION_NAV, occasionLinks } from "@/lib/occasions-nav";
-import { isExoticProduct, isFallProduct } from "@/lib/shop-categories";
+import { CHRISTMAS_LINK, EXOTIC_LINK, FALL_LINK, OCCASION_NAV, VALENTINES_LINK, occasionLinks, seasonalLink } from "@/lib/occasions-nav";
+import { isChristmasProduct, isExoticProduct, isFallProduct, isValentinesProduct, productsInShopCategory } from "@/lib/shop-categories";
 import { OCCASIONS_ALL, OCCASION_CONTENT } from "@/data/occasion-content";
 import type { Occasion } from "@/types/product";
 import { PRODUCTS } from "@/data/products";
@@ -80,5 +80,35 @@ describe("occasion navigation", () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  it("hands the seasonal slot from fall to Christmas to Valentine's", () => {
+    const at = (iso: string) => seasonalLink(new Date(iso))?.slug ?? null;
+    expect(at("2026-10-15T16:00:00Z")).toBe("fall");
+    expect(at("2026-11-26T16:00:00Z")).toBe("fall"); // Thanksgiving 2026
+    expect(at("2026-11-27T16:00:00Z")).toBe("christmas");
+    expect(at("2026-12-25T16:00:00Z")).toBe("christmas");
+    expect(at("2026-12-28T16:00:00Z")).toBeNull();
+    expect(at("2027-01-20T16:00:00Z")).toBe("valentines");
+    expect(at("2027-02-14T16:00:00Z")).toBe("valentines");
+    expect(at("2027-02-16T16:00:00Z")).toBeNull();
+    expect(occasionLinks(new Date("2026-12-10T16:00:00Z")).slice(-2).map((l) => l.slug)).toEqual(["christmas", "exotic"]);
+  });
+
+  it("covers the Christmas and Valentine's cards with pieces from those collections", () => {
+    const cover = (img: string) => PRODUCTS.find((p) => p.images[0]?.src === img)!;
+    vi.useFakeTimers({ toFake: ["Date"] });
+    try {
+      vi.setSystemTime(new Date("2026-12-10T16:00:00Z"));
+      expect(isChristmasProduct(cover(CHRISTMAS_LINK.img))).toBe(true);
+      expect(productsInShopCategory(PRODUCTS, "christmas").length).toBeGreaterThan(0);
+      vi.setSystemTime(new Date("2027-02-01T16:00:00Z"));
+      expect(isValentinesProduct(cover(VALENTINES_LINK.img))).toBe(true);
+      expect(productsInShopCategory(PRODUCTS, "valentines").some((p) => p.category === "sympathy")).toBe(false);
+    } finally {
+      vi.useRealTimers();
+    }
+    expect(CHRISTMAS_LINK.path("es")).toBe("/es/shop/christmas");
+    expect(VALENTINES_LINK.path("es")).toBe("/es/shop/valentines");
   });
 });

@@ -7,7 +7,7 @@ import { OCCASIONS_ALL, OCCASION_CONTENT } from "@/data/occasion-content";
 import { EXOTIC_LINK, OCCASION_NAV, occasionLinks } from "@/lib/occasions-nav";
 import { PRODUCTS } from "@/data/products";
 import { filterProducts } from "@/data/product-helpers";
-import { productsInShopCategory } from "@/lib/shop-categories";
+import { productsInShopCategory, type ShopSlug } from "@/lib/shop-categories";
 import { localeAlternates } from "@/lib/seo/alternates";
 import { BreadcrumbListLD } from "@/components/seo/BreadcrumbListLD";
 import { FloatingPhoto } from "@/components/product/FloatingPhoto";
@@ -57,13 +57,14 @@ export default async function OccasionsIndexPage({
     // Sympathy keeps its own dedicated page.
     href: slug === "sympathy" ? `/${locale}/sympathy` : `/${locale}/ocasiones/${slug}`,
   }));
-  // Not occasions, but people shop them the same way: the fall collection (in
-  // season) and the exotics get cards alongside, like in the menus.
+  // Not occasions, but people shop them the same way: the seasonal collection
+  // (fall, Christmas, Valentine's) when one runs and the exotics get cards alongside.
   for (const link of occasionLinks().slice(OCCASION_NAV.length)) {
     items.push({
       slug: link.slug,
       label: link.label,
-      count: productsInShopCategory(PRODUCTS, link.slug === "fall" ? "fall" : "exotic").length,
+      // Each extra link is named after the shop collection it opens.
+      count: productsInShopCategory(PRODUCTS, link.slug as ShopSlug).length,
       img: link.img,
       href: link.path(locale),
     });

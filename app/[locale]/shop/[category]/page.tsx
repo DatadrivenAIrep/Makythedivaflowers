@@ -29,6 +29,8 @@ const ALLOWED: ShopSlug[] = [
   "exotic",
   "centerpieces",
   "fall",
+  "christmas",
+  "valentines",
   "plants",
   "gifts",
   "sympathy",
@@ -41,6 +43,8 @@ const CATEGORY_TITLES: Record<ShopSlug, { en: string; es: string }> = {
   exotic: { en: "Exotic", es: "Exóticas" },
   centerpieces: { en: "Centerpieces", es: "Centros de mesa" },
   fall: { en: "Autumn Collection", es: "Colección de otoño" },
+  christmas: { en: "Christmas Collection", es: "Colección de Navidad" },
+  valentines: { en: "Valentine's Day", es: "San Valentín" },
   plants: { en: "Plants & Orchids", es: "Plantas y Orquídeas" },
   gifts: { en: "Gifts", es: "Regalos" },
   sympathy: { en: "Sympathy", es: "Condolencias" },
@@ -67,6 +71,14 @@ const CATEGORY_DESCS: Record<ShopSlug, { en: string; es: string }> = {
   centerpieces: {
     en: "Low, full arrangements made for the table — dinners, showers and celebrations.",
     es: "Arreglos bajos y llenos, hechos para la mesa: cenas, showers y celebraciones.",
+  },
+  christmas: {
+    en: "Holiday arrangements in red, white and evergreen, hand-built for December.",
+    es: "Arreglos navideños en rojo, blanco y verde pino, hechos a mano para diciembre.",
+  },
+  valentines: {
+    en: "Roses and romantic arrangements for February 14, hand-built the morning of delivery.",
+    es: "Rosas y arreglos románticos para el 14 de febrero, armados la mañana del envío.",
   },
   fall: {
     en: "Harvest arrangements for the Thanksgiving table: roses, mums, wheat and mini pumpkins, hand-built daily.",

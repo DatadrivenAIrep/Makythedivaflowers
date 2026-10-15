@@ -108,13 +108,37 @@ export function isFallProduct(p: Product): boolean {
   return months.length > 0 && months.every((m) => FALL_MONTHS.includes(m));
 }
 
-export type ShopSlug = ProductCategory | "roses" | "exotic" | "centerpieces" | "fall";
+// Christmas: whatever Maky puts on sale for December (Santa's Garden, Under the
+// Mistletoe…), so a new holiday piece joins by its season alone.
+export function isChristmasProduct(p: Product): boolean {
+  if (!p.active || p.giftExtra) return false;
+  if (!isInSeason(p)) return false;
+  return (p.seasonMonths ?? []).includes(12);
+}
 
-/** What a shop page lists: four slugs are curated lists, the rest are real categories. */
+// Valentine's Day: the romance pieces plus the rose picks.
+export function isValentinesProduct(p: Product): boolean {
+  if (!p.active || p.giftExtra || p.category === "sympathy") return false;
+  if (!isInSeason(p)) return false;
+  return p.occasions.includes("romance") || isRoseProduct(p);
+}
+
+export type ShopSlug =
+  | ProductCategory
+  | "roses"
+  | "exotic"
+  | "centerpieces"
+  | "fall"
+  | "christmas"
+  | "valentines";
+
+/** What a shop page lists: six slugs are curated lists, the rest are real categories. */
 export function productsInShopCategory(products: Product[], slug: ShopSlug): Product[] {
   if (slug === "roses") return products.filter(isRoseProduct);
   if (slug === "exotic") return products.filter(isExoticProduct);
   if (slug === "centerpieces") return products.filter(isCenterpieceProduct);
   if (slug === "fall") return products.filter(isFallProduct);
+  if (slug === "christmas") return products.filter(isChristmasProduct);
+  if (slug === "valentines") return products.filter(isValentinesProduct);
   return productsByCategory(products, slug);
 }
