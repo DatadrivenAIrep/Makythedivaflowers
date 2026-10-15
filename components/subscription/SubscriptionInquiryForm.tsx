@@ -46,8 +46,8 @@ const CARD_OCCASIONS: Occasion[] = [
 
 const PLAN_IMAGES: Record<SubscriptionPlanId, string> = {
   small: "/products/blush-enchantment.jpg",
-  medium: "/products/timeless-romance.jpg",
-  large: "/products/hundred-roses-vase.png",
+  medium: "/products/cotton-candy.jpg",
+  large: "/products/island-sunrise.jpg",
 };
 
 export function SubscriptionInquiryForm({ locale, plan }: Props) {
@@ -159,6 +159,7 @@ export function SubscriptionInquiryForm({ locale, plan }: Props) {
 
   const leftPanel = (
     <PhotoPanel
+      float
       src={planImage}
       alt={t("shell.alt")}
       eyebrow={t("shell.eyebrow")}
