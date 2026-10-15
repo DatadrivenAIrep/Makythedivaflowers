@@ -10,7 +10,8 @@
 // while every other occasion has one under /ocasiones/[slug]. Those pages carry
 // the guidance and FAQ; the filtered shop is one click further in.
 import type { Occasion } from "@/types/product";
-import { heroSeason } from "@/lib/hero-season";
+import { heroSeason, thanksgiving } from "@/lib/hero-season";
+import { shopDateStr } from "@/lib/tv-slots";
 
 export type OccasionNavItem = {
   /** Matches the `Occasion` union so the shop filter round-trips. */
@@ -117,11 +118,37 @@ export const FALL_LINK: OccasionLink = {
   path: (l) => `/${l}/shop/fall`,
 };
 
+/** The holiday collection, from the day after Thanksgiving through Christmas Day. */
+export const CHRISTMAS_LINK: OccasionLink = {
+  slug: "christmas",
+  label: { en: "Christmas Flowers", es: "Flores de Navidad" },
+  img: "/products/santas-garden.jpg",
+  path: (l) => `/${l}/shop/christmas`,
+};
+
+/** Valentine's Day, from January 20 through February 14. */
+export const VALENTINES_LINK: OccasionLink = {
+  slug: "valentines",
+  label: { en: "Valentine's Day", es: "San Valentín" },
+  img: "/products/hundred-roses.jpg",
+  path: (l) => `/${l}/shop/valentines`,
+};
+
+/** The seasonal collection running today, if any (windows in the shop's timezone). */
+export function seasonalLink(now: Date = new Date()): OccasionLink | null {
+  if (heroSeason(now).key === "fall") return FALL_LINK;
+  const today = shopDateStr(now); // YYYY-MM-DD, sortable as a string
+  const year = today.slice(0, 4);
+  if (today > thanksgiving(Number(year)) && today <= `${year}-12-25`) return CHRISTMAS_LINK;
+  if (today >= `${year}-01-20` && today <= `${year}-02-14`) return VALENTINES_LINK;
+  return null;
+}
+
 /**
  * What the home strip, the mega menu, the mobile drawer and /ocasiones list:
- * the occasions, then the fall collection in season, then the exotics.
+ * the occasions, then the seasonal collection when one is running, then the exotics.
  */
 export function occasionLinks(now: Date = new Date()): OccasionLink[] {
-  const fall = heroSeason(now).key === "fall";
-  return [...OCCASION_NAV, ...(fall ? [FALL_LINK] : []), EXOTIC_LINK];
+  const season = seasonalLink(now);
+  return [...OCCASION_NAV, ...(season ? [season] : []), EXOTIC_LINK];
 }
