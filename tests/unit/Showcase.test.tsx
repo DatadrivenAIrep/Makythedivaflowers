@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, act } from "@testing-library/react";
+import { render, screen, act, within } from "@testing-library/react";
 import Showcase, { SLIDE_MS, REFRESH_MS } from "@/components/tv-showcase/Showcase";
 import type { TvSlide } from "@/lib/tv-showcase";
 
@@ -41,6 +41,107 @@ describe("Showcase", () => {
     expect(current()).toHaveTextContent("b EN");
     act(() => { vi.advanceTimersByTime(SLIDE_MS * 2); });
     expect(current()).toHaveTextContent("a EN");
+  });
+
+  describe("crossfade", () => {
+    // A node React detaches and reinserts gets fresh computed style, so its
+    // opacity transition never runs and the slide pops in instead of fading.
+    function removedDuringTick(slides: TvSlide[], ticks: number): HTMLElement[] {
+      render(<Showcase slides={slides} />);
+      const parent = screen.getAllByTestId("tv-slide")[0].parentElement!;
+      const removed: HTMLElement[] = [];
+      const observer = new MutationObserver(() => {});
+      observer.observe(parent, { childList: true });
+      for (let t = 0; t < ticks; t++) {
+        act(() => { vi.advanceTimersByTime(SLIDE_MS); });
+        for (const rec of observer.takeRecords()) {
+          rec.removedNodes.forEach((node) => removed.push(node as HTMLElement));
+        }
+      }
+      observer.disconnect();
+      return removed;
+    }
+
+    it("never detaches the slide that becomes current", () => {
+      render(<Showcase slides={[slide("a"), slide("b"), slide("c"), slide("d")]} />);
+      const parent = screen.getAllByTestId("tv-slide")[0].parentElement!;
+      const observer = new MutationObserver(() => {});
+      observer.observe(parent, { childList: true });
+      act(() => { vi.advanceTimersByTime(SLIDE_MS); });
+      const removed = observer.takeRecords().flatMap((r) => [...r.removedNodes]);
+      observer.disconnect();
+      expect(current()).toHaveTextContent("b EN");
+      expect(removed).not.toContain(current());
+    });
+
+    it("never detaches the slide that becomes current when wrapping to the first", () => {
+      const slides = [slide("a"), slide("b"), slide("c"), slide("d")];
+      render(<Showcase slides={slides} />);
+      act(() => { vi.advanceTimersByTime(SLIDE_MS * 3); });
+      expect(current()).toHaveTextContent("d EN");
+      const parent = current().parentElement!;
+      const observer = new MutationObserver(() => {});
+      observer.observe(parent, { childList: true });
+      act(() => { vi.advanceTimersByTime(SLIDE_MS); });
+      const removed = observer.takeRecords().flatMap((r) => [...r.removedNodes]);
+      observer.disconnect();
+      expect(current()).toHaveTextContent("a EN");
+      expect(removed).not.toContain(current());
+    });
+
+    it("keeps every slide in the DOM unmoved across a whole loop of ticks", () => {
+      const removed = removedDuringTick([slide("a"), slide("b"), slide("c"), slide("d"), slide("e")], 5);
+      const stillMounted = screen.getAllByTestId("tv-slide");
+      for (const node of removed) expect(stillMounted).not.toContain(node);
+    });
+
+    it("stacks the current slide on top regardless of DOM order", () => {
+      render(<Showcase slides={[slide("a"), slide("b"), slide("c"), slide("d")]} />);
+      act(() => { vi.advanceTimersByTime(SLIDE_MS); });
+      expect(current().className).toContain("z-10");
+      const others = screen.getAllByTestId("tv-slide").filter((el) => el !== current());
+      for (const el of others) expect(el.className).not.toContain("z-10");
+    });
+
+    it("keeps the outgoing slide as prev (still zooming) with only two slides", () => {
+      render(<Showcase slides={[slide("a"), slide("b")]} />);
+      act(() => { vi.advanceTimersByTime(SLIDE_MS); });
+      expect(current()).toHaveTextContent("b EN");
+      const other = screen.getAllByTestId("tv-slide").find((el) => el !== current())!;
+      expect(other.dataset.role).toBe("prev");
+      expect(other.innerHTML).toContain("tv-zoom");
+    });
+  });
+
+  it("blends the white logo into the plaster in both the corner and the empty state", () => {
+    const { unmount } = render(<Showcase slides={[slide("a"), slide("b")]} />);
+    expect(screen.getByAltText("Maky the Diva Flowers").className).toContain("mix-blend-multiply");
+    unmount();
+    render(<Showcase slides={[]} />);
+    expect(screen.getByAltText("Maky the Diva Flowers").className).toContain("mix-blend-multiply");
+  });
+
+  it("feathers every photo into the plaster with four edge overlays sized to the photo", () => {
+    render(<Showcase slides={[slide("a"), slide("b"), slide("c")]} />);
+    for (const section of screen.getAllByTestId("tv-slide")) {
+      const edges = within(section).getAllByTestId("tv-edge");
+      expect(edges).toHaveLength(4);
+      for (const edge of edges) {
+        expect(edge).toHaveAttribute("aria-hidden", "true");
+        expect(edge.style.background).toContain("linear-gradient");
+        expect(edge.style.background).toContain("237, 232, 224");
+      }
+      const box = edges[0].parentElement!;
+      expect(box.style.aspectRatio).toContain("1800 / 2400");
+      expect(box.className).toContain("origin-bottom");
+    }
+  });
+
+  it("zooms the photo box (and its edges with it), not just the image", () => {
+    render(<Showcase slides={[slide("a"), slide("b"), slide("c")]} />);
+    const box = within(current()).getAllByTestId("tv-edge")[0].parentElement!;
+    expect(box.className).toContain("tv-zoom");
+    expect(box.querySelector("img")!.className).not.toContain("tv-zoom");
   });
 
   it("reloads after REFRESH_MS only when the site answers", async () => {

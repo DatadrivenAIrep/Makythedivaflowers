@@ -15,24 +15,40 @@ const LOGO = (
     width={320}
     height={96}
     priority
-    className="h-[6vh] w-auto"
+    className="h-[6vh] w-auto mix-blend-multiply"
   />
 );
+
+const PLASTER = "237,232,224"; // #EDE8E0, the page background (mute-100)
+
+/** Soft ramps from the plaster colour to the same colour at alpha 0 (no CSS masks: old TV browsers). */
+const EDGES: { className: string; background: string }[] = [
+  { className: "left-0 top-0 h-full w-[10%]", background: "to right" },
+  { className: "right-0 top-0 h-full w-[10%]", background: "to left" },
+  { className: "left-0 top-0 h-[10%] w-full", background: "to bottom" },
+  { className: "bottom-0 left-0 h-[10%] w-full", background: "to top" },
+].map(({ className, background }) => ({
+  className,
+  background: `linear-gradient(${background}, rgb(${PLASTER}), rgba(${PLASTER},0))`,
+}));
 
 /**
  * Only three layers are mounted: the one fading out, the one on screen and the
  * next one (invisible, so its photo is already loaded when its turn comes).
- * Keys are slide ids, so a layer keeps its DOM node as its role changes and the
- * opacity transition does the crossfade.
+ * Keys are slide ids and the layers stay in slide order, so React never moves a
+ * node when its role changes: the opacity transition does the crossfade. The
+ * current layer is stacked on top with z-10 instead of relying on DOM order.
  */
 function layersFor(slides: TvSlide[], index: number): { slide: TvSlide; role: Role }[] {
   const n = slides.length;
   if (n === 1) return [{ slide: slides[0], role: "current" }];
   const roles = new Map<number, Role>();
-  roles.set((index - 1 + n) % n, "prev");
+  // With two slides prev and next are the same one: it is the outgoing slide
+  // (both photos are already mounted), so keep it "prev" and still zooming.
   roles.set((index + 1) % n, "next");
+  roles.set((index - 1 + n) % n, "prev");
   roles.set(index, "current");
-  return [...roles].map(([i, role]) => ({ slide: slides[i], role }));
+  return [...roles].sort((a, b) => a[0] - b[0]).map(([i, role]) => ({ slide: slides[i], role }));
 }
 
 export default function Showcase({
@@ -89,22 +105,39 @@ export default function Showcase({
             data-role={role}
             aria-hidden={role !== "current"}
             className={`absolute inset-0 grid grid-cols-[58fr_42fr] transition-opacity duration-[1200ms] ease-in-out ${
-              role === "current" ? "opacity-100" : "opacity-0"
+              role === "current" ? "z-10 opacity-100" : "z-0 opacity-0"
             }`}
           >
             <div className="flex h-full items-end justify-center overflow-hidden pt-[5vh]">
-              <Image
-                src={slide.src}
-                alt=""
-                width={slide.width}
-                height={slide.height}
-                sizes="58vw"
-                loading="eager"
-                priority={role === "current"}
-                className={`h-[90vh] w-auto max-w-full origin-bottom object-contain ${
+              <div
+                className={`relative max-w-full origin-bottom ${
                   role === "next" ? "" : "animate-[tv-zoom_10.5s_linear_forwards]"
                 }`}
-              />
+                style={{
+                  aspectRatio: `${slide.width} / ${slide.height}`,
+                  height: `min(90vh, calc(58vw * ${slide.height} / ${slide.width}))`,
+                }}
+              >
+                <Image
+                  src={slide.src}
+                  alt=""
+                  width={slide.width}
+                  height={slide.height}
+                  sizes="58vw"
+                  loading="eager"
+                  priority={role === "current"}
+                  className="h-full w-full object-contain"
+                />
+                {EDGES.map((edge) => (
+                  <div
+                    key={edge.className}
+                    data-testid="tv-edge"
+                    aria-hidden="true"
+                    className={`pointer-events-none absolute ${edge.className}`}
+                    style={{ background: edge.background }}
+                  />
+                ))}
+              </div>
             </div>
             <div className="flex flex-col justify-center pl-[2vw] pr-[6vw]">
               <h2 className="font-display text-[5.6vw] leading-[1.02]">{slide.nameEn}</h2>
