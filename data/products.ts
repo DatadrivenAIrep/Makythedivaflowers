@@ -6327,6 +6327,38 @@ export const PRODUCTS: Product[] = [
       },
     },
   },
+  {
+    id: "p-oct-rose-cloud",
+    slug: "rose-cloud",
+    addedAt: "2026-10-15",
+    title: { en: "Rose Cloud", es: "Nube de Rosas" },
+    category: "arrangements",
+    blurb: {
+      en: "A dome of 24 red roses set in a cloud of baby's breath with eucalyptus.",
+      es: "Una cúpula de 24 rosas rojas en una nube de gypsophila con eucalipto.",
+    },
+    description: {
+      en: "Twenty-four deep-red roses gathered into a full, rounded dome and set in a soft cloud of baby's breath, with silver eucalyptus and golden solidago spilling over the edge of a low container. Classic and romantic for an anniversary, a birthday, Mother's Day, or a thinking-of-you that should feel grand.",
+      es: "Veinticuatro rosas rojas intensas reunidas en una cúpula llena y redonda, dentro de una nube suave de gypsophila, con eucalipto plateado y solidago dorado que caen por el borde de un recipiente bajo. Clásico y romántico para un aniversario, un cumpleaños, el Día de la Madre o un pensando en ti que debe sentirse grande.",
+    },
+    images: [
+      { src: "/products/rose-cloud.jpg", alt: { en: "Rose Cloud", es: "Nube de Rosas" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "24 roses", es: "24 rosas" }, priceCents: 16999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["romance", "anniversary", "birthday", "mothers-day", "thinking-of-you"],
+    colorFamily: ["red", "white"],
+    active: true,
+    seo: {
+      title: { en: "Rose Cloud — 24 Red Roses with Baby's Breath | Diva Flowers", es: "Nube de Rosas — 24 Rosas Rojas con Gypsophila | Diva Flowers" },
+      description: {
+        en: "A dome of 24 red roses set in a cloud of baby's breath with eucalyptus. Same-day delivery on Long Island.",
+        es: "Una cúpula de 24 rosas rojas en una nube de gypsophila con eucalipto. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
   // ─── TEST PRODUCT — $1 for end-to-end checkout validation. DELETE AFTER TESTING. ─────
   {
     id: "p-test-1usd",
