@@ -59,12 +59,11 @@ export function PhotoPanel({ src, alt, eyebrow, title, body, signature, priority
   if (float) {
     return (
       <div data-testid="photo-panel" className="h-full bg-mute-100">
-        {/* The form beside this panel is long, so the arrangement + copy sit at
-            the top at a fixed height; the plaster simply continues below.
-            (position: sticky can't work here: html/body overflow-x:hidden in
-            globals.css makes <body> its own scroll container.) */}
-        <div className="flex flex-col">
-          <div className="relative h-[240px] md:h-[min(62vh,600px)]">
+        {/* The form beside this panel is long; on desktop the arrangement and
+            copy stay pinned in view (one screen tall) while the form scrolls.
+            Needs FormShell's left column to be overflow-clip, not hidden. */}
+        <div className="flex flex-col md:sticky md:top-[var(--nav-offset)] md:h-[calc(100dvh-var(--nav-offset))] md:min-h-[560px]">
+          <div className="relative h-[240px] md:h-auto md:min-h-0 md:flex-1">
             <FloatingPhoto
               src={src}
               alt={alt}

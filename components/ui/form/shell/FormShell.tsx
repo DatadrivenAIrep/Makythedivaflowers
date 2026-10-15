@@ -18,7 +18,7 @@ export function FormShell({ left, children, className, formId = "form-content" }
         Skip to form
       </a>
       <div className="grid md:grid-cols-[42fr_58fr] min-h-[640px]">
-        <div className="relative overflow-hidden md:min-h-full min-h-[280px]">
+        <div className="relative overflow-clip md:min-h-full min-h-[280px]">
           {left}
         </div>
         <div id={formId} className="bg-bone px-6 py-10 md:px-12 md:py-14">
