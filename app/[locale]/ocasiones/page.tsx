@@ -9,7 +9,7 @@ import { PRODUCTS } from "@/data/products";
 import { filterProducts } from "@/data/product-helpers";
 import { localeAlternates } from "@/lib/seo/alternates";
 import { BreadcrumbListLD } from "@/components/seo/BreadcrumbListLD";
-import { BloomImage } from "@/components/motion/BloomImage";
+import { FloatingPhoto } from "@/components/product/FloatingPhoto";
 import { StaggerGroup, StaggerItem } from "@/components/motion/StaggerGroup";
 import { Grain } from "@/components/brand/Grain";
 
@@ -37,8 +37,8 @@ const IMG_BY_SLUG = new Map(OCCASION_NAV.map((o) => [o.slug as string, o.img]));
 const FALLBACK_IMG: Partial<Record<Occasion, string>> = {
   graduation: "/products/botanic-fireworks.jpg",
   "new-baby": "/products/butterfly-kiss.jpg",
-  "thank-you": "/products/abundant-table.jpg",
-  "thinking-of-you": "/products/jade-lavender.jpg",
+  "thank-you": "/products/summer-confetti.jpg",
+  "thinking-of-you": "/products/lavender-serenade.jpg",
   "mothers-day": "/products/blush-enchantment.jpg",
 };
 
@@ -93,26 +93,23 @@ export default async function OccasionsIndexPage({
             <StaggerItem as="li" key={it.slug}>
               <Link
                 href={it.href}
-                className="group relative block aspect-[4/5] overflow-hidden rounded-[var(--radius-product)] bg-mute-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rouge/60 focus-visible:ring-offset-2 focus-visible:ring-offset-bone"
+                className="group block rounded-[var(--radius-product)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rouge/60 focus-visible:ring-offset-2 focus-visible:ring-offset-bone"
               >
-                <BloomImage
-                  src={it.img}
-                  alt=""
-                  className="h-full w-full"
-                  sizes="(min-width: 1024px) 320px, (min-width: 768px) 33vw, 50vw"
-                />
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-ink/85 via-ink/35 to-transparent"
-                />
-                <div className="absolute inset-x-4 bottom-4">
-                  <span className="block font-display text-xl leading-tight tracking-tight text-bone [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
-                    {it.content.label[locale]}
-                  </span>
-                  <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.16em] text-bone/70">
-                    {it.count} {es ? "diseños" : "designs"}
-                  </span>
+                {/* Whole arrangement floating on plaster; label + count below. */}
+                <div className="relative aspect-[4/5] rounded-[var(--radius-product)] bg-mute-100">
+                  <FloatingPhoto
+                    src={it.img}
+                    alt=""
+                    sizes="(min-width: 1024px) 320px, (min-width: 768px) 33vw, 50vw"
+                    className="inset-x-3 top-4 bottom-3 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-1.5 motion-reduce:transform-none"
+                  />
                 </div>
+                <span className="mt-3 block font-display text-xl leading-tight tracking-tight text-ink transition-colors group-hover:text-rouge">
+                  {it.content.label[locale]}
+                </span>
+                <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.16em] text-mute-500">
+                  {it.count} {es ? "diseños" : "designs"}
+                </span>
               </Link>
             </StaggerItem>
           ))}

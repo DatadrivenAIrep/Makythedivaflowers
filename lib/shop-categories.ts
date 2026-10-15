@@ -2,14 +2,14 @@ import type { Product, ProductCategory } from "@/types/product";
 import { isInSeason, productsByCategory } from "@/data/product-helpers";
 
 export const CATS = [
-  { slug: "arrangements", img: "/products/flamingo-garden.jpg" },
+  { slug: "arrangements", img: "/products/island-sunrise.jpg" },
   { slug: "bouquets", img: "/products/dozen-roses-bouquet.jpg" },
-  { slug: "roses", img: "/products/hundred-roses-vase.png" },
+  { slug: "roses", img: "/products/hundred-roses.jpg" },
   { slug: "exotic", img: "/products/paradise-found.jpg" },
   { slug: "centerpieces", img: "/products/garden-party.jpg" },
   { slug: "plants", img: "/products/phalaenopsis-white-single.webp" },
   { slug: "gifts", img: "/products/daydream-parcel.jpg" },
-  { slug: "subscriptions", img: "/products/timeless-romance.jpg" },
+  { slug: "subscriptions", img: "/products/blush-enchantment.jpg" },
 ] as const;
 
 export type CatSlug = (typeof CATS)[number]["slug"];
