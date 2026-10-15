@@ -34,6 +34,7 @@ const CENTERPIECES = [
   "eye-candy",
   "falling-leaves",
   "garden-party",
+  "harvest-table",
   "long-table-romance",
   "mint-julep-trio",
   "natures-cornucopia",

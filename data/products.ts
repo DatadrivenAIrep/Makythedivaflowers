@@ -6097,6 +6097,236 @@ export const PRODUCTS: Product[] = [
       },
     },
   },
+  {
+    id: "p-oct-peacock-paradise",
+    slug: "peacock-paradise",
+    addedAt: "2026-10-15",
+    title: { en: "Peacock Paradise", es: "Paraíso de Pavo Real" },
+    category: "arrangements",
+    blurb: {
+      en: "A grand tropical arrangement with peacock feathers, birds of paradise, and lilac, fuchsia, and blue roses.",
+      es: "Un gran arreglo tropical con plumas de pavo real, aves del paraíso y rosas lila, fucsia y azules.",
+    },
+    description: {
+      en: "A grand, show-stopping arrangement with a tropical heart — peacock feathers and birds of paradise rising over heliconia, bells of Ireland, and golden solidago, with lilac, fuchsia, and blue roses, yellow gerbera daisies, and antique and green hydrangea gathered in a black diamond-pattern vase. Made for the celebration that deserves a statement: a milestone birthday, a big congratulations, or an anniversary to remember.",
+      es: "Un gran arreglo de impacto con corazón tropical — plumas de pavo real y aves del paraíso que se elevan sobre heliconias, campanas de Irlanda y solidago dorado, con rosas lila, fucsia y azules, gerberas amarillas e hortensia antigua y verde reunidas en un jarrón negro con rombos. Hecho para la celebración que merece un gesto grande: un cumpleaños especial, unas grandes felicitaciones o un aniversario para recordar.",
+    },
+    images: [
+      { src: "/products/peacock-paradise.jpg", alt: { en: "Peacock Paradise", es: "Paraíso de Pavo Real" }, aspect: "4/5" },
+      { src: "/products/peacock-paradise-2.jpg", alt: { en: "Peacock Paradise, view 2", es: "Paraíso de Pavo Real, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 24999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "congrats", "anniversary", "just-because", "romance", "thank-you", "get-well", "graduation", "mothers-day", "thinking-of-you"],
+    colorFamily: ["mixed", "pink", "red", "green"],
+    active: true,
+    seo: {
+      title: { en: "Peacock Paradise — Bird of Paradise & Rose Tropical Arrangement | Diva Flowers", es: "Paraíso de Pavo Real — Aves del Paraíso y Rosas Tropicales | Diva Flowers" },
+      description: {
+        en: "A grand tropical arrangement with peacock feathers, birds of paradise, and lilac, fuchsia, and blue roses. Same-day delivery on Long Island.",
+        es: "Un gran arreglo tropical con plumas de pavo real, aves del paraíso y rosas lila, fucsia y azules. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-pastel-pop",
+    slug: "pastel-pop",
+    addedAt: "2026-10-15",
+    title: { en: "Pastel Pop", es: "Pop Pastel" },
+    category: "arrangements",
+    blurb: {
+      en: "Peach and pink roses with fuchsia gerberas, white allium, and lime hydrangea in a leaf-lined cube.",
+      es: "Rosas melocotón y rosadas con gerberas fucsia, allium blanco e hortensia verde lima en un cubo forrado de hoja.",
+    },
+    description: {
+      en: "A cheerful low arrangement in a leaf-lined glass cube — peach and pink roses with fuchsia gerbera daisies, round white allium, pink carnations, lime-green hydrangea, and fuzzy green dianthus. Soft and playful for a birthday, a new baby, a thank-you, or Mother's Day.",
+      es: "Un arreglo bajo y alegre en un cubo de vidrio forrado de hoja — rosas melocotón y rosadas con gerberas fucsia, allium blancos redondos, claveles rosados, hortensia verde lima y dianthus verde. Suave y divertido para un cumpleaños, un bebé, un gracias o el Día de la Madre.",
+    },
+    images: [
+      { src: "/products/pastel-pop.jpg", alt: { en: "Pastel Pop", es: "Pop Pastel" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 11999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "new-baby", "thank-you", "just-because", "mothers-day", "anniversary", "romance", "congrats", "get-well", "thinking-of-you", "graduation"],
+    colorFamily: ["pastel", "pink", "green", "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Pastel Pop — Gerbera & Peach Rose Cube | Diva Flowers", es: "Pop Pastel — Cubo de Gerberas y Rosas Melocotón | Diva Flowers" },
+      description: {
+        en: "Peach and pink roses with fuchsia gerberas, white allium, and lime hydrangea in a leaf-lined cube. Same-day delivery on Long Island.",
+        es: "Rosas melocotón y rosadas con gerberas fucsia, allium blanco e hortensia verde lima en un cubo forrado de hoja. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-scarlet-romance",
+    slug: "scarlet-romance",
+    addedAt: "2026-10-15",
+    title: { en: "Scarlet Romance", es: "Romance Escarlata" },
+    category: "arrangements",
+    blurb: {
+      en: "Red, fuchsia, and lilac roses with red ranunculus, purple anemones, and pink hydrangea in a deep-red vase.",
+      es: "Rosas rojas, fucsia y lila con ranúnculos rojos, anémonas moradas e hortensia rosa en un jarrón rojo oscuro.",
+    },
+    description: {
+      en: "A lush romantic arrangement in a deep-red glass vase — red, fuchsia, and lilac roses with red ranunculus, purple anemones, and soft pink hydrangea, finished with a collar of folded green leaves. Passionate and full for an anniversary, a romantic surprise, or a birthday that should feel like a love letter.",
+      es: "Un arreglo romántico y frondoso en un jarrón de vidrio rojo oscuro — rosas rojas, fucsia y lila con ranúnculos rojos, anémonas moradas e hortensia rosa suave, rematado con un collar de hojas verdes plegadas. Apasionado y lleno para un aniversario, una sorpresa romántica o un cumpleaños que debe sentirse como una carta de amor.",
+    },
+    images: [
+      { src: "/products/scarlet-romance.jpg", alt: { en: "Scarlet Romance", es: "Romance Escarlata" }, aspect: "4/5" },
+      { src: "/products/scarlet-romance-2.jpg", alt: { en: "Scarlet Romance, view 2", es: "Romance Escarlata, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 19999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["romance", "anniversary", "birthday", "just-because", "thank-you", "congrats", "get-well", "graduation", "mothers-day", "thinking-of-you"],
+    colorFamily: ["red", "pink", "white", "green", "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Scarlet Romance — Red Rose & Ranunculus Vase | Diva Flowers", es: "Romance Escarlata — Rosas Rojas y Ranúnculos en Jarrón | Diva Flowers" },
+      description: {
+        en: "Red, fuchsia, and lilac roses with red ranunculus, purple anemones, and pink hydrangea in a deep-red vase. Same-day delivery on Long Island.",
+        es: "Rosas rojas, fucsia y lila con ranúnculos rojos, anémonas moradas e hortensia rosa en un jarrón rojo oscuro. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-fiesta-cube",
+    slug: "fiesta-cube",
+    addedAt: "2026-10-15",
+    title: { en: "Fiesta Cube", es: "Cubo Fiesta" },
+    category: "arrangements",
+    blurb: {
+      en: "A bright cube with a yellow rose at its heart, fuchsia and orange roses, and purple lisianthus.",
+      es: "Un cubo alegre con una rosa amarilla al centro, rosas fucsia y naranja y lisianthus morado.",
+    },
+    description: {
+      en: "A party in a leaf-lined glass cube — a sunny yellow rose at the center surrounded by fuchsia and orange roses, purple lisianthus, hypericum berries, and fresh greens. Bright and compact for a birthday, a get-well wish, or a just-because that brings color to the room.",
+      es: "Una fiesta en un cubo de vidrio forrado de hoja — una rosa amarilla al centro rodeada de rosas fucsia y naranja, lisianthus morado, frutos de hypericum y follaje fresco. Alegre y compacto para un cumpleaños, un deseo de pronta recuperación o un porque sí que llena de color el lugar.",
+    },
+    images: [
+      { src: "/products/fiesta-cube.jpg", alt: { en: "Fiesta Cube", es: "Cubo Fiesta" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 11999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "get-well", "just-because", "thank-you", "anniversary", "romance", "thinking-of-you"],
+    colorFamily: ["mixed", "pink", "green"],
+    active: true,
+    seo: {
+      title: { en: "Fiesta Cube — Yellow & Fuchsia Rose Cube | Diva Flowers", es: "Cubo Fiesta — Cubo de Rosas Amarillas y Fucsia | Diva Flowers" },
+      description: {
+        en: "A bright cube with a yellow rose at its heart, fuchsia and orange roses, and purple lisianthus. Same-day delivery on Long Island.",
+        es: "Un cubo alegre con una rosa amarilla al centro, rosas fucsia y naranja y lisianthus morado. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-lime-orchid-cloud",
+    slug: "lime-orchid-cloud",
+    addedAt: "2026-10-15",
+    title: { en: "Lime Orchid Cloud", es: "Nube de Orquídea Lima" },
+    category: "arrangements",
+    blurb: {
+      en: "Lime-green cymbidium orchids with white roses, white hydrangea, and trailing eucalyptus.",
+      es: "Orquídeas cymbidium verde lima con rosas blancas, hortensia blanca y eucalipto colgante.",
+    },
+    description: {
+      en: "A serene arrangement in green and white — lime-green cymbidium orchids with white roses, white hydrangea, fuzzy green dianthus, white stock, and a sweep of bear grass, with seeded eucalyptus trailing from a leaf-lined cube. Calm and elegant for an anniversary, a thank-you, or a gesture of sympathy. Choose the size that fits the moment.",
+      es: "Un arreglo sereno en verde y blanco — orquídeas cymbidium verde lima con rosas blancas, hortensia blanca, dianthus verde, alhelí blanco y un arco de bear grass, con eucalipto que cae desde un cubo forrado de hoja. Tranquilo y elegante para un aniversario, un gracias o un gesto de condolencia. Elige el tamaño que va con el momento.",
+    },
+    images: [
+      { src: "/products/lime-orchid-cloud.jpg", alt: { en: "Lime Orchid Cloud", es: "Nube de Orquídea Lima" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 4999 },
+      { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 7499 },
+      { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 9999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["sympathy", "anniversary", "romance", "thank-you"],
+    colorFamily: ["green", "white", "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Lime Orchid Cloud — Green Cymbidium Orchid & White Rose Cube | Diva Flowers", es: "Nube de Orquídea Lima — Orquídeas Verdes y Rosas Blancas | Diva Flowers" },
+      description: {
+        en: "Lime-green cymbidium orchids with white roses, white hydrangea, and trailing eucalyptus. Same-day delivery on Long Island.",
+        es: "Orquídeas cymbidium verde lima con rosas blancas, hortensia blanca y eucalipto colgante. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-sunny-garden",
+    slug: "sunny-garden",
+    addedAt: "2026-10-15",
+    title: { en: "Sunny Garden", es: "Jardín Soleado" },
+    category: "arrangements",
+    blurb: {
+      en: "A low garden arrangement with red and orange roses, a sunflower, pink lilies, and baby's breath.",
+      es: "Un arreglo de jardín bajo con rosas rojas y naranja, un girasol, lirios rosados y nube.",
+    },
+    description: {
+      en: "A wide, low arrangement that looks freshly picked from the garden — red and orange roses with a bright sunflower, pink lilies, carnations, baby's breath, and loose greenery. Warm and generous for a birthday, a get-well visit, or a thank-you that feels like sunshine.",
+      es: "Un arreglo amplio y bajo que parece recién cortado del jardín — rosas rojas y naranja con un girasol, lirios rosados, claveles, nube y follaje suelto. Cálido y generoso para un cumpleaños, una visita de pronta recuperación o un gracias que se siente como un día de sol.",
+    },
+    images: [
+      { src: "/products/sunny-garden.jpg", alt: { en: "Sunny Garden", es: "Jardín Soleado" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "get-well", "thank-you", "just-because", "congrats"],
+    colorFamily: ["mixed", "green", "red"],
+    active: true,
+    seo: {
+      title: { en: "Sunny Garden — Sunflower & Red Rose Garden Arrangement | Diva Flowers", es: "Jardín Soleado — Arreglo de Girasol y Rosas Rojas | Diva Flowers" },
+      description: {
+        en: "A low garden arrangement with red and orange roses, a sunflower, pink lilies, and baby's breath. Same-day delivery on Long Island.",
+        es: "Un arreglo de jardín bajo con rosas rojas y naranja, un girasol, lirios rosados y nube. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-harvest-table",
+    slug: "harvest-table",
+    addedAt: "2026-10-15",
+    title: { en: "Harvest Table", es: "Mesa de Cosecha" },
+    category: "arrangements",
+    blurb: {
+      en: "A fall centerpiece with a mini pumpkin, a sunflower, red and cream roses, and yellow lilies.",
+      es: "Un centro de mesa de otoño con mini calabaza, girasol, rosas rojas y crema y lirios amarillos.",
+    },
+    description: {
+      en: "A fall centerpiece made for the harvest table — a mini pumpkin and a sunflower among red and cream roses, yellow lilies, red spray roses, waxflower, and baby's breath, tied with a raffia bow. Low and full to sit at the center of a Thanksgiving dinner, a host's table, or an autumn celebration.",
+      es: "Un centro de mesa de otoño hecho para la mesa de cosecha — una mini calabaza y un girasol entre rosas rojas y crema, lirios amarillos, mini rosas rojas, flor de cera y nube, atado con un lazo de rafia. Bajo y lleno para el centro de una cena de Acción de Gracias, la mesa de quien recibe o una celebración de otoño.",
+    },
+    images: [
+      { src: "/products/harvest-table.jpg", alt: { en: "Harvest Table", es: "Mesa de Cosecha" }, aspect: "4/5" },
+      { src: "/products/harvest-table-2.jpg", alt: { en: "Harvest Table, view 2", es: "Mesa de Cosecha, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9999 },
+    ],
+    tags: ["same-day", "seasonal"],
+    occasions: ["thank-you", "just-because", "congrats", "thinking-of-you"],
+    colorFamily: ["mixed"],
+    active: true,
+    seasonMonths: [9, 10, 11],
+    seo: {
+      title: { en: "Harvest Table — Fall Sunflower & Rose Centerpiece | Diva Flowers", es: "Mesa de Cosecha — Centro de Mesa de Otoño con Girasol y Rosas | Diva Flowers" },
+      description: {
+        en: "A fall centerpiece with a mini pumpkin, a sunflower, red and cream roses, and yellow lilies. Same-day delivery on Long Island.",
+        es: "Un centro de mesa de otoño con mini calabaza, girasol, rosas rojas y crema y lirios amarillos. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
   // ─── TEST PRODUCT — $1 for end-to-end checkout validation. DELETE AFTER TESTING. ─────
   {
     id: "p-test-1usd",
