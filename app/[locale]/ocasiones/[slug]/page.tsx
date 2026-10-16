@@ -27,6 +27,10 @@ const ROUTED_ELSEWHERE = new Set<Occasion>(["sympathy"]);
 /** The occasions that render here; used for the cross-links at the foot. */
 const SLUGS = OCCASIONS_ALL.filter((o) => !ROUTED_ELSEWHERE.has(o));
 
+// Regenerate hourly so the "Recommended" order follows today's sales, not the
+// sales as of the last deploy.
+export const revalidate = 3600;
+
 export function generateStaticParams() {
   // Sympathy is excluded: next.config redirects /ocasiones/sympathy to the
   // dedicated /sympathy page before this route is ever reached.

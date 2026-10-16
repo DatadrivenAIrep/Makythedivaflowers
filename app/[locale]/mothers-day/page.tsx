@@ -28,6 +28,9 @@ const CURATED_SLUGS = [
   "wildflower-meadow",
 ];
 
+// Regenerate hourly so the countdown rolls to next year's Mother's Day on its own.
+export const revalidate = 3600;
+
 export async function generateMetadata({
   params,
 }: {

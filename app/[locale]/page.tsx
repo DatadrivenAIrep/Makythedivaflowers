@@ -17,6 +17,10 @@ import { StudioVisit } from "@/components/home/StudioVisit";
 import { NewsletterField } from "@/components/home/NewsletterField";
 import { localeAlternates } from "@/lib/seo/alternates";
 
+// The seasonal hero and the occasion strip's seasonal card follow the calendar:
+// regenerate hourly so a season starts on its date, not on the next deploy.
+export const revalidate = 3600;
+
 export async function generateMetadata({
   params,
 }: {
