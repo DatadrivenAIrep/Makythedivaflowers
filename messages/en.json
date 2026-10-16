@@ -1625,7 +1625,41 @@
     "source_whatsapp": "WhatsApp",
     "source_event": "Event",
     "method_delivery": "Delivery",
-    "method_pickup": "Pickup"
+    "method_pickup": "Pickup",
+    "bulk_select_one": "Select order {order}",
+    "bulk_select_all": "Select the {count} shown",
+    "bulk_region": "Actions on the selected orders",
+    "bulk_selected": "{count} selected",
+    "bulk_status": "Change status…",
+    "bulk_paid": "Mark paid…",
+    "bulk_print": "Print tickets",
+    "bulk_export": "Export CSV",
+    "bulk_clear": "Clear selection",
+    "bulk_working": "Working…",
+    "bulk_nothing": "None of the selected orders can take this action.",
+    "bulk_confirm_status": "Move {count, plural, one {# order} other {# orders}} to “{status}”?",
+    "bulk_confirm_sms": "Customers get the usual text, as when doing it one by one.",
+    "bulk_confirm_paid": "Mark {count, plural, one {# order} other {# orders}} as paid by {method}? Each order's full total is recorded.",
+    "bulk_confirm_print": "Print {count, plural, one {# ticket} other {# tickets}} on the shop printer?",
+    "bulk_skipped": "{count, plural, one {# will be skipped:} other {# will be skipped:}} {list}",
+    "bulk_result": "{done} done",
+    "bulk_failed": "{count} failed: {list}",
+    "bulk_result_skipped": "{count} skipped",
+    "bulk_network": "offline",
+    "bulk_skip": {
+      "canceled": "canceled",
+      "already_there": "already at that status or past it",
+      "cannot_advance": "can't move forward",
+      "already_paid": "already paid",
+      "refunded": "refunded",
+      "on_account": "house account"
+    },
+    "bulk_method": {
+      "cash": "Cash",
+      "zelle": "Zelle",
+      "card-terminal": "Terminal",
+      "ach": "ACH"
+    }
   },
   "admin_dashboard": {
     "nav_bandeja": "Inbox",

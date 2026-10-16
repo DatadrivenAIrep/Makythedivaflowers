@@ -7,6 +7,7 @@ import LedgerFilters, { type LedgerFilterValue } from "./LedgerFilters";
 import OrderDetailDrawer from "./OrderDetailDrawer";
 import { resolveLine } from "./product-lookup";
 import AdminButton from "./AdminButton";
+import LedgerBulkBar from "./LedgerBulkBar";
 import { formatDate } from "@/lib/format-datetime";
 import type { Order } from "@/types/order";
 
@@ -59,19 +60,30 @@ const PAY_BADGE: Record<string, string> = {
   refunded: "bg-stone-200 text-stone-700",
 };
 
-function LedgerRow({ order, onOpen, t, to, locale }: {
+function LedgerRow({ order, onOpen, t, to, locale, selected, onToggle }: {
   order: Order;
   onOpen: (id: string) => void;
-  t: Translator;
+  t: (key: string, values?: Record<string, string | number>) => string;
   to: Translator;
   locale: string;
+  selected: boolean;
+  onToggle: (id: string) => void;
 }) {
   return (
     <li
       onClick={() => onOpen(order.id)}
-      className="cursor-pointer rounded-lg border border-ink/10 bg-bone p-3 text-sm shadow-sm transition-shadow hover:shadow-md"
+      className={`cursor-pointer rounded-lg border bg-bone p-3 text-sm shadow-sm transition-shadow hover:shadow-md ${selected ? "border-ink/40 ring-1 ring-ink/20" : "border-ink/10"}`}
     >
       <div className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          checked={selected}
+          // Ticking the box selects; it must not also open the order.
+          onClick={(e) => e.stopPropagation()}
+          onChange={() => onToggle(order.id)}
+          aria-label={t("bulk_select_one", { order: `#${order.orderNumber ?? order.id.slice(-6)}` })}
+          className="h-4 w-4 accent-ink"
+        />
         <span className="text-xs text-ink/50 uppercase">{order.source}</span>
         <span className="font-semibold">{order.fulfillment.recipient.name}</span>
         <span className="text-xs text-ink/40">#{order.id.slice(-6)}</span>
@@ -104,8 +116,25 @@ export default function LedgerView({ locale }: { locale: string }) {
   const [hiddenCount, setHiddenCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [drawerOrderId, setDrawerOrderId] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
 
   const queryKey = searchParams.toString();
+  // A new search is a new list: start the selection over.
+  useEffect(() => { setSelectedIds(new Set()); }, [queryKey]);
+
+  const selectedOrders = orders.filter((o) => selectedIds.has(o.id));
+  const allShownSelected = orders.length > 0 && orders.every((o) => selectedIds.has(o.id));
+  function toggle(id: string) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+  function toggleAllShown() {
+    setSelectedIds(allShownSelected ? new Set() : new Set(orders.map((o) => o.id)));
+  }
 
   const fetchPage = useCallback(async (cursor: string | null) => {
     setLoading(true);
@@ -146,11 +175,26 @@ export default function LedgerView({ locale }: { locale: string }) {
             <button onClick={() => onChange({})} className="underline">{t("clear_filters")}</button>
           </p>
         ) : (
-          <ul className="space-y-2">
-            {orders.map((o) => (
-              <LedgerRow key={o.id} order={o} onOpen={setDrawerOrderId} t={t} to={to} locale={activeLocale} />
-            ))}
-          </ul>
+          <>
+            <label className="mb-2 flex w-fit items-center gap-2 px-3 text-xs text-ink/60">
+              <input type="checkbox" checked={allShownSelected} onChange={toggleAllShown} className="h-4 w-4 accent-ink" />
+              {t("bulk_select_all", { count: orders.length })}
+            </label>
+            <ul className={`space-y-2 ${selectedOrders.length > 0 ? "pb-28" : ""}`}>
+              {orders.map((o) => (
+                <LedgerRow
+                  key={o.id}
+                  order={o}
+                  onOpen={setDrawerOrderId}
+                  t={t}
+                  to={to}
+                  locale={activeLocale}
+                  selected={selectedIds.has(o.id)}
+                  onToggle={toggle}
+                />
+              ))}
+            </ul>
+          </>
         )}
         <footer className="mt-4 flex items-center justify-center gap-3 text-xs text-ink/60">
           <span>{t("showing", { shown: orders.length, total: approxTotal })}</span>
@@ -171,6 +215,15 @@ export default function LedgerView({ locale }: { locale: string }) {
           )}
         </footer>
       </section>
+
+      {selectedOrders.length > 0 && (
+        <LedgerBulkBar
+          selected={selectedOrders}
+          locale={activeLocale === "es" ? "es" : "en"}
+          onDone={() => { void fetchPage(null); }}
+          onClear={() => setSelectedIds(new Set())}
+        />
+      )}
 
       {drawerOrderId && (
         <OrderDetailDrawer
