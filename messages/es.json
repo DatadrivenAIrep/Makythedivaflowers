@@ -1625,7 +1625,41 @@
     "source_whatsapp": "WhatsApp",
     "source_event": "Evento",
     "method_delivery": "Delivery",
-    "method_pickup": "Pickup"
+    "method_pickup": "Pickup",
+    "bulk_select_one": "Seleccionar la orden {order}",
+    "bulk_select_all": "Seleccionar las {count} visibles",
+    "bulk_region": "Acciones con las órdenes seleccionadas",
+    "bulk_selected": "{count, plural, one {# seleccionada} other {# seleccionadas}}",
+    "bulk_status": "Cambiar estado…",
+    "bulk_paid": "Marcar pagadas…",
+    "bulk_print": "Imprimir tickets",
+    "bulk_export": "Exportar CSV",
+    "bulk_clear": "Quitar selección",
+    "bulk_working": "Aplicando…",
+    "bulk_nothing": "Ninguna de las órdenes seleccionadas admite esta acción.",
+    "bulk_confirm_status": "¿Pasar {count, plural, one {# orden} other {# órdenes}} a «{status}»?",
+    "bulk_confirm_sms": "Los clientes recibirán el SMS de siempre, como al hacerlo una por una.",
+    "bulk_confirm_paid": "¿Marcar {count, plural, one {# orden} other {# órdenes}} como pagadas con {method}? Se registra el total de cada una.",
+    "bulk_confirm_print": "¿Imprimir {count, plural, one {# ticket} other {# tickets}} en la impresora del local?",
+    "bulk_skipped": "{count, plural, one {Se saltará #:} other {Se saltarán #:}} {list}",
+    "bulk_result": "{done, plural, one {# lista} other {# listas}}",
+    "bulk_failed": "{count, plural, one {# no se pudo} other {# no se pudieron}}: {list}",
+    "bulk_result_skipped": "{count, plural, one {# saltada} other {# saltadas}}",
+    "bulk_network": "sin conexión",
+    "bulk_skip": {
+      "canceled": "cancelada",
+      "already_there": "ya está en ese estado o más adelante",
+      "cannot_advance": "no se puede avanzar",
+      "already_paid": "ya pagada",
+      "refunded": "reembolsada",
+      "on_account": "de cuenta por cobrar"
+    },
+    "bulk_method": {
+      "cash": "Efectivo",
+      "zelle": "Zelle",
+      "card-terminal": "Terminal",
+      "ach": "ACH"
+    }
   },
   "admin_dashboard": {
     "nav_bandeja": "Bandeja",
