@@ -33,9 +33,11 @@ const REMEMBER_KINDS: RememberKind[] = ["birthday", "anniversary"];
 type Props = {
   value: FulfillmentState;
   onChange: (v: FulfillmentState) => void;
+  /** Repeating an order: last time's card message, offered instead of copied. */
+  previousCardMessage?: string;
 };
 
-export default function FulfillmentBlock({ value, onChange }: Props) {
+export default function FulfillmentBlock({ value, onChange, previousCardMessage }: Props) {
   const t = useTranslations("admin_intake");
   const to = useTranslations("admin_orders");
   const locale = useLocale();
@@ -230,6 +232,19 @@ export default function FulfillmentBlock({ value, onChange }: Props) {
           maxLength={CARD_MESSAGE_MAX}
           className="w-full p-3.5 rounded-xl bg-bone border border-mute-200 outline-none focus:border-ink focus:bg-white resize-y"
         />
+        {previousCardMessage && !value.cardMessage && (
+          <div className="mt-2 rounded-xl border border-mute-200 bg-white/60 p-3 text-sm">
+            <p className="text-[11px] uppercase tracking-widest text-mute-400">{t("card_message_previous")}</p>
+            <p className="mt-1 whitespace-pre-line text-ink/80">“{previousCardMessage}”</p>
+            <button
+              type="button"
+              onClick={() => onChange({ ...value, cardMessage: previousCardMessage.slice(0, CARD_MESSAGE_MAX) })}
+              className="mt-2 font-medium text-ink underline underline-offset-4 hover:text-rouge"
+            >
+              {t("card_message_use_previous")}
+            </button>
+          </div>
+        )}
         <div className="mt-1 flex items-start justify-between gap-3 text-xs text-mute-400">
           <span>{value.cardMessage.length > CARD_MESSAGE_LONG_HINT_AT ? t("card_message_long_hint") : ""}</span>
           <span className="tabular-nums shrink-0">

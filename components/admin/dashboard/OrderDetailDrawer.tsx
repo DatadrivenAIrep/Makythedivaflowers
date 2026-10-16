@@ -229,6 +229,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
                 <AdminButton variant="secondary" icon={PaperPlaneTilt} aria-pressed={invoiceSendOpen}
                   onClick={() => setInvoiceSendOpen((v) => !v)}>{t("invoice_send")}</AdminButton>
                 <AdminButton variant="secondary" icon={Printer} disabled={busy} onClick={reprint}>{t("reprint")}</AdminButton>
+                <AdminButton variant="secondary" icon={ArrowsClockwise} href={`/${locale}/admin/intake?repeat=${encodeURIComponent(order.id)}`}>{t("repeat_order")}</AdminButton>
               </>
             )}
             <AdminButton variant="secondary" icon={X} onClick={onClose} aria-label={t("close")}>{t("close")}</AdminButton>

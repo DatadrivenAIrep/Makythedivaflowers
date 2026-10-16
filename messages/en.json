@@ -1408,7 +1408,13 @@
     "deposit_amount_placeholder": "0.00",
     "deposit_method": "Deposit paid with",
     "deposit_hint": "Balance due: {amount}",
-    "deposit_too_big": "The deposit must be less than the total — mark it as paid instead."
+    "deposit_too_big": "The deposit must be less than the total — mark it as paid instead.",
+    "repeat_banner": "Repeating order {number} from {date}",
+    "repeat_banner_hint": "Pick the new date and payment. The original order is not changed.",
+    "repeat_dropped": "No longer on sale, pick another: {items}",
+    "repeat_missing": "We couldn't find that order to repeat; start a new one.",
+    "card_message_previous": "Card message from the previous order",
+    "card_message_use_previous": "Use this message"
   },
   "admin_gift_cards": {
     "title": "Gift Cards",
@@ -1594,7 +1600,8 @@
     "deposit_error_generic": "Could not record the deposit.",
     "payment_status_deposit": "Deposit",
     "card_terminal": "Card terminal",
-    "ach": "ACH"
+    "ach": "ACH",
+    "repeat_order": "Repeat order"
   },
   "admin_ledger": {
     "date": "Date",

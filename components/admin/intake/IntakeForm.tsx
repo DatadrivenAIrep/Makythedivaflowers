@@ -20,7 +20,8 @@ import { isRequestExempt } from "@/lib/tax-exempt";
 import { cartSubtotalCents } from "@/lib/cart-helpers";
 import { computeDeliveryCentsForAddress, resolveOrderTotals } from "@/lib/totals";
 import { useRouter, useSearchParams } from "next/navigation";
-import { formatDateTime } from "@/lib/format-datetime";
+import { formatDate, formatDateTime } from "@/lib/format-datetime";
+import type { RepeatedOrder } from "@/lib/repeat-order";
 import {
   makeInitialFulfillment,
   makeInitialFormState,
@@ -39,7 +40,17 @@ function SectionCard({ title, children }: { title: string; children: ReactNode }
   );
 }
 
-export default function IntakeForm({ products }: { products: Product[] }) {
+export default function IntakeForm({
+  products,
+  repeat = null,
+  repeatMissing = false,
+}: {
+  products: Product[];
+  /** "Repetir orden": the past order's draft, loaded as the form's starting state. */
+  repeat?: RepeatedOrder | null;
+  /** ?repeat= named an order that does not exist. */
+  repeatMissing?: boolean;
+}) {
   const t = useTranslations("admin_intake");
   const tx = useTranslations("admin_tax_exempt");
   const locale = useLocale() as "en" | "es";
@@ -49,10 +60,15 @@ export default function IntakeForm({ products }: { products: Product[] }) {
     { id: "whatsapp", label: t("channel_whatsapp") },
     { id: "event", label: t("channel_event") },
   ];
-  const [channel, setChannel] = useState<Channel>(INITIAL_CHANNEL);
-  const [customer, setCustomer] = useState<CustomerSnapshot>(() => ({ ...INITIAL_CUSTOMER }));
-  const [fulfillment, setFulfillment] = useState<FulfillmentState>(makeInitialFulfillment);
-  const [lines, setLines] = useState<CartLine[]>([]);
+  const [channel, setChannel] = useState<Channel>(repeat?.payload.channel ?? INITIAL_CHANNEL);
+  const [customer, setCustomer] = useState<CustomerSnapshot>(() => repeat?.payload.customer ?? { ...INITIAL_CUSTOMER });
+  const [fulfillment, setFulfillment] = useState<FulfillmentState>(() => repeat?.payload.fulfillment ?? makeInitialFulfillment());
+  const [lines, setLines] = useState<CartLine[]>(() => repeat?.payload.lines ?? []);
+  // Shown until the form is reset or a draft replaces it.
+  const [repeatInfo, setRepeatInfo] = useState<Omit<RepeatedOrder, "payload"> | null>(() =>
+    repeat ? { from: repeat.from, previousCardMessage: repeat.previousCardMessage, dropped: repeat.dropped } : null,
+  );
+  const [repeatMissingShown, setRepeatMissingShown] = useState(repeatMissing);
   const [override, setOverride] = useState<Partial<OrderTotals>>({});
   const [promo, setPromo] = useState<AppliedPromo | null>(null);
   // Staff's explicit exemption choice for this order; undefined = follow the default.
@@ -243,6 +259,8 @@ export default function IntakeForm({ products }: { products: Product[] }) {
 
   function resetForm() {
     const init = makeInitialFormState();
+    setRepeatInfo(null);
+    setRepeatMissingShown(false);
     setChannel(init.channel);
     setCustomer(init.customer);
     setFulfillment(init.fulfillment);
@@ -329,6 +347,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
 
   function onResumeDraft(payload: DraftPayload, id: string) {
     draftGenRef.current++;
+    setRepeatInfo(null);
     setDraftSaveState("idle");
     setChannel(payload.channel ?? "walk-in");
     setCustomer(payload.customer ?? { ...INITIAL_CUSTOMER });
@@ -427,6 +446,28 @@ export default function IntakeForm({ products }: { products: Product[] }) {
       <p className="text-mute-500 text-sm mb-2">{t("page_subtitle")}</p>
       <h1 className="font-display text-3xl text-ink mb-6">{t("title_new")}</h1>
 
+      {repeatInfo && (
+        <div role="status" className="mb-4 rounded-2xl border border-mute-200 bg-bone px-5 py-3 text-sm">
+          <p className="font-medium">
+            {t("repeat_banner", {
+              number: repeatInfo.from.orderNumber ? `#${repeatInfo.from.orderNumber}` : repeatInfo.from.id,
+              date: formatDate(repeatInfo.from.createdAt, locale),
+            })}
+          </p>
+          <p className="mt-0.5 text-mute-500">{t("repeat_banner_hint")}</p>
+          {repeatInfo.dropped.length > 0 && (
+            <p className="mt-2 text-rouge">
+              {t("repeat_dropped", { items: repeatInfo.dropped.map((d) => d[locale]).join(", ") })}
+            </p>
+          )}
+        </div>
+      )}
+      {repeatMissingShown && (
+        <div role="status" className="mb-4 rounded-2xl border border-mute-200 bg-bone px-5 py-3 text-sm text-rouge">
+          {t("repeat_missing")}
+        </div>
+      )}
+
       {banner && (
         <div className="mb-4 px-5 py-3 rounded-2xl bg-bone border border-mute-200 flex items-center justify-between gap-3 text-sm">
           <div>
@@ -523,7 +564,11 @@ export default function IntakeForm({ products }: { products: Product[] }) {
               />
             </SectionCard>
             <SectionCard title={t("section_fulfillment")}>
-              <FulfillmentBlock value={fulfillment} onChange={setFulfillment} />
+              <FulfillmentBlock
+                value={fulfillment}
+                onChange={setFulfillment}
+                previousCardMessage={repeatInfo?.previousCardMessage}
+              />
             </SectionCard>
           </div>
           <div>
