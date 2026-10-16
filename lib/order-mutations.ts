@@ -331,7 +331,7 @@ export async function settleBalance(
   });
   await recordOrderChange({
     orderId, actor, kind: "payment",
-    summary: `Saldo saldado${method ? ` · ${method}` : ""} · ${money(cur.totals.totalCents)}`,
+    summary: `Saldo saldado${method ? ` · ${method}` : ""} · ${money(due)}`,
   });
   return next;
 }
