@@ -14,6 +14,10 @@ import { FloatingPhoto } from "@/components/product/FloatingPhoto";
 import { StaggerGroup, StaggerItem } from "@/components/motion/StaggerGroup";
 import { Grain } from "@/components/brand/Grain";
 
+// The seasonal card (fall, Christmas, Valentine's) follows the calendar:
+// regenerate hourly so it switches on its date, not on the next deploy.
+export const revalidate = 3600;
+
 export async function generateMetadata({
   params,
 }: {
