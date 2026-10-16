@@ -5,6 +5,8 @@ import { rowToOrder, orderToRow, type OrderRow } from "@/lib/order-row";
 import type { Order, PaymentMethod, FulfillmentStatus } from "@/types/order";
 import { recordOrderChange } from "@/lib/order-history";
 import { redeemPromo } from "@/lib/promo";
+import { withTransaction } from "@/lib/db-tx";
+import { recordPaymentRow, toLogMethod } from "@/lib/payments-storage";
 
 function money(c: number): string { return `$${(c / 100).toFixed(2)}`; }
 
@@ -41,7 +43,20 @@ export async function markPaidManual(
     internalNotes,
     updatedAt: now,
   };
-  upsert(next);
+  const due = cur.totals.totalCents - (cur.amountPaidCents ?? 0);
+  withTransaction(() => {
+    upsert(next);
+    if (due > 0) {
+      recordPaymentRow({
+        kind: (cur.amountPaidCents ?? 0) > 0 ? "balance" : "payment",
+        method: toLogMethod(args.method),
+        amountCents: due,
+        orderId,
+        source: "mark_paid",
+        actor: "maky",
+      });
+    }
+  });
   await recordOrderChange({
     orderId, actor: "maky", kind: "payment",
     summary: (cur.amountPaidCents ?? 0) > 0
@@ -121,7 +136,17 @@ export async function recordDeposit(
     internalNotes,
     updatedAt: now,
   };
-  upsert(next);
+  withTransaction(() => {
+    upsert(next);
+    recordPaymentRow({
+      kind: "deposit",
+      method: args.method,
+      amountCents: args.amountCents,
+      orderId,
+      source: "deposit",
+      actor,
+    });
+  });
   await recordOrderChange({
     orderId, actor, kind: "payment",
     summary: `Depósito ${money(args.amountCents)} · ${args.method} · saldo ${money(cur.totals.totalCents - paid)}`,
@@ -224,7 +249,19 @@ export async function cancelOrder(
     internalNotes,
     updatedAt: now,
   };
-  upsert(next);
+  withTransaction(() => {
+    upsert(next);
+    if (args.refund && (cur.amountPaidCents ?? 0) > 0) {
+      recordPaymentRow({
+        kind: "refund",
+        method: toLogMethod(cur.paymentMethod),
+        amountCents: -(cur.amountPaidCents ?? 0),
+        orderId,
+        source: "cancel_refund",
+        actor: "maky",
+      });
+    }
+  });
   await recordOrderChange({
     orderId, actor: "maky", kind: "cancel",
     summary: `Cancelada${args.refund ? " + reembolso" : ""}${args.reason ? ` · ${args.reason}` : ""}`,
@@ -265,7 +302,11 @@ export async function appendInternalNote(
 
 // Records that the in-person difference was settled: sets amount_paid to the
 // current total so the balance reads zero. Does NOT move money in Stripe.
-export async function settleBalance(orderId: string, actor: string): Promise<Order> {
+export async function settleBalance(
+  orderId: string,
+  actor: string,
+  method?: "cash" | "zelle" | "card-terminal" | "ach" | "check",
+): Promise<Order> {
   runMigrations();
   const db = getDb();
   const row = db.prepare("SELECT * FROM orders WHERE id = ?").get(orderId) as OrderRow | undefined;
@@ -274,9 +315,23 @@ export async function settleBalance(orderId: string, actor: string): Promise<Ord
   if (cur.houseAccountId) throw new Error("on_account");
   const now = new Date().toISOString();
   const next: Order = { ...cur, amountPaidCents: cur.totals.totalCents, updatedAt: now };
-  upsert(next);
+  const due = cur.totals.totalCents - (cur.amountPaidCents ?? 0);
+  withTransaction(() => {
+    upsert(next);
+    if (due > 0) {
+      recordPaymentRow({
+        kind: "balance",
+        method: method ?? "unknown",
+        amountCents: due,
+        orderId,
+        source: "settle",
+        actor,
+      });
+    }
+  });
   await recordOrderChange({
-    orderId, actor, kind: "payment", summary: `Saldo saldado · ${money(cur.totals.totalCents)}`,
+    orderId, actor, kind: "payment",
+    summary: `Saldo saldado${method ? ` · ${method}` : ""} · ${money(cur.totals.totalCents)}`,
   });
   return next;
 }
