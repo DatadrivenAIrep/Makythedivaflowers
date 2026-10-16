@@ -4,6 +4,7 @@ import { resolveOrderTotals, computeDeliveryCentsForAddress } from "@/lib/totals
 import { cartSubtotalCents } from "@/lib/cart-helpers";
 import { getPricedProducts } from "@/lib/product-prices";
 import { saveOrder, listOrders, type ListOrdersFilters } from "@/lib/order-storage";
+import { toLogMethod, type PaymentRowInput } from "@/lib/payments-storage";
 import { enqueuePrintJob } from "@/lib/print-queue";
 import { getByPhoneUS, upsertOnOrder } from "@/lib/customer-storage";
 import { rememberRecipientDate } from "@/lib/customer-dates-storage";
@@ -201,7 +202,23 @@ export async function POST(req: Request) {
     order.internalNotes = order.internalNotes ? `${order.internalNotes}\n${noteLine}` : noteLine;
   }
 
-  await saveOrder(order);
+  // Money that actually changed hands at intake, for the day's cash-up. House
+  // accounts and unpaid orders take in nothing.
+  const actor = order.takenBy ?? "maky";
+  const payments: PaymentRowInput[] = [];
+  if (order.paymentStatus === "paid") {
+    if (giftCardCents > 0) {
+      payments.push({ kind: "payment", method: "gift-card", amountCents: giftCardCents, orderId: order.id, giftCardId, source: "intake", actor });
+    }
+    const rest = order.totals.totalCents - giftCardCents;
+    if (rest > 0) {
+      payments.push({ kind: "payment", method: toLogMethod(order.paymentMethod), amountCents: rest, orderId: order.id, source: "intake", actor });
+    }
+  } else if (deposit && order.paymentStatus === "pending") {
+    payments.push({ kind: "deposit", method: deposit.method, amountCents: deposit.amountCents, orderId: order.id, source: "intake", actor });
+  }
+
+  await saveOrder(order, { payments });
 
   {
     const { recordOrderChange } = await import("@/lib/order-history");
