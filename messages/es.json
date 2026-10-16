@@ -1408,7 +1408,13 @@
     "deposit_amount_placeholder": "0.00",
     "deposit_method": "Depósito pagado con",
     "deposit_hint": "Saldo pendiente: {amount}",
-    "deposit_too_big": "El depósito debe ser menor que el total — márcala como pagada."
+    "deposit_too_big": "El depósito debe ser menor que el total — márcala como pagada.",
+    "repeat_banner": "Repitiendo la orden {number} del {date}",
+    "repeat_banner_hint": "Elige la nueva fecha y el cobro. La orden original no se toca.",
+    "repeat_dropped": "Ya no se vende, elige otro: {items}",
+    "repeat_missing": "No encontramos esa orden para repetirla; empieza una nueva.",
+    "card_message_previous": "Mensaje de la orden anterior",
+    "card_message_use_previous": "Usar este mensaje"
   },
   "admin_gift_cards": {
     "title": "Gift Cards",
@@ -1594,7 +1600,8 @@
     "deposit_error_generic": "No se pudo registrar el depósito.",
     "payment_status_deposit": "Depósito",
     "card_terminal": "Terminal",
-    "ach": "ACH"
+    "ach": "ACH",
+    "repeat_order": "Repetir orden"
   },
   "admin_ledger": {
     "date": "Fecha",
