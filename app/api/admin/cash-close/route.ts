@@ -13,7 +13,7 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 
 /** A real calendar day: right shape, and it does not roll over (2026-02-31 is not a day). */
 function isRealDay(day: string): boolean {
-  if (!isRealDay(day)) return false;
+  if (!DAY.test(day)) return false;
   const d = new Date(`${day}T00:00:00Z`);
   return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === day;
 }
