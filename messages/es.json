@@ -2399,7 +2399,7 @@
     "changed_since_close": "Hubo cobros después del cierre: el total cobrado cambió en {amount}. Revisa y vuelve a guardar el cierre.",
     "collected_title": "Cobrado del día",
     "total_collected": "Total cobrado",
-    "payments_count": "{count} cobros",
+    "payments_count": "{count, plural, one {# cobro} other {# cobros}}",
     "reviewed": "Revisado",
     "gift_card_used": "Tarjeta de regalo usada (no cuenta en el total)",
     "method": {

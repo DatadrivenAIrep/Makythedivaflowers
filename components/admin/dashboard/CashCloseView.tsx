@@ -55,9 +55,12 @@ const timeFmt = (iso: string) =>
 const dateTimeFmt = (iso: string, locale: string) =>
   new Intl.DateTimeFormat(locale, { timeZone: SHOP_TZ, month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(new Date(iso));
 
-const dayLabel = (day: string, locale: string) =>
-  new Intl.DateTimeFormat(locale, { timeZone: "UTC", weekday: "long", day: "numeric", month: "long", year: "numeric" })
+/** Full day label with only its first character capitalized ("Viernes, 16 de octubre de 2026"). */
+const dayLabel = (day: string, locale: string) => {
+  const s = new Intl.DateTimeFormat(locale, { timeZone: "UTC", weekday: "long", day: "numeric", month: "long", year: "numeric" })
     .format(new Date(`${day}T12:00:00Z`));
+  return s.charAt(0).toLocaleUpperCase(locale) + s.slice(1);
+};
 
 const diffClass = (d: number) => (d === 0 ? "text-emerald-700" : d < 0 ? "text-rouge" : "text-amber-700");
 
@@ -237,7 +240,7 @@ export default function CashCloseView({ locale }: { locale: string }) {
       <div className="mx-auto max-w-2xl space-y-5">
         <header className="flex items-center justify-between gap-2">
           <AdminButton variant="secondary" icon={CaretLeft} aria-label={t("prev_day")} onClick={() => goToDay(addDaysStr(data.day, -1))} />
-          <h1 className="text-center text-base font-semibold capitalize text-ink">{dayLabel(data.day, activeLocale)}</h1>
+          <h1 className="text-center text-base font-semibold text-ink">{dayLabel(data.day, activeLocale)}</h1>
           <AdminButton variant="secondary" icon={CaretRight} aria-label={t("next_day")} disabled={data.day >= today} onClick={() => goToDay(addDaysStr(data.day, 1))} />
         </header>
 

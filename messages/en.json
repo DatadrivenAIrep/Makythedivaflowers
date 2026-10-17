@@ -2399,7 +2399,7 @@
     "changed_since_close": "Payments came in after the close: the total collected changed by {amount}. Review and save the close again.",
     "collected_title": "Collected today",
     "total_collected": "Total collected",
-    "payments_count": "{count} payments",
+    "payments_count": "{count, plural, one {# payment} other {# payments}}",
     "reviewed": "Reviewed",
     "gift_card_used": "Gift card used (not in the total)",
     "method": {
