@@ -137,7 +137,7 @@ export default function CashCloseView({ locale }: { locale: string }) {
   const [error, setError] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
-  const [savedAt, setSavedAt] = useState<string | null>(null);
+  const [savedAt, setSavedAt] = useState<{ day: string; time: string } | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
@@ -161,10 +161,13 @@ export default function CashCloseView({ locale }: { locale: string }) {
     router.replace(`/${locale}/admin/dashboard/cierre?day=${day}`);
   }, [router, locale]);
 
-  if (!data || !form) {
+  // The URL changes before the response arrives: until the data is for the day
+  // being asked for, show loading/error, never the previous day's form.
+  const stale = data !== null && dayParam !== null && data.day !== dayParam;
+  if (error || !data || !form || stale) {
     return (
       <DashboardShell locale={locale}>
-        <p className="rounded border border-ink/10 bg-bone p-4 text-sm text-ink/60">
+        <p role={error ? "alert" : undefined} className="rounded border border-ink/10 bg-bone p-4 text-sm text-ink/60">
           {error ? t("load_error") : t("loading")}
         </p>
       </DashboardShell>
@@ -214,7 +217,7 @@ export default function CashCloseView({ locale }: { locale: string }) {
       });
       if (!res.ok) throw new Error(String(res.status));
       const body = (await res.json()) as { close: { updatedAt: string } };
-      setSavedAt(timeFmt(body.close.updatedAt));
+      setSavedAt({ day: data!.day, time: timeFmt(body.close.updatedAt) });
       setReloadKey((k) => k + 1);
     } catch {
       setSaveError(true);
@@ -341,7 +344,7 @@ export default function CashCloseView({ locale }: { locale: string }) {
                 <AdminButton variant="primary" onClick={() => void save()} disabled={!valid || saving}>
                   {t("save")}
                 </AdminButton>
-                {savedAt && <span className="text-sm text-emerald-700">{t("saved", { time: savedAt })}</span>}
+                {savedAt?.day === data.day && <span className="text-sm text-emerald-700">{t("saved", { time: savedAt.time })}</span>}
                 {saveError && <span role="alert" className="text-sm text-rouge">{t("save_error")}</span>}
               </div>
             </section>
@@ -368,7 +371,10 @@ export default function CashCloseView({ locale }: { locale: string }) {
               {data.history.map((h) => (
                 <li key={h.day} className="flex items-baseline gap-3 py-1.5">
                   <button type="button" onClick={() => goToDay(h.day)} className="tabular-nums underline">{h.day}</button>
-                  <span className={`font-semibold tabular-nums ${diffClass(h.differenceCents)}`}>{money(h.differenceCents)}</span>
+                  <span className={`font-semibold tabular-nums ${diffClass(h.differenceCents)}`}>
+                    {money(h.differenceCents)}
+                    {h.differenceCents !== 0 && <span className="ml-1 text-xs font-normal">{h.differenceCents < 0 ? t("short") : t("over")}</span>}
+                  </span>
                   <span className="text-xs text-ink/50">{h.actor}</span>
                   <span className="ml-auto text-xs text-ink/50">{dateTimeFmt(h.updatedAt, activeLocale)}</span>
                 </li>

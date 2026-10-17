@@ -5,9 +5,10 @@ vi.mock("next-intl", () => ({
   useTranslations: () => (k: string, v?: Record<string, unknown>) => (v ? `${k} ${JSON.stringify(v)}` : k),
   useLocale: () => "es",
 }));
+let searchDay = "2026-10-16";
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ replace: vi.fn() }),
-  useSearchParams: () => new URLSearchParams("day=2026-10-16"),
+  useSearchParams: () => new URLSearchParams(`day=${searchDay}`),
   usePathname: () => "/es/admin/dashboard/cierre",
 }));
 // The shell polls unread SMS and renders the logo; none of that is under test here.
@@ -45,6 +46,7 @@ let putBodies: Record<string, unknown>[] = [];
 
 beforeEach(() => {
   putBodies = [];
+  searchDay = "2026-10-16";
   vi.restoreAllMocks();
   vi.spyOn(globalThis, "fetch").mockImplementation(async (_url, init) => {
     if (init?.method === "PUT") {
@@ -90,5 +92,24 @@ describe("CashCloseView", () => {
     fireEvent.change(counted, { target: { value: "abc" } });
     expect(save.disabled).toBe(true);
     expect(screen.getByText("invalid_amount")).toBeDefined();
+  });
+
+  it("never shows the previous day's form while another day loads or fails", async () => {
+    const view = render(<CashCloseView locale="es" />);
+    await screen.findByLabelText("counted");
+
+    // Next day: its GET hangs.
+    let release!: (r: Response) => void;
+    vi.spyOn(globalThis, "fetch").mockImplementation(() => new Promise<Response>((res) => { release = res; }));
+    searchDay = "2026-10-15";
+    view.rerender(<CashCloseView locale="es" />);
+    expect(screen.getByText("loading")).toBeDefined();
+    expect(screen.queryByRole("button", { name: "save" })).toBeNull();
+    expect(screen.queryByLabelText("counted")).toBeNull();
+
+    // ...and then fails: the error shows, still no form for the old day.
+    release(new Response("{}", { status: 500 }));
+    expect(await screen.findByText("load_error")).toBeDefined();
+    expect(screen.queryByRole("button", { name: "save" })).toBeNull();
   });
 });
