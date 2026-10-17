@@ -25,6 +25,7 @@ export default function IssueGiftCardForm({ onIssued }: { onIssued: () => void }
   const [headline, setHeadline] = useState("");
   const [partner, setPartner] = useState("");
   const [reason, setReason] = useState<string>("");
+  const [paymentMethod, setPaymentMethod] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -51,6 +52,10 @@ export default function IssueGiftCardForm({ onIssued }: { onIssued: () => void }
       setError(t("form_phone_invalid"));
       return;
     }
+    if (reason === "purchase" && !paymentMethod) {
+      setError(t("payment_method_required"));
+      return;
+    }
     setBusy(true);
     const res = await fetch("/api/admin/gift-cards", {
       method: "POST",
@@ -65,6 +70,7 @@ export default function IssueGiftCardForm({ onIssued }: { onIssued: () => void }
         headline: headline.trim() || undefined,
         partner: partner || undefined,
         reason: reason || undefined,
+        paymentMethod: reason === "purchase" ? paymentMethod : undefined,
       }),
     });
     setBusy(false);
@@ -178,6 +184,7 @@ export default function IssueGiftCardForm({ onIssued }: { onIssued: () => void }
         <span className="mb-1 block text-xs font-semibold">{t("form_reason")} <em className="opacity-50">({t("form_optional")})</em></span>
         <select value={reason} onChange={(e) => setReason(e.target.value)} className="w-full rounded-lg border border-ink/20 px-3 py-2">
           <option value="">—</option>
+          <option value="purchase">{t("reason_purchase")}</option>
           <option value="loyalty">{t("reason_loyalty")}</option>
           <option value="apology">{t("reason_apology")}</option>
           <option value="prize">{t("reason_prize")}</option>
@@ -185,6 +192,21 @@ export default function IssueGiftCardForm({ onIssued }: { onIssued: () => void }
           <option value="other">{t("reason_other")}</option>
         </select>
       </label>
+      {reason === "purchase" && (
+        <label className="block">
+          <span className="mb-1 block text-xs font-semibold">{t("form_payment_method")}</span>
+          <select
+            required value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}
+            className="w-full rounded-lg border border-ink/20 px-3 py-2"
+          >
+            <option value="">—</option>
+            <option value="cash">{t("payment_cash")}</option>
+            <option value="zelle">Zelle</option>
+            <option value="card-terminal">{t("payment_terminal")}</option>
+            <option value="ach">ACH</option>
+          </select>
+        </label>
+      )}
       {error && <p className="text-sm text-rouge">{error}</p>}
       <button type="submit" disabled={busy} className="w-full rounded-lg bg-rouge py-3 font-bold text-bone disabled:opacity-50">
         {busy ? t("form_submitting") : t("form_submit")}

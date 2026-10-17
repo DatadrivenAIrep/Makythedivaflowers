@@ -22,7 +22,9 @@ export const issueGiftCardSchema = z.object({
   personalMessage: z.string().max(400).optional(),
   headline: z.string().trim().max(90).optional(),
   partner: z.enum(GIFT_CARD_PARTNER_IDS).optional(),
-  reason: z.enum(["loyalty", "apology", "prize", "marketing", "other"]).optional(),
+  reason: z.enum(["purchase", "loyalty", "apology", "prize", "marketing", "other"]).optional(),
+  /** Required (by the route) when the reason is `purchase`: how the card was paid. */
+  paymentMethod: z.enum(["cash", "zelle", "card-terminal", "ach"]).optional(),
 });
 
 export type IssueGiftCardInputDTO = z.infer<typeof issueGiftCardSchema>;

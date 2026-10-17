@@ -1,4 +1,6 @@
 import { getDb } from "@/lib/db";
+import { withTransaction } from "@/lib/db-tx";
+import { recordPaymentRow } from "@/lib/payments-storage";
 import { generateGiftCardCode, normalizeCode } from "@/lib/gift-card-code";
 import { GIFT_CARD_PARTNERS, type GiftCardPartnerId } from "@/data/gift-card-partners";
 import type {
@@ -71,6 +73,8 @@ export type IssueGiftCardInput = {
   partner?: GiftCardPartnerId;
   reason?: GiftCardReason;
   issuedBy?: string;
+  /** How a `purchase` card was paid; with it the sale is logged in `payments`. */
+  paymentMethod?: "cash" | "zelle" | "card-terminal" | "ach";
 };
 
 export function issueGiftCard(input: IssueGiftCardInput): GiftCard {
@@ -93,14 +97,23 @@ export function issueGiftCard(input: IssueGiftCardInput): GiftCard {
     const id = newId("gc");
     const code = generateGiftCardCode();
     try {
-      insert.run(
-        id, code, input.initialCents, input.initialCents,
-        input.recipientEmail, input.recipientName ?? null, input.recipientPhone || null,
-        input.fromLabel ?? null,
-        input.personalMessage ?? null, input.headline || null, input.partner ?? null,
-        input.reason ?? null,
-        input.issuedBy ?? null, expires.toISOString(), nowIso, nowIso,
-      );
+      withTransaction(() => {
+        insert.run(
+          id, code, input.initialCents, input.initialCents,
+          input.recipientEmail, input.recipientName ?? null, input.recipientPhone || null,
+          input.fromLabel ?? null,
+          input.personalMessage ?? null, input.headline || null, input.partner ?? null,
+          input.reason ?? null,
+          input.issuedBy ?? null, expires.toISOString(), nowIso, nowIso,
+        );
+        // Only a card someone paid for is money in the till; loyalty/apology/... cards are free.
+        if (input.reason === "purchase" && input.paymentMethod) {
+          recordPaymentRow({
+            kind: "gift_card_sale", method: input.paymentMethod, amountCents: input.initialCents,
+            giftCardId: id, source: "gift_card_admin", actor: input.issuedBy ?? "maky",
+          });
+        }
+      });
       return getGiftCardById(id)!;
     } catch (e) {
       if (String(e).includes("UNIQUE") && attempt < 4) continue;
@@ -153,13 +166,21 @@ export function issueGiftCardForPayment(input: PurchaseGiftCardInput): GiftCard 
     const id = newId("gc");
     const code = generateGiftCardCode();
     try {
-      insert.run(
-        id, code, input.initialCents, input.initialCents,
-        input.recipientEmail, input.recipientName ?? null, input.recipientPhone || null,
-        input.fromLabel ?? null,
-        input.personalMessage ?? null, input.paymentIntentId, input.purchaserEmail ?? null,
-        expires.toISOString(), nowIso, nowIso,
-      );
+      // Card + payment row commit together; a replayed intent throws on the unique
+      // index before the row is written, and the catch below returns the winner.
+      withTransaction(() => {
+        insert.run(
+          id, code, input.initialCents, input.initialCents,
+          input.recipientEmail, input.recipientName ?? null, input.recipientPhone || null,
+          input.fromLabel ?? null,
+          input.personalMessage ?? null, input.paymentIntentId, input.purchaserEmail ?? null,
+          expires.toISOString(), nowIso, nowIso,
+        );
+        recordPaymentRow({
+          kind: "gift_card_sale", method: "stripe", amountCents: input.initialCents,
+          giftCardId: id, source: "gift_card_stripe", actor: "stripe",
+        });
+      });
       return getGiftCardById(id)!;
     } catch (e) {
       const msg = String(e);
