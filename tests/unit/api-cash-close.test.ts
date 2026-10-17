@@ -28,6 +28,13 @@ function insertOrder(o: {
 }
 
 describe("GET/PUT /api/admin/cash-close", () => {
+  it("answers on a fresh connection that has not run migrations yet", async () => {
+    closeDb(); // the next getDb() opens a brand-new, empty :memory: database
+    const res = await get();
+    expect(res.status).toBe(200);
+    expect((await res.json()).history).toEqual([]);
+  });
+
   it("summarizes the day, saves a close and ignores client totals", async () => {
     pay("cash", 5000, "2026-10-16T15:00:00.000Z");
     pay("zelle", 3000, "2026-10-16T16:00:00.000Z");

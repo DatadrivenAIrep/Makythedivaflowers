@@ -24,7 +24,10 @@ export default function IssueGiftCardForm({ onIssued }: { onIssued: () => void }
   const [message, setMessage] = useState("");
   const [headline, setHeadline] = useState("");
   const [partner, setPartner] = useState("");
-  const [reason, setReason] = useState<string>("");
+  // Most cards issued here are sold over the counter, so "purchase" is the
+  // default: that asks how it was paid and puts the money in the day's close.
+  // Comps (loyalty, apology...) stay one pick away.
+  const [reason, setReason] = useState<string>("purchase");
   const [paymentMethod, setPaymentMethod] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -183,13 +186,13 @@ export default function IssueGiftCardForm({ onIssued }: { onIssued: () => void }
       <label className="block">
         <span className="mb-1 block text-xs font-semibold">{t("form_reason")} <em className="opacity-50">({t("form_optional")})</em></span>
         <select value={reason} onChange={(e) => setReason(e.target.value)} className="w-full rounded-lg border border-ink/20 px-3 py-2">
-          <option value="">—</option>
           <option value="purchase">{t("reason_purchase")}</option>
           <option value="loyalty">{t("reason_loyalty")}</option>
           <option value="apology">{t("reason_apology")}</option>
           <option value="prize">{t("reason_prize")}</option>
           <option value="marketing">{t("reason_marketing")}</option>
           <option value="other">{t("reason_other")}</option>
+          <option value="">—</option>
         </select>
       </label>
       {reason === "purchase" && (

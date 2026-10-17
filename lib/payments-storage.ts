@@ -1,5 +1,6 @@
 import "server-only";
 import { getDb } from "@/lib/db";
+import { runMigrations } from "@/lib/db-migrate";
 import { shopDateStr } from "@/lib/tv-slots";
 
 export type PaymentKind = "payment" | "deposit" | "balance" | "refund" | "gift_card_sale";
@@ -61,11 +62,22 @@ export function recordPaymentRow(input: PaymentRowInput): PaymentRow {
   return row;
 }
 
-export function listPaymentsForDay(day: string): PaymentRow[] {
+/**
+ * The day's rows without running migrations, for callers already inside a
+ * write transaction (runMigrations takes its own BEGIN IMMEDIATE).
+ */
+export function readPaymentsForDay(day: string): PaymentRow[] {
   return (getDb().prepare("SELECT * FROM payments WHERE day = ? ORDER BY at, rowid").all(day) as Row[]).map(toPayment);
 }
 
+/** Never call inside a transaction: it may run migrations. */
+export function listPaymentsForDay(day: string): PaymentRow[] {
+  runMigrations();
+  return readPaymentsForDay(day);
+}
+
 export function firstPaymentDay(): string | null {
+  runMigrations();
   const r = getDb().prepare("SELECT MIN(day) AS d FROM payments").get() as { d: string | null };
   return r.d;
 }

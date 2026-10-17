@@ -1,7 +1,8 @@
 import "server-only";
 import { getDb } from "@/lib/db";
+import { runMigrations } from "@/lib/db-migrate";
 import { withTransaction } from "@/lib/db-tx";
-import { listPaymentsForDay } from "@/lib/payments-storage";
+import { readPaymentsForDay } from "@/lib/payments-storage";
 import { summarizeDay, expectedCash, closeDifference, type DaySummary } from "@/lib/cash-close";
 
 export type CashClose = {
@@ -49,13 +50,21 @@ const toClose = (r: Row): CashClose => ({
   updatedAt: r.updated_at,
 });
 
-export function getClose(day: string): CashClose | null {
+// The public readers and putClose run migrations first (a fresh process may hit
+// the close screen before anything else); never call them inside a transaction.
+function readClose(day: string): CashClose | null {
   const r = getDb().prepare("SELECT * FROM cash_closes WHERE day = ?").get(day) as Row | undefined;
   return r ? toClose(r) : null;
 }
 
+export function getClose(day: string): CashClose | null {
+  runMigrations();
+  return readClose(day);
+}
+
 /** The float left in the drawer by the latest close before `day` (0 if none). */
 export function previousFloatCents(day: string): number {
+  runMigrations();
   const r = getDb()
     .prepare("SELECT float_left_cents AS f FROM cash_closes WHERE day < ? ORDER BY day DESC LIMIT 1")
     .get(day) as { f: number } | undefined;
@@ -63,6 +72,7 @@ export function previousFloatCents(day: string): number {
 }
 
 export function listCloses(limit = 30): CashClose[] {
+  runMigrations();
   return (getDb().prepare("SELECT * FROM cash_closes ORDER BY day DESC LIMIT ?").all(limit) as Row[]).map(toClose);
 }
 
@@ -80,8 +90,9 @@ export type PutCloseInput = {
 
 /** Save the day's close. Totals, expected cash and difference are recomputed here from the payments log. */
 export function putClose(i: PutCloseInput): CashClose {
+  runMigrations();
   return withTransaction(() => {
-    const totals = summarizeDay(listPaymentsForDay(i.day));
+    const totals = summarizeDay(readPaymentsForDay(i.day));
     const expected = expectedCash({
       openingFloatCents: i.openingFloatCents,
       cashInCents: totals.cashInCents,
@@ -113,6 +124,6 @@ export function putClose(i: PutCloseInput): CashClose {
       expected, i.countedCents, closeDifference(i.countedCents, expected), i.floatLeftCents,
       JSON.stringify(i.reviewed), JSON.stringify(totals), i.note ?? null, i.actor, now, now,
     );
-    return getClose(i.day)!;
+    return readClose(i.day)!;
   });
 }

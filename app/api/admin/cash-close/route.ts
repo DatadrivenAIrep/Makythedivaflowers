@@ -33,13 +33,14 @@ type PaymentJoinRow = { id: string; order_number: number | null; contact_name: s
 
 /** The day's payments in the order they happened, each with its order's number and customer. */
 function paymentsWithOrder(day: string): (PaymentRow & { orderNumber?: number; customerName?: string })[] {
+  // First: listPaymentsForDay runs migrations, so the raw join below finds its tables.
+  const byId = new Map(listPaymentsForDay(day).map((p) => [p.id, p]));
   const joins = getDb()
     .prepare(
       `SELECT p.id, o.order_number, o.contact_name FROM payments p
        LEFT JOIN orders o ON o.id = p.order_id WHERE p.day = ? ORDER BY p.at, p.rowid`,
     )
     .all(day) as PaymentJoinRow[];
-  const byId = new Map(listPaymentsForDay(day).map((p) => [p.id, p]));
   return joins.flatMap((j) => {
     const p = byId.get(j.id);
     if (!p) return [];
