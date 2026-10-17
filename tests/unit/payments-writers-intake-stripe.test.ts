@@ -10,7 +10,9 @@ vi.mock("@/lib/stripe-server", () => ({
 import { POST } from "@/app/api/admin/orders/route";
 import { closeDb, getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
-import { updateOrderStatusByPaymentIntent, updateOrderPaidByCheckoutSession } from "@/lib/order-storage";
+import { updateOrderStatusByPaymentIntent, updateOrderPaidByCheckoutSession, saveOrder } from "@/lib/order-storage";
+import { issueGiftCard } from "@/lib/gift-card-storage";
+import type { Order } from "@/types/order";
 
 const ORDER_FILE = path.join(os.tmpdir(), `diva-payrows-orders-${process.pid}.json`);
 const PRINT_FILE = path.join(os.tmpdir(), `diva-payrows-print-${process.pid}.json`);
@@ -66,6 +68,64 @@ describe("intake logs the money that moved", () => {
   it("a pending intake without money logs nothing", async () => {
     await POST(req({ ...base, payment: { status: "pending" } }));
     expect(payRows()).toEqual([]);
+  });
+});
+
+describe("intake with a gift card logs the split", () => {
+  const orderTotal = (id: string) =>
+    (getDb().prepare("SELECT total_cents AS t FROM orders WHERE id = ?").get(id) as { t: number }).t;
+  const cardRows = () =>
+    getDb().prepare("SELECT method, amount_cents AS amount, gift_card_id AS gc FROM payments ORDER BY rowid").all() as
+      { method: string; amount: number; gc: string | null }[];
+
+  it("a cash intake partly covered by a card logs the card, then cash for the rest", async () => {
+    runMigrations();
+    const card = issueGiftCard({ initialCents: 2000, recipientEmail: "a@b.com" });
+    const res = await POST(req({ ...base, giftCardCode: card.code, payment: { status: "paid", method: "cash" } }));
+    expect(res.status).toBe(201);
+    const total = orderTotal((await res.json()).orderId);
+    expect(payRows()).toEqual([
+      { kind: "payment", method: "gift-card", amount: 2000, source: "intake" },
+      { kind: "payment", method: "cash", amount: total - 2000, source: "intake" },
+    ]);
+    expect(cardRows()[0].gc).toBe(card.id);
+    expect(cardRows()[1].gc).toBeNull();
+  });
+
+  it("an intake fully covered by the card logs only the gift-card row", async () => {
+    runMigrations();
+    const card = issueGiftCard({ initialCents: 200000, recipientEmail: "a@b.com" });
+    const res = await POST(req({ ...base, giftCardCode: card.code, payment: { status: "paid", method: "cash" } }));
+    expect(res.status).toBe(201);
+    const total = orderTotal((await res.json()).orderId);
+    expect(payRows()).toEqual([{ kind: "payment", method: "gift-card", amount: total, source: "intake" }]);
+    expect(cardRows()[0].gc).toBe(card.id);
+  });
+});
+
+describe("saveOrder is atomic with its payment rows", () => {
+  it("a bad payment row rolls the order back too", async () => {
+    runMigrations();
+    const now = new Date().toISOString();
+    const order = {
+      id: "ord_atomic", source: "phone", locale: "es",
+      lines: [], fulfillment: { method: "in-store", recipient: { name: "Ana", phone: "5165550100" } },
+      contact: { name: "Ana", phone: "5165550100" },
+      totals: { subtotalCents: 10000, deliveryCents: 0, discountCents: 0, tipCents: 0, taxCents: 0, totalCents: 10000 },
+      status: "pending", paymentStatus: "paid", paymentMethod: "cash", amountPaidCents: 10000,
+      createdAt: now, updatedAt: now,
+    } as unknown as Order;
+    await expect(
+      saveOrder(order, {
+        payments: [
+          { kind: "payment", method: "cash", amountCents: 5000, orderId: "ord_atomic", source: "intake", actor: "maky" },
+          { kind: "payment", method: "cash", amountCents: 5000, orderId: "ord_atomic", source: undefined as never, actor: "maky" },
+        ],
+      }),
+    ).rejects.toThrow();
+    const db = getDb();
+    expect(db.prepare("SELECT COUNT(*) AS n FROM orders WHERE id = 'ord_atomic'").get()).toEqual({ n: 0 });
+    expect(db.prepare("SELECT COUNT(*) AS n FROM payments").get()).toEqual({ n: 0 });
   });
 });
 

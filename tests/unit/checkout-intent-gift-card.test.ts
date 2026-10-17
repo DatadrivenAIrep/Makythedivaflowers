@@ -3,6 +3,7 @@ import { closeDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import { issueGiftCard, getGiftCardById } from "@/lib/gift-card-storage";
 import { getOrder } from "@/lib/order-storage";
+import { getDb } from "@/lib/db";
 
 const piCreate = vi.fn(async () => ({ id: "pi_1", client_secret: "cs_1" }));
 vi.mock("@/lib/stripe-server", () => ({ stripe: { paymentIntents: { create: piCreate } } }));
@@ -58,6 +59,20 @@ describe("intent route with gift card", () => {
     expect(order?.paymentStatus).toBe("paid");
     expect(order?.paymentMethod).toBe("gift-card");
     expect(getGiftCardById(card.id)!.balanceCents).toBeLessThan(100000);
+  });
+
+  it("full coverage logs one gift-card payment for the total; partial logs nothing yet", async () => {
+    const card = issueGiftCard({ initialCents: 100000, recipientEmail: "a@b.com" });
+    const data = await (await callIntent(body(card.code))).json();
+    const order = await getOrder(data.orderId);
+    const rows = getDb().prepare("SELECT kind, method, amount_cents AS amount, gift_card_id AS gc, source, actor, order_id AS oid FROM payments").all();
+    expect(rows).toEqual([
+      { kind: "payment", method: "gift-card", amount: order!.totals.totalCents, gc: card.id, source: "stripe_intent", actor: "system", oid: data.orderId },
+    ]);
+
+    const small = issueGiftCard({ initialCents: 500, recipientEmail: "a@b.com" });
+    await callIntent(body(small.code));
+    expect(getDb().prepare("SELECT COUNT(*) AS n FROM payments").get()).toEqual({ n: 1 });
   });
 
   it("partial: Stripe PI created for total minus a small balance; balance not yet debited", async () => {
