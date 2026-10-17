@@ -83,6 +83,16 @@ describe("GET/PUT /api/admin/cash-close", () => {
     expect((await put({ day: DAY, openingFloatCents: 0, cashOutCents: 0, countedCents: 0, floatLeftCents: 0, reviewed: ["bitcoin"] })).status).toBe(400);
   });
 
+  it("rejects days that are not real calendar days", async () => {
+    expect((await get("2026-13-45")).status).toBe(400);
+    const res = await get("2026-02-31");
+    expect(res.status).toBe(400);
+    expect((await res.json()).error).toBe("invalid_day");
+    const bad = await put({ day: "2026-02-31", openingFloatCents: 0, cashOutCents: 0, countedCents: 0, floatLeftCents: 0, reviewed: [] });
+    expect(bad.status).toBe(400);
+    expect((await bad.json()).error).toBe("invalid_body");
+  });
+
   it("joins the order and orders same-instant payments by insertion", async () => {
     insertOrder({ id: "o1", createdAt: "2026-10-16T14:00:00.000Z", total: 100, paid: 100, status: "paid", number: 1234, name: "Ana" });
     recordPaymentRow({ kind: "payment", method: "cash", amountCents: 100, orderId: "o1", source: "mark_paid", actor: "maky", at: "2026-10-16T15:00:00.000Z" });

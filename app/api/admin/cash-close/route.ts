@@ -11,8 +11,15 @@ export const runtime = "nodejs";
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
+/** A real calendar day: right shape, and it does not roll over (2026-02-31 is not a day). */
+function isRealDay(day: string): boolean {
+  if (!isRealDay(day)) return false;
+  const d = new Date(`${day}T00:00:00Z`);
+  return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === day;
+}
+
 const putBody = z.object({
-  day: z.string().regex(DAY),
+  day: z.string().refine(isRealDay),
   openingFloatCents: z.number().int().min(0),
   cashOutCents: z.number().int().min(0),
   cashOutNote: z.string().max(200).optional(),
@@ -77,7 +84,7 @@ function salesForDay(day: string) {
 export async function GET(req: Request): Promise<Response> {
   const param = new URL(req.url).searchParams.get("day");
   const day = param ?? shopDateStr(new Date());
-  if (!DAY.test(day)) return NextResponse.json({ error: "invalid_day" }, { status: 400 });
+  if (!isRealDay(day)) return NextResponse.json({ error: "invalid_day" }, { status: 400 });
 
   const payments = paymentsWithOrder(day);
   const summary = summarizeDay(payments);

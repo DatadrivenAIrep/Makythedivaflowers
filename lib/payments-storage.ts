@@ -62,7 +62,7 @@ export function recordPaymentRow(input: PaymentRowInput): PaymentRow {
 }
 
 export function listPaymentsForDay(day: string): PaymentRow[] {
-  return (getDb().prepare("SELECT * FROM payments WHERE day = ? ORDER BY at, id").all(day) as Row[]).map(toPayment);
+  return (getDb().prepare("SELECT * FROM payments WHERE day = ? ORDER BY at, rowid").all(day) as Row[]).map(toPayment);
 }
 
 export function firstPaymentDay(): string | null {
