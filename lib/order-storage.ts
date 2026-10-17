@@ -272,18 +272,17 @@ export async function updateOrderPaidByCheckoutSession(sessionId: string): Promi
   withTransaction(() => {
     const cur = db
       .prepare(
-        "SELECT id, total_cents, amount_paid_cents, gift_card_cents, gift_card_id FROM orders WHERE stripe_checkout_session_id = ? AND payment_status != 'paid'",
+        "SELECT id, total_cents, amount_paid_cents FROM orders WHERE stripe_checkout_session_id = ? AND payment_status != 'paid'",
       )
-      .get(sessionId) as
-      | { id: string; total_cents: number; amount_paid_cents: number | null; gift_card_cents: number | null; gift_card_id: string | null }
-      | undefined;
+      .get(sessionId) as { id: string; total_cents: number; amount_paid_cents: number | null } | undefined;
     if (!cur) return; // already paid (Stripe retry) or unknown session: nothing moved
     db.prepare(
       `UPDATE orders SET payment_status = 'paid', paid_at = COALESCE(paid_at, ?), amount_paid_cents = total_cents, updated_at = ? WHERE stripe_checkout_session_id = ? AND payment_status != 'paid'`,
     ).run(now, now, sessionId);
+    // A payment link charges total − amount paid and never redeems a gift card,
+    // so the whole delta is card money collected by Stripe.
     const delta = cur.total_cents - (cur.amount_paid_cents ?? 0);
-    const gc = Math.min(cur.gift_card_cents ?? 0, delta);
-    logStripeCollection(cur.id, delta, gc, cur.gift_card_id ?? undefined, "stripe_checkout");
+    logStripeCollection(cur.id, delta, 0, undefined, "stripe_checkout");
   });
 }
 

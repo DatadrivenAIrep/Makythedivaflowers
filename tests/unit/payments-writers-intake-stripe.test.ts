@@ -166,4 +166,11 @@ describe("stripe logs the money that moved", () => {
     await updateOrderPaidByCheckoutSession("cs_1");
     expect(payRows()).toEqual([{ kind: "payment", method: "stripe", amount: 10000, source: "stripe_checkout" }]);
   });
+
+  it("a paid checkout session (payment link) logs the whole delta as stripe even with a gift card on the order", async () => {
+    // A payment link charges total − amount paid; the session handler never redeems a gift card.
+    insertOrder("o4", { cs: "cs_4", gift: 2500, giftId: "gc_4" });
+    await updateOrderPaidByCheckoutSession("cs_4");
+    expect(payRows()).toEqual([{ kind: "payment", method: "stripe", amount: 10000, source: "stripe_checkout" }]);
+  });
 });

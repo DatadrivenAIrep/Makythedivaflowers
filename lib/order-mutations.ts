@@ -6,7 +6,7 @@ import type { Order, PaymentMethod, FulfillmentStatus } from "@/types/order";
 import { recordOrderChange } from "@/lib/order-history";
 import { redeemPromo } from "@/lib/promo";
 import { withTransaction } from "@/lib/db-tx";
-import { recordPaymentRow, toLogMethod } from "@/lib/payments-storage";
+import { recordPaymentRow, toLogMethod, type PaymentRowMethod } from "@/lib/payments-storage";
 
 function money(c: number): string { return `$${(c / 100).toFixed(2)}`; }
 
@@ -217,6 +217,35 @@ export async function changeFulfillmentStatus(
   return next;
 }
 
+/**
+ * What a refunded cancel hands back, per method: the order's logged money netted
+ * per method (refund rows are already negative), one negative row for each
+ * method still holding money. Gift-card money comes back as a "gift-card" row
+ * (the cancel route credits the card). Orders paid before the payments log
+ * existed have no rows: fall back to one row in the order's own method.
+ * Read-only; call it inside the writer's transaction.
+ */
+function refundRowsFor(cur: Order): { method: PaymentRowMethod; amountCents: number }[] {
+  const logged = getDb()
+    .prepare("SELECT method, amount_cents FROM payments WHERE order_id = ?")
+    .all(cur.id) as { method: PaymentRowMethod; amount_cents: number }[];
+  if (logged.length > 0) {
+    const net = new Map<PaymentRowMethod, number>();
+    for (const r of logged) net.set(r.method, (net.get(r.method) ?? 0) + r.amount_cents);
+    return [...net]
+      .filter(([, cents]) => cents > 0)
+      .map(([method, cents]) => ({ method, amountCents: -cents }));
+  }
+  const method = toLogMethod(cur.paymentMethod);
+  const paid = cur.amountPaidCents ?? 0;
+  if (paid > 0) return [{ method, amountCents: -paid }];
+  if (cur.paymentStatus === "paid") {
+    const cents = cur.totals.totalCents - (cur.giftCardCents ?? 0);
+    if (cents > 0) return [{ method, amountCents: -cents }];
+  }
+  return [];
+}
+
 // Records cancellation (and optional refund) state. Does NOT process a real
 // Stripe/Zelle refund — that is handled manually by staff; this only reflects
 // the resulting status so the ledger and customer notifications stay accurate.
@@ -251,15 +280,10 @@ export async function cancelOrder(
   };
   withTransaction(() => {
     upsert(next);
-    if (args.refund && (cur.amountPaidCents ?? 0) > 0) {
-      recordPaymentRow({
-        kind: "refund",
-        method: toLogMethod(cur.paymentMethod),
-        amountCents: -(cur.amountPaidCents ?? 0),
-        orderId,
-        source: "cancel_refund",
-        actor: "maky",
-      });
+    if (args.refund) {
+      for (const r of refundRowsFor(cur)) {
+        recordPaymentRow({ ...r, kind: "refund", orderId, source: "cancel_refund", actor: "maky" });
+      }
     }
   });
   await recordOrderChange({
@@ -327,11 +351,22 @@ export async function settleBalance(
         source: "settle",
         actor,
       });
+    } else if (due < 0) {
+      // The customer was owed money (paid more than the new total) and staff
+      // handed the difference back: that money left the shop.
+      recordPaymentRow({
+        kind: "refund",
+        method: method ?? "unknown",
+        amountCents: due,
+        orderId,
+        source: "settle",
+        actor,
+      });
     }
   });
   await recordOrderChange({
     orderId, actor, kind: "payment",
-    summary: `Saldo saldado${method ? ` · ${method}` : ""} · ${money(due)}`,
+    summary: `${due < 0 ? "Crédito devuelto" : "Saldo saldado"}${method ? ` · ${method}` : ""} · ${money(Math.abs(due))}`,
   });
   return next;
 }
