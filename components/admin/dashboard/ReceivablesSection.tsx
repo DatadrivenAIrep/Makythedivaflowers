@@ -74,11 +74,11 @@ export default function ReceivablesSection({ locale, version, onOpen }: Props) {
     }
   }
 
-  async function markPaid(r: Receivable, method?: (typeof METHODS)[number]) {
+  async function markPaid(r: Receivable, method: (typeof METHODS)[number]) {
     setBusyId(r.orderId);
     try {
-      // A pending order is paid with a method; one already marked paid only has its leftover settled.
-      const body = r.canRemind ? { method } : { settleBalance: true };
+      // A pending order is paid with a method; one already marked paid has its leftover settled, still recording how it was paid.
+      const body = r.canRemind ? { method } : { settleBalance: true, method };
       const res = await fetch(`/api/admin/orders/${r.orderId}/payment`, {
         method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify(body),
       });
@@ -128,7 +128,7 @@ export default function ReceivablesSection({ locale, version, onOpen }: Props) {
                     </AdminButton>
                   )}
                   <AdminButton variant="secondary" icon={Check} disabled={busy}
-                    onClick={() => (r.canRemind ? setPayingId(payingId === r.orderId ? null : r.orderId) : markPaid(r))}>
+                    onClick={() => setPayingId(payingId === r.orderId ? null : r.orderId)}>
                     {t("action_mark_paid")}
                   </AdminButton>
                   <AdminButton variant="secondary" icon={ArrowRight} onClick={() => onOpen(r.orderId)}>{t("action_open_detail")}</AdminButton>
