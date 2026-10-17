@@ -51,6 +51,13 @@ const DEPOSIT_METHOD_LABEL: Record<DepositMethod, string> = {
   cash: "cash", zelle: "zelle", "card-terminal": "card_terminal", ach: "ach",
 };
 
+const SETTLE_METHODS = ["cash", "zelle", "card-terminal", "ach", "check"] as const;
+type SettleMethod = (typeof SETTLE_METHODS)[number];
+const SETTLE_METHOD_LABEL: Record<SettleMethod, string> = {
+  cash: "settle_method_cash", zelle: "settle_method_zelle", "card-terminal": "settle_method_card-terminal",
+  ach: "settle_method_ach", check: "settle_method_check",
+};
+
 const FULFILLMENT_STEP_IDS = ["pending", "preparing", "out-for-delivery", "delivered"] as const;
 
 export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props) {
@@ -69,6 +76,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
   const [depositText, setDepositText] = useState("");
   const [depositMethod, setDepositMethod] = useState<DepositMethod>("zelle");
   const [depositErr, setDepositErr] = useState<string | null>(null);
+  const [settleOpen, setSettleOpen] = useState(false);
   const [accountPickOpen, setAccountPickOpen] = useState(false);
   const [accountErr, setAccountErr] = useState<string | null>(null);
   const [delivering, setDelivering] = useState(false);
@@ -262,11 +270,28 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
               {hasDeposit && <span className="ml-2 font-normal">· {t("deposit")} {money(amountPaid)}</span>}
             </span>
             {!hasDeposit && (
-              <AdminButton variant="secondary" disabled={busy}
-                onClick={() => call("PATCH", `/api/admin/orders/${order.id}/payment`, { settleBalance: true })}>
+              <AdminButton variant="secondary" disabled={busy} onClick={() => setSettleOpen((v) => !v)}>
                 {t("mark_settled")}
               </AdminButton>
             )}
+          </div>
+        )}
+
+        {!editing && !onAccount && !hasDeposit && settleOpen && (order.amountPaidCents ?? 0) > 0 && (data.balanceCents ?? 0) !== 0 && (
+          <div className="mb-3 rounded bg-bone px-3 py-2 text-sm">
+            <div className="mb-1 text-xs uppercase tracking-wide text-ink/50">{t("settle_method")}</div>
+            <div className="flex flex-wrap gap-2" role="group" aria-label={t("settle_method")}>
+              {SETTLE_METHODS.map((m) => (
+                <button key={m} type="button" disabled={busy}
+                  onClick={async () => {
+                    await call("PATCH", `/api/admin/orders/${order.id}/payment`, { settleBalance: true, method: m });
+                    setSettleOpen(false);
+                  }}
+                  className="rounded-full border border-ink/20 bg-white px-3 py-1.5 hover:border-ink disabled:opacity-40">
+                  {t(SETTLE_METHOD_LABEL[m])}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 

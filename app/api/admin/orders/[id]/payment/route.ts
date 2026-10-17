@@ -7,8 +7,9 @@ import { getOrder } from "@/lib/order-storage";
 export const runtime = "nodejs";
 
 const body = z.union([
+  // settleBalance first: zod strips unknown keys, so a { method } member listed earlier would swallow { settleBalance, method }.
+  z.object({ settleBalance: z.literal(true), method: z.enum(["cash", "zelle", "card-terminal", "ach", "check"]).optional() }),
   z.object({ method: z.enum(["cash", "zelle", "card-terminal", "ach"]), note: z.string().max(500).optional() }),
-  z.object({ settleBalance: z.literal(true) }),
   z.object({
     deposit: z.object({
       amountCents: z.number().int().positive(),
@@ -43,7 +44,7 @@ export async function PATCH(
       return NextResponse.json({ order: await getOrder(id) });
     }
     const order = "settleBalance" in data
-      ? await settleBalance(id, "maky")
+      ? await settleBalance(id, "maky", data.method)
       : "deposit" in data
         ? await recordDeposit(id, data.deposit, "maky")
         : await markPaidManual(id, data);

@@ -40,6 +40,24 @@ describe("POST /api/admin/gift-cards", () => {
     expect(notifyGiftCardIssued).toHaveBeenCalledOnce();
   });
 
+  it("a purchase needs the payment method, and with it logs the sale", async () => {
+    const { POST } = await importRoute();
+    const post = (extra: object) =>
+      POST(new Request("http://t/api/admin/gift-cards", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ amountCents: 5000, recipientEmail: "a@b.com", reason: "purchase", ...extra }),
+      }));
+    const bad = await post({});
+    expect(bad.status).toBe(400);
+    expect(await bad.json()).toEqual({ error: "payment_method_required" });
+    const ok = await post({ paymentMethod: "zelle" });
+    expect(ok.status).toBe(200);
+    const { getDb } = await import("@/lib/db");
+    const sale = getDb().prepare("SELECT kind, method, amount_cents AS amount FROM payments").all();
+    expect(sale).toEqual([{ kind: "gift_card_sale", method: "zelle", amount: 5000 }]);
+  });
+
   it("stores the optional email headline on the card", async () => {
     const { POST } = await importRoute();
     const res = await POST(

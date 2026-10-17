@@ -198,7 +198,10 @@ export async function POST(req: Request) {
     order.paymentMethod = "gift-card";
     order.paidAt = now;
     try {
-      await saveOrder(order);
+      // The card covered the whole total: that is the money that moved.
+      await saveOrder(order, {
+        payments: [{ kind: "payment", method: "gift-card", amountCents: giftCardCents, orderId: order.id, giftCardId, source: "stripe_intent", actor: "system" }],
+      });
       redeem(giftCardId, order.id, giftCardCents);
       if (promoId) redeemPromo(promoId, order.id, discountCents);
     } catch (e) {

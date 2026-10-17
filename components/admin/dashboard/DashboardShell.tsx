@@ -24,6 +24,7 @@ export default function DashboardShell({ locale, children, lastUpdated, onRefres
   const polledSms = useUnreadSmsCount(smsUnread === undefined);
   const unreadSms = smsUnread ?? polledSms;
   const isLedger = pathname.endsWith("/ledger");
+  const isCashClose = pathname.endsWith("/cierre");
   const isRunSheet = pathname.endsWith("/run-sheet");
   const isSettings = pathname.endsWith("/settings");
   const isGiftCards = pathname.includes("/admin/gift-cards");
@@ -36,7 +37,7 @@ export default function DashboardShell({ locale, children, lastUpdated, onRefres
   const isMessages = pathname.includes("/admin/messages");
   const isAccounts = pathname.includes("/admin/accounts");
   const isBandeja =
-    !isLedger && !isRunSheet && !isSettings && !isGiftCards && !isPromos && !isCustomers && !isAccounts && !isOccasions && !isMetrics && !isPipeline && !isCampaigns && !isMessages;
+    !isLedger && !isCashClose && !isRunSheet && !isSettings && !isGiftCards && !isPromos && !isCustomers && !isAccounts && !isOccasions && !isMetrics && !isPipeline && !isCampaigns && !isMessages;
   const base = `/${locale}/admin/dashboard`;
   const navRef = useRef<HTMLElement>(null);
 
@@ -98,6 +99,11 @@ export default function DashboardShell({ locale, children, lastUpdated, onRefres
               aria-current={isLedger ? "page" : undefined}
               className={`flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-lg px-3 ${isLedger ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >{t("nav_ledger")}</Link>
+            <Link
+              href={`${base}/cierre`}
+              aria-current={isCashClose ? "page" : undefined}
+              className={`flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-lg px-3 ${isCashClose ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
+            >{t("nav_cash_close")}</Link>
             <Link
               href={`/${locale}/admin/gift-cards`}
               aria-current={isGiftCards ? "page" : undefined}

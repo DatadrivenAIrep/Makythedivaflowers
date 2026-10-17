@@ -18,6 +18,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ errors: parsed.error.flatten() }, { status: 400 });
   }
   const input = parsed.data;
+  if (input.reason === "purchase" && !input.paymentMethod) {
+    return NextResponse.json({ error: "payment_method_required" }, { status: 400 });
+  }
   const card = issueGiftCard({
     initialCents: input.amountCents,
     recipientEmail: input.recipientEmail,
@@ -28,6 +31,7 @@ export async function POST(req: Request) {
     headline: input.headline,
     partner: input.partner,
     reason: input.reason,
+    paymentMethod: input.paymentMethod,
     issuedBy: "maky", // matches the hardcoded operator used by intake (takenBy)
   });
 

@@ -20,8 +20,13 @@ type Resp = { items: Receivable[]; totalCents: number };
 type RowMsg = { ok: boolean; text: string };
 
 const COLLAPSED = 5;
-const METHODS = ["cash", "zelle", "card-terminal", "ach"] as const;
-const METHOD_KEY: Record<(typeof METHODS)[number], string> = { cash: "cash", zelle: "zelle", "card-terminal": "card_terminal", ach: "ach" };
+const METHODS = ["cash", "zelle", "card-terminal", "ach", "check"] as const;
+const METHOD_KEY: Record<(typeof METHODS)[number], string> = {
+  cash: "cash", zelle: "zelle", "card-terminal": "card_terminal", ach: "ach", check: "settle_method_check",
+};
+// Marking a pending order paid takes no cheque (markPaidManual's methods);
+// settling the leftover of a paid order does, same as the order drawer.
+const PAY_METHODS = METHODS.filter((m) => m !== "check");
 
 function money(c: number) { return `$${(c / 100).toFixed(2)}`; }
 
@@ -74,11 +79,11 @@ export default function ReceivablesSection({ locale, version, onOpen }: Props) {
     }
   }
 
-  async function markPaid(r: Receivable, method?: (typeof METHODS)[number]) {
+  async function markPaid(r: Receivable, method: (typeof METHODS)[number]) {
     setBusyId(r.orderId);
     try {
-      // A pending order is paid with a method; one already marked paid only has its leftover settled.
-      const body = r.canRemind ? { method } : { settleBalance: true };
+      // A pending order is paid with a method; one already marked paid has its leftover settled, still recording how it was paid.
+      const body = r.canRemind ? { method } : { settleBalance: true, method };
       const res = await fetch(`/api/admin/orders/${r.orderId}/payment`, {
         method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify(body),
       });
@@ -128,14 +133,14 @@ export default function ReceivablesSection({ locale, version, onOpen }: Props) {
                     </AdminButton>
                   )}
                   <AdminButton variant="secondary" icon={Check} disabled={busy}
-                    onClick={() => (r.canRemind ? setPayingId(payingId === r.orderId ? null : r.orderId) : markPaid(r))}>
+                    onClick={() => setPayingId(payingId === r.orderId ? null : r.orderId)}>
                     {t("action_mark_paid")}
                   </AdminButton>
                   <AdminButton variant="secondary" icon={ArrowRight} onClick={() => onOpen(r.orderId)}>{t("action_open_detail")}</AdminButton>
                 </div>
                 {payingId === r.orderId && (
                   <div className="mt-2 flex flex-wrap gap-2 text-xs" role="group" aria-label={t("action_mark_paid")}>
-                    {METHODS.map((m) => (
+                    {(r.canRemind ? PAY_METHODS : METHODS).map((m) => (
                       <button key={m} type="button" disabled={busy} onClick={() => markPaid(r, m)}
                         className="rounded-full border border-ink/20 bg-bone px-2.5 py-1 hover:border-ink disabled:opacity-40">
                         {to(METHOD_KEY[m])}

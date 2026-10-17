@@ -8,6 +8,7 @@ import { runMigrations } from "@/lib/db-migrate";
 import { allocate, type Allocation } from "@/lib/house-account-allocate";
 import { recomputeSettlement } from "@/lib/house-account-settlement";
 import { getAccount, newId, accountBalanceCents } from "@/lib/house-account-storage";
+import { recordPaymentRow, toLogMethod } from "@/lib/payments-storage";
 import type { LedgerEntry, EntryKind, AccountPaymentMethod } from "@/types/house-account";
 
 const PAYMENT_METHODS: AccountPaymentMethod[] = ["cash", "zelle", "ach", "check", "card-terminal", "stripe"];
@@ -169,6 +170,11 @@ export function recordPayment(i: {
       stripeSessionId: i.stripeSessionId, note: i.note, actor: i.actor,
     });
     if (!entry) return { entry: null, allocations: [] }; // duplicate Stripe session: already recorded
+    // Opens no transaction of its own, so it is safe inside this ledger tx.
+    recordPaymentRow({
+      kind: "payment", method: toLogMethod(i.method), amountCents: i.amountCents, houseAccountId: i.accountId,
+      source: i.actor === "stripe" ? "house_account_stripe" : "house_account", actor: i.actor, note: i.note,
+    });
     const allocations = applyToOrders(i.accountId, i.amountCents, entry.id, i.actor);
     recomputeSettlement(i.accountId);
     return { entry, allocations };
