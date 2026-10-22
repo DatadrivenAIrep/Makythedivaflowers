@@ -6494,10 +6494,10 @@ export const PRODUCTS: Product[] = [
     },
   },
   {
-    id: "p-oct-golden-chilides",
-    slug: "golden-chilides",
+    id: "p-oct-chilides-garden",
+    slug: "chilides-garden",
     addedAt: "2026-10-22",
-    title: { en: "Golden Chilides", es: "Chilides Dorado" },
+    title: { en: "Chilides Garden", es: "Jardín de Chilides" },
     category: "arrangements",
     blurb: {
       en: "Yellow roses with purple stock, red gladiolus, white snapdragon, and a big golden bow.",
@@ -6508,8 +6508,8 @@ export const PRODUCTS: Product[] = [
       es: "Un arreglo amplio y alegre con rosas amarillas, alhelí morado, gladiolos rojos, boca de dragón blanca e hortensia verde, rematado con un gran moño dorado de lunares al centro. Luminoso y festivo para un cumpleaños, unas felicitaciones o un pensando en ti que debe brillar.",
     },
     images: [
-      { src: "/products/golden-chilides.jpg", alt: { en: "Golden Chilides", es: "Chilides Dorado" }, aspect: "4/5" },
-      { src: "/products/golden-chilides-2.jpg", alt: { en: "Golden Chilides, view 2", es: "Chilides Dorado, vista 2" }, aspect: "4/5" },
+      { src: "/products/chilides-garden.jpg", alt: { en: "Chilides Garden", es: "Jardín de Chilides" }, aspect: "4/5" },
+      { src: "/products/chilides-garden-2.jpg", alt: { en: "Chilides Garden, view 2", es: "Jardín de Chilides, vista 2" }, aspect: "4/5" },
     ],
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 14999 },
@@ -6519,7 +6519,7 @@ export const PRODUCTS: Product[] = [
     colorFamily: ["mixed"],
     active: true,
     seo: {
-      title: { en: "Golden Chilides — Yellow Rose & Gladiolus Arrangement | Diva Flowers", es: "Chilides Dorado — Rosas Amarillas y Gladiolos | Diva Flowers" },
+      title: { en: "Chilides Garden — Yellow Rose & Gladiolus Arrangement | Diva Flowers", es: "Jardín de Chilides — Rosas Amarillas y Gladiolos | Diva Flowers" },
       description: {
         en: "Yellow roses with purple stock, red gladiolus, white snapdragon, and a big golden bow. Same-day delivery on Long Island.",
         es: "Rosas amarillas con alhelí morado, gladiolos rojos, boca de dragón blanca y un gran moño dorado. Entrega el mismo día en Long Island.",

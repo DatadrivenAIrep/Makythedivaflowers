@@ -26,6 +26,8 @@ const nextConfig: NextConfig = {
       { source: "/:locale(en|es)/product/dozen-roses-in-yellow", destination: "/:locale/product/wrapped-roses-colored", permanent: true },
       { source: "/:locale(en|es)/product/dozen-roses-in-white", destination: "/:locale/product/wrapped-roses-colored", permanent: true },
       { source: "/:locale(en|es)/product/dozen-roses-in-multi-color", destination: "/:locale/product/wrapped-roses-colored", permanent: true },
+      // Renamed 2026-10-22 at the owner's request (Golden Chilides → Chilides Garden).
+      { source: "/:locale(en|es)/product/golden-chilides", destination: "/:locale/product/chilides-garden", permanent: true },
     ];
   },
   // Cache policy. Next tags statically-prerendered pages with
