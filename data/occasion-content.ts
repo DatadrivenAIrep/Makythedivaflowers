@@ -40,7 +40,48 @@ export const OCCASIONS_ALL: Occasion[] = [
   "mothers-day",
 ];
 
+/**
+ * Occasions Maky can tag that live in a seasonal collection instead of an
+ * all-year /ocasiones landing (Valentine's → /shop/valentines, Jan 20 – Feb 14).
+ */
+export const SEASONAL_OCCASIONS: Occasion[] = ["valentines-day"];
+
 export const OCCASION_CONTENT: Record<Occasion, OccasionContent> = {
+
+  // Seasonal (see SEASONAL_OCCASIONS): curates /shop/valentines, no all-year landing.
+  "valentines-day": {
+    label: { en: "Valentine's Day Flowers", es: "Flores de San Valentín" },
+    eyebrow: { en: "February 14", es: "14 de febrero" },
+    lead: {
+      en: "Red roses, dahlias and romantic pieces Maky picks for Valentine's Day, delivered across Nassau and Queens.",
+      es: "Rosas rojas, dalias y piezas románticas que Maky elige para San Valentín, con entrega en Nassau y Queens.",
+    },
+    guidance: [
+      {
+        heading: { en: "Order early for the 14th", es: "Pide con tiempo para el 14" },
+        body: {
+          en: "Valentine's is the busiest delivery day of the year. Ordering a few days ahead guarantees the piece you chose and a delivery window that works.",
+          es: "San Valentín es el día de más entregas del año. Pedir con unos días de anticipación te asegura la pieza que elegiste y un horario de entrega que funcione.",
+        },
+      },
+      {
+        heading: { en: "Send it to work", es: "Mándalo al trabajo" },
+        body: {
+          en: "Flowers delivered to an office are seen by everyone; at home they wait for the evening. Choose the moment you want them to land.",
+          es: "Las flores que llegan a la oficina las ve todo el mundo; en casa esperan a la noche. Elige el momento en que quieres que lleguen.",
+        },
+      },
+    ],
+    faq: [
+      {
+        q: { en: "Can I choose a delivery time on February 14?", es: "¿Puedo elegir la hora de entrega el 14 de febrero?" },
+        a: {
+          en: "We deliver all day on the 14th. Tell us in the order notes if it has to arrive before a certain time and we will plan the route around it.",
+          es: "Entregamos todo el día el 14. Dinos en las notas del pedido si tiene que llegar antes de cierta hora y planeamos la ruta para eso.",
+        },
+      },
+    ],
+  },
   birthday: {
     label: { en: "Birthday Flowers", es: "Flores de Cumpleaños" },
     eyebrow: { en: "For the day that is theirs", es: "Para el día que es suyo" },

@@ -42,7 +42,8 @@ export type Occasion =
   | "graduation"
   | "new-baby"
   | "thank-you"
-  | "thinking-of-you";
+  | "thinking-of-you"
+  | "valentines-day";
 export type ColorFamily =
   | "pink"
   | "red"

@@ -118,11 +118,12 @@ export function isChristmasProduct(p: Product): boolean {
   return (p.seasonMonths ?? []).includes(12);
 }
 
-// Valentine's Day: the romance pieces plus the rose picks.
+// Valentine's Day: the pieces Maky marks with the "valentines-day" occasion
+// (curated in the pricing sheet), not every romance or rose product.
 export function isValentinesProduct(p: Product): boolean {
   if (!p.active || p.giftExtra || p.category === "sympathy") return false;
   if (!isInSeason(p)) return false;
-  return p.occasions.includes("romance") || isRoseProduct(p);
+  return p.occasions.includes("valentines-day");
 }
 
 export type ShopSlug =

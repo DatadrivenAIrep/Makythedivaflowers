@@ -131,7 +131,7 @@ export const CHRISTMAS_LINK: OccasionLink = {
 export const VALENTINES_LINK: OccasionLink = {
   slug: "valentines",
   label: { en: "Valentine's Day", es: "San Valentín" },
-  img: "/products/hundred-roses.jpg",
+  img: "/products/rose-heart.jpg",
   path: (l) => `/${l}/shop/valentines`,
 };
 

@@ -6775,7 +6775,7 @@ export const PRODUCTS: Product[] = [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 19999 },
     ],
     tags: ["same-day"],
-    occasions: ["romance", "anniversary", "mothers-day", "just-because", "thinking-of-you"],
+    occasions: ["romance", "anniversary", "mothers-day", "just-because", "thinking-of-you", "valentines-day"],
     colorFamily: ["red", "white", "green"],
     active: true,
     seo: {
@@ -6841,7 +6841,7 @@ export const PRODUCTS: Product[] = [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9999 },
     ],
     tags: ["same-day"],
-    occasions: ["anniversary", "romance", "birthday", "thinking-of-you", "congrats", "just-because"],
+    occasions: ["anniversary", "romance", "birthday", "thinking-of-you", "congrats", "just-because", "valentines-day"],
     colorFamily: ["red", "mixed", "green", "pink"],
     active: true,
     seo: {
@@ -6940,7 +6940,7 @@ export const PRODUCTS: Product[] = [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 29999 },
     ],
     tags: ["same-day"],
-    occasions: ["anniversary", "congrats", "romance", "birthday", "mothers-day", "thinking-of-you"],
+    occasions: ["anniversary", "congrats", "romance", "birthday", "mothers-day", "thinking-of-you", "valentines-day"],
     colorFamily: ["red", "white", "green", "mixed"],
     active: true,
     seo: {

@@ -26,6 +26,7 @@ const PRIORITY_BY_OCCASION: Record<Occasion, GiftExtraId[]> = {
   // Deliberately no chocolates: this is the "hard week" occasion, and a treat
   // reads as celebratory when someone is having a bad month.
   "thinking-of-you": ["x-card-premium", "x-vase-upgrade", "x-ribbon-silk"],
+  "valentines-day": ["x-card-premium", "x-chocolates-mini", "x-vase-upgrade"],
 };
 
 export function suggestExtrasForCart(

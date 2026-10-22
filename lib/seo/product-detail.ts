@@ -27,6 +27,7 @@ const OCCASION: Record<Occasion, { en: string; es: string }> = {
   "new-baby": { en: "new babies", es: "recién nacidos" },
   "thank-you": { en: "thank-yous", es: "agradecimientos" },
   "thinking-of-you": { en: "thinking-of-you gestures", es: "gestos de pienso en ti" },
+  "valentines-day": { en: "Valentine's Day", es: "San Valentín" },
 };
 
 const usd = (cents: number) => `$${(cents / 100).toFixed(0)}`;
