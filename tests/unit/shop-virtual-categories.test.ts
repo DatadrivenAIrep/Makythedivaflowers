@@ -29,7 +29,9 @@ const slugs = (list: { slug: string }[]) => list.map((p) => p.slug).sort();
 const CENTERPIECES = [
   "autumn-orchard",
   "autumns-cornucopia",
+  "bud-vase-garden",
   "coral-chalice",
+  "crimson-trio",
   "evergreen-horizon",
   "eye-candy",
   "falling-leaves",

@@ -83,6 +83,8 @@ const CENTERPIECE_SLUGS = new Set([
   "long-table-romance",
   "tangerine-pop",
   "harvest-table",
+  "bud-vase-garden",
+  "crimson-trio",
 ]);
 
 export const CENTERPIECE_SLUGS_FOR_TEST: ReadonlySet<string> = CENTERPIECE_SLUGS;

@@ -6359,6 +6359,664 @@ export const PRODUCTS: Product[] = [
       },
     },
   },
+  {
+    id: "p-oct-hydrangea-sky",
+    slug: "hydrangea-sky",
+    addedAt: "2026-10-22",
+    title: { en: "Hydrangea Sky", es: "Cielo de Hortensias" },
+    category: "arrangements",
+    blurb: {
+      en: "Blue hydrangea with pink roses, white cymbidium orchids, and purple lisianthus in a green glass vase.",
+      es: "Hortensia azul con rosas rosadas, orquídeas cymbidium blancas y lisianthus morado en un jarrón de vidrio verde.",
+    },
+    description: {
+      en: "A soft, sky-colored arrangement — blue hydrangea with blush-pink roses, white cymbidium orchids, purple lisianthus, and lime-green hydrangea, gathered in a green glass vase. Fresh and gentle for a birthday, Mother's Day, a new baby, or a thinking-of-you. Choose the size that fits the moment.",
+      es: "Un arreglo suave en colores de cielo — hortensia azul con rosas rosadas, orquídeas cymbidium blancas, lisianthus morado e hortensia verde lima, en un jarrón de vidrio verde. Fresco y delicado para un cumpleaños, el Día de la Madre, un bebé o un pensando en ti. Elige el tamaño que va con el momento.",
+    },
+    images: [
+      { src: "/products/hydrangea-sky.jpg", alt: { en: "Hydrangea Sky", es: "Cielo de Hortensias" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 8999 },
+      { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12499 },
+      { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17499 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "mothers-day", "thinking-of-you", "just-because", "thank-you", "get-well", "congrats", "graduation", "new-baby"],
+    colorFamily: ["pastel", "mixed", "pink", "green"],
+    active: true,
+    seo: {
+      title: { en: "Hydrangea Sky — Blue Hydrangea & Pink Rose Arrangement | Diva Flowers", es: "Cielo de Hortensias — Hortensia Azul y Rosas Rosadas | Diva Flowers" },
+      description: {
+        en: "Blue hydrangea with pink roses, white cymbidium orchids, and purple lisianthus in a green glass vase. Same-day delivery on Long Island.",
+        es: "Hortensia azul con rosas rosadas, orquídeas cymbidium blancas y lisianthus morado en un jarrón de vidrio verde. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-autumn-sunflower",
+    slug: "autumn-sunflower",
+    addedAt: "2026-10-22",
+    title: { en: "Autumn Sunflower", es: "Girasol de Otoño" },
+    category: "arrangements",
+    blurb: {
+      en: "A fall arrangement of sunflowers with red, orange, and yellow roses, mums, and a raffia bow.",
+      es: "Un arreglo de otoño de girasoles con rosas rojas, naranja y amarillas, crisantemos y lazo de rafia.",
+    },
+    description: {
+      en: "Autumn in full color — sunflowers with red, orange, and yellow roses, burgundy chrysanthemums, golden solidago, and fresh greens, finished with a rustic raffia bow. A warm hello for a host, a neighbor, or anyone who loves the season.",
+      es: "El otoño a todo color — girasoles con rosas rojas, naranja y amarillas, crisantemos burdeos, solidago dorado y follaje fresco, rematado con un lazo rústico de rafia. Un saludo cálido para quien te recibe, un vecino o quien ama la temporada.",
+    },
+    images: [
+      { src: "/products/autumn-sunflower.jpg", alt: { en: "Autumn Sunflower", es: "Girasol de Otoño" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9999 },
+    ],
+    tags: ["same-day", "seasonal"],
+    occasions: [],
+    colorFamily: ["mixed"],
+    active: true,
+    seasonMonths: [9, 10, 11],
+    seo: {
+      title: { en: "Autumn Sunflower — Fall Sunflower & Rose Arrangement | Diva Flowers", es: "Girasol de Otoño — Arreglo de Otoño con Girasoles y Rosas | Diva Flowers" },
+      description: {
+        en: "A fall arrangement of sunflowers with red, orange, and yellow roses, mums, and a raffia bow. Same-day delivery on Long Island.",
+        es: "Un arreglo de otoño de girasoles con rosas rojas, naranja y amarillas, crisantemos y lazo de rafia. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-coral-orchid-garden",
+    slug: "coral-orchid-garden",
+    addedAt: "2026-10-22",
+    title: { en: "Coral Orchid Garden", es: "Jardín de Orquídea Coral" },
+    category: "arrangements",
+    blurb: {
+      en: "Pink and yellow roses with coral orchids, blush hydrangea, and white lisianthus.",
+      es: "Rosas rosadas y amarillas con orquídeas coral, hortensia rubor y lisianthus blanco.",
+    },
+    description: {
+      en: "A low, wide garden arrangement — pink and buttery-yellow roses with coral and orange orchids, blush hydrangea, white lisianthus, round allium, and a sweep of bear grass. Lush and joyful for a birthday, a congratulations, or a get-well wish. Choose the size that fits the moment.",
+      es: "Un arreglo de jardín bajo y amplio — rosas rosadas y amarillo mantequilla con orquídeas coral y naranja, hortensia rubor, lisianthus blanco, allium redondo y un arco de bear grass. Frondoso y alegre para un cumpleaños, unas felicitaciones o un deseo de pronta recuperación. Elige el tamaño que va con el momento.",
+    },
+    images: [
+      { src: "/products/coral-orchid-garden.jpg", alt: { en: "Coral Orchid Garden", es: "Jardín de Orquídea Coral" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9999 },
+      { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 14999 },
+      { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 18999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "get-well", "congrats", "thinking-of-you"],
+    colorFamily: ["mixed", "pink"],
+    active: true,
+    seo: {
+      title: { en: "Coral Orchid Garden — Orchid & Rose Garden Arrangement | Diva Flowers", es: "Jardín de Orquídea Coral — Orquídeas y Rosas de Jardín | Diva Flowers" },
+      description: {
+        en: "Pink and yellow roses with coral orchids, blush hydrangea, and white lisianthus. Same-day delivery on Long Island.",
+        es: "Rosas rosadas y amarillas con orquídeas coral, hortensia rubor y lisianthus blanco. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-autumn-fiesta",
+    slug: "autumn-fiesta",
+    addedAt: "2026-10-22",
+    title: { en: "Autumn Fiesta", es: "Fiesta de Otoño" },
+    category: "arrangements",
+    blurb: {
+      en: "A generous fall arrangement with orange gerberas, sunflowers, red roses, and lilac stock.",
+      es: "Un arreglo de otoño generoso con gerberas naranja, girasoles, rosas rojas y alhelí lila.",
+    },
+    description: {
+      en: "A wide, festive fall arrangement — orange gerbera daisies and sunflowers with red and orange roses, lilac stock, green hydrangea, and baby's breath. Bright and abundant for a birthday, a congratulations, or a thank-you table in autumn.",
+      es: "Un arreglo de otoño amplio y festivo — gerberas naranja y girasoles con rosas rojas y naranja, alhelí lila, hortensia verde y nube. Luminoso y abundante para un cumpleaños, unas felicitaciones o una mesa de gracias en otoño.",
+    },
+    images: [
+      { src: "/products/autumn-fiesta.jpg", alt: { en: "Autumn Fiesta", es: "Fiesta de Otoño" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 14999 },
+    ],
+    tags: ["same-day", "seasonal"],
+    occasions: ["birthday", "congrats", "thank-you"],
+    colorFamily: ["mixed", "green", "pastel"],
+    active: true,
+    seasonMonths: [9, 10, 11],
+    seo: {
+      title: { en: "Autumn Fiesta — Fall Gerbera & Sunflower Arrangement | Diva Flowers", es: "Fiesta de Otoño — Arreglo de Otoño con Gerberas y Girasoles | Diva Flowers" },
+      description: {
+        en: "A generous fall arrangement with orange gerberas, sunflowers, red roses, and lilac stock. Same-day delivery on Long Island.",
+        es: "Un arreglo de otoño generoso con gerberas naranja, girasoles, rosas rojas y alhelí lila. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-golden-chilides",
+    slug: "golden-chilides",
+    addedAt: "2026-10-22",
+    title: { en: "Golden Chilides", es: "Chilides Dorado" },
+    category: "arrangements",
+    blurb: {
+      en: "Yellow roses with purple stock, red gladiolus, white snapdragon, and a big golden bow.",
+      es: "Rosas amarillas con alhelí morado, gladiolos rojos, boca de dragón blanca y un gran moño dorado.",
+    },
+    description: {
+      en: "A wide, cheerful arrangement with yellow roses, purple stock, red gladiolus, white snapdragon, and green hydrangea, finished with a big golden polka-dot bow at its heart. Bright and celebratory for a birthday, a congratulations, or a thinking-of-you that should shine.",
+      es: "Un arreglo amplio y alegre con rosas amarillas, alhelí morado, gladiolos rojos, boca de dragón blanca e hortensia verde, rematado con un gran moño dorado de lunares al centro. Luminoso y festivo para un cumpleaños, unas felicitaciones o un pensando en ti que debe brillar.",
+    },
+    images: [
+      { src: "/products/golden-chilides.jpg", alt: { en: "Golden Chilides", es: "Chilides Dorado" }, aspect: "4/5" },
+      { src: "/products/golden-chilides-2.jpg", alt: { en: "Golden Chilides, view 2", es: "Chilides Dorado, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 14999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "congrats", "thinking-of-you"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Golden Chilides — Yellow Rose & Gladiolus Arrangement | Diva Flowers", es: "Chilides Dorado — Rosas Amarillas y Gladiolos | Diva Flowers" },
+      description: {
+        en: "Yellow roses with purple stock, red gladiolus, white snapdragon, and a big golden bow. Same-day delivery on Long Island.",
+        es: "Rosas amarillas con alhelí morado, gladiolos rojos, boca de dragón blanca y un gran moño dorado. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-bud-vase-garden",
+    slug: "bud-vase-garden",
+    addedAt: "2026-10-22",
+    title: { en: "Bud Vase Garden", es: "Jardín de Floreros" },
+    category: "arrangements",
+    blurb: {
+      en: "A set of nine bud vases with delphinium, white dahlias, anemones, green orchids, roses, and blue hydrangea.",
+      es: "Un set de nueve floreritos con delphinium, dalias blancas, anémonas, orquídeas verdes, rosas e hortensia azul.",
+    },
+    description: {
+      en: "Nine cut-glass bud vases, each with its own small arrangement — blue delphinium, white dahlias, purple anemones, lime cymbidium orchids, white roses and lisianthus, and blue hydrangea. Sold as a set of nine to run down a long table: made for birthday parties, bridal showers, graduations, and dinners that deserve a centerpiece.",
+      es: "Nueve floreritos de vidrio tallado, cada uno con su pequeño arreglo — delphinium azul, dalias blancas, anémonas moradas, orquídeas cymbidium verde lima, rosas y lisianthus blancos e hortensia azul. Se venden como set de nueve para recorrer una mesa larga: hechos para fiestas de cumpleaños, bridal showers, graduaciones y cenas que merecen un centro de mesa.",
+    },
+    images: [
+      { src: "/products/bud-vase-garden.jpg", alt: { en: "Bud Vase Garden", es: "Jardín de Floreros" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "set-9", label: { en: "Set of 9", es: "Set de 9" }, priceCents: 31499 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "graduation"],
+    colorFamily: ["pastel", "white", "green"],
+    active: true,
+    seo: {
+      title: { en: "Bud Vase Garden — Dahlia & Delphinium Centerpiece Set of 9 | Diva Flowers", es: "Jardín de Floreros — Set de 9 Centros con Dalias | Diva Flowers" },
+      description: {
+        en: "A set of nine bud vases with delphinium, white dahlias, anemones, green orchids, roses, and blue hydrangea. Same-day delivery on Long Island.",
+        es: "Un set de nueve floreritos con delphinium, dalias blancas, anémonas, orquídeas verdes, rosas e hortensia azul. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-crimson-trio",
+    slug: "crimson-trio",
+    addedAt: "2026-10-22",
+    title: { en: "Crimson Trio", es: "Trío Carmesí" },
+    category: "arrangements",
+    blurb: {
+      en: "A trio of leaf-lined cubes with red roses and deep purple blooms, sold as a set of three.",
+      es: "Un trío de cubos forrados de hoja con rosas rojas y flores moradas intensas, en set de tres.",
+    },
+    description: {
+      en: "Three low, leaf-lined glass cubes filled with red roses and deep purple and burgundy blooms — sold as a set of three to dress a table for a birthday dinner, a celebration, or an event. Rich and coordinated, each piece works alone or together as a centerpiece.",
+      es: "Tres cubos bajos de vidrio forrados de hoja con rosas rojas y flores moradas y burdeos intensas — se venden como set de tres para vestir la mesa de una cena de cumpleaños, una celebración o un evento. Intensos y coordinados, cada pieza funciona sola o juntas como centro de mesa.",
+    },
+    images: [
+      { src: "/products/crimson-trio.jpg", alt: { en: "Crimson Trio", es: "Trío Carmesí" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "set-3", label: { en: "Set of 3", es: "Set de 3" }, priceCents: 22499 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "congrats"],
+    colorFamily: ["red", "mixed", "green"],
+    active: true,
+    seo: {
+      title: { en: "Crimson Trio — Red Rose Centerpiece Set of 3 | Diva Flowers", es: "Trío Carmesí — Set de 3 Centros de Rosas Rojas | Diva Flowers" },
+      description: {
+        en: "A trio of leaf-lined cubes with red roses and deep purple blooms, sold as a set of three. Same-day delivery on Long Island.",
+        es: "Un trío de cubos forrados de hoja con rosas rojas y flores moradas intensas, en set de tres. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-pumpkin-patch",
+    slug: "pumpkin-patch",
+    addedAt: "2026-10-22",
+    title: { en: "Pumpkin Patch", es: "Calabaza y Girasol" },
+    category: "arrangements",
+    blurb: {
+      en: "A fall vase with sunflowers, orange gerberas, a little pumpkin, red roses, and mums.",
+      es: "Un jarrón de otoño con girasoles, gerberas naranja, una calabacita, rosas rojas y crisantemos.",
+    },
+    description: {
+      en: "A cheerful fall arrangement in a glass vase — sunflowers and orange gerbera daisies with a little orange pumpkin, red roses, rust chrysanthemums, and golden solidago. A sweet thank-you, a birthday hello, or a bit of autumn for the kitchen table.",
+      es: "Un arreglo de otoño alegre en jarrón de vidrio — girasoles y gerberas naranja con una calabacita naranja, rosas rojas, crisantemos óxido y solidago dorado. Un gracias dulce, un saludo de cumpleaños o un poco de otoño para la mesa de la cocina.",
+    },
+    images: [
+      { src: "/products/pumpkin-patch.jpg", alt: { en: "Pumpkin Patch", es: "Calabaza y Girasol" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 4999 },
+    ],
+    tags: ["same-day", "seasonal"],
+    occasions: ["thank-you", "just-because", "birthday"],
+    colorFamily: ["mixed", "green", "red"],
+    active: true,
+    seasonMonths: [9, 10, 11],
+    seo: {
+      title: { en: "Pumpkin Patch — Fall Sunflower & Gerbera Vase | Diva Flowers", es: "Calabaza y Girasol — Jarrón de Otoño con Girasoles | Diva Flowers" },
+      description: {
+        en: "A fall vase with sunflowers, orange gerberas, a little pumpkin, red roses, and mums. Same-day delivery on Long Island.",
+        es: "Un jarrón de otoño con girasoles, gerberas naranja, una calabacita, rosas rojas y crisantemos. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-lavender-wrap",
+    slug: "lavender-wrap",
+    addedAt: "2026-10-22",
+    title: { en: "Lavender Wrap", es: "Ramo Lavanda" },
+    category: "bouquets",
+    blurb: {
+      en: "A bouquet wrapped in pink paper with purple hydrangea, lilac roses, orange gerberas, and stock.",
+      es: "Un ramo en papel rosa con hortensia morada, rosas lila, gerberas naranja y alhelí.",
+    },
+    description: {
+      en: "A hand-tied bouquet wrapped in soft pink paper — purple hydrangea, lilac roses, orange gerbera daisies, purple stock, and baby's breath. Easy to give and full of color for a birthday, Mother's Day, a congratulations, or a retirement send-off.",
+      es: "Un ramo atado a mano en papel rosa suave — hortensia morada, rosas lila, gerberas naranja, alhelí morado y nube. Fácil de regalar y lleno de color para un cumpleaños, el Día de la Madre, unas felicitaciones o una despedida de jubilación.",
+    },
+    images: [
+      { src: "/products/lavender-wrap.jpg", alt: { en: "Lavender Wrap", es: "Ramo Lavanda" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "bouquet", label: { en: "Bouquet", es: "Ramo" }, priceCents: 8999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "anniversary", "romance", "mothers-day", "just-because", "thank-you", "congrats", "get-well", "graduation", "thinking-of-you"],
+    colorFamily: ["pastel", "mixed", "pink", "white", "green"],
+    active: true,
+    seo: {
+      title: { en: "Lavender Wrap — Hydrangea & Lilac Rose Bouquet | Diva Flowers", es: "Ramo Lavanda — Ramo de Hortensia y Rosas Lila | Diva Flowers" },
+      description: {
+        en: "A bouquet wrapped in pink paper with purple hydrangea, lilac roses, orange gerberas, and stock. Same-day delivery on Long Island.",
+        es: "Un ramo en papel rosa con hortensia morada, rosas lila, gerberas naranja y alhelí. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-sunshine-and-wine",
+    slug: "sunshine-and-wine",
+    addedAt: "2026-10-22",
+    title: { en: "Sunshine & Wine", es: "Sol y Vino" },
+    category: "arrangements",
+    blurb: {
+      en: "Yellow and pink roses with red spray roses and greens in a leaf-lined bowl.",
+      es: "Rosas amarillas y rosadas con mini rosas rojas y follaje en un tazón forrado de hoja.",
+    },
+    description: {
+      en: "Sunshine and wine in one arrangement — bright yellow and soft pink roses with deep red spray roses and fresh greens, set low in a leaf-lined glass bowl. A cheerful, easy gift for a birthday, an anniversary, or a just-because.",
+      es: "Sol y vino en un solo arreglo — rosas amarillas y rosadas suaves con mini rosas rojas intensas y follaje fresco, bajo en un tazón de vidrio forrado de hoja. Un regalo alegre y fácil para un cumpleaños, un aniversario o un porque sí.",
+    },
+    images: [
+      { src: "/products/sunshine-and-wine.jpg", alt: { en: "Sunshine & Wine", es: "Sol y Vino" }, aspect: "4/5" },
+      { src: "/products/sunshine-and-wine-2.jpg", alt: { en: "Sunshine & Wine, view 2", es: "Sol y Vino, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 7999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "anniversary", "just-because", "thank-you", "get-well", "romance", "congrats", "thinking-of-you", "graduation"],
+    colorFamily: ["red", "mixed", "pink", "green"],
+    active: true,
+    seo: {
+      title: { en: "Sunshine & Wine — Yellow & Red Rose Arrangement | Diva Flowers", es: "Sol y Vino — Arreglo de Rosas Amarillas y Rojas | Diva Flowers" },
+      description: {
+        en: "Yellow and pink roses with red spray roses and greens in a leaf-lined bowl. Same-day delivery on Long Island.",
+        es: "Rosas amarillas y rosadas con mini rosas rojas y follaje en un tazón forrado de hoja. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-golden-harvest",
+    slug: "golden-harvest",
+    addedAt: "2026-10-22",
+    title: { en: "Golden Harvest", es: "Cosecha Dorada" },
+    category: "arrangements",
+    blurb: {
+      en: "A fall arrangement of sunflowers, orange and red roses, a little yellow pumpkin, and solidago.",
+      es: "Un arreglo de otoño de girasoles, rosas naranja y rojas, una calabacita amarilla y solidago.",
+    },
+    description: {
+      en: "A golden fall arrangement — sunflowers with orange and red roses, a little yellow pumpkin, golden solidago, and fresh greens. Small and sunny for a thank-you, a get-well wish, or a just-because in autumn.",
+      es: "Un arreglo dorado de otoño — girasoles con rosas naranja y rojas, una calabacita amarilla, solidago dorado y follaje fresco. Pequeño y soleado para un gracias, un deseo de pronta recuperación o un porque sí en otoño.",
+    },
+    images: [
+      { src: "/products/golden-harvest.jpg", alt: { en: "Golden Harvest", es: "Cosecha Dorada" }, aspect: "4/5" },
+      { src: "/products/golden-harvest-2.jpg", alt: { en: "Golden Harvest, view 2", es: "Cosecha Dorada, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 4999 },
+    ],
+    tags: ["same-day", "seasonal"],
+    occasions: ["thank-you", "just-because", "get-well"],
+    colorFamily: ["mixed", "red", "green"],
+    active: true,
+    seasonMonths: [9, 10, 11],
+    seo: {
+      title: { en: "Golden Harvest — Fall Sunflower & Rose Arrangement | Diva Flowers", es: "Cosecha Dorada — Arreglo de Otoño con Girasoles y Rosas | Diva Flowers" },
+      description: {
+        en: "A fall arrangement of sunflowers, orange and red roses, a little yellow pumpkin, and solidago. Same-day delivery on Long Island.",
+        es: "Un arreglo de otoño de girasoles, rosas naranja y rojas, una calabacita amarilla y solidago. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-teddy-love-basket",
+    slug: "teddy-love-basket",
+    addedAt: "2026-10-22",
+    title: { en: "Teddy Love Basket", es: "Canasta Osito de Amor" },
+    category: "arrangements",
+    blurb: {
+      en: "A large basket of red roses, purple delphinium, and gladiolus with a pink teddy bear and red bow.",
+      es: "Una gran canasta de rosas rojas, delphinium morado y gladiolos con un osito rosado y moño rojo.",
+    },
+    description: {
+      en: "A grand gift basket overflowing with red roses, purple delphinium, gladiolus, and lush greens, finished with a red satin bow and long ribbons and a soft pink teddy bear tucked in front. A showstopper for an anniversary, a romantic surprise, a birthday, or a new baby.",
+      es: "Una gran canasta de regalo llena de rosas rojas, delphinium morado, gladiolos y follaje frondoso, rematada con un moño de satín rojo, cintas largas y un osito de peluche rosado al frente. Una pieza de impacto para un aniversario, una sorpresa romántica, un cumpleaños o un bebé.",
+    },
+    images: [
+      { src: "/products/teddy-love-basket.jpg", alt: { en: "Teddy Love Basket", es: "Canasta Osito de Amor" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 29999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["romance", "anniversary", "birthday", "just-because", "thank-you", "congrats", "new-baby", "get-well", "thinking-of-you", "mothers-day", "graduation"],
+    colorFamily: ["red", "pink", "mixed", "green"],
+    active: true,
+    seo: {
+      title: { en: "Teddy Love Basket — Red Rose Basket with Teddy Bear | Diva Flowers", es: "Canasta Osito de Amor — Rosas Rojas con Osito | Diva Flowers" },
+      description: {
+        en: "A large basket of red roses, purple delphinium, and gladiolus with a pink teddy bear and red bow. Same-day delivery on Long Island.",
+        es: "Una gran canasta de rosas rojas, delphinium morado y gladiolos con un osito rosado y moño rojo. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-rose-heart",
+    slug: "rose-heart",
+    addedAt: "2026-10-22",
+    title: { en: "Rose Heart", es: "Corazón de Rosas" },
+    category: "arrangements",
+    blurb: {
+      en: "A heart of tightly packed red roses framed in white hydrangea.",
+      es: "Un corazón de rosas rojas compactas enmarcado en hortensia blanca.",
+    },
+    description: {
+      en: "A romantic heart of tightly packed red roses framed in a soft border of white hydrangea, with a light touch of bear grass at the top. A gift that says it all for an anniversary, a romantic surprise, Mother's Day, or Valentine's Day.",
+      es: "Un corazón romántico de rosas rojas compactas enmarcado en un borde suave de hortensia blanca, con un toque de bear grass arriba. Un regalo que lo dice todo para un aniversario, una sorpresa romántica, el Día de la Madre o San Valentín.",
+    },
+    images: [
+      { src: "/products/rose-heart.jpg", alt: { en: "Rose Heart", es: "Corazón de Rosas" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 19999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["romance", "anniversary", "mothers-day", "just-because", "thinking-of-you"],
+    colorFamily: ["red", "white", "green"],
+    active: true,
+    seo: {
+      title: { en: "Rose Heart — Red Rose Heart with White Hydrangea | Diva Flowers", es: "Corazón de Rosas — Corazón Rojo con Hortensia Blanca | Diva Flowers" },
+      description: {
+        en: "A heart of tightly packed red roses framed in white hydrangea. Same-day delivery on Long Island.",
+        es: "Un corazón de rosas rojas compactas enmarcado en hortensia blanca. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-garden-bubble",
+    slug: "garden-bubble",
+    addedAt: "2026-10-22",
+    title: { en: "Garden Bubble", es: "Burbuja de Jardín" },
+    category: "arrangements",
+    blurb: {
+      en: "A yellow garden rose with peach roses, lilac stock, and hydrangea in a glass bubble vase.",
+      es: "Una rosa de jardín amarilla con rosas melocotón, alhelí lila e hortensia en un florero de burbuja.",
+    },
+    description: {
+      en: "A soft garden arrangement in a clear glass bubble vase — a buttery-yellow garden rose with peach and blush roses, lilac stock, and green, white, and pink hydrangea, with the stems visible through the glass. Fresh and pretty for a birthday, a congratulations, or a thank-you.",
+      es: "Un arreglo de jardín suave en un florero de burbuja de vidrio transparente — una rosa de jardín amarillo mantequilla con rosas melocotón y rubor, alhelí lila e hortensia verde, blanca y rosa, con los tallos a la vista. Fresco y bonito para un cumpleaños, unas felicitaciones o un gracias.",
+    },
+    images: [
+      { src: "/products/garden-bubble.jpg", alt: { en: "Garden Bubble", es: "Burbuja de Jardín" }, aspect: "4/5" },
+      { src: "/products/garden-bubble-2.jpg", alt: { en: "Garden Bubble, view 2", es: "Burbuja de Jardín, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "congrats", "thank-you"],
+    colorFamily: ["pastel", "mixed", "pink", "green", "white"],
+    active: true,
+    seo: {
+      title: { en: "Garden Bubble — Garden Rose & Hydrangea Bubble Vase | Diva Flowers", es: "Burbuja de Jardín — Rosa de Jardín e Hortensia en Burbuja | Diva Flowers" },
+      description: {
+        en: "A yellow garden rose with peach roses, lilac stock, and hydrangea in a glass bubble vase. Same-day delivery on Long Island.",
+        es: "Una rosa de jardín amarilla con rosas melocotón, alhelí lila e hortensia en un florero de burbuja. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-velvet-dahlia",
+    slug: "velvet-dahlia",
+    addedAt: "2026-10-22",
+    title: { en: "Velvet Dahlia", es: "Dalia de Terciopelo" },
+    category: "arrangements",
+    blurb: {
+      en: "Red dahlias with purple anemones, red roses, lisianthus, and calla lilies in a leaf-lined cube.",
+      es: "Dalias rojas con anémonas moradas, rosas rojas, lisianthus y calas en un cubo forrado de hoja.",
+    },
+    description: {
+      en: "A velvety, romantic arrangement — deep red dahlias with purple anemones, red roses, purple lisianthus, and dark calla lilies in a leaf-lined glass cube. Rich and passionate for an anniversary, a romantic surprise, a birthday, or Valentine's Day.",
+      es: "Un arreglo aterciopelado y romántico — dalias rojas intensas con anémonas moradas, rosas rojas, lisianthus morado y calas oscuras en un cubo de vidrio forrado de hoja. Intenso y apasionado para un aniversario, una sorpresa romántica, un cumpleaños o San Valentín.",
+    },
+    images: [
+      { src: "/products/velvet-dahlia.jpg", alt: { en: "Velvet Dahlia", es: "Dalia de Terciopelo" }, aspect: "4/5" },
+      { src: "/products/velvet-dahlia-2.jpg", alt: { en: "Velvet Dahlia, view 2", es: "Dalia de Terciopelo, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["anniversary", "romance", "birthday", "thinking-of-you", "congrats", "just-because"],
+    colorFamily: ["red", "mixed", "green", "pink"],
+    active: true,
+    seo: {
+      title: { en: "Velvet Dahlia — Red Dahlia & Anemone Arrangement | Diva Flowers", es: "Dalia de Terciopelo — Dalias Rojas y Anémonas | Diva Flowers" },
+      description: {
+        en: "Red dahlias with purple anemones, red roses, lisianthus, and calla lilies in a leaf-lined cube. Same-day delivery on Long Island.",
+        es: "Dalias rojas con anémonas moradas, rosas rojas, lisianthus y calas en un cubo forrado de hoja. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-royal-dahlia",
+    slug: "royal-dahlia",
+    addedAt: "2026-10-22",
+    title: { en: "Royal Dahlia", es: "Dalia Imperial" },
+    category: "arrangements",
+    blurb: {
+      en: "Red dahlias with purple hydrangea, red roses, and lilac lisianthus in a leaf-lined cube.",
+      es: "Dalias rojas con hortensia morada, rosas rojas y lisianthus lila en un cubo forrado de hoja.",
+    },
+    description: {
+      en: "A regal arrangement in red and purple — deep red dahlias with purple hydrangea, red roses, lilac and white lisianthus, and a sweep of bear grass in a leaf-lined glass cube. Full and elegant for an anniversary, a romantic gesture, a birthday, or a congratulations.",
+      es: "Un arreglo imperial en rojo y morado — dalias rojas intensas con hortensia morada, rosas rojas, lisianthus lila y blanco y un arco de bear grass en un cubo de vidrio forrado de hoja. Lleno y elegante para un aniversario, un gesto romántico, un cumpleaños o unas felicitaciones.",
+    },
+    images: [
+      { src: "/products/royal-dahlia.jpg", alt: { en: "Royal Dahlia", es: "Dalia Imperial" }, aspect: "4/5" },
+      { src: "/products/royal-dahlia-2.jpg", alt: { en: "Royal Dahlia, view 2", es: "Dalia Imperial, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 15999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["anniversary", "romance", "birthday", "congrats", "thinking-of-you"],
+    colorFamily: ["red", "mixed", "green", "pastel", "white"],
+    active: true,
+    seo: {
+      title: { en: "Royal Dahlia — Red Dahlia & Purple Hydrangea Cube | Diva Flowers", es: "Dalia Imperial — Dalias Rojas e Hortensia Morada | Diva Flowers" },
+      description: {
+        en: "Red dahlias with purple hydrangea, red roses, and lilac lisianthus in a leaf-lined cube. Same-day delivery on Long Island.",
+        es: "Dalias rojas con hortensia morada, rosas rojas y lisianthus lila en un cubo forrado de hoja. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-golden-autumn",
+    slug: "golden-autumn",
+    addedAt: "2026-10-22",
+    title: { en: "Golden Autumn", es: "Otoño Dorado" },
+    category: "arrangements",
+    blurb: {
+      en: "A fall arrangement with a pumpkin, a sunflower, purple mums, and rudbeckia.",
+      es: "Un arreglo de otoño con calabaza, girasol, crisantemos morados y rudbeckia.",
+    },
+    description: {
+      en: "A warm fall arrangement with a small orange pumpkin and a big sunflower among purple chrysanthemums, rudbeckia, golden solidago, and autumn greens. A cozy touch of the season for a host, a friend, or your own table.",
+      es: "Un arreglo de otoño cálido con una calabacita naranja y un girasol grande entre crisantemos morados, rudbeckias, solidago dorado y follaje otoñal. Un toque acogedor de la temporada para quien te recibe, una amiga o tu propia mesa.",
+    },
+    images: [
+      { src: "/products/golden-autumn.jpg", alt: { en: "Golden Autumn", es: "Otoño Dorado" }, aspect: "4/5" },
+      { src: "/products/golden-autumn-2.jpg", alt: { en: "Golden Autumn, view 2", es: "Otoño Dorado, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 6999 },
+    ],
+    tags: ["same-day", "seasonal"],
+    occasions: [],
+    colorFamily: ["mixed", "green", "pastel", "pink"],
+    active: true,
+    seasonMonths: [9, 10, 11],
+    seo: {
+      title: { en: "Golden Autumn — Fall Sunflower & Pumpkin Arrangement | Diva Flowers", es: "Otoño Dorado — Arreglo de Otoño con Girasol y Calabaza | Diva Flowers" },
+      description: {
+        en: "A fall arrangement with a pumpkin, a sunflower, purple mums, and rudbeckia. Same-day delivery on Long Island.",
+        es: "Un arreglo de otoño con calabaza, girasol, crisantemos morados y rudbeckia. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-monstera-elegance",
+    slug: "monstera-elegance",
+    addedAt: "2026-10-22",
+    title: { en: "Monstera Elegance", es: "Monstera Elegante" },
+    category: "arrangements",
+    blurb: {
+      en: "A tall arrangement with monstera leaves, red roses, white dahlias, and white snapdragon.",
+      es: "Un arreglo alto con hojas de monstera, rosas rojas, dalias blancas y boca de dragón blanca.",
+    },
+    description: {
+      en: "A tall, elegant arrangement framed by sculptural monstera leaves — red roses with white dahlias, white snapdragon, seeded eucalyptus, and loops of bear grass. Striking and romantic for an anniversary, a congratulations, a birthday, or Valentine's Day.",
+      es: "Un arreglo alto y elegante enmarcado por hojas esculturales de monstera — rosas rojas con dalias blancas, boca de dragón blanca, eucalipto y aros de bear grass. Impactante y romántico para un aniversario, unas felicitaciones, un cumpleaños o San Valentín.",
+    },
+    images: [
+      { src: "/products/monstera-elegance.jpg", alt: { en: "Monstera Elegance", es: "Monstera Elegante" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 29999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["anniversary", "congrats", "romance", "birthday", "mothers-day", "thinking-of-you"],
+    colorFamily: ["red", "white", "green", "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Monstera Elegance — Red Rose & White Dahlia Arrangement | Diva Flowers", es: "Monstera Elegante — Rosas Rojas y Dalias Blancas | Diva Flowers" },
+      description: {
+        en: "A tall arrangement with monstera leaves, red roses, white dahlias, and white snapdragon. Same-day delivery on Long Island.",
+        es: "Un arreglo alto con hojas de monstera, rosas rojas, dalias blancas y boca de dragón blanca. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-grand-tropical-basket",
+    slug: "grand-tropical-basket",
+    addedAt: "2026-10-22",
+    title: { en: "Grand Tropical Basket", es: "Gran Canasta Tropical" },
+    category: "arrangements",
+    blurb: {
+      en: "A grand basket of sunflowers, blue hydrangea, delphinium, orange gladiolus, and red roses.",
+      es: "Una gran canasta de girasoles, hortensia azul, delphinium, gladiolos naranja y rosas rojas.",
+    },
+    description: {
+      en: "A grand, bold basket — sunflowers with blue hydrangea and delphinium, orange gladiolus and calla lilies, red roses, and big tropical leaves. Strong colors and a generous size make it a favorite for a man's birthday, a big congratulations, or a celebration at the office.",
+      es: "Una gran canasta atrevida — girasoles con hortensia y delphinium azules, gladiolos y calas naranja, rosas rojas y grandes hojas tropicales. Sus colores fuertes y su tamaño generoso la hacen ideal para el cumpleaños de un hombre, unas grandes felicitaciones o una celebración en la oficina.",
+    },
+    images: [
+      { src: "/products/grand-tropical-basket.jpg", alt: { en: "Grand Tropical Basket", es: "Gran Canasta Tropical" }, aspect: "4/5" },
+      { src: "/products/grand-tropical-basket-2.jpg", alt: { en: "Grand Tropical Basket, view 2", es: "Gran Canasta Tropical, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 29999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["congrats", "birthday", "new-baby", "thinking-of-you", "just-because"],
+    colorFamily: ["mixed", "green", "red"],
+    active: true,
+    seo: {
+      title: { en: "Grand Tropical Basket — Sunflower & Hydrangea Basket | Diva Flowers", es: "Gran Canasta Tropical — Canasta de Girasoles e Hortensia | Diva Flowers" },
+      description: {
+        en: "A grand basket of sunflowers, blue hydrangea, delphinium, orange gladiolus, and red roses. Same-day delivery on Long Island.",
+        es: "Una gran canasta de girasoles, hortensia azul, delphinium, gladiolos naranja y rosas rojas. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-midnight-roses",
+    slug: "midnight-roses",
+    addedAt: "2026-10-22",
+    title: { en: "Midnight Roses", es: "Rosas de Medianoche" },
+    category: "bouquets",
+    blurb: {
+      en: "A bouquet of 51 red roses with monstera leaves, wrapped in black paper with a red ribbon.",
+      es: "Un ramo de 51 rosas rojas con hojas de monstera, envuelto en papel negro con cinta roja.",
+    },
+    description: {
+      en: "Fifty-one red roses gathered into a full, round bouquet, framed by two glossy monstera leaves and wrapped in black paper with a red satin ribbon. Dramatic and unforgettable for an anniversary, a romantic surprise, a birthday, or Valentine's Day.",
+      es: "Cincuenta y una rosas rojas reunidas en un ramo lleno y redondo, enmarcado por dos hojas brillantes de monstera y envuelto en papel negro con cinta de satín roja. Dramático e inolvidable para un aniversario, una sorpresa romántica, un cumpleaños o San Valentín.",
+    },
+    images: [
+      { src: "/products/midnight-roses.jpg", alt: { en: "Midnight Roses", es: "Rosas de Medianoche" }, aspect: "4/5" },
+      { src: "/products/midnight-roses-2.jpg", alt: { en: "Midnight Roses, view 2", es: "Rosas de Medianoche, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "51 roses", es: "51 rosas" }, priceCents: 31999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["romance", "anniversary", "birthday", "mothers-day", "thinking-of-you", "congrats"],
+    colorFamily: ["red", "green"],
+    active: true,
+    seo: {
+      title: { en: "Midnight Roses — 51 Red Rose Bouquet | Diva Flowers", es: "Rosas de Medianoche — Ramo de 51 Rosas Rojas | Diva Flowers" },
+      description: {
+        en: "A bouquet of 51 red roses with monstera leaves, wrapped in black paper with a red ribbon. Same-day delivery on Long Island.",
+        es: "Un ramo de 51 rosas rojas con hojas de monstera, envuelto en papel negro con cinta roja. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
   // ─── TEST PRODUCT — $1 for end-to-end checkout validation. DELETE AFTER TESTING. ─────
   {
     id: "p-test-1usd",
