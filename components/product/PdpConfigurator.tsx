@@ -5,6 +5,8 @@ import type { Product, SubscriptionCadence as Cadence } from "@/types/product";
 import type { Occasion } from "@/schemas/card-message";
 import { VariantChips } from "./VariantChips";
 import { AddOnToggles } from "./AddOnToggles";
+import { DigitalCardOffer } from "./DigitalCardOffer";
+import { addOnsTotalCents } from "@/lib/product-add-ons";
 import { DeliveryDatePicker } from "./DeliveryDatePicker";
 import { CardMessage } from "./CardMessage";
 import { SubscriptionCadence as CadencePicker } from "./SubscriptionCadence";
@@ -66,9 +68,7 @@ function PdpConfiguratorImpl({ product, locale, cutoff, motionMode }: Props) {
 
   const totalCents = useMemo(() => {
     const v = product.variants.find((x) => x.id === variantId)?.priceCents ?? 0;
-    const adds =
-      product.addOns?.filter((a) => addOnIds.includes(a.id)).reduce((s, a) => s + a.priceCents, 0) ?? 0;
-    return v + adds;
+    return v + addOnsTotalCents(product, addOnIds);
   }, [product, variantId, addOnIds]);
 
   // Quote-only pieces are showcased, not sold from the cart: skip size/date/
@@ -124,6 +124,8 @@ function PdpConfiguratorImpl({ product, locale, cutoff, motionMode }: Props) {
         isSympathy={isSympathy}
         campaign={campaign}
       />
+
+      <DigitalCardOffer product={product} locale={locale} value={addOnIds} onChange={setAddOnIds} />
 
       <div ref={inlineRef}>
         <AddToBag

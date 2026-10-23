@@ -9,6 +9,7 @@ import { formatMoneyCents, formatPhoneUS, formatDeliveryWindow } from "@/lib/for
 import { Button } from "@/components/ui/Button";
 import { ReciprocityCard } from "@/components/conversion/ReciprocityCard";
 import { grantReferralCode } from "@/lib/promo-grants";
+import { hasDigitalCard } from "@/lib/digital-card-offer";
 import type { Order } from "@/types/order";
 import type { Locale } from "@/types/locale";
 
@@ -41,6 +42,12 @@ export async function ConfirmationView({ order, locale }: { order: Order; locale
           {t("order_id")}: <span className="text-ink">{order.orderNumber ? `#${order.orderNumber}` : order.id}</span>
         </p>
       </header>
+      {hasDigitalCard(order.lines) && (
+        <section className="max-w-2xl rounded-2xl border border-rouge/20 bg-rouge/5 p-5">
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-rouge">{t("digital_card_title")}</p>
+          <p className="mt-2 text-sm text-ink/80">{t("digital_card_body")}</p>
+        </section>
+      )}
       <section className="grid gap-12 lg:grid-cols-[1fr_360px]">
         <div className="space-y-8">
           {f.method === "pickup" ? (

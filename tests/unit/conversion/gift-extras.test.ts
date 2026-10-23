@@ -16,12 +16,29 @@ const fakeProducts: Product[] = [
 ];
 
 describe("suggestExtrasForCart", () => {
-  it("suggests card, chocolates, vase for romance cart", () => {
+  it("suggests the digital card first, then card and chocolates, for a romance cart", () => {
     const result = suggestExtrasForCart(
       [{ kind: "catalog", productId: "rom1", variantId: "lush", addOnIds: [], qty: 1 }],
       fakeProducts,
     );
-    expect(result.slice(0, 3)).toEqual(["x-card-premium", "x-chocolates-mini", "x-vase-upgrade"]);
+    expect(result.slice(0, 3)).toEqual(["x-card-digital", "x-card-premium", "x-chocolates-mini"]);
+  });
+
+  it("never suggests the digital card for a sympathy-only cart", () => {
+    const result = suggestExtrasForCart(
+      [{ kind: "catalog", productId: "sym1", variantId: "lush", addOnIds: [], qty: 1 }],
+      fakeProducts,
+    );
+    expect(result).not.toContain("x-card-digital");
+  });
+
+  it("does not suggest an extra already chosen as a line's add-on", () => {
+    // A bouquet that already carries the digital card must not be offered a second one.
+    const result = suggestExtrasForCart(
+      [{ kind: "catalog", productId: "rom1", variantId: "lush", addOnIds: ["x-card-digital"], qty: 1 }],
+      fakeProducts,
+    );
+    expect(result).not.toContain("x-card-digital");
   });
 
   it("suggests only card and vase for sympathy-only cart (no chocolates, no ribbon)", () => {

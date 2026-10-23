@@ -7,6 +7,7 @@ import { KineticMarquee } from "@/components/brand/KineticMarquee";
 import { BentoGrid } from "@/components/home/BentoGrid";
 import { CategoryStrip } from "@/components/home/CategoryStrip";
 import { OccasionStrip } from "@/components/home/OccasionStrip";
+import { DigitalCardsFeature } from "@/components/home/DigitalCardsFeature";
 import { GiftAssuranceBar } from "@/components/conversion/GiftAssuranceBar";
 import { SocialProof } from "@/components/home/SocialProof";
 import { EditorialSplit } from "@/components/home/EditorialSplit";
@@ -40,6 +41,7 @@ export default async function Home({ params }: { params: Promise<{ locale: Local
       <Hero locale={locale} />
       <KineticMarquee text={`${marquee}  ·  `} />
       <OccasionStrip locale={locale} />
+      <DigitalCardsFeature locale={locale} />
       <section className="mx-auto max-w-[var(--container-max)] px-6 py-14 md:py-16">
         <div className="rounded-[var(--radius-bento)] border border-mute-100 px-6 py-8 md:px-10">
           <GiftAssuranceBar size="md" surface="home" locale={locale} />

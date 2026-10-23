@@ -14,6 +14,7 @@ import AdminButton from "./AdminButton";
 import OrderEditForm from "./OrderEditForm";
 import OrderHistoryList from "./OrderHistoryList";
 import DigitalCardSection from "./DigitalCardSection";
+import { hasDigitalCard } from "@/lib/digital-card-offer";
 import type { Order, OrderChange } from "@/types/order";
 import type { OrderEditPatch } from "@/lib/order-edit";
 import type { DigitalCardView } from "@/types/digital-card";
@@ -269,7 +270,12 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
           )}
         </section>
 
-        <DigitalCardSection key={data.order.id} orderId={orderId} initial={data.digitalCard ?? null} />
+        <DigitalCardSection
+          key={data.order.id}
+          orderId={orderId}
+          initial={data.digitalCard ?? null}
+          paid={hasDigitalCard(data.order.lines)}
+        />
 
         <section className="mb-3 rounded border border-ink/10 bg-bone p-3 text-sm">
           <div className="mb-2 text-xs uppercase tracking-wide text-ink/50">{t("items", { count: order.lines.length })}</div>

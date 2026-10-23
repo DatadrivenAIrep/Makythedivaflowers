@@ -4049,6 +4049,36 @@ export const PRODUCTS: Product[] = [
     },
   },
   {
+    id: "x-card-digital",
+    slug: "digital-card",
+    title: { en: "Digital card", es: "Tarjeta digital" },
+    category: "gifts",
+    giftExtra: true,
+    blurb: {
+      en: "Their card comes alive on their phone: they scan the QR inside.",
+      es: "Su tarjeta cobra vida en su teléfono: escanean el QR de dentro.",
+    },
+    description: {
+      en: "An animated card made for them, with their names, your letter and your photos. It opens from the QR printed inside the card that travels with the flowers. After your order we write to you for the details.",
+      es: "Una tarjeta animada hecha para quien la recibe, con sus nombres, tu carta y tus fotos. Se abre con el QR impreso en la tarjeta que viaja con las flores. Después de tu pedido te escribimos para pedirte los detalles.",
+    },
+    images: [{
+      src: "/products/x-card-digital.jpg",
+      alt: { en: "A digital card opening on a phone", es: "Una tarjeta digital abriéndose en un teléfono" },
+      aspect: "1/1",
+    }],
+    variants: [{ id: "default", label: { en: "Digital card", es: "Tarjeta digital" }, priceCents: 2500 }],
+    tags: ["new"],
+    // Celebrations only: every design is a celebration, wrong for a funeral piece.
+    occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "get-well", "graduation", "new-baby", "thank-you", "thinking-of-you"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Digital card | Diva Flowers", es: "Tarjeta digital | Diva Flowers" },
+      description: { en: "An animated card that opens from the QR in your bouquet's card.", es: "Una tarjeta animada que se abre con el QR de la tarjeta de tu ramo." },
+    },
+  },
+  {
     id: "x-vase-upgrade",
     slug: "glass-vase-upgrade",
     title: { en: "Glass vase upgrade", es: "Mejora a jarrón de vidrio" },

@@ -2,7 +2,7 @@ import type { Product, ProductAddOn } from "@/types/product";
 import { PRODUCTS } from "@/data/products";
 
 /**
- * The add-ons offered on a product: its own, plus the four studio extras that
+ * The add-ons offered on a product: its own, plus the studio extras that
  * belong on almost anything.
  *
  * Every competitor in the benchmark puts a card, a vase or a small treat one tap
@@ -18,6 +18,7 @@ import { PRODUCTS } from "@/data/products";
 
 /** Gift-extra product ids, in the order they should read on the page. */
 export const UNIVERSAL_ADD_ON_IDS = [
+  "x-card-digital",
   "x-card-premium",
   "x-vase-upgrade",
   "x-ribbon-silk",
@@ -28,8 +29,9 @@ export type UniversalAddOnId = (typeof UNIVERSAL_ADD_ON_IDS)[number];
 
 /**
  * A funeral piece takes a handwritten card; it does not take chocolates, a
- * ribbon or a vase upgrade. Offering them would be tone-deaf at exactly the
- * moment it matters most.
+ * ribbon, a vase upgrade or a digital card (every one of its designs is a
+ * celebration). Offering them would be tone-deaf at exactly the moment it
+ * matters most.
  */
 const SYMPATHY_ALLOWED = new Set<UniversalAddOnId>(["x-card-premium"]);
 
@@ -56,10 +58,24 @@ export function addOnsForProduct(product: Product): ProductAddOn[] {
   const sympathy = isSympathy(product);
 
   const universal = UNIVERSAL_ADD_ON_IDS.filter(
-    (id) => !ownIds.has(id) && (!sympathy || SYMPATHY_ALLOWED.has(id)),
+    (id) =>
+      !ownIds.has(id) &&
+      (!sympathy || SYMPATHY_ALLOWED.has(id)) &&
+      // a weekly subscription has no one card for the QR to open
+      !(id === "x-card-digital" && product.category === "subscriptions"),
   )
     .map(universalAddOn)
     .filter((a): a is ProductAddOn => a !== null);
 
   return [...own, ...universal];
+}
+
+/**
+ * What the chosen add-ons add to one unit, priced from the same list the cart
+ * uses, so the buy button cannot show less than the cart then charges.
+ */
+export function addOnsTotalCents(product: Product, addOnIds: readonly string[]): number {
+  return addOnsForProduct(product)
+    .filter((a) => addOnIds.includes(a.id))
+    .reduce((sum, a) => sum + a.priceCents, 0);
 }

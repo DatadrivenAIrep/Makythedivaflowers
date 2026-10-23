@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { addOnsForProduct, UNIVERSAL_ADD_ON_IDS } from "@/lib/product-add-ons";
+import { addOnsForProduct, addOnsTotalCents, UNIVERSAL_ADD_ON_IDS } from "@/lib/product-add-ons";
 import { resolveCartLine, cartSubtotalCents } from "@/lib/cart-helpers";
 import { PRODUCTS } from "@/data/products";
 import type { Product } from "@/types/product";
@@ -32,8 +32,21 @@ describe("addOnsForProduct", () => {
     expect(ids).not.toContain("x-ribbon-silk");
   });
 
+  it("does not offer a sympathy piece the digital card", () => {
+    // Every digital card design is a celebration.
+    expect(addOnsForProduct(find("celestial-peace")).map((a) => a.id)).not.toContain("x-card-digital");
+  });
+
   it("does not offer add-ons on an add-on", () => {
     expect(addOnsForProduct(find("premium-card"))).toEqual([]);
+    expect(addOnsForProduct(find("digital-card"))).toEqual([]);
+  });
+
+  it("prices the digital card from its gift-extra product", () => {
+    const digital = PRODUCTS.find((p) => p.id === "x-card-digital")!;
+    const offered = addOnsForProduct(find("velvet-sun")).find((a) => a.id === "x-card-digital");
+    expect(offered!.priceCents).toBe(digital.variants[0].priceCents);
+    expect(offered!.priceCents).toBe(2500);
   });
 
   it("prices each universal extra from the gift-extra product, not a copy", () => {
@@ -47,6 +60,24 @@ describe("addOnsForProduct", () => {
       const ids = addOnsForProduct(p).map((a) => a.id);
       expect(new Set(ids).size, `${p.slug} has duplicate add-ons`).toBe(ids.length);
     }
+  });
+});
+
+describe("addOnsTotalCents", () => {
+  it("adds a universal extra to what the buy button shows, as the cart charges it", () => {
+    // The product page once summed only a product's own add-ons, so a studio
+    // extra showed $0 on the button while the cart charged it.
+    const p = find("velvet-sun");
+    const resolved = resolveCartLine(
+      { kind: "catalog", productId: p.id, variantId: p.variants[0].id, addOnIds: ["x-card-digital"], qty: 1 },
+      PRODUCTS,
+    );
+    expect(p.variants[0].priceCents + addOnsTotalCents(p, ["x-card-digital"])).toBe(resolved!.unitPriceCents);
+    expect(addOnsTotalCents(p, ["x-card-digital"])).toBe(2500);
+  });
+
+  it("ignores an id the product is not offered", () => {
+    expect(addOnsTotalCents(find("celestial-peace"), ["x-chocolates-mini", "x-card-digital"])).toBe(0);
   });
 });
 

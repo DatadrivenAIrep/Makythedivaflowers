@@ -5,9 +5,10 @@ import { Copy, QrCode, Sparkle } from "@phosphor-icons/react/dist/ssr";
 import AdminButton from "./AdminButton";
 import type { DigitalCardView } from "@/types/digital-card";
 
-type Props = { orderId: string; initial: DigitalCardView | null };
+/** `paid`: the customer bought the digital card with the order (lib/digital-card-offer.ts). */
+type Props = { orderId: string; initial: DigitalCardView | null; paid?: boolean };
 
-export default function DigitalCardSection({ orderId, initial }: Props) {
+export default function DigitalCardSection({ orderId, initial, paid = false }: Props) {
   const t = useTranslations("admin_orders");
   const [card, setCard] = useState<DigitalCardView | null>(initial);
   const [url, setUrl] = useState(initial?.targetUrl ?? "");
@@ -69,6 +70,11 @@ export default function DigitalCardSection({ orderId, initial }: Props) {
   return (
     <section className="mb-3 rounded border border-ink/10 bg-bone p-3 text-sm">
       <div className="mb-2 text-xs uppercase tracking-wide text-ink/50">{t("digital_card_title")}</div>
+      {paid && (
+        <div className="mb-2 rounded border border-rouge/30 bg-rouge/5 px-2 py-1.5 text-xs text-rouge">
+          {t("digital_card_paid")}
+        </div>
+      )}
       {!card ? (
         <div className="space-y-2">
           <AdminButton variant="secondary" icon={Sparkle} disabled={busy} onClick={activate}>
