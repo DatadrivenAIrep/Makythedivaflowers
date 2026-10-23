@@ -5,7 +5,7 @@ describe("parseFilterParams", () => {
   it("returns empty filter + default sort for empty params", () => {
     const r = parseFilterParams({});
     expect(r.filter).toEqual({});
-    expect(r.sort).toBe("newest");
+    expect(r.sort).toBe("recommended");
   });
 
   it("ignores unknown values", () => {
@@ -16,7 +16,7 @@ describe("parseFilterParams", () => {
       same_day: "maybe",
     });
     expect(r.filter).toEqual({});
-    expect(r.sort).toBe("newest");
+    expect(r.sort).toBe("recommended");
   });
 
   it("parses every supported field", () => {
@@ -39,9 +39,16 @@ describe("parseFilterParams", () => {
   });
 });
 
+describe("parseFilterParams sort", () => {
+  it("maps the retired staff-pick sort to the default", () => {
+    expect(parseFilterParams({ sort: "staff-pick" }).sort).toBe("recommended");
+    expect(parseFilterParams({ sort: "newest" }).sort).toBe("newest");
+  });
+});
+
 describe("serializeFilterParams", () => {
   it("omits undefined values", () => {
-    const s = serializeFilterParams({ filter: {}, sort: "newest" });
+    const s = serializeFilterParams({ filter: {}, sort: "recommended" });
     expect(s).toBe("");
   });
 

@@ -2,26 +2,34 @@ import { NextResponse } from "next/server";
 import { intakeSchema, type IntakeInput } from "@/schemas/intake";
 import { resolveOrderTotals, computeDeliveryCentsForAddress } from "@/lib/totals";
 import { cartSubtotalCents } from "@/lib/cart-helpers";
-import { PRODUCTS } from "@/data/products";
+import { getPricedProducts } from "@/lib/product-prices";
 import { saveOrder, listOrders, type ListOrdersFilters } from "@/lib/order-storage";
+import { toLogMethod, type PaymentRowInput } from "@/lib/payments-storage";
 import { enqueuePrintJob } from "@/lib/print-queue";
-import { upsertOnOrder } from "@/lib/customer-storage";
+import { getByPhoneUS, upsertOnOrder } from "@/lib/customer-storage";
+import { rememberRecipientDate } from "@/lib/customer-dates-storage";
 import { dispatchOrderReceived } from "@/lib/order-dispatch";
 import { validateForRedemption, redeem } from "@/lib/gift-card-storage";
 import { validatePromo, redeemPromo } from "@/lib/promo";
 import { buyerHasPaidOrder } from "@/lib/buyer-history";
+import { getAccount, linkContact } from "@/lib/house-account-storage";
+import { recordCharge } from "@/lib/house-account-ledger";
+import { resolveDefaultExemption, resolveOrderExemption } from "@/lib/tax-exempt";
+import { shopDateStr } from "@/lib/tv-slots";
 import type { Order, OrderFulfillment, CartLine } from "@/types/order";
 
 export const runtime = "nodejs";
 
-function computeTotals(input: IntakeInput, discountCents = 0): Order["totals"] {
+function computeTotals(input: IntakeInput, discountCents = 0, taxExempt = false): Order["totals"] {
   return resolveOrderTotals({
     lines: input.lines as CartLine[],
+    products: getPricedProducts(),
     fulfillmentMethod: input.fulfillment.method,
     address: input.fulfillment.method === "delivery" ? input.fulfillment.address : undefined,
     // The promo discount is authoritative from the server; a client-sent
     // discountCents in totalsOverride is stripped by intakeSchema and ignored.
     override: discountCents > 0 ? { ...input.totalsOverride, discountCents } : input.totalsOverride,
+    taxExempt,
   });
 }
 
@@ -36,6 +44,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ errors: parsed.error.flatten() }, { status: 400 });
   }
   const input = parsed.data;
+  // House account: must exist and be active, and cannot be mixed with a gift card.
+  const houseAccount = input.payment.status === "account" ? getAccount(input.payment.accountId) : null;
+  if (input.payment.status === "account") {
+    if (!houseAccount || houseAccount.status !== "active") {
+      return NextResponse.json({ errors: { formErrors: ["account_invalid"] } }, { status: 422 });
+    }
+    if (input.giftCardCode) {
+      return NextResponse.json({ errors: { formErrors: ["account_gift_card"] } }, { status: 422 });
+    }
+  }
   const now = new Date().toISOString();
 
   // Buyer info is optional for pickup — fall back to the recipient (who picks up)
@@ -46,6 +64,25 @@ export async function POST(req: Request) {
     input.customer.name && input.customer.name.trim() ? input.customer.name : (recipient?.name ?? "");
   const contactPhone =
     input.customer.phone && input.customer.phone.length >= 10 ? input.customer.phone : (recipient?.phone ?? "");
+
+  // Sales-tax exemption: the account's certificate when charged to one, else the
+  // buyer's; staff may switch it off, or on with a certificate for a one-off.
+  // Resolved before the upsert with the SAME fuzzy phone lookup as the intake
+  // toggle (GET /api/admin/tax-exempt/default), and so a rejected request does
+  // not bump the customer.
+  const exemptCustomer = contactPhone ? getByPhoneUS(contactPhone) : null;
+  const exemption = resolveOrderExemption({
+    fallback: resolveDefaultExemption({
+      account: houseAccount?.taxExemption,
+      customer: exemptCustomer?.taxExemption,
+      today: shopDateStr(new Date()),
+    }),
+    requested: input.taxExempt,
+  });
+  if (!exemption.ok) {
+    return NextResponse.json({ errors: { formErrors: [exemption.error] } }, { status: 400 });
+  }
+  const taxExempt = exemption.exemption;
 
   const customer = upsertOnOrder({
     name: contactName,
@@ -70,7 +107,7 @@ export async function POST(req: Request) {
     const address =
       input.fulfillment.method === "delivery" ? input.fulfillment.address : undefined;
     const promoSubtotal =
-      input.totalsOverride?.subtotalCents ?? cartSubtotalCents(input.lines as CartLine[], PRODUCTS);
+      input.totalsOverride?.subtotalCents ?? cartSubtotalCents(input.lines as CartLine[], getPricedProducts());
     const promoDelivery =
       input.totalsOverride?.deliveryCents ??
       (address ? computeDeliveryCentsForAddress(address) ?? 0 : 0);
@@ -100,7 +137,9 @@ export async function POST(req: Request) {
   const order: Order = {
     id: newId(),
     source: input.source,
-    locale: "en",
+    // Same language as the customer's messages: the card's QR caption, the payment
+    // pages and the printed sheet follow it, like a web order's.
+    locale: input.customer.locale ?? "en",
     customerId: customer.id,
     lines: input.lines as CartLine[],
     fulfillment,
@@ -111,11 +150,14 @@ export async function POST(req: Request) {
     },
     promoId,
     promoCode,
-    totals: computeTotals(input, promoDiscountCents),
+    totals: computeTotals(input, promoDiscountCents, taxExempt !== null),
     status: "pending",
-    paymentStatus: input.payment.status,
-    paymentMethod: input.payment.status === "paid" ? input.payment.method : undefined,
+    paymentStatus: input.payment.status === "paid" ? "paid" : "pending",
+    paymentMethod: input.payment.status === "paid" ? input.payment.method : input.payment.status === "account" ? "house-account" : undefined,
     paidAt: input.payment.status === "paid" ? now : undefined,
+    houseAccountId: houseAccount?.id,
+    ...(input.funeral ? { funeral: true } : {}),
+    ...(taxExempt ? { taxExempt } : {}),
     takenBy: "maky",
     internalNotes: input.internalNotes,
     createdAt: now,
@@ -160,7 +202,23 @@ export async function POST(req: Request) {
     order.internalNotes = order.internalNotes ? `${order.internalNotes}\n${noteLine}` : noteLine;
   }
 
-  await saveOrder(order);
+  // Money that actually changed hands at intake, for the day's cash-up. House
+  // accounts and unpaid orders take in nothing.
+  const actor = order.takenBy ?? "maky";
+  const payments: PaymentRowInput[] = [];
+  if (order.paymentStatus === "paid") {
+    if (giftCardCents > 0) {
+      payments.push({ kind: "payment", method: "gift-card", amountCents: giftCardCents, orderId: order.id, giftCardId, source: "intake", actor });
+    }
+    const rest = order.totals.totalCents - giftCardCents;
+    if (rest > 0) {
+      payments.push({ kind: "payment", method: toLogMethod(order.paymentMethod), amountCents: rest, orderId: order.id, source: "intake", actor });
+    }
+  } else if (deposit && order.paymentStatus === "pending") {
+    payments.push({ kind: "deposit", method: deposit.method, amountCents: deposit.amountCents, orderId: order.id, source: "intake", actor });
+  }
+
+  await saveOrder(order, { payments });
 
   {
     const { recordOrderChange } = await import("@/lib/order-history");
@@ -176,6 +234,13 @@ export async function POST(req: Request) {
     }
   }
 
+  if (houseAccount) {
+    recordCharge({ accountId: houseAccount.id, orderId: order.id, amountCents: order.totals.totalCents, actor: order.takenBy ?? "maky" });
+    // A person who orders on the account is one of its contacts from now on;
+    // "contact_taken" (already on another account) is not an error here.
+    try { linkContact(houseAccount.id, customer.id); } catch { /* keep the order */ }
+  }
+
   if (giftCardId && order.paymentStatus === "paid") {
     try {
       redeem(giftCardId, order.id, giftCardCents);
@@ -187,11 +252,27 @@ export async function POST(req: Request) {
   // Burn the promo only once the order is actually paid, mirroring web checkout.
   // Pending orders redeem later — via the Stripe webhook (payment link) or the
   // manual "mark paid" mutation. redeemPromo is idempotent per order.
-  if (promoId && order.paymentStatus === "paid" && order.totals.discountCents > 0) {
+  if (promoId && (order.paymentStatus === "paid" || houseAccount) && order.totals.discountCents > 0) {
     try {
       redeemPromo(promoId, order.id, order.totals.discountCents);
     } catch (e) {
       console.error("[promo] intake redeem failed for order", order.id, e);
+    }
+  }
+
+  // "Recordar esta fecha": the delivery day becomes a yearly date on the buyer's
+  // profile, which the reminder cron texts them about a week ahead. Best-effort —
+  // the order is already saved. A gift to oneself is not a date to remember.
+  if (input.rememberDate && recipient && "window" in input.fulfillment && recipient.phone !== customer.phone) {
+    try {
+      rememberRecipientDate(customer.id, {
+        kind: input.rememberDate,
+        recipientName: recipient.name,
+        recipientPhone: recipient.phone,
+        ymd: input.fulfillment.window.date,
+      });
+    } catch (e) {
+      console.error(JSON.stringify({ event: "remember_date_failed", orderId: order.id, error: String(e) }));
     }
   }
 

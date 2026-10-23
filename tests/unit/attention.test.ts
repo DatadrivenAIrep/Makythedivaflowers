@@ -29,7 +29,7 @@ it("aggregates pending orders + unacked leads + unacked contacts with counts", a
   acknowledge("w2"); // excluded
 
   const snap = await getAttention();
-  expect(snap.counts).toEqual({ orders: 1, inquiries: 1, contacts: 1, total: 3 });
+  expect(snap.counts).toEqual({ orders: 1, inquiries: 1, contacts: 1, sms: 0, total: 3 });
   expect(snap.items.find((i) => i.id === "o1")?.kind).toBe("order");
   expect(snap.items.find((i) => i.id === "c1")?.label).toBe("Contacto · Luis");
 });

@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { closeDb, getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
+import { insertMessage, updateMessage } from "@/lib/message-storage";
 import {
   groupConversations,
   listConversations,
@@ -161,5 +162,19 @@ describe("listConversations / conversationThread (DB-backed)", () => {
     const list = listConversations();
     expect(list).toHaveLength(1);
     expect(list[0]).toMatchObject({ key: "c1", name: "Ana", count: 2 });
+  });
+});
+
+describe("conversationThread MMS", () => {
+  it("outbound MMS rows expose a relative mediaUrl", () => {
+    const tok = "c".repeat(32);
+    // No customer row for this phone → the conversation key is the last 10 digits.
+    const id = insertMessage({
+      orderId: "o1", channel: "sms", template: "delivered", locale: "es",
+      toPhone: "+15165550100", mediaUrl: `https://makythedivaflowers.com/api/delivery-photo/${tok}`,
+    });
+    updateMessage(id, { status: "sent", body: "¡Entregado!" });
+    const { thread } = conversationThread("5165550100");
+    expect(thread.find((m) => m.id === id)?.mediaUrl).toBe(`/api/delivery-photo/${tok}`);
   });
 });

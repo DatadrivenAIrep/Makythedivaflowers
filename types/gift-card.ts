@@ -2,8 +2,10 @@ import type { GiftCardPartnerId } from "@/data/gift-card-partners";
 
 export type GiftCardStatus = "active" | "void";
 
-// "purchase" = bought by a customer on the site, "referral" = credit earned by
-// introducing someone; the rest are staff-issued.
+// "purchase" = sold to a customer, either online (paid through Stripe) or in
+// the shop (staff record how it was paid, which feeds the day's close);
+// "referral" = credit earned by introducing someone; the rest are staff-issued
+// comps that bring in no money.
 export type GiftCardReason =
   | "loyalty"
   | "apology"
@@ -21,6 +23,8 @@ export type GiftCard = {
   status: GiftCardStatus;
   recipientEmail: string;
   recipientName?: string;
+  /** Mobile the card is also texted to; digits only. */
+  recipientPhone?: string;
   fromLabel?: string;
   personalMessage?: string;
   /** Replaces the email's default "someone sent you flowers" headline. */

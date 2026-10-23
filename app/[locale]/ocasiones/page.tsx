@@ -4,14 +4,19 @@ import { setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/types/locale";
 import type { Occasion } from "@/types/product";
 import { OCCASIONS_ALL, OCCASION_CONTENT } from "@/data/occasion-content";
-import { OCCASION_NAV } from "@/lib/occasions-nav";
+import { EXOTIC_LINK, OCCASION_NAV, occasionLinks } from "@/lib/occasions-nav";
 import { PRODUCTS } from "@/data/products";
 import { filterProducts } from "@/data/product-helpers";
+import { productsInShopCategory, type ShopSlug } from "@/lib/shop-categories";
 import { localeAlternates } from "@/lib/seo/alternates";
 import { BreadcrumbListLD } from "@/components/seo/BreadcrumbListLD";
-import { BloomImage } from "@/components/motion/BloomImage";
+import { FloatingPhoto } from "@/components/product/FloatingPhoto";
 import { StaggerGroup, StaggerItem } from "@/components/motion/StaggerGroup";
 import { Grain } from "@/components/brand/Grain";
+
+// The seasonal card (fall, Christmas, Valentine's) follows the calendar:
+// regenerate hourly so it switches on its date, not on the next deploy.
+export const revalidate = 3600;
 
 export async function generateMetadata({
   params,
@@ -31,14 +36,10 @@ export async function generateMetadata({
   };
 }
 
-/** Photo for an occasion: the nav list has one for the seven it carries. */
+/** Photo for an occasion: the nav list carries one for every occasion but Mother's Day. */
 const IMG_BY_SLUG = new Map(OCCASION_NAV.map((o) => [o.slug as string, o.img]));
 
 const FALLBACK_IMG: Partial<Record<Occasion, string>> = {
-  graduation: "/products/botanic-fireworks.jpg",
-  "new-baby": "/products/butterfly-kiss.jpg",
-  "thank-you": "/products/abundant-table.jpg",
-  "thinking-of-you": "/products/jade-lavender.jpg",
   "mothers-day": "/products/blush-enchantment.jpg",
 };
 
@@ -51,14 +52,31 @@ export default async function OccasionsIndexPage({
   setRequestLocale(locale);
   const es = locale === "es";
 
-  const items = OCCASIONS_ALL.map((slug) => ({
+  type Card = { slug: string; label: { en: string; es: string }; count: number; img: string; href: string };
+  const items: Card[] = OCCASIONS_ALL.map((slug) => ({
     slug,
-    content: OCCASION_CONTENT[slug],
+    label: OCCASION_CONTENT[slug].label,
     count: filterProducts(PRODUCTS, { occasion: slug }).length,
     img: IMG_BY_SLUG.get(slug) ?? FALLBACK_IMG[slug] ?? "/products/designers-choice.png",
     // Sympathy keeps its own dedicated page.
     href: slug === "sympathy" ? `/${locale}/sympathy` : `/${locale}/ocasiones/${slug}`,
   }));
+  // Not occasions, but people shop them the same way: the seasonal collection
+  // (fall, Christmas, Valentine's) when one runs and the exotics get cards alongside.
+  // Mother's Day already has its own card here all year, so its seasonal link is skipped.
+  const extras = occasionLinks()
+    .slice(OCCASION_NAV.length)
+    .filter((link) => !(OCCASIONS_ALL as string[]).includes(link.slug));
+  for (const link of extras) {
+    items.push({
+      slug: link.slug,
+      label: link.label,
+      // Each extra link is named after the shop collection it opens.
+      count: productsInShopCategory(PRODUCTS, link.slug as ShopSlug).length,
+      img: link.img,
+      href: link.path(locale),
+    });
+  }
 
   return (
     <main className="bg-bone text-ink">
@@ -93,26 +111,23 @@ export default async function OccasionsIndexPage({
             <StaggerItem as="li" key={it.slug}>
               <Link
                 href={it.href}
-                className="group relative block aspect-[4/5] overflow-hidden rounded-[var(--radius-product)] bg-mute-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rouge/60 focus-visible:ring-offset-2 focus-visible:ring-offset-bone"
+                className="group block rounded-[var(--radius-product)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rouge/60 focus-visible:ring-offset-2 focus-visible:ring-offset-bone"
               >
-                <BloomImage
-                  src={it.img}
-                  alt=""
-                  className="h-full w-full"
-                  sizes="(min-width: 1024px) 320px, (min-width: 768px) 33vw, 50vw"
-                />
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-ink/85 via-ink/35 to-transparent"
-                />
-                <div className="absolute inset-x-4 bottom-4">
-                  <span className="block font-display text-xl leading-tight tracking-tight text-bone [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
-                    {it.content.label[locale]}
-                  </span>
-                  <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.16em] text-bone/70">
-                    {it.count} {es ? "diseños" : "designs"}
-                  </span>
+                {/* Whole arrangement floating on plaster; label + count below. */}
+                <div className="relative aspect-[4/5] rounded-[var(--radius-product)] bg-mute-100">
+                  <FloatingPhoto
+                    src={it.img}
+                    alt=""
+                    sizes="(min-width: 1024px) 320px, (min-width: 768px) 33vw, 50vw"
+                    className="inset-x-3 top-4 bottom-3 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-1.5 motion-reduce:transform-none"
+                  />
                 </div>
+                <span className="mt-3 block font-display text-xl leading-tight tracking-tight text-ink transition-colors group-hover:text-rouge">
+                  {it.label[locale]}
+                </span>
+                <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.16em] text-mute-500">
+                  {it.count} {es ? "diseños" : "designs"}
+                </span>
               </Link>
             </StaggerItem>
           ))}

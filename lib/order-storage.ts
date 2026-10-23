@@ -4,6 +4,8 @@ import path from "node:path";
 import { getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import { orderToRow, rowToOrder, type OrderRow } from "@/lib/order-row";
+import { withTransaction } from "@/lib/db-tx";
+import { recordPaymentRow, type PaymentRowInput } from "@/lib/payments-storage";
 import type { Order, FulfillmentStatus } from "@/types/order";
 
 function storageFile(): string {
@@ -56,7 +58,7 @@ function upsertSqlite(order: Order): void {
        fulfillment_status, payment_status, payment_method, paid_at,
        stripe_payment_intent_id, taken_by, internal_notes, sms_consent, sms_marketing_consent,
        stripe_checkout_session_id, gift_card_id, gift_card_cents,
-       promo_id, promo_code,
+       promo_id, promo_code, house_account_id, funeral, tax_exempt, tax_exempt_cert,
        order_number, created_at, updated_at
      ) VALUES (
        @id, @locale, @source, @customer_id, @recipient_name, @recipient_phone,
@@ -66,7 +68,7 @@ function upsertSqlite(order: Order): void {
        @fulfillment_status, @payment_status, @payment_method, @paid_at,
        @stripe_payment_intent_id, @taken_by, @internal_notes, @sms_consent, @sms_marketing_consent,
        @stripe_checkout_session_id, @gift_card_id, @gift_card_cents,
-       @promo_id, @promo_code,
+       @promo_id, @promo_code, @house_account_id, @funeral, @tax_exempt, @tax_exempt_cert,
        @order_number, @created_at, @updated_at
      )
      ON CONFLICT(id) DO UPDATE SET
@@ -106,12 +108,16 @@ function upsertSqlite(order: Order): void {
        gift_card_cents=excluded.gift_card_cents,
        promo_id=excluded.promo_id,
        promo_code=excluded.promo_code,
+       house_account_id=excluded.house_account_id,
+       funeral=excluded.funeral,
+      tax_exempt=excluded.tax_exempt,
+      tax_exempt_cert=excluded.tax_exempt_cert,
        order_number=COALESCE(excluded.order_number, order_number),
        updated_at=excluded.updated_at`,
   ).run(row);
 }
 
-export async function saveOrder(order: Order): Promise<void> {
+export async function saveOrder(order: Order, opts?: { payments?: PaymentRowInput[] }): Promise<void> {
   ensureSchema();
   // Assign the short sequential number. Best-effort: if the counter fails,
   // the order (and payment) must still save — it just won't have a number.
@@ -122,7 +128,11 @@ export async function saveOrder(order: Order): Promise<void> {
       console.error(JSON.stringify({ event: "order_number_assign_failed", orderId: order.id, error: String(e) }));
     }
   }
-  upsertSqlite(order);
+  // The order and the money it took in land together or not at all.
+  withTransaction(() => {
+    upsertSqlite(order);
+    for (const p of opts?.payments ?? []) recordPaymentRow(p);
+  });
   const all = await readAll();
   all.push(order);
   await writeAll(all);
@@ -175,6 +185,23 @@ export async function updateOrderPaymentIntent(
   }
 }
 
+// What a Stripe confirmation actually collected: the gift-card part (if any)
+// and the rest as stripe. Call inside the writer's transaction.
+function logStripeCollection(
+  orderId: string,
+  delta: number,
+  gc: number,
+  giftCardId: string | undefined,
+  source: "stripe_intent" | "stripe_checkout",
+): void {
+  if (gc > 0) {
+    recordPaymentRow({ kind: "payment", method: "gift-card", amountCents: gc, orderId, giftCardId, source, actor: "stripe" });
+  }
+  if (delta - gc > 0) {
+    recordPaymentRow({ kind: "payment", method: "stripe", amountCents: delta - gc, orderId, source, actor: "stripe" });
+  }
+}
+
 const TERMINAL_FULFILLMENT: FulfillmentStatus[] = ["delivered", "canceled"];
 
 export async function updateOrderStatusByPaymentIntent(
@@ -191,15 +218,25 @@ export async function updateOrderStatusByPaymentIntent(
   const now = new Date().toISOString();
 
   let next: Order = { ...cur, updatedAt: now };
+  let paidDelta = 0;
   if (status === "paid") {
     if (cur.paymentStatus === "paid") return;
+    paidDelta = cur.totals.totalCents - (cur.amountPaidCents ?? 0);
     next = { ...next, paymentStatus: "paid", paidAt: now, amountPaidCents: cur.totals.totalCents };
   } else {
     if (TERMINAL_FULFILLMENT.includes(cur.status) && cur.status !== status) return;
     if (cur.status === status) return;
     next = { ...next, status };
   }
-  upsertSqlite(next);
+  if (status === "paid") {
+    const gc = Math.min(cur.giftCardCents ?? 0, paidDelta);
+    withTransaction(() => {
+      upsertSqlite(next);
+      logStripeCollection(cur.id, paidDelta, gc, cur.giftCardId, "stripe_intent");
+    });
+  } else {
+    upsertSqlite(next);
+  }
   const all = await readAll();
   const idx = all.findIndex((o) => o.id === cur.id);
   if (idx >= 0) {
@@ -232,9 +269,21 @@ export async function updateOrderPaidByCheckoutSession(sessionId: string): Promi
   ensureSchema();
   const db = getDb();
   const now = new Date().toISOString();
-  db.prepare(
-    `UPDATE orders SET payment_status = 'paid', paid_at = COALESCE(paid_at, ?), amount_paid_cents = total_cents, updated_at = ? WHERE stripe_checkout_session_id = ? AND payment_status != 'paid'`,
-  ).run(now, now, sessionId);
+  withTransaction(() => {
+    const cur = db
+      .prepare(
+        "SELECT id, total_cents, amount_paid_cents FROM orders WHERE stripe_checkout_session_id = ? AND payment_status != 'paid'",
+      )
+      .get(sessionId) as { id: string; total_cents: number; amount_paid_cents: number | null } | undefined;
+    if (!cur) return; // already paid (Stripe retry) or unknown session: nothing moved
+    db.prepare(
+      `UPDATE orders SET payment_status = 'paid', paid_at = COALESCE(paid_at, ?), amount_paid_cents = total_cents, updated_at = ? WHERE stripe_checkout_session_id = ? AND payment_status != 'paid'`,
+    ).run(now, now, sessionId);
+    // A payment link charges total − amount paid and never redeems a gift card,
+    // so the whole delta is card money collected by Stripe.
+    const delta = cur.total_cents - (cur.amount_paid_cents ?? 0);
+    logStripeCollection(cur.id, delta, 0, undefined, "stripe_checkout");
+  });
 }
 
 // Deliveries scheduled for a given window date (not order-creation date),

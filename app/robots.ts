@@ -4,7 +4,7 @@ import { locales } from "@/types/locale";
 
 // Transactional + private routes. They have no search value, they burn crawl
 // budget, and cart/checkout URLs carry state that should never be indexed.
-const PRIVATE_PATHS = ["account", "cart", "checkout", "order", "admin"];
+const PRIVATE_PATHS = ["account", "cart", "checkout", "order", "admin", "vitrina"];
 
 export default function robots(): MetadataRoute.Robots {
   return {

@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 import esMessages from "@/messages/es.json";
 import CustomersList from "@/components/admin/customers/CustomersList";
 import type { CustomerListResult } from "@/lib/customer-storage";
+import { NO_EXEMPTION } from "@/types/tax-exempt";
 
 function wrap(ui: React.ReactNode) {
   return render(
@@ -18,6 +19,7 @@ const initial: CustomerListResult = {
     {
       id: "ana", name: "Ana Flores", phone: "5165550001",
       orderCount: 6, firstSeenAt: "2026-01-01T00:00:00Z", lastSeenAt: "2026-07-01T00:00:00Z",
+      taxExemption: NO_EXEMPTION,
       tags: ["boda"],
       metrics: {
         ltvCents: 36000, orderCount: 6, paidOrderCount: 6, aovCents: 6000,
@@ -29,6 +31,7 @@ const initial: CustomerListResult = {
     {
       id: "bob", name: "Bob Marchetti", phone: "5165550002",
       orderCount: 2, firstSeenAt: "2026-01-01T00:00:00Z", lastSeenAt: "2026-03-01T00:00:00Z",
+      taxExemption: NO_EXEMPTION,
       tags: [],
       metrics: {
         ltvCents: 16000, orderCount: 2, paidOrderCount: 2, aovCents: 8000,

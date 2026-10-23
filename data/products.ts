@@ -12,6 +12,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-ie01",
     slug: "ivory-and-emerald",
+    addedAt: "2026-08-17",
     title: { en: "Ivory & Emerald", es: "Marfil y Esmeralda" },
     category: "sympathy",
     blurb: {
@@ -40,7 +41,7 @@ export const PRODUCTS: Product[] = [
         subtitle: { en: "Grand scale · made to order", es: "Gran escala · por encargo" },
       },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["congrats", "sympathy"],
     colorFamily: ["white", "green"],
     active: true,
@@ -60,6 +61,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-m01",
     slug: "a-thousand-heartbeats",
+    addedAt: "2026-05-01",
     title: { en: "A Thousand Heartbeats", es: "Mil Latidos" },
     category: "arrangements",
     blurb: {
@@ -97,6 +99,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-m01",
     slug: "dozen-roses-bouquet",
+    addedAt: "2026-05-01",
     title: { en: "Dozen Roses Bouquet", es: "Ramo de Doce Rosas" },
     category: "bouquets",
     blurb: {
@@ -134,6 +137,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-m02",
     slug: "hundred-roses-vase",
+    addedAt: "2026-05-01",
     title: { en: "Hundred Roses Vase", es: "Cien Rosas en Jarrón" },
     category: "arrangements",
     blurb: {
@@ -171,6 +175,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-m02",
     slug: "sunburst-garden",
+    addedAt: "2026-05-01",
     title: { en: "Sunburst Garden", es: "Jardín al Sol" },
     category: "bouquets",
     blurb: {
@@ -208,6 +213,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-m03",
     slug: "rainforest-rhapsody",
+    addedAt: "2026-05-01",
     title: { en: "Rainforest Rhapsody", es: "Rapsodia Selvática" },
     category: "arrangements",
     blurb: {
@@ -245,6 +251,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-gif-m01",
     slug: "designers-choice",
+    addedAt: "2026-05-01",
     title: { en: "Designer's Choice", es: "A Elección de la Florista" },
     category: "gifts",
     blurb: {
@@ -282,6 +289,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-m03",
     slug: "velvet-sun",
+    addedAt: "2026-05-01",
     title: { en: "Velvet Sun", es: "Sol de Terciopelo" },
     category: "bouquets",
     blurb: {
@@ -319,6 +327,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-m04",
     slug: "katsobad",
+    addedAt: "2026-05-01",
     title: { en: "Katsobad", es: "Katsobad" },
     category: "bouquets",
     blurb: {
@@ -341,7 +350,7 @@ export const PRODUCTS: Product[] = [
       { id: "lush", label: { en: "Lush", es: "Generoso" }, priceCents: 19000 },
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 25700, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
-    tags: ["same-day", "new"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "congrats", "just-because", "graduation", "thank-you", "thinking-of-you"],
     colorFamily: ["mixed"],
     active: true,
@@ -358,6 +367,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b1-01",
     slug: "abundant-table",
+    addedAt: "2026-05-01",
     title: { en: "Abundant Table", es: "Mesa Abundante" },
     category: "arrangements",
     blurb: {
@@ -379,7 +389,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "candles", label: { en: "Add taper candle pair", es: "Añadir par de velas" }, priceCents: 2500 },
     ],
-    tags: ["new", "same-day", "staff-pick", "seasonal"],
+    tags: ["same-day", "staff-pick", "seasonal"],
     occasions: ["thank-you"],
     colorFamily: ["mixed"],
     active: true,
@@ -395,6 +405,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-01",
     slug: "all-my-love",
+    addedAt: "2026-05-01",
     title: { en: "All My Love", es: "Todo Mi Amor" },
     category: "bouquets",
     blurb: {
@@ -416,7 +427,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "champagne", label: { en: "Add Veuve Clicquot", es: "Añadir Veuve Clicquot" }, priceCents: 8900 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["red"],
     active: true,
@@ -431,6 +442,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b1-02",
     slug: "aloha-aura",
+    addedAt: "2026-05-01",
     title: { en: "Aloha Aura", es: "Aura Aloha" },
     category: "arrangements",
     blurb: {
@@ -449,7 +461,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "congrats", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["mixed"],
     active: true,
@@ -464,6 +476,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b1-03",
     slug: "amethyst-snowdrop",
+    addedAt: "2026-05-01",
     title: { en: "Amethyst Snowdrop", es: "Amatista Nevada" },
     category: "arrangements",
     blurb: {
@@ -482,7 +495,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 18000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["congrats", "mothers-day", "get-well", "thinking-of-you", "sympathy"],
     colorFamily: ["pastel", "white"],
     active: true,
@@ -497,6 +510,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-b1-01",
     slug: "angels-touch",
+    addedAt: "2026-05-01",
     title: { en: "Angel's Touch", es: "Caricia de Ángel" },
     category: "arrangements",
     blurb: {
@@ -515,7 +529,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "congrats", "just-because", "mothers-day", "get-well", "thank-you", "thinking-of-you"],
     colorFamily: ["white"],
     active: true,
@@ -530,6 +544,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b1-04",
     slug: "autumn-orchard",
+    addedAt: "2026-05-01",
     title: { en: "Autumn Orchard", es: "Huerto de Otoño" },
     category: "arrangements",
     blurb: {
@@ -548,7 +563,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day", "seasonal"],
+    tags: ["same-day", "seasonal"],
     occasions: ["thank-you"],
     colorFamily: ["mixed"],
     active: true,
@@ -563,6 +578,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b1-05",
     slug: "autumns-cornucopia",
+    addedAt: "2026-05-01",
     title: { en: "Autumn's Cornucopia", es: "Cornucopia de Otoño" },
     category: "arrangements",
     blurb: {
@@ -581,7 +597,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 13500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "seasonal"],
+    tags: ["seasonal"],
     occasions: ["thank-you"],
     colorFamily: ["mixed"],
     active: true,
@@ -596,6 +612,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-gif-b1-01",
     slug: "berry-bliss-basket",
+    addedAt: "2026-05-01",
     title: { en: "Berry Bliss Basket", es: "Canasta Frutos Rojos" },
     category: "gifts",
     blurb: {
@@ -617,7 +634,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "chocolates", label: { en: "Add dark chocolate truffles", es: "Añadir trufas de chocolate" }, priceCents: 2500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "get-well", "thinking-of-you"],
     colorFamily: ["red", "mixed"],
     active: true,
@@ -632,6 +649,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-02",
     slug: "blush-enchantment",
+    addedAt: "2026-05-01",
     title: { en: "Blush Enchantment", es: "Encanto Rubor" },
     category: "bouquets",
     blurb: {
@@ -650,7 +668,7 @@ export const PRODUCTS: Product[] = [
       { id: "lush", label: { en: "Lush", es: "Generoso" }, priceCents: 20000 },
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 22500, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "romance", "mothers-day", "get-well"],
     colorFamily: ["pink", "pastel"],
     active: true,
@@ -665,6 +683,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b1-06",
     slug: "botanic-fireworks",
+    addedAt: "2026-05-01",
     title: { en: "Botanic Fireworks", es: "Fuegos Botánicos" },
     category: "arrangements",
     blurb: {
@@ -683,7 +702,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "congrats", "just-because", "mothers-day", "get-well"],
     colorFamily: ["mixed"],
     active: true,
@@ -698,6 +717,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-gif-b1-02",
     slug: "botanical-basket",
+    addedAt: "2026-05-01",
     title: { en: "Botanical Basket", es: "Canasta Botánica" },
     category: "gifts",
     blurb: {
@@ -716,7 +736,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 10000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 13500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "get-well"],
     colorFamily: ["mixed", "green"],
     active: true,
@@ -731,6 +751,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-03",
     slug: "butterfly-kiss",
+    addedAt: "2026-05-01",
     title: { en: "Butterfly Kiss", es: "Beso de Mariposa" },
     category: "bouquets",
     blurb: {
@@ -749,7 +770,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "romance", "mothers-day", "get-well"],
     colorFamily: ["pastel"],
     active: true,
@@ -764,6 +785,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-pla-b1-01",
     slug: "cattleya-orchid",
+    addedAt: "2026-05-01",
     title: { en: "Cattleya Orchid", es: "Orquídea Cattleya" },
     category: "plants",
     blurb: {
@@ -782,7 +804,7 @@ export const PRODUCTS: Product[] = [
       { id: "standard", label: { en: "Standard (double stem)", es: "Estándar (dos tallos)" }, priceCents: 15000 },
       { id: "grand", label: { en: "Grand (triple stem)", es: "Grande (tres tallos)" }, priceCents: 17500 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "mothers-day"],
     colorFamily: ["pastel"],
     // Retired 2026-08-18: the copy claims a Cattleya orchid but the photo is a
@@ -801,6 +823,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-04",
     slug: "celeste-bloom",
+    addedAt: "2026-05-01",
     title: { en: "Celeste Bloom", es: "Celeste en Flor" },
     category: "bouquets",
     blurb: {
@@ -819,7 +842,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "romance", "mothers-day", "get-well"],
     colorFamily: ["white", "mixed"],
     active: true,
@@ -834,6 +857,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-b1-02",
     slug: "celestial-peace",
+    addedAt: "2026-05-01",
     title: { en: "Celestial Peace", es: "Paz Celestial" },
     category: "sympathy",
     blurb: {
@@ -852,7 +876,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 22000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 28000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["sympathy"],
     colorFamily: ["white"],
     active: true,
@@ -867,6 +891,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-05",
     slug: "cloud-nine",
+    addedAt: "2026-05-01",
     title: { en: "Cloud Nine", es: "Nube Nueve" },
     category: "bouquets",
     blurb: {
@@ -888,7 +913,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "champagne", label: { en: "Add Veuve Clicquot", es: "Añadir Veuve Clicquot" }, priceCents: 8900 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["thank-you"],
     colorFamily: ["white"],
     active: true,
@@ -903,6 +928,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b1-07",
     slug: "cottage-garden-charm",
+    addedAt: "2026-05-01",
     title: { en: "Cottage Garden Charm", es: "Encanto de Jardín de Cabaña" },
     category: "bouquets",
     blurb: {
@@ -921,7 +947,7 @@ export const PRODUCTS: Product[] = [
       { id: "lush", label: { en: "Lush", es: "Generoso" }, priceCents: 12500 },
       { id: "opulent", label: { en: "Opulent", es: "Opulento" }, priceCents: 16900, subtitle: { en: "+35% more stems, larger vase", es: "+35% más tallos, jarrón más grande" } },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "anniversary", "congrats", "just-because", "mothers-day", "graduation"],
     colorFamily: ["pink", "mixed"],
     active: true,
@@ -936,6 +962,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-06",
     slug: "darling-lucy",
+    addedAt: "2026-05-01",
     title: { en: "Darling Lucy", es: "Querida Lucy" },
     category: "bouquets",
     blurb: {
@@ -954,7 +981,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["romance", "mothers-day", "thank-you"],
     colorFamily: ["pink"],
     active: true,
@@ -969,6 +996,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-gif-b1-03",
     slug: "daydream-parcel",
+    addedAt: "2026-05-01",
     title: { en: "Daydream Parcel", es: "Paquete de Ensueño" },
     category: "gifts",
     blurb: {
@@ -987,7 +1015,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 9500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 13500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "congrats", "get-well", "new-baby"],
     colorFamily: ["pastel"],
     active: true,
@@ -1002,6 +1030,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b1-08",
     slug: "designers-choice-maky",
+    addedAt: "2026-05-01",
     title: { en: "Designer's Choice — Maky", es: "Elección del Diseñador — Maky" },
     category: "arrangements",
     blurb: {
@@ -1020,7 +1049,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 10000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "get-well", "graduation", "new-baby", "thank-you", "thinking-of-you", "sympathy"],
     colorFamily: ["mixed"],
     active: true,
@@ -1035,6 +1064,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-07",
     slug: "dew-kissed",
+    addedAt: "2026-05-01",
     title: { en: "Dew Kissed", es: "Rocío Fresco" },
     category: "bouquets",
     blurb: {
@@ -1053,7 +1083,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 11500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["mothers-day", "get-well"],
     colorFamily: ["white", "green"],
     active: true,
@@ -1068,6 +1098,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b1-09",
     slug: "dona-rosita",
+    addedAt: "2026-05-01",
     title: { en: "Doña Rosita", es: "Doña Rosita" },
     category: "arrangements",
     blurb: {
@@ -1086,7 +1117,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "congrats", "mothers-day", "new-baby", "thinking-of-you"],
     colorFamily: ["pink", "mixed"],
     active: true,
@@ -1101,6 +1132,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-08",
     slug: "dozen-roses-in-multi-color",
+    addedAt: "2026-05-01",
     title: { en: "Dozen Roses — Multi-Color", es: "Docena de Rosas — Multicolor" },
     category: "bouquets",
     blurb: {
@@ -1119,7 +1151,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand (24 roses)", es: "Grande (24 rosas)" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva (36 roses)", es: "Diva (36 rosas)" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "mothers-day", "thinking-of-you"],
     colorFamily: ["mixed"],
     active: false,
@@ -1134,6 +1166,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-09",
     slug: "dozen-roses-in-pink",
+    addedAt: "2026-05-01",
     title: { en: "Dozen Roses — Pink", es: "Docena de Rosas — Rosa" },
     category: "bouquets",
     blurb: {
@@ -1155,7 +1188,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "chocolates", label: { en: "Add chocolate truffles", es: "Añadir trufas de chocolate" }, priceCents: 2500 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "mothers-day", "thinking-of-you"],
     colorFamily: ["pink"],
     active: false,
@@ -1170,6 +1203,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-10",
     slug: "dozen-roses-in-vase",
+    addedAt: "2026-05-01",
     title: { en: "Dozen Roses in Vase", es: "Docena de Rosas en Florero" },
     category: "bouquets",
     blurb: {
@@ -1191,7 +1225,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "champagne", label: { en: "Add Veuve Clicquot", es: "Añadir Veuve Clicquot" }, priceCents: 8900 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "mothers-day", "thinking-of-you"],
     colorFamily: ["red"],
     active: false,
@@ -1206,6 +1240,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-11",
     slug: "dozen-roses-in-white",
+    addedAt: "2026-05-01",
     title: { en: "Dozen Roses — White", es: "Docena de Rosas — Blanca" },
     category: "bouquets",
     blurb: {
@@ -1224,7 +1259,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand (24 roses)", es: "Grande (24 rosas)" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva (36 roses)", es: "Diva (36 rosas)" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "mothers-day", "thinking-of-you", "sympathy"],
     colorFamily: ["white"],
     active: false,
@@ -1239,6 +1274,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-12",
     slug: "dozen-roses-in-yellow",
+    addedAt: "2026-05-01",
     title: { en: "Dozen Roses — Yellow", es: "Docena de Rosas — Amarilla" },
     category: "bouquets",
     blurb: {
@@ -1257,7 +1293,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand (24 roses)", es: "Grande (24 rosas)" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva (36 roses)", es: "Diva (36 rosas)" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "mothers-day", "thinking-of-you"],
     colorFamily: ["mixed"],
     active: false,
@@ -1272,6 +1308,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b1-10",
     slug: "dulce-vida",
+    addedAt: "2026-05-01",
     title: { en: "Dulce Vida", es: "Dulce Vida" },
     category: "arrangements",
     blurb: {
@@ -1290,7 +1327,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "congrats", "mothers-day", "new-baby", "thinking-of-you"],
     colorFamily: ["mixed", "pink"],
     active: true,
@@ -1305,6 +1342,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b1-13",
     slug: "dusky-bloom",
+    addedAt: "2026-05-01",
     title: { en: "Dusky Bloom", es: "Flor de Penumbra" },
     category: "bouquets",
     blurb: {
@@ -1323,7 +1361,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["anniversary", "graduation", "new-baby"],
     colorFamily: ["mixed", "pink"],
     active: true,
@@ -1339,6 +1377,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-01",
     slug: "eclipse-garden",
+    addedAt: "2026-05-01",
     title: { en: "Eclipse Garden", es: "Jardín Eclipse" },
     category: "arrangements",
     blurb: {
@@ -1357,7 +1396,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["congrats", "get-well"],
     colorFamily: ["mixed", "red"],
     active: true,
@@ -1372,6 +1411,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-02",
     slug: "encanto-pastel",
+    addedAt: "2026-05-01",
     title: { en: "Encanto Pastel", es: "Encanto Pastel" },
     category: "arrangements",
     blurb: {
@@ -1390,7 +1430,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 11000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "romance", "mothers-day"],
     colorFamily: ["pastel", "pink"],
     active: true,
@@ -1405,6 +1445,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b2-01",
     slug: "ethereal-charm",
+    addedAt: "2026-05-01",
     title: { en: "Ethereal Charm", es: "Encanto Etéreo" },
     category: "arrangements",
     blurb: {
@@ -1423,7 +1464,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["thank-you", "sympathy"],
     colorFamily: ["white", "green"],
     active: true,
@@ -1438,6 +1479,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-pla-b2-01",
     slug: "evergreen-horizon",
+    addedAt: "2026-05-01",
     title: { en: "Evergreen Horizon", es: "Horizonte Verde" },
     category: "plants",
     blurb: {
@@ -1456,7 +1498,7 @@ export const PRODUCTS: Product[] = [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 12500 },
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["thank-you"],
     colorFamily: ["green"],
     active: true,
@@ -1471,6 +1513,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-03",
     slug: "eye-candy",
+    addedAt: "2026-05-01",
     title: { en: "Eye Candy", es: "Eye Candy" },
     category: "arrangements",
     blurb: {
@@ -1489,7 +1532,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "congrats", "just-because"],
     colorFamily: ["pink", "mixed"],
     active: true,
@@ -1504,6 +1547,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-04",
     slug: "falling-leaves",
+    addedAt: "2026-05-01",
     title: { en: "Falling Leaves", es: "Hojas que Caen" },
     category: "arrangements",
     blurb: {
@@ -1522,7 +1566,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
-    tags: ["new", "seasonal", "same-day"],
+    tags: ["seasonal", "same-day"],
     occasions: ["thank-you"],
     colorFamily: ["mixed"],
     active: true,
@@ -1537,6 +1581,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-05",
     slug: "farmhouse-fresh",
+    addedAt: "2026-05-01",
     title: { en: "Farmhouse Fresh", es: "Fresco de Granja" },
     category: "bouquets",
     blurb: {
@@ -1555,7 +1600,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 11000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "congrats", "graduation", "thank-you"],
     colorFamily: ["white", "green"],
     active: true,
@@ -1570,6 +1615,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-06",
     slug: "flamingo-garden",
+    addedAt: "2026-05-01",
     title: { en: "Flamingo Garden", es: "Jardín Flamenco" },
     category: "arrangements",
     blurb: {
@@ -1588,7 +1634,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 20000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 25000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["anniversary", "romance", "mothers-day"],
     colorFamily: ["pink", "mixed"],
     active: true,
@@ -1603,6 +1649,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-07",
     slug: "floral-fiesta",
+    addedAt: "2026-05-01",
     title: { en: "Floral Fiesta", es: "Fiesta Floral" },
     category: "arrangements",
     blurb: {
@@ -1621,7 +1668,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 14000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 18000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["romance", "mothers-day", "thank-you"],
     colorFamily: ["mixed", "pink"],
     active: true,
@@ -1636,6 +1683,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b2-02",
     slug: "flores-dulces",
+    addedAt: "2026-05-01",
     title: { en: "Flores Dulces", es: "Flores Dulces" },
     category: "arrangements",
     blurb: {
@@ -1654,7 +1702,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "get-well"],
     colorFamily: ["pink", "pastel"],
     active: true,
@@ -1669,6 +1717,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b2-03",
     slug: "flower-pop",
+    addedAt: "2026-05-01",
     title: { en: "Flower Pop", es: "Flower Pop" },
     category: "bouquets",
     blurb: {
@@ -1687,7 +1736,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 10000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 14500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "graduation"],
     colorFamily: ["mixed"],
     active: true,
@@ -1702,6 +1751,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-gif-b2-01",
     slug: "gather-give",
+    addedAt: "2026-05-01",
     title: { en: "Gather & Give", es: "Reunir y Regalar" },
     category: "gifts",
     blurb: {
@@ -1723,7 +1773,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "card", label: { en: "Handwritten card", es: "Tarjeta escrita a mano" }, priceCents: 500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["thank-you"],
     colorFamily: ["mixed"],
     active: true,
@@ -1738,6 +1788,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b2-04",
     slug: "golden-hour",
+    addedAt: "2026-05-01",
     title: { en: "Golden Hour", es: "Hora Dorada" },
     category: "arrangements",
     blurb: {
@@ -1756,7 +1807,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 11500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "get-well"],
     colorFamily: ["mixed", "pastel"],
     active: true,
@@ -1771,6 +1822,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-08",
     slug: "hundred-roses-basket",
+    addedAt: "2026-05-01",
     title: { en: "Hundred Roses Basket", es: "Canasta de Cien Rosas" },
     category: "arrangements",
     blurb: {
@@ -1808,6 +1860,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-09",
     slug: "jade-lavender",
+    addedAt: "2026-05-01",
     title: { en: "Jade & Lavender", es: "Jade y Lavanda" },
     category: "arrangements",
     blurb: {
@@ -1826,7 +1879,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 11500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "romance", "mothers-day"],
     colorFamily: ["green", "pastel"],
     active: true,
@@ -1841,6 +1894,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-10",
     slug: "jungle-jewels",
+    addedAt: "2026-05-01",
     title: { en: "Jungle Jewels", es: "Joyas de la Selva" },
     category: "arrangements",
     blurb: {
@@ -1859,7 +1913,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 18000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["birthday", "mothers-day"],
     colorFamily: ["green", "mixed"],
     active: true,
@@ -1874,6 +1928,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-11",
     slug: "jungle-whirl",
+    addedAt: "2026-05-01",
     title: { en: "Jungle Whirl", es: "Remolino de Selva" },
     category: "arrangements",
     blurb: {
@@ -1892,7 +1947,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 16000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "congrats", "thank-you", "thinking-of-you"],
     colorFamily: ["mixed", "green"],
     active: true,
@@ -1907,6 +1962,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-gif-b2-02",
     slug: "lilac-breeze-basket",
+    addedAt: "2026-05-01",
     title: { en: "Lilac Breeze Basket", es: "Canasta Brisa de Lila" },
     category: "gifts",
     blurb: {
@@ -1925,7 +1981,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 11000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "congrats", "mothers-day", "thinking-of-you"],
     colorFamily: ["pastel", "white"],
     active: true,
@@ -1940,6 +1996,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-b2-01",
     slug: "lilies-for-lottie",
+    addedAt: "2026-05-01",
     title: { en: "Lilies for Lottie", es: "Lirios para Lottie" },
     category: "bouquets",
     blurb: {
@@ -1973,6 +2030,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-12",
     slug: "lush-horizons",
+    addedAt: "2026-05-01",
     title: { en: "Lush Horizons", es: "Horizontes Frondosos" },
     category: "arrangements",
     blurb: {
@@ -1991,7 +2049,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 27500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 35000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day"],
     colorFamily: ["green", "white"],
     active: true,
@@ -2006,6 +2064,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-13",
     slug: "luz-del-caribe",
+    addedAt: "2026-05-01",
     title: { en: "Luz del Caribe", es: "Luz del Caribe" },
     category: "arrangements",
     blurb: {
@@ -2024,7 +2083,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "get-well"],
     colorFamily: ["mixed"],
     active: true,
@@ -2039,6 +2098,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-14",
     slug: "magenta-majesty",
+    addedAt: "2026-05-01",
     title: { en: "Magenta Majesty", es: "Majestad Magenta" },
     category: "arrangements",
     blurb: {
@@ -2057,7 +2117,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 20000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 25000 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["anniversary", "romance", "mothers-day"],
     colorFamily: ["pink", "mixed"],
     active: true,
@@ -2072,6 +2132,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-15",
     slug: "maison-de-diva",
+    addedAt: "2026-05-01",
     title: { en: "Maison de Diva", es: "Maison de Diva" },
     category: "bouquets",
     blurb: {
@@ -2109,6 +2170,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-16",
     slug: "mango-tango",
+    addedAt: "2026-05-01",
     title: { en: "Mango Tango", es: "Mango Tango" },
     category: "arrangements",
     blurb: {
@@ -2127,7 +2189,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "mothers-day"],
     colorFamily: ["mixed", "pink"],
     active: true,
@@ -2142,6 +2204,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-17",
     slug: "midsomar",
+    addedAt: "2026-05-01",
     title: { en: "Midsomar", es: "Midsomar" },
     category: "arrangements",
     blurb: {
@@ -2160,7 +2223,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 13000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 16500 },
     ],
-    tags: ["new", "seasonal", "same-day"],
+    tags: ["seasonal", "same-day"],
     occasions: ["thank-you"],
     colorFamily: ["white", "green"],
     active: true,
@@ -2175,6 +2238,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-pla-b2-02",
     slug: "monstera-mood",
+    addedAt: "2026-05-01",
     title: { en: "Monstera Mood", es: "Estado Monstera" },
     category: "sympathy",
     blurb: {
@@ -2193,7 +2257,7 @@ export const PRODUCTS: Product[] = [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 25000 },
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 27500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["sympathy"],
     colorFamily: ["green"],
     active: true,
@@ -2208,6 +2272,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-b2-02",
     slug: "natures-cornucopia",
+    addedAt: "2026-05-01",
     title: { en: "Nature's Cornucopia", es: "Cornucopia de la Naturaleza" },
     category: "arrangements",
     blurb: {
@@ -2242,6 +2307,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b2-18",
     slug: "neon-tropic",
+    addedAt: "2026-05-01",
     title: { en: "Neon Tropic", es: "Neón Tropical" },
     category: "arrangements",
     blurb: {
@@ -2260,7 +2326,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["thank-you"],
     colorFamily: ["pink", "green", "mixed"],
     active: true,
@@ -2275,6 +2341,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-pla-b2-03",
     slug: "opal-orchid",
+    addedAt: "2026-05-01",
     title: { en: "Opal Orchid", es: "Orquídea Ópalo" },
     category: "plants",
     blurb: {
@@ -2293,7 +2360,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 14500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 18500 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["white", "pastel"],
     // Retired 2026-08-18: the copy claims a double-stem phalaenopsis but the
@@ -2311,6 +2378,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-pla-orc-01",
     slug: "phalaenopsis-orchid",
+    addedAt: "2026-08-18",
     title: { en: "Phalaenopsis Orchid", es: "Orquídea Phalaenopsis" },
     category: "plants",
     blurb: {
@@ -2369,7 +2437,7 @@ export const PRODUCTS: Product[] = [
         subtitle: { en: "Twice the blooms, same care", es: "El doble de flores, el mismo cuidado" },
       },
     ],
-    tags: ["same-day", "new", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "congrats", "sympathy"],
     colorFamily: ["white", "pink"],
     active: true,
@@ -2388,6 +2456,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-01",
     slug: "paradise-found",
+    addedAt: "2026-05-01",
     title: { en: "Paradise Found", es: "Paraíso Encontrado" },
     category: "arrangements",
     blurb: {
@@ -2406,7 +2475,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "romance", "mothers-day", "thank-you"],
     colorFamily: ["mixed", "green"],
     active: true,
@@ -2421,6 +2490,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-02",
     slug: "pastel-poetry",
+    addedAt: "2026-05-01",
     title: { en: "Pastel Poetry", es: "Poesía en Pastel" },
     category: "bouquets",
     blurb: {
@@ -2439,7 +2509,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 11000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "graduation"],
     colorFamily: ["pastel", "pink"],
     active: true,
@@ -2454,6 +2524,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-03",
     slug: "peach-sunshine",
+    addedAt: "2026-05-01",
     title: { en: "Peach Sunshine", es: "Durazno y Sol" },
     category: "bouquets",
     blurb: {
@@ -2472,7 +2543,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 10500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 14500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "get-well"],
     colorFamily: ["pastel", "mixed"],
     active: true,
@@ -2487,6 +2558,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-04",
     slug: "petal-party",
+    addedAt: "2026-05-01",
     title: { en: "Petal Party", es: "Fiesta de Pétalos" },
     category: "bouquets",
     blurb: {
@@ -2508,7 +2580,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "balloons", label: { en: "Add birthday balloons", es: "Añadir globos de cumpleaños" }, priceCents: 1500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "new-baby"],
     colorFamily: ["pink", "mixed"],
     active: true,
@@ -2523,6 +2595,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-05",
     slug: "pink-opus",
+    addedAt: "2026-05-01",
     title: { en: "Pink Opus", es: "Opus Rosa" },
     category: "arrangements",
     blurb: {
@@ -2541,7 +2614,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 20000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 25000 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["anniversary", "romance", "mothers-day", "new-baby"],
     colorFamily: ["pink"],
     active: true,
@@ -2556,6 +2629,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-06",
     slug: "purple-haze",
+    addedAt: "2026-05-01",
     title: { en: "Purple Haze", es: "Bruma Púrpura" },
     category: "arrangements",
     blurb: {
@@ -2574,7 +2648,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 11000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["mothers-day"],
     colorFamily: ["mixed", "pink"],
     active: true,
@@ -2589,6 +2663,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-07",
     slug: "rainbow-reverie",
+    addedAt: "2026-05-01",
     title: { en: "Rainbow Reverie", es: "Ensueño Arcoíris" },
     category: "arrangements",
     blurb: {
@@ -2607,7 +2682,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["thank-you"],
     colorFamily: ["mixed"],
     active: true,
@@ -2622,6 +2697,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-08",
     slug: "santas-garden",
+    addedAt: "2026-05-01",
     title: { en: "Santa's Garden", es: "El Jardín de Santa" },
     category: "arrangements",
     blurb: {
@@ -2640,7 +2716,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "seasonal"],
+    tags: ["seasonal"],
     occasions: [],
     seasonMonths: [11, 12],
     colorFamily: ["red", "green", "white"],
@@ -2656,6 +2732,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-09",
     slug: "springbling",
+    addedAt: "2026-05-01",
     title: { en: "Springbling", es: "Brillo de Primavera" },
     category: "bouquets",
     blurb: {
@@ -2674,7 +2751,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 11000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15000 },
     ],
-    tags: ["new", "seasonal", "same-day"],
+    tags: ["seasonal", "same-day"],
     occasions: ["birthday", "graduation"],
     colorFamily: ["pastel", "mixed"],
     active: true,
@@ -2689,6 +2766,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-10",
     slug: "stem-theory",
+    addedAt: "2026-05-01",
     title: { en: "Stem Theory", es: "Teoría del Tallo" },
     category: "arrangements",
     blurb: {
@@ -2707,7 +2785,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 13500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 18500 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["birthday", "congrats", "get-well"],
     colorFamily: ["white", "green"],
     active: true,
@@ -2722,6 +2800,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-11",
     slug: "sugarplum",
+    addedAt: "2026-05-01",
     title: { en: "Sugarplum", es: "Ciruela Dulce" },
     category: "arrangements",
     blurb: {
@@ -2740,7 +2819,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 18500 },
     ],
-    tags: ["new", "seasonal"],
+    tags: ["seasonal"],
     occasions: ["birthday", "mothers-day"],
     colorFamily: ["pink", "mixed"],
     active: true,
@@ -2755,6 +2834,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-12",
     slug: "sunlit-tropics",
+    addedAt: "2026-05-01",
     title: { en: "Sunlit Tropics", es: "Trópico Iluminado" },
     category: "arrangements",
     blurb: {
@@ -2773,7 +2853,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "thank-you"],
     colorFamily: ["mixed", "pastel"],
     active: true,
@@ -2788,6 +2868,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-13",
     slug: "sunset-estate",
+    addedAt: "2026-05-01",
     title: { en: "Sunset Estate", es: "Hacienda al Atardecer" },
     category: "bouquets",
     blurb: {
@@ -2809,7 +2890,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "wine", label: { en: "Add bottle of red wine", es: "Añadir botella de vino tinto" }, priceCents: 4500 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["get-well", "graduation"],
     colorFamily: ["mixed", "pink"],
     active: true,
@@ -2824,6 +2905,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-gif-b3-14",
     slug: "sunshine-basket",
+    addedAt: "2026-05-01",
     title: { en: "Sunshine Basket", es: "Canasta de Sol" },
     category: "gifts",
     blurb: {
@@ -2842,7 +2924,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 10500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 14000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "congrats", "get-well"],
     colorFamily: ["mixed", "white"],
     active: true,
@@ -2857,6 +2939,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-15",
     slug: "talitas-bouquet",
+    addedAt: "2026-05-01",
     title: { en: "Talita's Bouquet", es: "El Ramo de Talita" },
     category: "bouquets",
     blurb: {
@@ -2875,7 +2958,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 15000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["romance", "sympathy"],
     colorFamily: ["pink", "white"],
     active: true,
@@ -2890,6 +2973,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-16",
     slug: "the-heart-you-hold",
+    addedAt: "2026-05-01",
     title: { en: "The Heart You Hold", es: "El Corazón que Llevas" },
     category: "bouquets",
     blurb: {
@@ -2911,7 +2995,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "chocolates", label: { en: "Add dark chocolate truffles", es: "Añadir trufas de chocolate oscuro" }, priceCents: 3500 },
     ],
-    tags: ["new", "staff-pick", "same-day"],
+    tags: ["staff-pick", "same-day"],
     occasions: ["anniversary", "romance", "just-because", "thinking-of-you"],
     colorFamily: ["red"],
     active: true,
@@ -2926,6 +3010,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-b3-17",
     slug: "thorn-grace",
+    addedAt: "2026-05-01",
     title: { en: "Thorn & Grace", es: "Espina y Gracia" },
     category: "arrangements",
     blurb: {
@@ -2944,7 +3029,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 18000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 20000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "mothers-day"],
     colorFamily: ["white", "green"],
     active: true,
@@ -2959,6 +3044,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-18",
     slug: "three-dozen-roses-in-vase",
+    addedAt: "2026-05-01",
     title: { en: "Three Dozen Roses in Vase", es: "Tres Docenas de Rosas en Florero" },
     category: "bouquets",
     blurb: {
@@ -2981,7 +3067,7 @@ export const PRODUCTS: Product[] = [
       { id: "champagne", label: { en: "Add Veuve Clicquot", es: "Añadir Veuve Clicquot" }, priceCents: 8900 },
       { id: "chocolates", label: { en: "Add dark chocolate truffles", es: "Añadir trufas de chocolate oscuro" }, priceCents: 1500 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["anniversary", "romance", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["red"],
     active: true,
@@ -2996,6 +3082,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-19",
     slug: "timeless-romance",
+    addedAt: "2026-05-01",
     title: { en: "Timeless Romance", es: "Romance Atemporal" },
     category: "bouquets",
     blurb: {
@@ -3017,7 +3104,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "champagne", label: { en: "Add Veuve Clicquot", es: "Añadir Veuve Clicquot" }, priceCents: 8900 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["anniversary", "romance", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["pink", "white"],
     active: true,
@@ -3032,6 +3119,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-20",
     slug: "tropic-thunder",
+    addedAt: "2026-05-01",
     title: { en: "Tropic Thunder", es: "Trueno Tropical" },
     category: "arrangements",
     blurb: {
@@ -3050,7 +3138,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 20000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 25000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "mothers-day", "thank-you"],
     colorFamily: ["pink", "red", "mixed"],
     active: true,
@@ -3065,6 +3153,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-21",
     slug: "tropical-paradise",
+    addedAt: "2026-05-01",
     title: { en: "Tropical Paradise", es: "Paraíso Tropical" },
     category: "arrangements",
     blurb: {
@@ -3083,7 +3172,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 20000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 25000 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["birthday", "mothers-day", "thank-you"],
     colorFamily: ["white", "pastel", "green"],
     active: true,
@@ -3098,6 +3187,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-22",
     slug: "two-dozen-roses-in-vase",
+    addedAt: "2026-05-01",
     title: { en: "Two Dozen Roses in Vase", es: "Dos Docenas de Rosas en Florero" },
     category: "bouquets",
     blurb: {
@@ -3120,7 +3210,7 @@ export const PRODUCTS: Product[] = [
       { id: "champagne", label: { en: "Add Veuve Clicquot", es: "Añadir Veuve Clicquot" }, priceCents: 8900 },
       { id: "chocolates", label: { en: "Add dark chocolate truffles", es: "Añadir trufas de chocolate oscuro" }, priceCents: 1500 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["anniversary", "romance", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["red"],
     active: true,
@@ -3135,6 +3225,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-23",
     slug: "under-the-mistletoe",
+    addedAt: "2026-05-01",
     title: { en: "Under the Mistletoe", es: "Bajo el Muérdago" },
     category: "arrangements",
     blurb: {
@@ -3153,7 +3244,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17500 },
     ],
-    tags: ["new", "seasonal", "same-day"],
+    tags: ["seasonal", "same-day"],
     occasions: [],
     seasonMonths: [11, 12],
     colorFamily: ["red", "green"],
@@ -3169,6 +3260,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-24",
     slug: "velvet-garden",
+    addedAt: "2026-05-01",
     title: { en: "Velvet Garden", es: "Jardín de Terciopelo" },
     category: "arrangements",
     blurb: {
@@ -3187,7 +3279,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 14000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 19000 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["birthday", "mothers-day"],
     colorFamily: ["red", "mixed"],
     active: true,
@@ -3202,6 +3294,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-25",
     slug: "vibrant-vibes",
+    addedAt: "2026-05-01",
     title: { en: "Vibrant Vibes", es: "Vibras Vibrantes" },
     category: "arrangements",
     blurb: {
@@ -3220,7 +3313,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 11000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "congrats", "get-well"],
     colorFamily: ["pink", "mixed"],
     active: true,
@@ -3235,6 +3328,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-26",
     slug: "viva-maky",
+    addedAt: "2026-05-01",
     title: { en: "Viva Maky", es: "Viva Maky" },
     category: "arrangements",
     blurb: {
@@ -3253,7 +3347,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Designer Grand", es: "Diseñadora Grande" }, priceCents: 17500 },
       { id: "diva", label: { en: "Designer Diva", es: "Diseñadora Diva" }, priceCents: 24500 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["birthday", "mothers-day"],
     colorFamily: ["mixed"],
     active: true,
@@ -3268,6 +3362,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-27",
     slug: "whispers-of-spring",
+    addedAt: "2026-05-01",
     title: { en: "Whispers of Spring", es: "Susurros de Primavera" },
     category: "arrangements",
     blurb: {
@@ -3286,7 +3381,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 11000 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 15000 },
     ],
-    tags: ["new", "seasonal", "same-day"],
+    tags: ["seasonal", "same-day"],
     occasions: ["get-well", "new-baby"],
     colorFamily: ["pastel", "white"],
     active: true,
@@ -3301,6 +3396,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-b3-28",
     slug: "wildflower-meadow",
+    addedAt: "2026-05-01",
     title: { en: "Wildflower Meadow", es: "Pradera Silvestre" },
     category: "bouquets",
     blurb: {
@@ -3319,7 +3415,7 @@ export const PRODUCTS: Product[] = [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 10000 },
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 13500 },
     ],
-    tags: ["new", "same-day", "seasonal"],
+    tags: ["same-day", "seasonal"],
     occasions: ["birthday", "mothers-day", "thinking-of-you"],
     colorFamily: ["mixed", "pastel"],
     active: true,
@@ -3334,6 +3430,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b3-29",
     slug: "winter-moss",
+    addedAt: "2026-05-01",
     title: { en: "Winter Moss", es: "Musgo de Invierno" },
     category: "arrangements",
     blurb: {
@@ -3352,7 +3449,7 @@ export const PRODUCTS: Product[] = [
       { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 13500 },
       { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 18000 },
     ],
-    tags: ["new", "seasonal", "staff-pick"],
+    tags: ["seasonal", "staff-pick"],
     occasions: ["thank-you"],
     colorFamily: ["green", "white"],
     active: true,
@@ -3368,6 +3465,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b4-01",
     slug: "soft-landing",
+    addedAt: "2026-09-03",
     title: { en: "Soft Landing", es: "Aterrizaje Suave" },
     category: "arrangements",
     blurb: {
@@ -3391,7 +3489,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["anniversary", "congrats", "just-because", "get-well", "new-baby", "thinking-of-you"],
     colorFamily: ["white", "pink", "pastel"],
     active: true,
@@ -3406,6 +3504,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b4-02",
     slug: "chantilly-cream",
+    addedAt: "2026-09-03",
     title: { en: "Chantilly Cream", es: "Crema Chantilly" },
     category: "arrangements",
     blurb: {
@@ -3437,7 +3536,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 12000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "anniversary", "congrats", "just-because", "get-well", "new-baby", "thinking-of-you"],
     colorFamily: ["white", "green", "pastel"],
     active: true,
@@ -3452,6 +3551,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b4-03",
     slug: "rose-quartz",
+    addedAt: "2026-09-03",
     title: { en: "Rose Quartz", es: "Cuarzo Rosa" },
     category: "arrangements",
     blurb: {
@@ -3491,7 +3591,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 12500 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "anniversary", "get-well", "thank-you", "thinking-of-you", "just-because"],
     colorFamily: ["pink", "white", "pastel"],
     active: true,
@@ -3506,6 +3606,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b4-04",
     slug: "pink-persuasion",
+    addedAt: "2026-09-03",
     title: { en: "Pink Persuasion", es: "Persuasión Rosa" },
     category: "arrangements",
     blurb: {
@@ -3553,7 +3654,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 11000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "just-because", "thinking-of-you"],
     colorFamily: ["pink", "green", "mixed"],
     active: true,
@@ -3568,6 +3669,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-b4-05",
     slug: "cotton-candy",
+    addedAt: "2026-09-03",
     title: { en: "Cotton Candy", es: "Algodón de Azúcar" },
     category: "arrangements",
     blurb: {
@@ -3591,7 +3693,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 11500 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "congrats", "just-because", "get-well"],
     colorFamily: ["pink", "mixed", "pastel"],
     active: true,
@@ -3607,6 +3709,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-royal-01",
     slug: "birthday-queen",
+    addedAt: "2026-09-06",
     title: { en: "Birthday Queen", es: "Reina de Cumpleaños" },
     category: "bouquets",
     blurb: {
@@ -3626,7 +3729,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Sixty roses", es: "Sesenta rosas" }, priceCents: 35000 },
     ],
-    tags: ["new", "staff-pick"],
+    tags: ["staff-pick"],
     occasions: ["birthday", "romance", "anniversary", "congrats"],
     colorFamily: ["pink", "red", "mixed"],
     active: true,
@@ -3641,6 +3744,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-royal-01",
     slug: "peaches-and-cream",
+    addedAt: "2026-09-06",
     title: { en: "Peaches & Cream", es: "Duraznos y Crema" },
     category: "arrangements",
     blurb: {
@@ -3660,7 +3764,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 12000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "new-baby", "thank-you", "get-well", "just-because", "congrats"],
     colorFamily: ["pastel", "pink", "mixed"],
     active: true,
@@ -3675,6 +3779,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-royal-02",
     slug: "island-sunrise",
+    addedAt: "2026-09-11",
     title: { en: "Island Sunrise", es: "Amanecer Isleño" },
     category: "arrangements",
     blurb: {
@@ -3692,7 +3797,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 15000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "congrats", "thank-you", "get-well", "anniversary", "just-because"],
     colorFamily: ["mixed", "red"],
     active: true,
@@ -3707,6 +3812,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-royal-03",
     slug: "lavender-serenade",
+    addedAt: "2026-09-11",
     title: { en: "Lavender Serenade", es: "Serenata Lavanda" },
     category: "arrangements",
     blurb: {
@@ -3723,7 +3829,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 16500 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["romance", "anniversary", "birthday", "thank-you", "get-well", "just-because"],
     colorFamily: ["pink", "red", "mixed"],
     active: true,
@@ -3738,6 +3844,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-royal-04",
     slug: "sunflower-parade",
+    addedAt: "2026-09-11",
     title: { en: "Sunflower Parade", es: "Desfile de Girasoles" },
     category: "arrangements",
     blurb: {
@@ -3756,7 +3863,7 @@ export const PRODUCTS: Product[] = [
       { id: "set-3", label: { en: "Set of 3", es: "Set de 3" }, priceCents: 15000, subtitle: { en: "Three matching bowls", es: "Tres bowls a juego" } },
       { id: "set-5", label: { en: "Set of 5", es: "Set de 5" }, priceCents: 25000, subtitle: { en: "Five matching bowls", es: "Cinco bowls a juego" } },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["congrats", "birthday", "graduation", "thank-you", "get-well", "just-because"],
     colorFamily: ["mixed", "green"],
     active: true,
@@ -3771,6 +3878,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-royal-05",
     slug: "white-linen",
+    addedAt: "2026-09-11",
     title: { en: "White Linen", es: "Lino Blanco" },
     category: "arrangements",
     blurb: {
@@ -3787,7 +3895,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 15000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["anniversary", "sympathy", "congrats", "thank-you", "thinking-of-you", "just-because"],
     colorFamily: ["white", "green"],
     active: true,
@@ -3802,6 +3910,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-royal-06",
     slug: "sunday-morning",
+    addedAt: "2026-09-11",
     title: { en: "Sunday Morning", es: "Mañana de Domingo" },
     category: "arrangements",
     blurb: {
@@ -3818,7 +3927,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 7000 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["new-baby", "get-well", "birthday", "thank-you", "thinking-of-you", "just-because"],
     colorFamily: ["pastel", "pink", "mixed"],
     active: true,
@@ -3833,6 +3942,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-royal-07",
     slug: "ballet-slipper",
+    addedAt: "2026-09-11",
     title: { en: "Ballet Slipper", es: "Zapatilla de Ballet" },
     category: "arrangements",
     blurb: {
@@ -3852,7 +3962,7 @@ export const PRODUCTS: Product[] = [
       { id: "no-orchid", label: { en: "Without orchid", es: "Sin orquídea" }, priceCents: 10000, subtitle: { en: "Roses, hydrangea, lisianthus", es: "Rosas, hortensia, lisianthus" } },
       { id: "with-orchid", label: { en: "With orchid", es: "Con orquídea" }, priceCents: 11000, subtitle: { en: "Adds sprays of pink dendrobium", es: "Suma varas de dendrobium rosa" } },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["new-baby", "anniversary", "birthday", "romance", "thank-you", "just-because"],
     colorFamily: ["pink", "pastel", "white"],
     active: true,
@@ -3867,6 +3977,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-royal-08",
     slug: "garden-party",
+    addedAt: "2026-09-11",
     title: { en: "Garden Party", es: "Fiesta de Jardín" },
     category: "arrangements",
     blurb: {
@@ -3883,7 +3994,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 15000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["anniversary", "congrats", "thank-you", "birthday", "new-baby", "just-because"],
     colorFamily: ["pastel", "pink", "white", "green"],
     active: true,
@@ -3898,6 +4009,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-royal-09",
     slug: "summer-confetti",
+    addedAt: "2026-09-11",
     title: { en: "Summer Confetti", es: "Confeti de Verano" },
     category: "arrangements",
     blurb: {
@@ -3914,7 +4026,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 15000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "congrats", "graduation", "get-well", "thank-you", "just-because"],
     colorFamily: ["mixed", "pink", "red"],
     active: true,
@@ -3929,6 +4041,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-royal-10",
     slug: "blue-lagoon",
+    addedAt: "2026-09-11",
     title: { en: "Blue Lagoon", es: "Laguna Azul" },
     category: "arrangements",
     blurb: {
@@ -3945,7 +4058,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 10000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "new-baby", "congrats", "graduation", "thank-you", "just-because"],
     colorFamily: ["mixed", "pastel"],
     active: true,
@@ -3960,6 +4073,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-arr-royal-11",
     slug: "carnival",
+    addedAt: "2026-09-11",
     title: { en: "Carnival", es: "Carnaval" },
     category: "arrangements",
     blurb: {
@@ -3976,7 +4090,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 12000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "congrats", "graduation", "thank-you", "get-well", "just-because"],
     colorFamily: ["mixed", "pink", "green"],
     active: true,
@@ -3991,6 +4105,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-sym-royal-01",
     slug: "serene-lavender",
+    addedAt: "2026-09-11",
     title: { en: "Serene Lavender", es: "Lavanda Serena" },
     category: "sympathy",
     blurb: {
@@ -4005,9 +4120,9 @@ export const PRODUCTS: Product[] = [
       { src: "/products/serene-lavender.jpg", alt: { en: "Standing sympathy tribute of white roses, lavender hydrangea, blue delphinium, white lilies, snapdragon and stock with burgundy chrysanthemum buttons", es: "Homenaje vertical de condolencia con rosas blancas, hortensia lavanda, delphinium azul, lirios blancos, boca de dragón y alhelí con botones de crisantemo borgoña" }, aspect: "4/5" },
     ],
     variants: [
-      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 15000 },
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 18000 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["sympathy", "thinking-of-you"],
     colorFamily: ["white", "pastel", "mixed"],
     active: true,
@@ -4022,6 +4137,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "x-card-premium",
     slug: "premium-card",
+    addedAt: "2026-05-02",
     title: { en: "Premium handwritten card", es: "Tarjeta escrita a mano premium" },
     category: "gifts",
     giftExtra: true,
@@ -4051,6 +4167,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "x-card-digital",
     slug: "digital-card",
+    addedAt: "2026-10-23",
     title: { en: "Digital card", es: "Tarjeta digital" },
     category: "gifts",
     giftExtra: true,
@@ -4068,9 +4185,9 @@ export const PRODUCTS: Product[] = [
       aspect: "1/1",
     }],
     variants: [{ id: "default", label: { en: "Digital card", es: "Tarjeta digital" }, priceCents: 2500 }],
-    tags: ["new"],
+    tags: ["same-day"],
     // Celebrations only: every design is a celebration, wrong for a funeral piece.
-    occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "get-well", "graduation", "new-baby", "thank-you", "thinking-of-you"],
+    occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "get-well", "graduation", "new-baby", "thank-you", "thinking-of-you", "valentines-day"],
     colorFamily: ["mixed"],
     active: true,
     seo: {
@@ -4081,6 +4198,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "x-vase-upgrade",
     slug: "glass-vase-upgrade",
+    addedAt: "2026-05-02",
     title: { en: "Glass vase upgrade", es: "Mejora a jarrón de vidrio" },
     category: "gifts",
     giftExtra: true,
@@ -4110,6 +4228,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "x-ribbon-silk",
     slug: "silk-ribbon",
+    addedAt: "2026-05-02",
     title: { en: "Silk ribbon", es: "Listón de seda" },
     category: "gifts",
     giftExtra: true,
@@ -4139,6 +4258,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "x-chocolates-mini",
     slug: "mini-chocolates",
+    addedAt: "2026-05-02",
     title: { en: "Mini chocolates (4 pieces)", es: "Mini chocolates (4 piezas)" },
     category: "gifts",
     giftExtra: true,
@@ -4168,6 +4288,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-rose-red-wrap",
     slug: "wrapped-red-roses",
+    addedAt: "2026-05-25",
     title: { en: "Wrapped Red Roses", es: "Rosas Rojas Wrapped" },
     category: "bouquets",
     blurb: {
@@ -4191,7 +4312,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "ceramic-base", label: { en: "Add ceramic base", es: "Añadir base cerámica" }, priceCents: 1500 },
     ],
-    tags: ["new", "same-day", "staff-pick"],
+    tags: ["same-day", "staff-pick"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["red"],
     active: true,
@@ -4206,6 +4327,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-rose-color-wrap",
     slug: "wrapped-roses-colored",
+    addedAt: "2026-05-25",
     title: { en: "Wrapped Roses — Pick a Color", es: "Rosas Wrapped — Elige el Color" },
     category: "bouquets",
     blurb: {
@@ -4247,7 +4369,7 @@ export const PRODUCTS: Product[] = [
     addOns: [
       { id: "ceramic-base", label: { en: "Add ceramic base", es: "Añadir base cerámica" }, priceCents: 1500 },
     ],
-    tags: ["new", "same-day"],
+    tags: ["same-day"],
     occasions: ["birthday", "anniversary", "romance", "congrats", "just-because", "mothers-day", "thinking-of-you"],
     colorFamily: ["pink", "white", "mixed"],
     active: true,
@@ -4262,6 +4384,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-flag-roses",
     slug: "american-flag-roses",
+    addedAt: "2026-09-03",
     title: { en: "American Flag Roses", es: "Rosas Bandera Americana" },
     category: "bouquets",
     blurb: {
@@ -4292,7 +4415,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "grand", label: { en: "American flag bouquet", es: "Ramo bandera americana" }, priceCents: 40000 },
     ],
-    tags: ["new", "seasonal"],
+    tags: ["seasonal"],
     occasions: ["congrats", "graduation"],
     colorFamily: ["red", "white", "mixed"],
     active: true,
@@ -4307,6 +4430,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "p-bou-100-roses",
     slug: "100-roses",
+    addedAt: "2026-09-03",
     title: { en: "100 Roses", es: "100 Rosas" },
     category: "bouquets",
     blurb: {
@@ -4337,7 +4461,7 @@ export const PRODUCTS: Product[] = [
     variants: [
       { id: "grand", label: { en: "100 roses", es: "100 rosas" }, priceCents: 50000 },
     ],
-    tags: ["new"],
+    tags: [],
     occasions: ["birthday", "anniversary", "romance", "congrats", "mothers-day"],
     colorFamily: ["pink", "red", "mixed"],
     active: true,
@@ -4349,10 +4473,2586 @@ export const PRODUCTS: Product[] = [
       },
     },
   },
+  {
+    id: "p-sym-wreath-blue",
+    slug: "tranquil-skies-wreath",
+    addedAt: "2026-10-07",
+    title: { en: "Tranquil Skies Wreath", es: "Corona Cielo Sereno" },
+    category: "sympathy",
+    blurb: {
+      en: "A standing funeral wreath of white roses, lilies, and sky-blue hydrangea.",
+      es: "Una corona fúnebre de pie con rosas blancas, lirios y hortensia azul cielo.",
+    },
+    description: {
+      en: "A full standing wreath for the service — ivory roses, white oriental lilies, lisianthus, and spray chrysanthemums woven through sky-blue hydrangea and delphinium, with a touch of baby's breath. Finished with a sky-blue satin bow and long ribbons, and set on an easel so it stands with dignity beside the family. A calm, luminous tribute for a funeral, wake, or memorial. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Una corona de pie completa para el servicio — rosas marfil, lirios orientales blancos, lisianthus y crisantemos de rama entretejidos con hortensia y delphinium azul cielo, con un toque de nube. Rematada con un moño de satín azul cielo y cintas largas, y montada en un atril para que se mantenga digna junto a la familia. Un homenaje sereno y luminoso para un funeral, velorio o servicio memorial. Hecha a mano en nuestra tienda y entregada en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      {
+        src: "/products/tranquil-skies-wreath.jpg",
+        alt: { en: "Standing funeral wreath of white roses, lilies, and blue hydrangea with sky-blue ribbons on an easel", es: "Corona fúnebre de pie con rosas blancas, lirios y hortensia azul con cintas azul cielo sobre un atril" },
+        aspect: "4/5",
+      },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing wreath", es: "Corona de pie" }, priceCents: 34999 },
+    ],
+    tags: [],
+    occasions: ["sympathy"],
+    colorFamily: ["white", "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Tranquil Skies — White Rose & Blue Hydrangea Funeral Wreath | Diva Flowers", es: "Cielo Sereno — Corona Fúnebre de Rosas Blancas e Hortensia | Diva Flowers" },
+      description: {
+        en: "Standing funeral wreath of white roses, lilies, and sky-blue hydrangea on an easel. Delivered to funeral homes and churches across Long Island.",
+        es: "Corona fúnebre de pie con rosas blancas, lirios y hortensia azul cielo sobre atril. Entrega en funerarias e iglesias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-cross-red",
+    slug: "crimson-grace-cross",
+    addedAt: "2026-10-07",
+    title: { en: "Crimson Grace Cross", es: "Cruz Gracia Carmesí" },
+    category: "sympathy",
+    blurb: {
+      en: "A standing cross of white chrysanthemums with a cascade of red roses.",
+      es: "Una cruz de pie de crisantemos blancos con una cascada de rosas rojas.",
+    },
+    description: {
+      en: "A standing funeral cross built from a solid field of white chrysanthemums, crossed by a cascade of deep red roses that spills from the top arm down the side, set with white satin loops, folded aspidistra leaves, and trailing Italian ruscus. Mounted on an easel for the service. A tribute of faith and love for a funeral, wake, or memorial mass. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Una cruz fúnebre de pie construida con un campo compacto de crisantemos blancos, atravesada por una cascada de rosas rojas intensas que cae desde el brazo superior por el costado, con lazadas de satín blanco, hojas de aspidistra plegadas y ruscus italiano colgante. Montada en un atril para el servicio. Un homenaje de fe y amor para un funeral, velorio o misa memorial. Hecha a mano en nuestra tienda y entregada en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      {
+        src: "/products/crimson-grace-cross.jpg",
+        alt: { en: "Standing funeral cross of white chrysanthemums with a cascade of red roses on an easel", es: "Cruz fúnebre de pie de crisantemos blancos con una cascada de rosas rojas sobre un atril" },
+        aspect: "4/5",
+      },
+      {
+        src: "/products/crimson-grace-cross-2.jpg",
+        alt: { en: "Crimson Grace Cross, full view on its easel", es: "Cruz Gracia Carmesí, vista completa sobre su atril" },
+        aspect: "4/5",
+      },
+      {
+        src: "/products/crimson-grace-cross-3.jpg",
+        alt: { en: "Crimson Grace Cross, close-up of the red rose cascade", es: "Cruz Gracia Carmesí, detalle de la cascada de rosas rojas" },
+        aspect: "4/5",
+      },
+      {
+        src: "/products/crimson-grace-cross-4.jpg",
+        alt: { en: "Crimson Grace Cross, front view", es: "Cruz Gracia Carmesí, vista frontal" },
+        aspect: "4/5",
+      },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing cross", es: "Cruz de pie" }, priceCents: 39999 },
+    ],
+    tags: [],
+    occasions: ["sympathy"],
+    colorFamily: ["white", "red"],
+    active: true,
+    seo: {
+      title: { en: "Crimson Grace — Red Rose & White Chrysanthemum Funeral Cross | Diva Flowers", es: "Gracia Carmesí — Cruz Fúnebre de Crisantemos y Rosas Rojas | Diva Flowers" },
+      description: {
+        en: "Standing funeral cross of white chrysanthemums with a cascade of red roses on an easel. Delivered to funeral homes and churches across Long Island.",
+        es: "Cruz fúnebre de pie de crisantemos blancos con cascada de rosas rojas sobre atril. Entrega en funerarias e iglesias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-peach-spray",
+    slug: "peach-tribute-spray",
+    addedAt: "2026-10-07",
+    title: { en: "Peach Tribute Spray", es: "Tributo Melocotón" },
+    category: "sympathy",
+    blurb: {
+      en: "A standing spray of peach and orange roses with white snapdragon and blue delphinium.",
+      es: "Un tributo de pie de rosas melocotón y naranja con boca de dragón blanca y delphinium azul.",
+    },
+    description: {
+      en: "A warm standing spray for the service — peach and orange roses and spray roses gathered with white snapdragon, blue delphinium, and soft green hydrangea, framed in long leaves and finished with a black-and-white satin bow and trailing ribbons. Set on an easel so it stands beside the family with quiet warmth. A tribute for a life remembered with gentleness, for a funeral, wake, or memorial. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un tributo de pie cálido para el servicio — rosas melocotón y naranja y mini rosas reunidas con boca de dragón blanca, delphinium azul e hortensia verde suave, enmarcadas en hojas largas y rematadas con un moño de satín blanco y negro y cintas colgantes. Montado en un atril para acompañar a la familia con una calidez serena. Un homenaje para una vida recordada con ternura, para un funeral, velorio o servicio memorial. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/peach-tribute-spray.jpg", alt: { en: "Standing funeral spray of peach and orange roses with a black-and-white bow on an easel", es: "Tributo fúnebre de pie de rosas melocotón y naranja con moño blanco y negro sobre atril" }, aspect: "4/5" },
+      { src: "/products/peach-tribute-spray-2.jpg", alt: { en: "Peach Tribute Spray, side view", es: "Tributo Melocotón, vista lateral" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 40000 },
+    ],
+    tags: [],
+    occasions: ["sympathy"],
+    colorFamily: ["pastel", "white"],
+    active: true,
+    seo: {
+      title: { en: "Peach Tribute — Peach Rose & Snapdragon Standing Spray | Diva Flowers", es: "Tributo Melocotón — Tributo de Pie de Rosas Melocotón | Diva Flowers" },
+      description: {
+        en: "Standing funeral spray of peach and orange roses, snapdragon, and delphinium on an easel. Delivered to funeral homes across Long Island.",
+        es: "Tributo fúnebre de pie de rosas melocotón y naranja, boca de dragón y delphinium sobre atril. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-heart-color",
+    slug: "heart-in-full-color",
+    addedAt: "2026-10-07",
+    title: { en: "Heart in Full Color", es: "Corazón de Colores" },
+    category: "sympathy",
+    blurb: {
+      en: "An open-heart wreath of roses and gerbera daisies in every color, with a soft pink ribbon.",
+      es: "Una corona de corazón abierto de rosas y gerberas de todos los colores, con cinta rosa suave.",
+    },
+    description: {
+      en: "An open heart that celebrates a colorful life — roses and gerbera daisies in red, lavender, yellow, peach, and blush, woven with greenery and trailing bells of Ireland, finished with a soft pink satin bow. Set on an easel for the service. For the person who filled every room with warmth, sent to a funeral, wake, or celebration of life. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un corazón abierto que celebra una vida llena de color — rosas y gerberas en rojo, lavanda, amarillo, melocotón y rosa, entretejidas con follaje y campanas de Irlanda colgantes, rematadas con un moño de satín rosa suave. Montado en un atril para el servicio. Para quien llenaba de calidez cada lugar, enviado a un funeral, velorio o celebración de vida. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/heart-in-full-color.jpg", alt: { en: "Open-heart funeral wreath of roses and gerbera daisies in many colors with a pink ribbon on an easel", es: "Corona fúnebre de corazón abierto de rosas y gerberas de colores con cinta rosa sobre atril" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing heart", es: "Corazón en atril" }, priceCents: 30000 },
+    ],
+    tags: [],
+    occasions: ["sympathy", "thank-you"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Heart in Full Color — Rose & Gerbera Funeral Heart | Diva Flowers", es: "Corazón de Colores — Corazón Fúnebre de Rosas y Gerberas | Diva Flowers" },
+      description: {
+        en: "Open-heart funeral wreath of colorful roses and gerbera daisies on an easel. Delivered to funeral homes across Long Island.",
+        es: "Corona fúnebre de corazón abierto de rosas y gerberas de colores sobre atril. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-beloved-heart",
+    slug: "beloved-heart",
+    addedAt: "2026-10-07",
+    title: { en: "Beloved Heart", es: "Corazón Amado" },
+    category: "sympathy",
+    blurb: {
+      en: "A white hydrangea heart crossed by a cascade of deep-red roses and red satin ribbon.",
+      es: "Un corazón de hortensias blancas atravesado por una cascada de rosas rojas y cinta de satín roja.",
+    },
+    description: {
+      en: "A solid heart of white hydrangea crossed by a diagonal cascade of deep-red roses, finished with long red satin ribbons that can carry a name or a few words. Set on an easel for the service. The classic way to say love that does not end — for a spouse, a parent, or a grandparent, sent to a funeral, wake, or memorial. Tell us the words for the ribbon in your card message. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un corazón macizo de hortensias blancas atravesado por una cascada diagonal de rosas rojas intensas, rematado con cintas largas de satín rojo que pueden llevar un nombre o unas palabras. Montado en un atril para el servicio. La forma clásica de decir un amor que no termina — para un esposo, una madre o un abuelo, enviado a un funeral, velorio o servicio memorial. Escríbenos las palabras de la cinta en el mensaje de la tarjeta. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/beloved-heart.jpg", alt: { en: "Funeral heart of white hydrangea with a diagonal cascade of red roses and red ribbons on an easel", es: "Corazón fúnebre de hortensias blancas con cascada diagonal de rosas rojas y cintas rojas sobre atril" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing heart", es: "Corazón en atril" }, priceCents: 49999 },
+    ],
+    tags: [],
+    occasions: ["sympathy"],
+    colorFamily: ["white", "red"],
+    active: true,
+    seo: {
+      title: { en: "Beloved Heart — White Hydrangea & Red Rose Funeral Heart | Diva Flowers", es: "Corazón Amado — Corazón de Hortensias y Rosas Rojas | Diva Flowers" },
+      description: {
+        en: "Funeral heart of white hydrangea with a cascade of red roses on an easel. Delivered to funeral homes across Long Island.",
+        es: "Corazón fúnebre de hortensias blancas con cascada de rosas rojas sobre atril. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-tender-heart",
+    slug: "tender-heart",
+    addedAt: "2026-10-07",
+    title: { en: "Tender Heart", es: "Corazón Tierno" },
+    category: "sympathy",
+    blurb: {
+      en: "A solid heart of pink and lavender roses on a fan of palm.",
+      es: "Un corazón macizo de rosas rosadas y lavanda sobre un abanico de palma.",
+    },
+    description: {
+      en: "A solid heart built rose by rose in pink, blush, and lavender, set on a full fan of palm and finished with pink satin bows at the base of the easel. Soft, full, and unmistakably gentle — for a mother, a daughter, a sister, or a friend who was all tenderness, sent to a funeral, wake, or memorial service. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un corazón macizo hecho rosa por rosa en tonos rosados, rubor y lavanda, sobre un abanico de palma y rematado con moños de satín rosa al pie del atril. Suave, lleno e inconfundiblemente tierno — para una madre, una hija, una hermana o una amiga que fue pura ternura, enviado a un funeral, velorio o servicio memorial. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/tender-heart.jpg", alt: { en: "Solid funeral heart of pink and lavender roses on a fan of palm with pink bows on an easel", es: "Corazón fúnebre macizo de rosas rosadas y lavanda sobre abanico de palma con moños rosados sobre atril" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing heart", es: "Corazón en atril" }, priceCents: 54999 },
+    ],
+    tags: [],
+    occasions: ["sympathy"],
+    colorFamily: ["pink"],
+    active: true,
+    seo: {
+      title: { en: "Tender Heart — Pink & Lavender Rose Funeral Heart | Diva Flowers", es: "Corazón Tierno — Corazón Fúnebre de Rosas Rosadas | Diva Flowers" },
+      description: {
+        en: "Solid funeral heart of pink and lavender roses on a fan of palm, on an easel. Delivered to funeral homes across Long Island.",
+        es: "Corazón fúnebre macizo de rosas rosadas y lavanda sobre palma, en atril. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-crimson-heart",
+    slug: "crimson-heart",
+    addedAt: "2026-10-07",
+    title: { en: "Crimson Heart", es: "Corazón Carmesí" },
+    category: "sympathy",
+    blurb: {
+      en: "A white hydrangea heart broken by a bold diagonal of red roses and trailing amaranthus.",
+      es: "Un corazón de hortensias blancas atravesado por una diagonal de rosas rojas y amaranto colgante.",
+    },
+    description: {
+      en: "A heart of white hydrangea broken by a bold diagonal of deep-red roses that spills into trailing red amaranthus and long satin ribbons. Grief and love side by side, set on an easel for the service. A strong, dramatic tribute for a funeral, wake, or memorial mass. Tell us the words for the ribbon in your card message. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un corazón de hortensias blancas atravesado por una diagonal intensa de rosas rojas que cae en amaranto rojo colgante y cintas largas de satín. El duelo y el amor juntos, montado en un atril para el servicio. Un homenaje fuerte y dramático para un funeral, velorio o misa memorial. Escríbenos las palabras de la cinta en el mensaje de la tarjeta. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/crimson-heart.jpg", alt: { en: "Funeral heart of white hydrangea with a bold diagonal of red roses and trailing amaranthus on an easel", es: "Corazón fúnebre de hortensias blancas con diagonal de rosas rojas y amaranto colgante sobre atril" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing heart", es: "Corazón en atril" }, priceCents: 54999 },
+    ],
+    tags: [],
+    occasions: ["sympathy"],
+    colorFamily: ["white", "red"],
+    active: true,
+    seo: {
+      title: { en: "Crimson Heart — Red Rose & White Hydrangea Funeral Heart | Diva Flowers", es: "Corazón Carmesí — Corazón Fúnebre de Rosas Rojas y Amaranto | Diva Flowers" },
+      description: {
+        en: "Funeral heart of white hydrangea with red roses and trailing amaranthus on an easel. Delivered to funeral homes across Long Island.",
+        es: "Corazón fúnebre de hortensias blancas con rosas rojas y amaranto sobre atril. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-chapel-white",
+    slug: "chapel-white",
+    addedAt: "2026-10-07",
+    title: { en: "Chapel White", es: "Blanco de Capilla" },
+    category: "sympathy",
+    blurb: {
+      en: "A classic white standing spray of roses, snapdragon, and lilies, framed in palm.",
+      es: "Un clásico tributo blanco de pie con rosas, boca de dragón y lirios, enmarcado en palma.",
+    },
+    description: {
+      en: "A classic all-white standing spray — white roses, snapdragon, oriental lilies, and hydrangea set in a frame of palm fronds, finished with white satin bows on the easel. Composure and peace for the front of the chapel, and a tribute that suits any faith or tradition. For a funeral, wake, or memorial service. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un clásico tributo de pie todo en blanco — rosas blancas, boca de dragón, lirios orientales e hortensia en un marco de hojas de palma, rematado con moños de satín blanco en el atril. Serenidad y paz para el frente de la capilla, y un homenaje que acompaña cualquier fe o tradición. Para un funeral, velorio o servicio memorial. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/chapel-white.jpg", alt: { en: "Classic all-white standing funeral spray of roses, snapdragon, and lilies framed in palm on an easel", es: "Tributo fúnebre de pie todo en blanco de rosas, boca de dragón y lirios enmarcado en palma sobre atril" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 39999 },
+    ],
+    tags: [],
+    occasions: ["sympathy"],
+    colorFamily: ["white"],
+    active: true,
+    seo: {
+      title: { en: "Chapel White — Rose & Lily All-White Standing Spray | Diva Flowers", es: "Blanco de Capilla — Tributo de Pie de Rosas y Lirios Blancos | Diva Flowers" },
+      description: {
+        en: "All-white standing funeral spray of roses, snapdragon, and lilies framed in palm. Delivered to funeral homes across Long Island.",
+        es: "Tributo fúnebre de pie todo en blanco de rosas, boca de dragón y lirios. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-golden-grace",
+    slug: "golden-grace",
+    addedAt: "2026-10-07",
+    title: { en: "Golden Grace", es: "Gracia Dorada" },
+    category: "sympathy",
+    blurb: {
+      en: "A standing spray of golden roses, bells of Ireland, and monstera.",
+      es: "Un tributo de pie de rosas doradas, campanas de Irlanda y monstera.",
+    },
+    description: {
+      en: "A tall standing spray built on golden-yellow roses, with bells of Ireland rising above and broad monstera and palm leaves around them, finished with pale yellow bows on the easel. Warmth for a life remembered in sunlight — a bright, hopeful tribute for a funeral, wake, or celebration of life. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un tributo de pie alto sobre rosas amarillo dorado, con campanas de Irlanda que se elevan y hojas anchas de monstera y palma alrededor, rematado con moños amarillo pálido en el atril. Calidez para una vida recordada en la luz — un homenaje luminoso y esperanzador para un funeral, velorio o celebración de vida. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/golden-grace.jpg", alt: { en: "Standing funeral spray of yellow roses with bells of Ireland and monstera leaves on an easel", es: "Tributo fúnebre de pie de rosas amarillas con campanas de Irlanda y hojas de monstera sobre atril" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 29999 },
+    ],
+    tags: [],
+    occasions: ["sympathy"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Golden Grace — Yellow Rose Standing Funeral Spray | Diva Flowers", es: "Gracia Dorada — Tributo de Pie de Rosas Amarillas | Diva Flowers" },
+      description: {
+        en: "Standing funeral spray of yellow roses, bells of Ireland, and monstera on an easel. Delivered to funeral homes across Long Island.",
+        es: "Tributo fúnebre de pie de rosas amarillas, campanas de Irlanda y monstera. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-twilight-orchid",
+    slug: "twilight-orchid",
+    addedAt: "2026-10-07",
+    title: { en: "Twilight Orchid", es: "Orquídea de Crepúsculo" },
+    category: "sympathy",
+    blurb: {
+      en: "A tall standing spray of purple dendrobium orchids, lavender roses, and white hydrangea.",
+      es: "Un tributo de pie alto de orquídeas dendrobium moradas, rosas lavanda e hortensias blancas.",
+    },
+    description: {
+      en: "A grand standing spray in twilight tones — cascades of purple dendrobium orchids with lavender roses, stock, and white hydrangea, set over lush aspidistra greens. Abundant and elegant, a statement tribute that fills the front of the room. For a funeral, wake, or memorial service. Please allow extra time to source the orchids. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un gran tributo de pie en tonos de crepúsculo — cascadas de orquídeas dendrobium moradas con rosas lavanda, alhelí e hortensias blancas, sobre follaje frondoso de aspidistra. Abundante y elegante, un homenaje que llena el frente de la sala. Para un funeral, velorio o servicio memorial. Danos tiempo extra para conseguir las orquídeas. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/twilight-orchid.jpg", alt: { en: "Tall standing funeral spray of purple dendrobium orchids, lavender roses, and white hydrangea", es: "Tributo fúnebre de pie alto de orquídeas dendrobium moradas, rosas lavanda e hortensias blancas" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 119999 },
+    ],
+    tags: [],
+    occasions: ["sympathy"],
+    colorFamily: ["pink", "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Twilight Orchid — Purple Orchid & Rose Standing Spray | Diva Flowers", es: "Orquídea de Crepúsculo — Tributo de Pie de Orquídeas Moradas | Diva Flowers" },
+      description: {
+        en: "Grand standing funeral spray of purple dendrobium orchids, lavender roses, and white hydrangea. Delivered across Long Island.",
+        es: "Gran tributo fúnebre de pie de orquídeas moradas, rosas lavanda e hortensias blancas. Entrega en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-amethyst-orchid",
+    slug: "amethyst-orchid",
+    addedAt: "2026-10-07",
+    title: { en: "Amethyst Orchid", es: "Orquídea Amatista" },
+    category: "sympathy",
+    blurb: {
+      en: "A white floral tribute with a cascade of fuchsia orchids, rooted in white roses and calla lilies.",
+      es: "Un tributo floral blanco con una cascada de orquídeas fucsia, anclado en rosas blancas y calas.",
+    },
+    description: {
+      en: "A grand tribute in three parts — a solid white floral top, a cascade of fuchsia dendrobium orchids and calla lilies down the center, and a full base of white roses, calla lilies, and baby's breath. Striking and serene at once, made for the front of the chapel. For a funeral, wake, or memorial service. Please allow extra time to source the orchids. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un gran tributo en tres partes — una parte superior floral blanca y maciza, una cascada de orquídeas dendrobium fucsia y calas por el centro, y una base llena de rosas blancas, calas y nube. Impactante y sereno a la vez, hecho para el frente de la capilla. Para un funeral, velorio o servicio memorial. Danos tiempo extra para conseguir las orquídeas. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/amethyst-orchid.jpg", alt: { en: "Tall funeral tribute with a white floral top, a cascade of fuchsia orchids, and a base of white roses and calla lilies", es: "Tributo fúnebre alto con parte superior blanca, cascada de orquídeas fucsia y base de rosas blancas y calas" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing tribute", es: "Tributo en atril" }, priceCents: 149999 },
+    ],
+    tags: [],
+    occasions: ["sympathy"],
+    colorFamily: ["white", "pink"],
+    active: true,
+    seo: {
+      title: { en: "Amethyst Orchid — Fuchsia Orchid & White Rose Funeral Tribute | Diva Flowers", es: "Orquídea Amatista — Tributo de Orquídeas y Rosas Blancas | Diva Flowers" },
+      description: {
+        en: "Grand funeral tribute with fuchsia orchids, white roses, and calla lilies. Delivered to funeral homes across Long Island.",
+        es: "Gran tributo fúnebre de orquídeas fucsia, rosas blancas y calas. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-sunflower-tribute",
+    slug: "sunflower-tribute",
+    addedAt: "2026-10-07",
+    title: { en: "Sunflower Tribute", es: "Tributo de Girasoles" },
+    category: "sympathy",
+    blurb: {
+      en: "A warm standing spray of sunflowers, orange roses, and white hydrangea.",
+      es: "Un tributo de pie cálido de girasoles, rosas naranja e hortensia blanca.",
+    },
+    description: {
+      en: "A warm, bright standing spray — sunflowers and orange roses over white hydrangea and chrysanthemums, with red carnations and baby's breath, finished with an orange-and-white striped bow and long ribbons. A luminous remembrance for someone who brought light to everyone around them. For a funeral, wake, or celebration of life. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un tributo de pie cálido y luminoso — girasoles y rosas naranja sobre hortensias y crisantemos blancos, con claveles rojos y nube, rematado con un moño a rayas naranja y blanco y cintas largas. Un recuerdo luminoso para alguien que llenaba de luz a todos a su alrededor. Para un funeral, velorio o celebración de vida. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/sunflower-tribute.jpg", alt: { en: "Standing funeral spray of sunflowers, orange roses, and white hydrangea with red carnations and a striped bow", es: "Tributo fúnebre de pie de girasoles, rosas naranja e hortensia blanca con claveles rojos y moño a rayas" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 49999 },
+    ],
+    tags: [],
+    occasions: ["sympathy"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Sunflower Tribute — Sunflower & Orange Rose Standing Spray | Diva Flowers", es: "Tributo de Girasoles — Tributo de Pie con Girasoles y Rosas | Diva Flowers" },
+      description: {
+        en: "Standing funeral spray of sunflowers, orange roses, and white hydrangea. Delivered to funeral homes across Long Island.",
+        es: "Tributo fúnebre de pie de girasoles, rosas naranja e hortensia blanca. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-blue-remembrance",
+    slug: "blue-remembrance",
+    addedAt: "2026-10-07",
+    title: { en: "Blue Remembrance", es: "Recuerdo Azul" },
+    category: "sympathy",
+    blurb: {
+      en: "A standing spray of white hydrangea and orange roses with blue thistle and delphinium.",
+      es: "Un tributo de pie de hortensias blancas y rosas naranja con cardo azul y delphinium.",
+    },
+    description: {
+      en: "A tall standing spray of white hydrangea and orange roses, accented with blue thistle, delphinium, and bells of Ireland, finished with a blue-and-white striped ribbon. Strong and steady — a fitting tribute for a father, a veteran, or a friend whose team colors you will always remember. For a funeral, wake, or memorial service. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un tributo de pie alto de hortensias blancas y rosas naranja, con acentos de cardo azul, delphinium y campanas de Irlanda, rematado con una cinta a rayas azul y blanca. Firme y sereno — un homenaje para un padre, un veterano o un amigo cuyos colores siempre recordarás. Para un funeral, velorio o servicio memorial. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/blue-remembrance.jpg", alt: { en: "Standing funeral spray of white hydrangea and orange roses with blue thistle, delphinium, and a blue-and-white ribbon", es: "Tributo fúnebre de pie de hortensias blancas y rosas naranja con cardo azul, delphinium y cinta azul y blanca" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 49999 },
+    ],
+    tags: [],
+    occasions: ["sympathy"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Blue Remembrance — Hydrangea & Orange Rose Standing Spray | Diva Flowers", es: "Recuerdo Azul — Tributo de Pie de Hortensias y Rosas Naranja | Diva Flowers" },
+      description: {
+        en: "Standing funeral spray of white hydrangea, orange roses, blue thistle, and delphinium. Delivered across Long Island.",
+        es: "Tributo fúnebre de pie de hortensias blancas, rosas naranja, cardo azul y delphinium. Entrega en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-personal-tribute",
+    slug: "personal-tribute",
+    addedAt: "2026-10-07",
+    title: { en: "Personal Tribute", es: "Tributo Personalizado" },
+    category: "sympathy",
+    blurb: {
+      en: "A tall blue-and-white rose tribute with personalized sashes.",
+      es: "Un tributo alto de rosas en azul y blanco con bandas personalizadas.",
+    },
+    description: {
+      en: "A tall standing tribute of blue and white roses with orchids and palm, carrying two hand-lettered sashes with the words you choose — a name, \"We Love You,\" or a family's goodbye. For the farewell that needs the name spoken aloud, sent to a funeral, wake, or memorial. Tell us the words for the sashes in your card message. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un tributo alto de pie de rosas azules y blancas con orquídeas y palma, con dos bandas rotuladas con las palabras que elijas — un nombre, \"Te Queremos\" o la despedida de una familia. Para el adiós que necesita pronunciar el nombre, enviado a un funeral, velorio o servicio memorial. Escríbenos las palabras de las bandas en el mensaje de la tarjeta. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/personal-tribute.jpg", alt: { en: "Tall blue-and-white funeral tribute of roses with hand-lettered sashes on an easel", es: "Tributo fúnebre alto de rosas en azul y blanco con bandas rotuladas sobre atril" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing tribute", es: "Tributo en atril" }, priceCents: 39999 },
+    ],
+    tags: [],
+    occasions: ["sympathy"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Personal Tribute — Blue & White Rose Tribute with Sashes | Diva Flowers", es: "Tributo Personalizado — Rosas Azules y Blancas con Bandas | Diva Flowers" },
+      description: {
+        en: "Tall blue-and-white rose funeral tribute with personalized sashes on an easel. Delivered across Long Island.",
+        es: "Tributo fúnebre alto de rosas azules y blancas con bandas personalizadas. Entrega en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-eternal-white",
+    slug: "eternal-white",
+    addedAt: "2026-10-07",
+    title: { en: "Eternal White", es: "Blanco Eterno" },
+    category: "sympathy",
+    blurb: {
+      en: "A wide casket spray layered in white orchids, garden roses, and calla lilies.",
+      es: "Un manto amplio en capas de orquídeas blancas, rosas de jardín y calas.",
+    },
+    description: {
+      en: "A full casket spray layered entirely in white — dendrobium orchids, garden roses, calla lilies, gladiolus, and lilies, arranged long and low to rest across the casket. Abundance kept in white, the most dignified tribute a family can offer. Please order at least 24 hours ahead so we can source every stem. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un manto fúnebre completo en capas todo en blanco — orquídeas dendrobium, rosas de jardín, calas, gladiolos y lirios, dispuestos largos y bajos para descansar sobre el ataúd. Abundancia mantenida en blanco, el homenaje más digno que una familia puede ofrecer. Pídelo con al menos 24 horas de anticipación para conseguir cada tallo. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/eternal-white.jpg", alt: { en: "Wide all-white casket spray of orchids, garden roses, gladiolus, and calla lilies", es: "Manto fúnebre amplio todo en blanco de orquídeas, rosas de jardín, gladiolos y calas" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Casket spray", es: "Manto fúnebre" }, priceCents: 249999 },
+    ],
+    tags: [],
+    occasions: ["sympathy"],
+    colorFamily: ["white"],
+    active: true,
+    seo: {
+      title: { en: "Eternal White — Orchid & Calla Lily All-White Casket Spray | Diva Flowers", es: "Blanco Eterno — Manto Fúnebre de Orquídeas y Calas Blancas | Diva Flowers" },
+      description: {
+        en: "All-white casket spray of orchids, garden roses, and calla lilies. Order 24 hours ahead. Delivered across Long Island.",
+        es: "Manto fúnebre todo en blanco de orquídeas, rosas de jardín y calas. Pídelo con 24 horas. Entrega en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-orchid-sunburst",
+    slug: "orchid-sunburst-spray",
+    addedAt: "2026-10-08",
+    title: { en: "Orchid Sunburst Spray", es: "Sol de Orquídeas" },
+    category: "sympathy",
+    blurb: {
+      en: "A grand standing spray of sunflowers, roses, and dendrobium orchids — with or without the orchids.",
+      es: "Un gran tributo de pie de girasoles, rosas y orquídeas dendrobium — con o sin las orquídeas.",
+    },
+    description: {
+      en: "A grand, joyful standing spray — sunflowers and red, peach, and yellow roses with bells of Ireland, purple chrysanthemums, and white snapdragon, opened wide in palm and aspidistra and finished with a black-and-white bow and long ribbons. Choose it with cascades of fuchsia and white dendrobium orchids for the full statement, or without them for a warm, sunlit tribute. For a funeral, wake, or celebration of life. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un gran tributo de pie lleno de luz — girasoles y rosas rojas, melocotón y amarillas con campanas de Irlanda, crisantemos morados y boca de dragón blanca, abierto en palma y aspidistra y rematado con un moño blanco y negro y cintas largas. Elígelo con cascadas de orquídeas dendrobium fucsia y blancas para el gesto completo, o sin ellas para un homenaje cálido y luminoso. Para un funeral, velorio o celebración de vida. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/orchid-sunburst-spray.jpg", alt: { en: "Large standing funeral spray of sunflowers, fuchsia orchids, and red, peach, and yellow roses with a black-and-white bow", es: "Gran tributo fúnebre de pie de girasoles, orquídeas fucsia y rosas rojas, melocotón y amarillas con moño blanco y negro" }, aspect: "4/5" },
+      { src: "/products/orchid-sunburst-spray-2.jpg", alt: { en: "Orchid Sunburst Spray on an easel", es: "Sol de Orquídeas sobre atril" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "with-orchids", label: { en: "With orchids", es: "Con orquídeas" }, priceCents: 69999, subtitle: { en: "Fuchsia and white dendrobium orchids throughout", es: "Orquídeas dendrobium fucsia y blancas por toda la pieza" } },
+      { id: "no-orchids", label: { en: "Without orchids", es: "Sin orquídeas" }, priceCents: 39999, subtitle: { en: "Sunflowers, roses, and bells of Ireland", es: "Girasoles, rosas y campanas de Irlanda" } },
+    ],
+    tags: [],
+    occasions: ["sympathy"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Orchid Sunburst — Sunflower & Orchid Standing Spray | Diva Flowers", es: "Sol de Orquídeas — Tributo de Pie de Girasoles y Orquídeas | Diva Flowers" },
+      description: {
+        en: "Grand standing funeral spray of sunflowers, roses, and dendrobium orchids, with or without orchids. Delivered across Long Island.",
+        es: "Gran tributo fúnebre de pie de girasoles, rosas y orquídeas, con o sin orquídeas. Entrega en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-blush-embrace",
+    slug: "blush-embrace-spray",
+    addedAt: "2026-10-08",
+    title: { en: "Blush Embrace Spray", es: "Abrazo Rubor" },
+    category: "sympathy",
+    blurb: {
+      en: "An oval standing spray of cream and blush roses with white blooms, finished with a pink satin bow.",
+      es: "Un tributo de pie ovalado de rosas crema y rubor con flores blancas, rematado con un moño de satín rosa.",
+    },
+    description: {
+      en: "A soft oval standing spray — cream and blush garden roses with white chrysanthemums, carnations, daisies, alstroemeria, and baby's breath, framed in a halo of palm and finished with a wide pink satin bow and long ribbons. Gentle and luminous, a tribute for a mother, a grandmother, a sister, or a friend remembered for her tenderness. For a funeral, wake, or memorial. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un tributo de pie ovalado y suave — rosas de jardín crema y rubor con crisantemos, claveles, margaritas, alstroemerias y nube blancas, enmarcado en un halo de palma y rematado con un amplio moño de satín rosa y cintas largas. Delicado y luminoso, un homenaje para una madre, una abuela, una hermana o una amiga recordada por su ternura. Para un funeral, velorio o servicio memorial. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/blush-embrace-spray.jpg", alt: { en: "Oval standing funeral spray of cream and blush roses and white flowers framed in palm with a pink bow", es: "Tributo fúnebre de pie ovalado de rosas crema y rubor y flores blancas enmarcado en palma con moño rosa" }, aspect: "4/5" },
+      { src: "/products/blush-embrace-spray-2.jpg", alt: { en: "Blush Embrace Spray on an easel, full view", es: "Abrazo Rubor sobre atril, vista completa" }, aspect: "4/5" },
+      { src: "/products/blush-embrace-spray-3.jpg", alt: { en: "Blush Embrace Spray, front view", es: "Abrazo Rubor, vista frontal" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 39999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["sympathy"],
+    colorFamily: ["white", "pink"],
+    active: true,
+    seo: {
+      title: { en: "Blush Embrace — Blush Rose & White Standing Spray | Diva Flowers", es: "Abrazo Rubor — Tributo de Pie de Rosas Rubor y Blancas | Diva Flowers" },
+      description: {
+        en: "Oval standing funeral spray of cream and blush roses with white flowers and a pink bow. Same-day delivery across Long Island.",
+        es: "Tributo fúnebre de pie de rosas crema y rubor con flores blancas y moño rosa. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-garden-heart",
+    slug: "garden-heart-wreath",
+    addedAt: "2026-10-08",
+    title: { en: "Garden Heart Wreath", es: "Corazón Jardín Vivo" },
+    category: "sympathy",
+    blurb: {
+      en: "An open heart of yellow and orange roses, carnations, and purple lisianthus, like a garden in full bloom.",
+      es: "Un corazón abierto de rosas amarillas y naranja, claveles y lisianthus morado, como un jardín en flor.",
+    },
+    description: {
+      en: "An open heart that feels like a garden in full bloom — yellow and orange roses with fuchsia and pink carnations, purple lisianthus, red hypericum berries, statice, green dianthus, and baby's breath, set in variegated greens and finished with a white bow trimmed in black and gold. Set on an easel for the service. A bright tribute for someone who loved color and life, for a funeral, wake, or celebration of life. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un corazón abierto que parece un jardín en plena floración — rosas amarillas y naranja con claveles fucsia y rosados, lisianthus morado, frutos rojos de hypericum, statice, dianthus verde y nube, en follaje variegado y rematado con un moño blanco con bordes negro y dorado. Montado en un atril para el servicio. Un homenaje luminoso para quien amaba el color y la vida, para un funeral, velorio o celebración de vida. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/garden-heart-wreath.jpg", alt: { en: "Open-heart funeral wreath of yellow and orange roses, carnations, and purple lisianthus with a white-and-black bow on an easel", es: "Corona fúnebre de corazón abierto de rosas amarillas y naranja, claveles y lisianthus morado con moño blanco y negro sobre atril" }, aspect: "4/5" },
+      { src: "/products/garden-heart-wreath-2.jpg", alt: { en: "Garden Heart Wreath, close view", es: "Corazón Jardín Vivo, vista cercana" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing heart", es: "Corazón en atril" }, priceCents: 49999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["sympathy"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Garden Heart — Yellow Rose & Carnation Funeral Heart | Diva Flowers", es: "Corazón Jardín Vivo — Corazón de Rosas Amarillas y Claveles | Diva Flowers" },
+      description: {
+        en: "Open-heart funeral wreath of yellow and orange roses, carnations, and lisianthus on an easel. Same-day delivery on Long Island.",
+        es: "Corazón fúnebre abierto de rosas amarillas y naranja, claveles y lisianthus sobre atril. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-cloud-cross",
+    slug: "cloud-cross",
+    addedAt: "2026-10-08",
+    title: { en: "Cloud Cross", es: "Cruz de Nube" },
+    category: "sympathy",
+    blurb: {
+      en: "A soft cross of white hydrangea and baby's breath with a cascade of red roses.",
+      es: "Una cruz suave de hortensia blanca y nube con una cascada de rosas rojas.",
+    },
+    description: {
+      en: "A standing cross as soft as a cloud — white hydrangea framed in baby's breath, crowned with a cluster of deep-red roses that falls in a cascade of roses and Italian ruscus down one side. Set on an easel for the service. A gentle tribute of faith and love for a funeral, wake, or memorial mass. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Una cruz de pie suave como una nube — hortensia blanca enmarcada en nube, coronada con un ramillete de rosas rojas intensas que cae en cascada de rosas y ruscus italiano por un costado. Montada en un atril para el servicio. Un homenaje sereno de fe y amor para un funeral, velorio o misa memorial. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/cloud-cross.jpg", alt: { en: "Standing funeral cross of white hydrangea and baby's breath with a cluster and cascade of red roses on an easel", es: "Cruz fúnebre de pie de hortensia blanca y nube con ramillete y cascada de rosas rojas sobre atril" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing cross", es: "Cruz de pie" }, priceCents: 39999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["sympathy"],
+    colorFamily: ["white", "red"],
+    active: true,
+    seo: {
+      title: { en: "Cloud Cross — Hydrangea & Red Rose Funeral Cross | Diva Flowers", es: "Cruz de Nube — Cruz Fúnebre de Hortensias y Rosas Rojas | Diva Flowers" },
+      description: {
+        en: "Standing funeral cross of white hydrangea and baby's breath with red roses on an easel. Same-day delivery on Long Island.",
+        es: "Cruz fúnebre de pie de hortensia blanca y nube con rosas rojas sobre atril. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-paradise-basket",
+    slug: "paradise-sympathy-basket",
+    addedAt: "2026-10-08",
+    title: { en: "Paradise Sympathy Basket", es: "Canasta del Paraíso" },
+    category: "sympathy",
+    blurb: {
+      en: "A generous wicker basket with birds of paradise, orchids, sunflowers, roses, and lilies.",
+      es: "Una canasta de mimbre generosa con aves del paraíso, orquídeas, girasoles, rosas y lirios.",
+    },
+    description: {
+      en: "A generous sympathy basket in natural wicker — birds of paradise and cymbidium orchids rising above white phalaenopsis orchids, sunflowers, orange and fuchsia roses, stargazer lilies, red gerbera daisies, white carnations, and hydrangea, with greens that spill over the edge. Warm and full of life, it can be sent to the service or to the family's home. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Una canasta de condolencias generosa en mimbre natural — aves del paraíso y orquídeas cymbidium que se elevan sobre orquídeas phalaenopsis blancas, girasoles, rosas naranja y fucsia, lirios stargazer, gerberas rojas, claveles blancos e hortensia, con follaje que cae por el borde. Cálida y llena de vida, se puede enviar al servicio o a la casa de la familia. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/paradise-sympathy-basket.jpg", alt: { en: "Wicker sympathy basket with birds of paradise, cymbidium and phalaenopsis orchids, sunflowers, roses, and lilies", es: "Canasta de mimbre de condolencias con aves del paraíso, orquídeas cymbidium y phalaenopsis, girasoles, rosas y lirios" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "basket", label: { en: "Sympathy basket", es: "Canasta de condolencias" }, priceCents: 19999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["sympathy"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Paradise Basket — Bird of Paradise & Orchid Sympathy Basket | Diva Flowers", es: "Canasta del Paraíso — Canasta de Aves del Paraíso y Orquídeas | Diva Flowers" },
+      description: {
+        en: "Wicker sympathy basket with birds of paradise, orchids, sunflowers, and roses. Same-day delivery on Long Island.",
+        es: "Canasta de condolencias con aves del paraíso, orquídeas, girasoles y rosas. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-orchid-pedestal",
+    slug: "orchid-pedestal",
+    addedAt: "2026-10-08",
+    title: { en: "Orchid Pedestal", es: "Pedestal de Orquídeas" },
+    category: "sympathy",
+    blurb: {
+      en: "A grand arrangement on a wooden pedestal with cascading fuchsia orchids, lavender hydrangea, and blush roses.",
+      es: "Un gran arreglo sobre pedestal de madera con cascadas de orquídeas fucsia, hortensia lila y rosas rubor.",
+    },
+    description: {
+      en: "A grand arrangement set on a turned wooden pedestal — cascades of fuchsia dendrobium orchids with lavender, green, and white hydrangea, blush roses, and white stock, overflowing on every side. An elegant centerpiece for the front of the chapel or beside the family. For a funeral, wake, or memorial service. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un gran arreglo sobre un pedestal de madera torneada — cascadas de orquídeas dendrobium fucsia con hortensia lila, verde y blanca, rosas rubor y alhelí blanco, desbordándose por todos los lados. Una pieza central elegante para el frente de la capilla o junto a la familia. Para un funeral, velorio o servicio memorial. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/orchid-pedestal.jpg", alt: { en: "Grand funeral arrangement on a wooden pedestal with cascading fuchsia orchids, lavender hydrangea, and blush roses", es: "Gran arreglo fúnebre sobre pedestal de madera con cascadas de orquídeas fucsia, hortensia lila y rosas rubor" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "pedestal", label: { en: "Pedestal arrangement", es: "Arreglo en pedestal" }, priceCents: 119999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["sympathy"],
+    colorFamily: ["pink", "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Orchid Pedestal — Dendrobium Orchid & Hydrangea Arrangement | Diva Flowers", es: "Pedestal de Orquídeas — Arreglo de Orquídeas y Hortensias | Diva Flowers" },
+      description: {
+        en: "Grand funeral arrangement on a wooden pedestal with fuchsia orchids, hydrangea, and blush roses. Same-day delivery on Long Island.",
+        es: "Gran arreglo fúnebre sobre pedestal con orquídeas fucsia, hortensias y rosas rubor. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-ruby-garden",
+    slug: "ruby-garden",
+    addedAt: "2026-10-14",
+    title: { en: "Ruby Garden", es: "Jardín Rubí" },
+    category: "arrangements",
+    blurb: {
+      en: "Fuchsia and coral roses with lime hydrangea and green dianthus in a low leaf-lined cube.",
+      es: "Rosas fucsia y coral con hortensia verde lima y dianthus verde en un cubo bajo forrado de hoja.",
+    },
+    description: {
+      en: "A bright, compact arrangement of fuchsia and coral roses with lime-green hydrangea, burgundy chrysanthemum, fuzzy green dianthus, and a cloud of baby's breath, set low in a glass cube lined with a leaf. Small enough for a desk or nightstand, full enough to feel generous — the easy yes for a birthday, a thank-you, or just because.",
+      es: "Un arreglo compacto y alegre de rosas fucsia y coral con hortensia verde lima, crisantemo burdeos, dianthus verde y una nube de gypsophila, bajo en un cubo de vidrio forrado de hoja. Del tamaño justo para un escritorio o una mesita de noche, y lleno como para sentirse generoso — el regalo fácil para un cumpleaños, un gracias o porque sí.",
+    },
+    images: [
+      { src: "/products/ruby-garden.jpg", alt: { en: "Ruby Garden", es: "Jardín Rubí" }, aspect: "4/5" },
+      { src: "/products/ruby-garden-2.jpg", alt: { en: "Ruby Garden, view 2", es: "Jardín Rubí, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 5999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "romance", "just-because", "thank-you", "congrats", "get-well", "new-baby", "graduation", "mothers-day", "thinking-of-you", "anniversary"],
+    colorFamily: ["pink", "red"],
+    active: true,
+    seo: {
+      title: { en: "Ruby Garden — Fuchsia Rose & Hydrangea Cube | Diva Flowers", es: "Jardín Rubí — Cubo de Rosas Fucsia y Hortensia | Diva Flowers" },
+      description: {
+        en: "Fuchsia and coral roses with lime hydrangea and green dianthus in a low leaf-lined cube. Same-day delivery on Long Island.",
+        es: "Rosas fucsia y coral con hortensia verde lima y dianthus verde en un cubo bajo forrado de hoja. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-morning-mist",
+    slug: "morning-mist",
+    addedAt: "2026-10-14",
+    title: { en: "Morning Mist", es: "Bruma de Mañana" },
+    category: "arrangements",
+    blurb: {
+      en: "Sky-blue hydrangea with white roses, pink lisianthus, and white snapdragon.",
+      es: "Hortensia azul cielo con rosas blancas, lisianthus rosa y boca de dragón blanca.",
+    },
+    description: {
+      en: "A cool, calm arrangement built on sky-blue hydrangea with white roses, blush lisianthus, white snapdragon, and green dianthus, in a glass cube lined with a leaf. Soft and fresh, it suits a new baby, a get-well wish, or a quiet thinking-of-you.",
+      es: "Un arreglo fresco y sereno sobre hortensia azul cielo con rosas blancas, lisianthus rubor, boca de dragón blanca y dianthus verde, en un cubo de vidrio forrado de hoja. Suave y luminoso, va bien para un bebé, un deseo de pronta recuperación o un pensando en ti.",
+    },
+    images: [
+      { src: "/products/morning-mist.jpg", alt: { en: "Morning Mist", es: "Bruma de Mañana" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["get-well", "thinking-of-you", "new-baby", "birthday", "anniversary", "romance", "just-because", "thank-you", "congrats", "mothers-day", "graduation"],
+    colorFamily: ["pastel", "white", "pink"],
+    active: true,
+    seo: {
+      title: { en: "Morning Mist — Blue Hydrangea & White Rose Arrangement | Diva Flowers", es: "Bruma de Mañana — Hortensia Azul y Rosas Blancas | Diva Flowers" },
+      description: {
+        en: "Sky-blue hydrangea with white roses, pink lisianthus, and white snapdragon. Same-day delivery on Long Island.",
+        es: "Hortensia azul cielo con rosas blancas, lisianthus rosa y boca de dragón blanca. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-citrine-dream",
+    slug: "citrine-dream",
+    addedAt: "2026-10-14",
+    title: { en: "Citrine Dream", es: "Sueño Citrino" },
+    category: "arrangements",
+    blurb: {
+      en: "Yellow cymbidium orchids with fuchsia roses, purple lisianthus, and lilac hydrangea.",
+      es: "Orquídeas cymbidium amarillas con rosas fucsia, lisianthus morado y hortensia lila.",
+    },
+    description: {
+      en: "Golden-yellow cymbidium orchids with red-blushed throats lead this arrangement, set among fuchsia roses, purple lisianthus, lilac hydrangea, and green dianthus in a leaf-lined glass cube. Bold, warm, and a little exotic — choose the size that fits the moment.",
+      es: "Orquídeas cymbidium amarillo dorado con garganta rojiza encabezan este arreglo, entre rosas fucsia, lisianthus morado, hortensia lila y dianthus verde, en un cubo de vidrio forrado de hoja. Atrevido, cálido y un poco exótico — elige el tamaño que va con el momento.",
+    },
+    images: [
+      { src: "/products/citrine-dream.jpg", alt: { en: "Citrine Dream", es: "Sueño Citrino" }, aspect: "4/5" },
+      { src: "/products/citrine-dream-2.jpg", alt: { en: "Citrine Dream, view 2", es: "Sueño Citrino, vista 2" }, aspect: "4/5" },
+      { src: "/products/citrine-dream-3.jpg", alt: { en: "Citrine Dream, view 3", es: "Sueño Citrino, vista 3" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 11999 },
+      { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 14999 },
+      { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 19999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "congrats", "just-because", "graduation", "mothers-day", "anniversary", "romance", "thinking-of-you", "thank-you", "get-well", "new-baby"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Citrine Dream — Yellow Cymbidium Orchid & Rose Arrangement | Diva Flowers", es: "Sueño Citrino — Orquídeas Cymbidium Amarillas y Rosas | Diva Flowers" },
+      description: {
+        en: "Yellow cymbidium orchids with fuchsia roses, purple lisianthus, and lilac hydrangea. Same-day delivery on Long Island.",
+        es: "Orquídeas cymbidium amarillas con rosas fucsia, lisianthus morado y hortensia lila. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-porcelain-blush",
+    slug: "porcelain-blush",
+    addedAt: "2026-10-14",
+    title: { en: "Porcelain Blush", es: "Rubor de Porcelana" },
+    category: "arrangements",
+    blurb: {
+      en: "Pink roses, calla lilies, and snapdragon with trailing ruscus in a white pedestal urn.",
+      es: "Rosas rosadas, calas y boca de dragón con ruscus colgante en una copa de pedestal blanca.",
+    },
+    description: {
+      en: "An elegant pedestal arrangement in porcelain pinks — pink roses, calla lilies, snapdragon, and soft pink and green hydrangea, with Italian ruscus trailing over the rim of a glossy white urn. A refined gift for a thank-you or a thinking-of-you that should feel special.",
+      es: "Un arreglo elegante de pedestal en rosas de porcelana — rosas rosadas, calas, boca de dragón e hortensia rosa y verde, con ruscus italiano que cae por el borde de una copa blanca brillante. Un regalo refinado para un gracias o un pensando en ti que debe sentirse especial.",
+    },
+    images: [
+      { src: "/products/porcelain-blush.jpg", alt: { en: "Porcelain Blush", es: "Rubor de Porcelana" }, aspect: "4/5" },
+      { src: "/products/porcelain-blush-2.jpg", alt: { en: "Porcelain Blush, view 2", es: "Rubor de Porcelana, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 24999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["thank-you", "thinking-of-you"],
+    colorFamily: ["pink", "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Porcelain Blush — Pink Rose & Calla Lily Pedestal Urn | Diva Flowers", es: "Rubor de Porcelana — Rosas Rosadas y Calas en Copa | Diva Flowers" },
+      description: {
+        en: "Pink roses, calla lilies, and snapdragon with trailing ruscus in a white pedestal urn. Same-day delivery on Long Island.",
+        es: "Rosas rosadas, calas y boca de dragón con ruscus colgante en una copa de pedestal blanca. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-coral-chalice",
+    slug: "coral-chalice",
+    addedAt: "2026-10-14",
+    title: { en: "Coral Chalice", es: "Cáliz Coral" },
+    category: "arrangements",
+    blurb: {
+      en: "A coral garden rose with calla lilies, snapdragon, and white roses in a pedestal urn.",
+      es: "Una rosa de jardín coral con calas, boca de dragón y rosas blancas en una copa de pedestal.",
+    },
+    description: {
+      en: "A centerpiece in a glossy white pedestal urn — a coral garden rose at its heart with calla lilies, snapdragon, white roses, and green hydrangea, finished with Italian ruscus spilling over the rim. Made to sit at the center of the table for a dinner, a shower, or a celebration at home.",
+      es: "Un centro de mesa en una copa de pedestal blanca brillante — una rosa de jardín coral al centro con calas, boca de dragón, rosas blancas e hortensia verde, rematado con ruscus italiano que cae por el borde. Hecho para el centro de la mesa en una cena, un baby shower o una celebración en casa.",
+    },
+    images: [
+      { src: "/products/coral-chalice.jpg", alt: { en: "Coral Chalice", es: "Cáliz Coral" }, aspect: "4/5" },
+      { src: "/products/coral-chalice-2.jpg", alt: { en: "Coral Chalice, view 2", es: "Cáliz Coral, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "thank-you", "thinking-of-you", "graduation", "anniversary", "romance", "just-because", "congrats", "get-well", "new-baby", "mothers-day"],
+    colorFamily: ["pink", "pastel", "green"],
+    active: true,
+    seo: {
+      title: { en: "Coral Chalice — Garden Rose & Calla Lily Centerpiece | Diva Flowers", es: "Cáliz Coral — Centro de Mesa de Rosa de Jardín y Calas | Diva Flowers" },
+      description: {
+        en: "A coral garden rose with calla lilies, snapdragon, and white roses in a pedestal urn. Same-day delivery on Long Island.",
+        es: "Una rosa de jardín coral con calas, boca de dragón y rosas blancas en una copa de pedestal. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-mint-julep-trio",
+    slug: "mint-julep-trio",
+    addedAt: "2026-10-14",
+    title: { en: "Mint Julep Trio", es: "Trío Mint Julep" },
+    category: "arrangements",
+    blurb: {
+      en: "A set of three silver julep cups filled with white and green hydrangea and green dianthus.",
+      es: "Un set de tres copas plateadas tipo julep con hortensia blanca y verde y dianthus verde.",
+    },
+    description: {
+      en: "Three polished silver julep cups, each filled with white and green hydrangea and fuzzy green dianthus — sold as a set of three to run down the center of a table. Crisp and classic for a dinner party, a bridal shower, a corporate lunch, or a holiday table.",
+      es: "Tres copas plateadas tipo julep, cada una llena de hortensia blanca y verde y dianthus verde — se venden como set de tres para recorrer el centro de una mesa. Limpias y clásicas para una cena, un bridal shower, un almuerzo de empresa o la mesa de las fiestas.",
+    },
+    images: [
+      { src: "/products/mint-julep-trio.jpg", alt: { en: "Mint Julep Trio", es: "Trío Mint Julep" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "set-3", label: { en: "Set of 3", es: "Set de 3" }, priceCents: 14999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["thank-you", "congrats", "birthday", "just-because"],
+    colorFamily: ["green", "white"],
+    active: true,
+    seo: {
+      title: { en: "Mint Julep Trio — Hydrangea Centerpiece Set of 3 | Diva Flowers", es: "Trío Mint Julep — Set de 3 Centros de Hortensia | Diva Flowers" },
+      description: {
+        en: "A set of three silver julep cups filled with white and green hydrangea and green dianthus. Same-day delivery on Long Island.",
+        es: "Un set de tres copas plateadas tipo julep con hortensia blanca y verde y dianthus verde. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-lilac-halo",
+    slug: "lilac-halo",
+    addedAt: "2026-10-14",
+    title: { en: "Lilac Halo", es: "Halo Lila" },
+    category: "arrangements",
+    blurb: {
+      en: "Lilac roses with white cymbidium orchids, yellow spray roses, and white lilies.",
+      es: "Rosas lila con orquídeas cymbidium blancas, mini rosas amarillas y lirios blancos.",
+    },
+    description: {
+      en: "A luminous arrangement of lilac roses with white cymbidium orchids, butter-yellow spray roses, and white lilies, framed by looped green leaves. Graceful and full, it carries an anniversary, a Mother's Day, or a quiet thinking-of-you with equal ease.",
+      es: "Un arreglo luminoso de rosas lila con orquídeas cymbidium blancas, mini rosas amarillo mantequilla y lirios blancos, enmarcado con aros de hoja verde. Elegante y lleno, acompaña igual un aniversario, un Día de la Madre o un pensando en ti.",
+    },
+    images: [
+      { src: "/products/lilac-halo.jpg", alt: { en: "Lilac Halo", es: "Halo Lila" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 24999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["anniversary", "thinking-of-you", "birthday", "thank-you", "mothers-day", "graduation", "just-because", "congrats", "sympathy"],
+    colorFamily: ["pastel", "white", "pink", "green"],
+    active: true,
+    seo: {
+      title: { en: "Lilac Halo — Lilac Rose & White Orchid Arrangement | Diva Flowers", es: "Halo Lila — Rosas Lila y Orquídeas Blancas | Diva Flowers" },
+      description: {
+        en: "Lilac roses with white cymbidium orchids, yellow spray roses, and white lilies. Same-day delivery on Long Island.",
+        es: "Rosas lila con orquídeas cymbidium blancas, mini rosas amarillas y lirios blancos. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-pink-teddy-hug",
+    slug: "pink-teddy-hug",
+    addedAt: "2026-10-14",
+    title: { en: "Pink Teddy Hug", es: "Abrazo de Osito Rosa" },
+    category: "arrangements",
+    blurb: {
+      en: "A pink teddy bear with pink roses, hydrangea, snapdragon, and dendrobium orchids.",
+      es: "Un osito de peluche rosado con rosas rosadas, hortensia, boca de dragón y orquídeas dendrobium.",
+    },
+    description: {
+      en: "A soft pink teddy bear sits beside an arrangement of pink roses, pink hydrangea, snapdragon, dendrobium orchids, and fern — the bear is included. A sweet surprise for a new baby, a birthday, or anyone who needs a hug that lasts longer than the flowers.",
+      es: "Un osito de peluche rosado acompaña un arreglo de rosas rosadas, hortensia rosada, boca de dragón, orquídeas dendrobium y helecho — el osito va incluido. Una sorpresa tierna para un bebé, un cumpleaños o quien necesite un abrazo que dure más que las flores.",
+    },
+    images: [
+      { src: "/products/pink-teddy-hug.jpg", alt: { en: "Pink Teddy Hug", es: "Abrazo de Osito Rosa" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 14999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "new-baby", "just-because", "get-well", "congrats", "thank-you", "romance"],
+    colorFamily: ["pink", "green", "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Pink Teddy Hug — Pink Rose Arrangement with Teddy Bear | Diva Flowers", es: "Abrazo de Osito Rosa — Rosas Rosadas con Osito | Diva Flowers" },
+      description: {
+        en: "A pink teddy bear with pink roses, hydrangea, snapdragon, and dendrobium orchids. Same-day delivery on Long Island.",
+        es: "Un osito de peluche rosado con rosas rosadas, hortensia, boca de dragón y orquídeas dendrobium. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-baby-blue-teddy",
+    slug: "baby-blue-teddy",
+    addedAt: "2026-10-14",
+    title: { en: "Baby Blue Teddy", es: "Osito Azul Cielo" },
+    category: "arrangements",
+    blurb: {
+      en: "A brown teddy bear with blue hydrangea, white and yellow roses in a pearl-trimmed vase.",
+      es: "Un osito café con hortensia azul y rosas blancas y amarillas en un jarrón con perlas.",
+    },
+    description: {
+      en: "A brown teddy bear with a bow sits next to a glass vase wrapped in pearls and filled with sky-blue hydrangea, white and pale-yellow roses, white stock, and baby's breath — the bear is included. Perfect for welcoming a baby boy, a birthday, or a get-well visit.",
+      es: "Un osito café con moño acompaña un jarrón de vidrio con collar de perlas, lleno de hortensia azul cielo, rosas blancas y amarillo pálido, alhelí blanco y gypsophila — el osito va incluido. Ideal para dar la bienvenida a un bebé, un cumpleaños o una visita de pronta recuperación.",
+    },
+    images: [
+      { src: "/products/baby-blue-teddy.jpg", alt: { en: "Baby Blue Teddy", es: "Osito Azul Cielo" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 11499 },
+    ],
+    tags: ["same-day"],
+    occasions: ["new-baby", "birthday", "get-well", "romance", "just-because", "thank-you", "congrats", "graduation", "thinking-of-you"],
+    colorFamily: ["pastel", "white"],
+    active: true,
+    seo: {
+      title: { en: "Baby Blue Teddy — Blue Hydrangea & Rose Vase with Teddy Bear | Diva Flowers", es: "Osito Azul Cielo — Hortensia Azul y Rosas con Osito | Diva Flowers" },
+      description: {
+        en: "A brown teddy bear with blue hydrangea, white and yellow roses in a pearl-trimmed vase. Same-day delivery on Long Island.",
+        es: "Un osito café con hortensia azul y rosas blancas y amarillas en un jarrón con perlas. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-violet-hour",
+    slug: "violet-hour",
+    addedAt: "2026-10-14",
+    title: { en: "Violet Hour", es: "Hora Violeta" },
+    category: "arrangements",
+    blurb: {
+      en: "Lilac roses with fuchsia calla lilies, dendrobium orchids, and lilac stock.",
+      es: "Rosas lila con calas fucsia, orquídeas dendrobium y alhelí lila.",
+    },
+    description: {
+      en: "An arrangement in twilight tones — lilac roses with fuchsia calla lilies, dendrobium orchids rising above, lilac stock, campanula, and green hydrangea in a leaf-lined base. Rich and romantic for a birthday, an anniversary, or a just-because that should stand out.",
+      es: "Un arreglo en tonos de atardecer — rosas lila con calas fucsia, orquídeas dendrobium que se elevan, alhelí lila, campanula e hortensia verde en una base forrada de hoja. Intenso y romántico para un cumpleaños, un aniversario o un porque sí que debe destacar.",
+    },
+    images: [
+      { src: "/products/violet-hour.jpg", alt: { en: "Violet Hour", es: "Hora Violeta" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "anniversary", "romance", "thank-you", "congrats", "get-well", "new-baby", "graduation", "mothers-day", "thinking-of-you", "just-because"],
+    colorFamily: ["pink", "mixed", "green"],
+    active: true,
+    seo: {
+      title: { en: "Violet Hour — Lilac Rose & Calla Lily Arrangement | Diva Flowers", es: "Hora Violeta — Rosas Lila y Calas Fucsia | Diva Flowers" },
+      description: {
+        en: "Lilac roses with fuchsia calla lilies, dendrobium orchids, and lilac stock. Same-day delivery on Long Island.",
+        es: "Rosas lila con calas fucsia, orquídeas dendrobium y alhelí lila. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-rose-confetti-dome",
+    slug: "rose-confetti-dome",
+    addedAt: "2026-10-14",
+    title: { en: "Rose Confetti Dome", es: "Cúpula Confeti de Rosas" },
+    category: "arrangements",
+    blurb: {
+      en: "A dome of 36 mixed roses in red, fuchsia, yellow, peach, and lilac with baby's breath.",
+      es: "Una cúpula de 36 rosas mixtas en rojo, fucsia, amarillo, melocotón y lila con gypsophila.",
+    },
+    description: {
+      en: "Thirty-six roses in red, fuchsia, yellow, peach, and lilac, packed into a perfect dome with baby's breath and set on a collar of green leaves. A joyful statement for a birthday, an anniversary, or a big congratulations.",
+      es: "Treinta y seis rosas en rojo, fucsia, amarillo, melocotón y lila, reunidas en una cúpula perfecta con gypsophila sobre un collar de hojas verdes. Un gesto lleno de alegría para un cumpleaños, un aniversario o unas grandes felicitaciones.",
+    },
+    images: [
+      { src: "/products/rose-confetti-dome.jpg", alt: { en: "Rose Confetti Dome", es: "Cúpula Confeti de Rosas" }, aspect: "4/5" },
+      { src: "/products/rose-confetti-dome-2.jpg", alt: { en: "Rose Confetti Dome, view 2", es: "Cúpula Confeti de Rosas, vista 2" }, aspect: "4/5" },
+      { src: "/products/rose-confetti-dome-3.jpg", alt: { en: "Rose Confetti Dome, view 3", es: "Cúpula Confeti de Rosas, vista 3" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 24999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "anniversary", "congrats"],
+    colorFamily: ["mixed", "red", "pink", "green"],
+    active: true,
+    seo: {
+      title: { en: "Rose Confetti Dome — 36 Mixed Roses | Diva Flowers", es: "Cúpula Confeti de Rosas — 36 Rosas Mixtas | Diva Flowers" },
+      description: {
+        en: "A dome of 36 mixed roses in red, fuchsia, yellow, peach, and lilac with baby's breath. Same-day delivery on Long Island.",
+        es: "Una cúpula de 36 rosas mixtas en rojo, fucsia, amarillo, melocotón y lila con gypsophila. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-painted-garden",
+    slug: "painted-garden",
+    addedAt: "2026-10-14",
+    title: { en: "Painted Garden", es: "Jardín Pintado" },
+    category: "arrangements",
+    blurb: {
+      en: "A fall arrangement of orange, fuchsia, red, and peach roses with mums and eucalyptus.",
+      es: "Un arreglo de otoño de rosas naranja, fucsia, rojas y melocotón con crisantemos y eucalipto.",
+    },
+    description: {
+      en: "A painterly fall arrangement of orange, fuchsia, red, and peach roses with yellow and burgundy chrysanthemums, green dianthus, lilac campanula, and silver eucalyptus in a leaf-lined vase. Warm autumn color for a birthday, a congratulations, or a table that needs the season.",
+      es: "Un arreglo de otoño como una pintura: rosas naranja, fucsia, rojas y melocotón con crisantemos amarillos y burdeos, dianthus verde, campanula lila y eucalipto plateado en un jarrón forrado de hoja. Color cálido de otoño para un cumpleaños, unas felicitaciones o una mesa que pide la temporada.",
+    },
+    images: [
+      { src: "/products/painted-garden.jpg", alt: { en: "Painted Garden", es: "Jardín Pintado" }, aspect: "4/5" },
+      { src: "/products/painted-garden-2.jpg", alt: { en: "Painted Garden, view 2", es: "Jardín Pintado, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 11999 },
+    ],
+    tags: ["same-day", "seasonal"],
+    occasions: ["birthday", "congrats", "just-because", "anniversary", "romance", "thinking-of-you", "mothers-day", "graduation", "thank-you", "get-well", "new-baby"],
+    colorFamily: ["mixed", "pink", "red", "green"],
+    active: true,
+    seasonMonths: [9, 10, 11],
+    seo: {
+      title: { en: "Painted Garden — Fall Rose & Chrysanthemum Arrangement | Diva Flowers", es: "Jardín Pintado — Arreglo de Otoño de Rosas y Crisantemos | Diva Flowers" },
+      description: {
+        en: "A fall arrangement of orange, fuchsia, red, and peach roses with mums and eucalyptus. Same-day delivery on Long Island.",
+        es: "Un arreglo de otoño de rosas naranja, fucsia, rojas y melocotón con crisantemos y eucalipto. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-emerald-whisper",
+    slug: "emerald-whisper",
+    addedAt: "2026-10-14",
+    title: { en: "Emerald Whisper", es: "Susurro Esmeralda" },
+    category: "bouquets",
+    blurb: {
+      en: "A bouquet of lime-green cymbidium orchids, white roses, and white hydrangea in white wrap.",
+      es: "Un ramo de orquídeas cymbidium verde lima, rosas blancas e hortensia blanca en papel blanco.",
+    },
+    description: {
+      en: "A crisp hand-tied bouquet of lime-green cymbidium orchids, white roses, white hydrangea, and eucalyptus, wrapped in white paper lined in green and finished with a wide cream ribbon. Fresh and modern for an anniversary, a congratulations, or a thank-you with style.",
+      es: "Un ramo atado a mano de orquídeas cymbidium verde lima, rosas blancas, hortensia blanca y eucalipto, envuelto en papel blanco con forro verde y rematado con un amplio lazo crema. Fresco y moderno para un aniversario, unas felicitaciones o un gracias con estilo.",
+    },
+    images: [
+      { src: "/products/emerald-whisper.jpg", alt: { en: "Emerald Whisper", es: "Susurro Esmeralda" }, aspect: "4/5" },
+      { src: "/products/emerald-whisper-2.jpg", alt: { en: "Emerald Whisper, view 2", es: "Susurro Esmeralda, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "bouquet", label: { en: "Bouquet", es: "Ramo" }, priceCents: 11999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["anniversary", "congrats", "thank-you", "sympathy", "romance", "new-baby", "just-because", "birthday", "thinking-of-you"],
+    colorFamily: ["green", "white"],
+    active: true,
+    seo: {
+      title: { en: "Emerald Whisper — Green Cymbidium Orchid & White Rose Bouquet | Diva Flowers", es: "Susurro Esmeralda — Ramo de Orquídeas Verdes y Rosas Blancas | Diva Flowers" },
+      description: {
+        en: "A bouquet of lime-green cymbidium orchids, white roses, and white hydrangea in white wrap. Same-day delivery on Long Island.",
+        es: "Un ramo de orquídeas cymbidium verde lima, rosas blancas e hortensia blanca en papel blanco. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-long-table-romance",
+    slug: "long-table-romance",
+    addedAt: "2026-10-14",
+    title: { en: "Long Table Romance", es: "Mesa Romántica" },
+    category: "arrangements",
+    blurb: {
+      en: "A long, low oval centerpiece of coral garden roses, lilac stock, peach roses, and orchids.",
+      es: "Un centro de mesa ovalado, bajo y alargado, de rosas de jardín coral, alhelí lila, rosas melocotón y orquídeas.",
+    },
+    description: {
+      en: "A long, low oval centerpiece made to run down the table — coral garden roses, peach roses, lilac stock, a white orchid, green dianthus, and baby's breath, kept low so guests can talk across it. Romantic for an anniversary dinner, a shower, or Mother's Day brunch.",
+      es: "Un centro de mesa ovalado, bajo y alargado, hecho para recorrer la mesa — rosas de jardín coral, rosas melocotón, alhelí lila, una orquídea blanca, dianthus verde y gypsophila, bajo para que los invitados conversen por encima. Romántico para una cena de aniversario, un shower o el brunch del Día de la Madre.",
+    },
+    images: [
+      { src: "/products/long-table-romance.jpg", alt: { en: "Long Table Romance", es: "Mesa Romántica" }, aspect: "4/5" },
+      { src: "/products/long-table-romance-2.jpg", alt: { en: "Long Table Romance, view 2", es: "Mesa Romántica, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 19999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["anniversary", "thank-you", "mothers-day"],
+    colorFamily: ["pastel", "pink"],
+    active: true,
+    seo: {
+      title: { en: "Long Table Romance — Garden Rose Oval Centerpiece | Diva Flowers", es: "Mesa Romántica — Centro de Mesa Ovalado de Rosas de Jardín | Diva Flowers" },
+      description: {
+        en: "A long, low oval centerpiece of coral garden roses, lilac stock, peach roses, and orchids. Same-day delivery on Long Island.",
+        es: "Un centro de mesa ovalado, bajo y alargado, de rosas de jardín coral, alhelí lila, rosas melocotón y orquídeas. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-pumpkin-spice",
+    slug: "pumpkin-spice",
+    addedAt: "2026-10-14",
+    title: { en: "Pumpkin Spice", es: "Calabaza y Especias" },
+    category: "arrangements",
+    blurb: {
+      en: "A fall arrangement with a mini pumpkin, red and orange roses, mums, and eucalyptus.",
+      es: "Un arreglo de otoño con una mini calabaza, rosas rojas y naranja, crisantemos y eucalipto.",
+    },
+    description: {
+      en: "A cozy fall arrangement with a mini pumpkin tucked among red and orange roses, rust chrysanthemums, green hydrangea, and silver eucalyptus. Small, warm, and seasonal — a thank-you for a host, a hello to a neighbor, or a little autumn on the kitchen counter.",
+      es: "Un arreglo de otoño acogedor con una mini calabaza entre rosas rojas y naranja, crisantemos óxido, hortensia verde y eucalipto plateado. Pequeño, cálido y de temporada — un gracias para quien te recibe, un saludo al vecino o un poco de otoño en la cocina.",
+    },
+    images: [
+      { src: "/products/pumpkin-spice.jpg", alt: { en: "Pumpkin Spice", es: "Calabaza y Especias" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 6999 },
+    ],
+    tags: ["same-day", "seasonal"],
+    occasions: ["thank-you", "just-because", "congrats", "get-well"],
+    colorFamily: ["mixed"],
+    active: true,
+    seasonMonths: [9, 10, 11],
+    seo: {
+      title: { en: "Pumpkin Spice — Fall Rose & Mini Pumpkin Arrangement | Diva Flowers", es: "Calabaza y Especias — Arreglo de Otoño con Rosas | Diva Flowers" },
+      description: {
+        en: "A fall arrangement with a mini pumpkin, red and orange roses, mums, and eucalyptus. Same-day delivery on Long Island.",
+        es: "Un arreglo de otoño con una mini calabaza, rosas rojas y naranja, crisantemos y eucalipto. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-sweet-fortune",
+    slug: "sweet-fortune",
+    addedAt: "2026-10-14",
+    title: { en: "Sweet Fortune", es: "Dulce Fortuna" },
+    category: "bouquets",
+    blurb: {
+      en: "A money bouquet of pink gerberas, carnations, and roses in pink and gold wrap.",
+      es: "Un ramo de dinero de gerberas rosadas, claveles y rosas en papel rosa y dorado.",
+    },
+    description: {
+      en: "A playful money bouquet — pink and fuchsia gerbera daisies, carnations, and roses wrapped in pink and gold paper with a red ribbon, with rolled bills tucked among the blooms. The cash is not included in the price: bring the bills to the shop or call us to arrange them. A favorite for graduations, birthdays, and big congratulations.",
+      es: "Un ramo de dinero divertido — gerberas rosadas y fucsia, claveles y rosas envueltos en papel rosa y dorado con cinta roja, con billetes enrollados entre las flores. El dinero no está incluido en el precio: trae los billetes a la tienda o llámanos para coordinarlo. Un favorito para graduaciones, cumpleaños y grandes felicitaciones.",
+    },
+    images: [
+      { src: "/products/sweet-fortune.jpg", alt: { en: "Sweet Fortune", es: "Dulce Fortuna" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "bouquet", label: { en: "Bouquet", es: "Ramo" }, priceCents: 14999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "congrats", "anniversary", "graduation", "romance"],
+    colorFamily: ["pink", "red", "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Sweet Fortune — Gerbera & Rose Money Bouquet | Diva Flowers", es: "Dulce Fortuna — Ramo de Dinero con Gerberas y Rosas | Diva Flowers" },
+      description: {
+        en: "A money bouquet of pink gerberas, carnations, and roses in pink and gold wrap. Same-day delivery on Long Island.",
+        es: "Un ramo de dinero de gerberas rosadas, claveles y rosas en papel rosa y dorado. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-sunny-side-up",
+    slug: "sunny-side-up",
+    addedAt: "2026-10-14",
+    title: { en: "Sunny Side Up", es: "Lado Soleado" },
+    category: "arrangements",
+    blurb: {
+      en: "A yellow gerbera with daisies and pink, red, and orange roses.",
+      es: "Una gerbera amarilla con margaritas y rosas rosadas, rojas y naranja.",
+    },
+    description: {
+      en: "A cheerful little arrangement with a bright yellow gerbera daisy, white daisies, pink, red, and orange roses, baby's breath, and green hydrangea. Sunny and simple — a get-well, a birthday hello, or a just-because that costs little and says a lot.",
+      es: "Un arreglo pequeño y alegre con una gerbera amarilla, margaritas blancas, rosas rosadas, rojas y naranja, gypsophila e hortensia verde. Soleado y sencillo — un mejórate, un saludo de cumpleaños o un porque sí que cuesta poco y dice mucho.",
+    },
+    images: [
+      { src: "/products/sunny-side-up.jpg", alt: { en: "Sunny Side Up", es: "Lado Soleado" }, aspect: "4/5" },
+      { src: "/products/sunny-side-up-2.jpg", alt: { en: "Sunny Side Up, view 2", es: "Lado Soleado, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 4999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "get-well", "just-because", "romance", "thank-you", "congrats", "graduation", "thinking-of-you"],
+    colorFamily: ["mixed", "pink", "green"],
+    active: true,
+    seo: {
+      title: { en: "Sunny Side Up — Gerbera & Rose Arrangement | Diva Flowers", es: "Lado Soleado — Arreglo de Gerbera y Rosas | Diva Flowers" },
+      description: {
+        en: "A yellow gerbera with daisies and pink, red, and orange roses. Same-day delivery on Long Island.",
+        es: "Una gerbera amarilla con margaritas y rosas rosadas, rojas y naranja. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-pure-sunshine",
+    slug: "pure-sunshine",
+    addedAt: "2026-10-14",
+    title: { en: "Pure Sunshine", es: "Puro Sol" },
+    category: "arrangements",
+    blurb: {
+      en: "An all-yellow arrangement of roses, sunflowers, gerberas, and mums in a leaf-lined cube.",
+      es: "Un arreglo todo amarillo de rosas, girasoles, gerberas y crisantemos en un cubo forrado de hoja.",
+    },
+    description: {
+      en: "Pure sunshine in a glass cube — yellow roses, sunflowers, yellow gerbera daisies, and chrysanthemums with green hydrangea and baby's breath, lined with a green leaf. A bright pick-me-up for a get-well, a birthday, or anyone who needs a little light.",
+      es: "Puro sol en un cubo de vidrio — rosas amarillas, girasoles, gerberas y crisantemos amarillos con hortensia verde y gypsophila, forrado con una hoja verde. Un empujón de alegría para un mejórate, un cumpleaños o quien necesite un poco de luz.",
+    },
+    images: [
+      { src: "/products/pure-sunshine.jpg", alt: { en: "Pure Sunshine", es: "Puro Sol" }, aspect: "4/5" },
+      { src: "/products/pure-sunshine-2.jpg", alt: { en: "Pure Sunshine, view 2", es: "Puro Sol, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 8999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["get-well", "birthday", "thinking-of-you", "thank-you"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Pure Sunshine — Yellow Rose & Sunflower Cube | Diva Flowers", es: "Puro Sol — Cubo de Rosas Amarillas y Girasoles | Diva Flowers" },
+      description: {
+        en: "An all-yellow arrangement of roses, sunflowers, gerberas, and mums in a leaf-lined cube. Same-day delivery on Long Island.",
+        es: "Un arreglo todo amarillo de rosas, girasoles, gerberas y crisantemos en un cubo forrado de hoja. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-crimson-zen",
+    slug: "crimson-zen",
+    addedAt: "2026-10-14",
+    title: { en: "Crimson Zen", es: "Zen Carmesí" },
+    category: "arrangements",
+    blurb: {
+      en: "A tall ikebana-style arrangement of red roses, yellow oncidium, and white dendrobium.",
+      es: "Un arreglo alto estilo ikebana de rosas rojas, oncidium amarillo y dendrobium blanco.",
+    },
+    description: {
+      en: "A tall, sculptural arrangement in the ikebana spirit — red roses, sprays of yellow oncidium orchids, white dendrobium, and broad tropical leaves rising from a tall black rectangular vase. Striking and modern for a romantic gesture, an office, or a congratulations that should impress.",
+      es: "Un arreglo alto y escultural con espíritu ikebana — rosas rojas, varas de orquídea oncidium amarilla, dendrobium blanco y hojas tropicales anchas que se elevan desde un jarrón negro alto y rectangular. Impactante y moderno para un gesto romántico, una oficina o unas felicitaciones que deben impresionar.",
+    },
+    images: [
+      { src: "/products/crimson-zen.jpg", alt: { en: "Crimson Zen", es: "Zen Carmesí" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 24999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["romance", "anniversary", "congrats", "thinking-of-you"],
+    colorFamily: ["red", "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Crimson Zen — Red Rose & Orchid Ikebana Arrangement | Diva Flowers", es: "Zen Carmesí — Arreglo Ikebana de Rosas Rojas y Orquídeas | Diva Flowers" },
+      description: {
+        en: "A tall ikebana-style arrangement of red roses, yellow oncidium, and white dendrobium. Same-day delivery on Long Island.",
+        es: "Un arreglo alto estilo ikebana de rosas rojas, oncidium amarillo y dendrobium blanco. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-lavender-heights",
+    slug: "lavender-heights",
+    addedAt: "2026-10-14",
+    title: { en: "Lavender Heights", es: "Alturas Lavanda" },
+    category: "arrangements",
+    blurb: {
+      en: "A tall cylinder vase of lilac hydrangea, red roses, coral garden roses, and orchids.",
+      es: "Un jarrón cilíndrico alto con hortensia lila, rosas rojas, rosas de jardín coral y orquídeas.",
+    },
+    description: {
+      en: "A tall arrangement in a clear glass cylinder, with stems and eucalyptus visible through the glass — lilac hydrangea, red roses, coral garden roses, orchids reaching upward, and golden craspedia. Generous and colorful for an anniversary, a birthday, or a romantic surprise.",
+      es: "Un arreglo alto en un cilindro de vidrio transparente, con los tallos y el eucalipto a la vista — hortensia lila, rosas rojas, rosas de jardín coral, orquídeas que se elevan y craspedia dorada. Generoso y colorido para un aniversario, un cumpleaños o una sorpresa romántica.",
+    },
+    images: [
+      { src: "/products/lavender-heights.jpg", alt: { en: "Lavender Heights", es: "Alturas Lavanda" }, aspect: "4/5" },
+      { src: "/products/lavender-heights-2.jpg", alt: { en: "Lavender Heights, view 2", es: "Alturas Lavanda, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 17499 },
+    ],
+    tags: ["same-day"],
+    occasions: ["anniversary", "birthday", "romance", "just-because", "thank-you", "congrats", "get-well", "new-baby", "thinking-of-you", "mothers-day", "graduation", "sympathy"],
+    colorFamily: ["mixed", "pastel", "pink", "red", "green"],
+    active: true,
+    seo: {
+      title: { en: "Lavender Heights — Hydrangea & Garden Rose Tall Vase | Diva Flowers", es: "Alturas Lavanda — Hortensia y Rosas de Jardín en Jarrón Alto | Diva Flowers" },
+      description: {
+        en: "A tall cylinder vase of lilac hydrangea, red roses, coral garden roses, and orchids. Same-day delivery on Long Island.",
+        es: "Un jarrón cilíndrico alto con hortensia lila, rosas rojas, rosas de jardín coral y orquídeas. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-tangerine-pop",
+    slug: "tangerine-pop",
+    addedAt: "2026-10-14",
+    title: { en: "Tangerine Pop", es: "Mandarina Pop" },
+    category: "arrangements",
+    blurb: {
+      en: "A fall centerpiece of orange and red gerberas, an orange rose, and red and yellow mums.",
+      es: "Un centro de mesa de otoño de gerberas naranja y roja, una rosa naranja y crisantemos rojos y amarillos.",
+    },
+    description: {
+      en: "A small fall centerpiece in sunset colors — orange and red gerbera daisies, an orange rose, red and yellow chrysanthemums, and green hydrangea. Low and round to sit at the center of a table, it brings autumn warmth to a birthday, a get-well, or a Sunday dinner.",
+      es: "Un pequeño centro de mesa de otoño en colores de atardecer — gerberas naranja y roja, una rosa naranja, crisantemos rojos y amarillos e hortensia verde. Bajo y redondo para el centro de la mesa, lleva calidez de otoño a un cumpleaños, un mejórate o una cena de domingo.",
+    },
+    images: [
+      { src: "/products/tangerine-pop.jpg", alt: { en: "Tangerine Pop", es: "Mandarina Pop" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 4999 },
+    ],
+    tags: ["same-day", "seasonal"],
+    occasions: ["birthday", "get-well", "congrats", "just-because", "thank-you", "graduation"],
+    colorFamily: ["mixed"],
+    active: true,
+    seasonMonths: [9, 10, 11],
+    seo: {
+      title: { en: "Tangerine Pop — Fall Gerbera & Rose Centerpiece | Diva Flowers", es: "Mandarina Pop — Centro de Mesa de Otoño con Gerberas | Diva Flowers" },
+      description: {
+        en: "A fall centerpiece of orange and red gerberas, an orange rose, and red and yellow mums. Same-day delivery on Long Island.",
+        es: "Un centro de mesa de otoño de gerberas naranja y roja, una rosa naranja y crisantemos rojos y amarillos. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-fuchsia-tropics",
+    slug: "fuchsia-tropics",
+    addedAt: "2026-10-14",
+    title: { en: "Fuchsia Tropics", es: "Trópico Fucsia" },
+    category: "arrangements",
+    blurb: {
+      en: "Fuchsia roses with purple dendrobium, yellow cymbidium, and trailing amaranthus.",
+      es: "Rosas fucsia con dendrobium morado, cymbidium amarillo y amaranto colgante.",
+    },
+    description: {
+      en: "A tropical arrangement in a leaf-lined glass cube — fuchsia roses with purple dendrobium orchids, a golden cymbidium orchid, bells of Ireland, and green amaranthus spilling over the side. Vivid and exotic for a birthday, a congratulations, or a romantic surprise.",
+      es: "Un arreglo tropical en un cubo de vidrio forrado de hoja — rosas fucsia con orquídeas dendrobium moradas, una orquídea cymbidium dorada, campanas de Irlanda y amaranto verde que cae por el costado. Vibrante y exótico para un cumpleaños, unas felicitaciones o una sorpresa romántica.",
+    },
+    images: [
+      { src: "/products/fuchsia-tropics.jpg", alt: { en: "Fuchsia Tropics", es: "Trópico Fucsia" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 18499 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "congrats", "romance", "anniversary", "just-because", "thank-you", "get-well", "new-baby", "thinking-of-you", "mothers-day", "graduation"],
+    colorFamily: ["pink", "mixed", "green"],
+    active: true,
+    seo: {
+      title: { en: "Fuchsia Tropics — Fuchsia Rose & Orchid Arrangement | Diva Flowers", es: "Trópico Fucsia — Rosas Fucsia y Orquídeas | Diva Flowers" },
+      description: {
+        en: "Fuchsia roses with purple dendrobium, yellow cymbidium, and trailing amaranthus. Same-day delivery on Long Island.",
+        es: "Rosas fucsia con dendrobium morado, cymbidium amarillo y amaranto colgante. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-amethyst-velvet",
+    slug: "amethyst-velvet",
+    addedAt: "2026-10-14",
+    title: { en: "Amethyst Velvet", es: "Terciopelo Amatista" },
+    category: "arrangements",
+    blurb: {
+      en: "Lilac roses with purple dendrobium orchids, anthurium, and purple hydrangea.",
+      es: "Rosas lila con orquídeas dendrobium moradas, anthurium e hortensia morada.",
+    },
+    description: {
+      en: "A velvety arrangement in amethyst tones — lilac roses with purple dendrobium orchids, a glossy anthurium, and deep purple hydrangea in a leaf-lined glass cube. Choose the size that fits the occasion, from a birthday on a desk to an anniversary centerpiece.",
+      es: "Un arreglo aterciopelado en tonos amatista — rosas lila con orquídeas dendrobium moradas, un anthurium brillante e hortensia morada intensa en un cubo de vidrio forrado de hoja. Elige el tamaño que va con la ocasión, de un cumpleaños en el escritorio a un centro de aniversario.",
+    },
+    images: [
+      { src: "/products/amethyst-velvet.jpg", alt: { en: "Amethyst Velvet", es: "Terciopelo Amatista" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 19999 },
+      { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 22499 },
+      { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 24999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "anniversary", "thinking-of-you", "new-baby", "mothers-day", "graduation", "just-because", "thank-you", "congrats", "get-well", "romance"],
+    colorFamily: ["pastel", "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Amethyst Velvet — Lilac Rose & Purple Orchid Arrangement | Diva Flowers", es: "Terciopelo Amatista — Rosas Lila y Orquídeas Moradas | Diva Flowers" },
+      description: {
+        en: "Lilac roses with purple dendrobium orchids, anthurium, and purple hydrangea. Same-day delivery on Long Island.",
+        es: "Rosas lila con orquídeas dendrobium moradas, anthurium e hortensia morada. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-rustic-harvest",
+    slug: "rustic-harvest",
+    addedAt: "2026-10-14",
+    title: { en: "Rustic Harvest", es: "Cosecha Rústica" },
+    category: "arrangements",
+    blurb: {
+      en: "A fall vase with a jute bow, orange roses, a mini pumpkin, red mums, and alstroemeria.",
+      es: "Un jarrón de otoño con lazo de yute, rosas naranja, mini calabaza, crisantemos rojos y alstroemeria.",
+    },
+    description: {
+      en: "A rustic fall arrangement in a glass vase tied with a jute bow — orange roses, a mini pumpkin, red chrysanthemums, yellow alstroemeria, and baby's breath. Homey and seasonal for a Thanksgiving host, a birthday, or an autumn hello.",
+      es: "Un arreglo rústico de otoño en un jarrón de vidrio atado con un lazo de yute — rosas naranja, una mini calabaza, crisantemos rojos, alstroemeria amarilla y gypsophila. Hogareño y de temporada para quien recibe en Acción de Gracias, un cumpleaños o un saludo de otoño.",
+    },
+    images: [
+      { src: "/products/rustic-harvest.jpg", alt: { en: "Rustic Harvest", es: "Cosecha Rústica" }, aspect: "4/5" },
+      { src: "/products/rustic-harvest-2.jpg", alt: { en: "Rustic Harvest, view 2", es: "Cosecha Rústica, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 7999 },
+    ],
+    tags: ["same-day", "seasonal"],
+    occasions: ["thank-you", "just-because", "birthday", "congrats", "get-well", "new-baby", "graduation", "thinking-of-you"],
+    colorFamily: ["mixed"],
+    active: true,
+    seasonMonths: [9, 10, 11],
+    seo: {
+      title: { en: "Rustic Harvest — Fall Rose & Pumpkin Vase | Diva Flowers", es: "Cosecha Rústica — Jarrón de Otoño con Rosas y Calabaza | Diva Flowers" },
+      description: {
+        en: "A fall vase with a jute bow, orange roses, a mini pumpkin, red mums, and alstroemeria. Same-day delivery on Long Island.",
+        es: "Un jarrón de otoño con lazo de yute, rosas naranja, mini calabaza, crisantemos rojos y alstroemeria. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-apricot-orchid",
+    slug: "apricot-orchid",
+    addedAt: "2026-10-14",
+    title: { en: "Apricot Orchid", es: "Orquídea Albaricoque" },
+    category: "arrangements",
+    blurb: {
+      en: "Peach roses with white and pink cymbidium orchids and green and pink hydrangea.",
+      es: "Rosas melocotón con orquídeas cymbidium blancas y rosadas e hortensia verde y rosa.",
+    },
+    description: {
+      en: "A soft, generous arrangement of peach roses with white and blush cymbidium orchids, green and pink hydrangea, and round cream blooms in a leaf-lined base. Elegant for an anniversary, Mother's Day, or a heartfelt thank-you — choose the size that fits.",
+      es: "Un arreglo suave y generoso de rosas melocotón con orquídeas cymbidium blancas y rubor, hortensia verde y rosa y flores redondas crema en una base forrada de hoja. Elegante para un aniversario, el Día de la Madre o un gracias sentido — elige el tamaño que va mejor.",
+    },
+    images: [
+      { src: "/products/apricot-orchid.jpg", alt: { en: "Apricot Orchid", es: "Orquídea Albaricoque" }, aspect: "4/5" },
+      { src: "/products/apricot-orchid-2.jpg", alt: { en: "Apricot Orchid, view 2", es: "Orquídea Albaricoque, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 14999 },
+      { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 22499 },
+      { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 24999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["anniversary", "mothers-day", "thank-you", "just-because", "sympathy", "thinking-of-you", "romance", "birthday", "graduation", "congrats", "get-well", "new-baby"],
+    colorFamily: ["pastel", "pink", "white", "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Apricot Orchid — Peach Rose & Cymbidium Orchid Arrangement | Diva Flowers", es: "Orquídea Albaricoque — Rosas Melocotón y Orquídeas Cymbidium | Diva Flowers" },
+      description: {
+        en: "Peach roses with white and pink cymbidium orchids and green and pink hydrangea. Same-day delivery on Long Island.",
+        es: "Rosas melocotón con orquídeas cymbidium blancas y rosadas e hortensia verde y rosa. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-lilac-sorbet",
+    slug: "lilac-sorbet",
+    addedAt: "2026-10-14",
+    title: { en: "Lilac Sorbet", es: "Sorbete Lila" },
+    category: "arrangements",
+    blurb: {
+      en: "Lilac roses with purple lisianthus, a yellow mum, white carnation, and green hydrangea.",
+      es: "Rosas lila con lisianthus morado, un crisantemo amarillo, clavel blanco e hortensia verde.",
+    },
+    description: {
+      en: "A fresh arrangement in sorbet colors — lilac roses with purple lisianthus, a yellow chrysanthemum, a white carnation, and green hydrangea, framed by looped leaves in a glass cube. Light and cheerful for a birthday, a get-well, or a just-because.",
+      es: "Un arreglo fresco en colores de sorbete — rosas lila con lisianthus morado, un crisantemo amarillo, un clavel blanco e hortensia verde, enmarcado con aros de hoja en un cubo de vidrio. Ligero y alegre para un cumpleaños, un mejórate o un porque sí.",
+    },
+    images: [
+      { src: "/products/lilac-sorbet.jpg", alt: { en: "Lilac Sorbet", es: "Sorbete Lila" }, aspect: "4/5" },
+      { src: "/products/lilac-sorbet-2.jpg", alt: { en: "Lilac Sorbet, view 2", es: "Sorbete Lila, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 11999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "get-well", "just-because", "anniversary", "romance", "thinking-of-you", "thank-you", "congrats", "new-baby", "sympathy", "mothers-day", "graduation"],
+    colorFamily: ["pastel", "mixed", "pink", "green"],
+    active: true,
+    seo: {
+      title: { en: "Lilac Sorbet — Lilac Rose & Lisianthus Arrangement | Diva Flowers", es: "Sorbete Lila — Rosas Lila y Lisianthus | Diva Flowers" },
+      description: {
+        en: "Lilac roses with purple lisianthus, a yellow mum, white carnation, and green hydrangea. Same-day delivery on Long Island.",
+        es: "Rosas lila con lisianthus morado, un crisantemo amarillo, clavel blanco e hortensia verde. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-rainbow-gala",
+    slug: "rainbow-gala",
+    addedAt: "2026-10-14",
+    title: { en: "Rainbow Gala", es: "Gala Arcoíris" },
+    category: "arrangements",
+    blurb: {
+      en: "A large mixed arrangement with a blue rose, orange, pink, lilac, and yellow roses, and lilies.",
+      es: "Un arreglo grande y mixto con una rosa azul, rosas naranja, rosadas, lila y amarillas, y lirios.",
+    },
+    description: {
+      en: "A big, joyful arrangement in every color — a blue rose among orange, pink, lilac, and yellow roses, a round blue bloom, green hydrangea, bells of Ireland, and white lilies. A showstopper for a graduation, a milestone birthday, or a congratulations that deserves color.",
+      es: "Un arreglo grande y alegre de todos los colores — una rosa azul entre rosas naranja, rosadas, lila y amarillas, una flor redonda azul, hortensia verde, campanas de Irlanda y lirios blancos. Una pieza de impacto para una graduación, un cumpleaños especial o unas felicitaciones que merecen color.",
+    },
+    images: [
+      { src: "/products/rainbow-gala.jpg", alt: { en: "Rainbow Gala", es: "Gala Arcoíris" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 19999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "congrats", "graduation", "thinking-of-you", "romance", "anniversary", "just-because", "thank-you", "get-well", "new-baby", "mothers-day"],
+    colorFamily: ["mixed", "green", "pink", "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Rainbow Gala — Mixed Rose & Lily Arrangement | Diva Flowers", es: "Gala Arcoíris — Arreglo de Rosas Mixtas y Lirios | Diva Flowers" },
+      description: {
+        en: "A large mixed arrangement with a blue rose, orange, pink, lilac, and yellow roses, and lilies. Same-day delivery on Long Island.",
+        es: "Un arreglo grande y mixto con una rosa azul, rosas naranja, rosadas, lila y amarillas, y lirios. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-pastel-grace-spray",
+    slug: "pastel-grace-spray",
+    addedAt: "2026-10-14",
+    title: { en: "Pastel Grace Spray", es: "Tributo Rosa Pastel" },
+    category: "sympathy",
+    blurb: {
+      en: "A standing spray of fuchsia and blush roses, peach lilies, and bells of Ireland with a white bow.",
+      es: "Un tributo de pie de rosas fucsia y rubor, lirios melocotón y campanas de Irlanda con moño blanco.",
+    },
+    description: {
+      en: "A soft, uplifting standing spray — fuchsia, pink, and blush roses with peach lilies, white chrysanthemums, antique hydrangea, lilac stock, white lisianthus, and baby's breath, crowned with bells of Ireland and framed in palm, finished with a white satin bow and long ribbons. Set on an easel for a funeral, wake, or memorial. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un tributo de pie suave y luminoso — rosas fucsia, rosadas y rubor con lirios melocotón, crisantemos blancos, hortensia antigua, alhelí lila, lisianthus blanco y gypsophila, coronado con campanas de Irlanda y enmarcado en palma, rematado con un moño de satín blanco y cintas largas. Montado en atril para un funeral, velorio o servicio memorial. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/pastel-grace-spray.jpg", alt: { en: "Pastel Grace Spray", es: "Tributo Rosa Pastel" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing spray", es: "Tributo de pie" }, priceCents: 19999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["sympathy"],
+    colorFamily: ["pink", "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Pastel Grace — Pink Rose & Lily Standing Spray | Diva Flowers", es: "Tributo Rosa Pastel — Tributo de Pie de Rosas y Lirios | Diva Flowers" },
+      description: {
+        en: "A standing spray of fuchsia and blush roses, peach lilies, and bells of Ireland with a white bow. Same-day delivery on Long Island.",
+        es: "Un tributo de pie de rosas fucsia y rubor, lirios melocotón y campanas de Irlanda con moño blanco. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-sym-garden-halo-wreath",
+    slug: "garden-halo-wreath",
+    addedAt: "2026-10-14",
+    title: { en: "Garden Halo Wreath", es: "Corona Halo de Jardín" },
+    category: "sympathy",
+    blurb: {
+      en: "A round wreath framed in a halo of palm with pink and lilac roses, lilies, and a white sash.",
+      es: "Una corona redonda enmarcada en un halo de palma con rosas rosadas y lila, lirios y banda blanca.",
+    },
+    description: {
+      en: "A round standing wreath set in a full halo of palm — fuchsia, pink, and lilac roses with lime chrysanthemums, stargazer lilies, lilac hydrangea, purple and white stock, lisianthus, and spray roses, crossed by a white satin sash and bow that can carry a name or a message. Set on an easel for a funeral, wake, or memorial. Tell us the words for the sash in your card message. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Una corona redonda de pie dentro de un halo completo de palma — rosas fucsia, rosadas y lila con crisantemos lima, lirios stargazer, hortensia lila, alhelí morado y blanco, lisianthus y mini rosas, cruzada por una banda y un moño de satín blanco que pueden llevar un nombre o un mensaje. Montada en atril para un funeral, velorio o servicio memorial. Escríbenos las palabras de la banda en el mensaje de la tarjeta. Hecha a mano en nuestra tienda y entregada en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/garden-halo-wreath.jpg", alt: { en: "Garden Halo Wreath", es: "Corona Halo de Jardín" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing wreath", es: "Corona de pie" }, priceCents: 49999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["sympathy"],
+    colorFamily: ["pink", "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Garden Halo — Rose & Lily Funeral Wreath | Diva Flowers", es: "Corona Halo de Jardín — Corona Fúnebre de Rosas y Lirios | Diva Flowers" },
+      description: {
+        en: "A round wreath framed in a halo of palm with pink and lilac roses, lilies, and a white sash. Same-day delivery on Long Island.",
+        es: "Una corona redonda enmarcada en un halo de palma con rosas rosadas y lila, lirios y banda blanca. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-peacock-paradise",
+    slug: "peacock-paradise",
+    addedAt: "2026-10-15",
+    title: { en: "Peacock Paradise", es: "Paraíso de Pavo Real" },
+    category: "arrangements",
+    blurb: {
+      en: "A grand tropical arrangement with peacock feathers, birds of paradise, and lilac, fuchsia, and blue roses.",
+      es: "Un gran arreglo tropical con plumas de pavo real, aves del paraíso y rosas lila, fucsia y azules.",
+    },
+    description: {
+      en: "A grand, show-stopping arrangement with a tropical heart — peacock feathers and birds of paradise rising over heliconia, bells of Ireland, and golden solidago, with lilac, fuchsia, and blue roses, yellow gerbera daisies, and antique and green hydrangea gathered in a black diamond-pattern vase. Made for the celebration that deserves a statement: a milestone birthday, a big congratulations, or an anniversary to remember.",
+      es: "Un gran arreglo de impacto con corazón tropical — plumas de pavo real y aves del paraíso que se elevan sobre heliconias, campanas de Irlanda y solidago dorado, con rosas lila, fucsia y azules, gerberas amarillas e hortensia antigua y verde reunidas en un jarrón negro con rombos. Hecho para la celebración que merece un gesto grande: un cumpleaños especial, unas grandes felicitaciones o un aniversario para recordar.",
+    },
+    images: [
+      { src: "/products/peacock-paradise.jpg", alt: { en: "Peacock Paradise", es: "Paraíso de Pavo Real" }, aspect: "4/5" },
+      { src: "/products/peacock-paradise-2.jpg", alt: { en: "Peacock Paradise, view 2", es: "Paraíso de Pavo Real, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 24999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "congrats", "anniversary", "just-because", "romance", "thank-you", "get-well", "graduation", "mothers-day", "thinking-of-you"],
+    colorFamily: ["mixed", "pink", "red", "green"],
+    active: true,
+    seo: {
+      title: { en: "Peacock Paradise — Bird of Paradise & Rose Tropical Arrangement | Diva Flowers", es: "Paraíso de Pavo Real — Aves del Paraíso y Rosas Tropicales | Diva Flowers" },
+      description: {
+        en: "A grand tropical arrangement with peacock feathers, birds of paradise, and lilac, fuchsia, and blue roses. Same-day delivery on Long Island.",
+        es: "Un gran arreglo tropical con plumas de pavo real, aves del paraíso y rosas lila, fucsia y azules. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-pastel-pop",
+    slug: "pastel-pop",
+    addedAt: "2026-10-15",
+    title: { en: "Pastel Pop", es: "Pop Pastel" },
+    category: "arrangements",
+    blurb: {
+      en: "Peach and pink roses with fuchsia gerberas, white allium, and lime hydrangea in a leaf-lined cube.",
+      es: "Rosas melocotón y rosadas con gerberas fucsia, allium blanco e hortensia verde lima en un cubo forrado de hoja.",
+    },
+    description: {
+      en: "A cheerful low arrangement in a leaf-lined glass cube — peach and pink roses with fuchsia gerbera daisies, round white allium, pink carnations, lime-green hydrangea, and fuzzy green dianthus. Soft and playful for a birthday, a new baby, a thank-you, or Mother's Day.",
+      es: "Un arreglo bajo y alegre en un cubo de vidrio forrado de hoja — rosas melocotón y rosadas con gerberas fucsia, allium blancos redondos, claveles rosados, hortensia verde lima y dianthus verde. Suave y divertido para un cumpleaños, un bebé, un gracias o el Día de la Madre.",
+    },
+    images: [
+      { src: "/products/pastel-pop.jpg", alt: { en: "Pastel Pop", es: "Pop Pastel" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 11999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "new-baby", "thank-you", "just-because", "mothers-day", "anniversary", "romance", "congrats", "get-well", "thinking-of-you", "graduation"],
+    colorFamily: ["pastel", "pink", "green", "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Pastel Pop — Gerbera & Peach Rose Cube | Diva Flowers", es: "Pop Pastel — Cubo de Gerberas y Rosas Melocotón | Diva Flowers" },
+      description: {
+        en: "Peach and pink roses with fuchsia gerberas, white allium, and lime hydrangea in a leaf-lined cube. Same-day delivery on Long Island.",
+        es: "Rosas melocotón y rosadas con gerberas fucsia, allium blanco e hortensia verde lima en un cubo forrado de hoja. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-scarlet-romance",
+    slug: "scarlet-romance",
+    addedAt: "2026-10-15",
+    title: { en: "Scarlet Romance", es: "Romance Escarlata" },
+    category: "arrangements",
+    blurb: {
+      en: "Red, fuchsia, and lilac roses with red ranunculus, purple anemones, and pink hydrangea in a deep-red vase.",
+      es: "Rosas rojas, fucsia y lila con ranúnculos rojos, anémonas moradas e hortensia rosa en un jarrón rojo oscuro.",
+    },
+    description: {
+      en: "A lush romantic arrangement in a deep-red glass vase — red, fuchsia, and lilac roses with red ranunculus, purple anemones, and soft pink hydrangea, finished with a collar of folded green leaves. Passionate and full for an anniversary, a romantic surprise, or a birthday that should feel like a love letter.",
+      es: "Un arreglo romántico y frondoso en un jarrón de vidrio rojo oscuro — rosas rojas, fucsia y lila con ranúnculos rojos, anémonas moradas e hortensia rosa suave, rematado con un collar de hojas verdes plegadas. Apasionado y lleno para un aniversario, una sorpresa romántica o un cumpleaños que debe sentirse como una carta de amor.",
+    },
+    images: [
+      { src: "/products/scarlet-romance.jpg", alt: { en: "Scarlet Romance", es: "Romance Escarlata" }, aspect: "4/5" },
+      { src: "/products/scarlet-romance-2.jpg", alt: { en: "Scarlet Romance, view 2", es: "Romance Escarlata, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 19999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["romance", "anniversary", "birthday", "just-because", "thank-you", "congrats", "get-well", "graduation", "mothers-day", "thinking-of-you"],
+    colorFamily: ["red", "pink", "white", "green", "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Scarlet Romance — Red Rose & Ranunculus Vase | Diva Flowers", es: "Romance Escarlata — Rosas Rojas y Ranúnculos en Jarrón | Diva Flowers" },
+      description: {
+        en: "Red, fuchsia, and lilac roses with red ranunculus, purple anemones, and pink hydrangea in a deep-red vase. Same-day delivery on Long Island.",
+        es: "Rosas rojas, fucsia y lila con ranúnculos rojos, anémonas moradas e hortensia rosa en un jarrón rojo oscuro. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-fiesta-cube",
+    slug: "fiesta-cube",
+    addedAt: "2026-10-15",
+    title: { en: "Fiesta Cube", es: "Cubo Fiesta" },
+    category: "arrangements",
+    blurb: {
+      en: "A bright cube with a yellow rose at its heart, fuchsia and orange roses, and purple lisianthus.",
+      es: "Un cubo alegre con una rosa amarilla al centro, rosas fucsia y naranja y lisianthus morado.",
+    },
+    description: {
+      en: "A party in a leaf-lined glass cube — a sunny yellow rose at the center surrounded by fuchsia and orange roses, purple lisianthus, hypericum berries, and fresh greens. Bright and compact for a birthday, a get-well wish, or a just-because that brings color to the room.",
+      es: "Una fiesta en un cubo de vidrio forrado de hoja — una rosa amarilla al centro rodeada de rosas fucsia y naranja, lisianthus morado, frutos de hypericum y follaje fresco. Alegre y compacto para un cumpleaños, un deseo de pronta recuperación o un porque sí que llena de color el lugar.",
+    },
+    images: [
+      { src: "/products/fiesta-cube.jpg", alt: { en: "Fiesta Cube", es: "Cubo Fiesta" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 11999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "get-well", "just-because", "thank-you", "anniversary", "romance", "thinking-of-you"],
+    colorFamily: ["mixed", "pink", "green"],
+    active: true,
+    seo: {
+      title: { en: "Fiesta Cube — Yellow & Fuchsia Rose Cube | Diva Flowers", es: "Cubo Fiesta — Cubo de Rosas Amarillas y Fucsia | Diva Flowers" },
+      description: {
+        en: "A bright cube with a yellow rose at its heart, fuchsia and orange roses, and purple lisianthus. Same-day delivery on Long Island.",
+        es: "Un cubo alegre con una rosa amarilla al centro, rosas fucsia y naranja y lisianthus morado. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-lime-orchid-cloud",
+    slug: "lime-orchid-cloud",
+    addedAt: "2026-10-15",
+    title: { en: "Lime Orchid Cloud", es: "Nube de Orquídea Lima" },
+    category: "arrangements",
+    blurb: {
+      en: "Lime-green cymbidium orchids with white roses, white hydrangea, and trailing eucalyptus.",
+      es: "Orquídeas cymbidium verde lima con rosas blancas, hortensia blanca y eucalipto colgante.",
+    },
+    description: {
+      en: "A serene arrangement in green and white — lime-green cymbidium orchids with white roses, white hydrangea, fuzzy green dianthus, white stock, and a sweep of bear grass, with seeded eucalyptus trailing from a leaf-lined cube. Calm and elegant for an anniversary, a thank-you, or a gesture of sympathy. Choose the size that fits the moment.",
+      es: "Un arreglo sereno en verde y blanco — orquídeas cymbidium verde lima con rosas blancas, hortensia blanca, dianthus verde, alhelí blanco y un arco de bear grass, con eucalipto que cae desde un cubo forrado de hoja. Tranquilo y elegante para un aniversario, un gracias o un gesto de condolencia. Elige el tamaño que va con el momento.",
+    },
+    images: [
+      { src: "/products/lime-orchid-cloud.jpg", alt: { en: "Lime Orchid Cloud", es: "Nube de Orquídea Lima" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 4999 },
+      { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 7499 },
+      { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 9999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["sympathy", "anniversary", "romance", "thank-you"],
+    colorFamily: ["green", "white", "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Lime Orchid Cloud — Green Cymbidium Orchid & White Rose Cube | Diva Flowers", es: "Nube de Orquídea Lima — Orquídeas Verdes y Rosas Blancas | Diva Flowers" },
+      description: {
+        en: "Lime-green cymbidium orchids with white roses, white hydrangea, and trailing eucalyptus. Same-day delivery on Long Island.",
+        es: "Orquídeas cymbidium verde lima con rosas blancas, hortensia blanca y eucalipto colgante. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-sunny-garden",
+    slug: "sunny-garden",
+    addedAt: "2026-10-15",
+    title: { en: "Sunny Garden", es: "Jardín Soleado" },
+    category: "arrangements",
+    blurb: {
+      en: "A low garden arrangement with red and orange roses, a sunflower, pink lilies, and baby's breath.",
+      es: "Un arreglo de jardín bajo con rosas rojas y naranja, un girasol, lirios rosados y nube.",
+    },
+    description: {
+      en: "A wide, low arrangement that looks freshly picked from the garden — red and orange roses with a bright sunflower, pink lilies, carnations, baby's breath, and loose greenery. Warm and generous for a birthday, a get-well visit, or a thank-you that feels like sunshine.",
+      es: "Un arreglo amplio y bajo que parece recién cortado del jardín — rosas rojas y naranja con un girasol, lirios rosados, claveles, nube y follaje suelto. Cálido y generoso para un cumpleaños, una visita de pronta recuperación o un gracias que se siente como un día de sol.",
+    },
+    images: [
+      { src: "/products/sunny-garden.jpg", alt: { en: "Sunny Garden", es: "Jardín Soleado" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "get-well", "thank-you", "just-because", "congrats"],
+    colorFamily: ["mixed", "green", "red"],
+    active: true,
+    seo: {
+      title: { en: "Sunny Garden — Sunflower & Red Rose Garden Arrangement | Diva Flowers", es: "Jardín Soleado — Arreglo de Girasol y Rosas Rojas | Diva Flowers" },
+      description: {
+        en: "A low garden arrangement with red and orange roses, a sunflower, pink lilies, and baby's breath. Same-day delivery on Long Island.",
+        es: "Un arreglo de jardín bajo con rosas rojas y naranja, un girasol, lirios rosados y nube. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-harvest-table",
+    slug: "harvest-table",
+    addedAt: "2026-10-15",
+    title: { en: "Harvest Table", es: "Mesa de Cosecha" },
+    category: "arrangements",
+    blurb: {
+      en: "A fall centerpiece with a mini pumpkin, a sunflower, red and cream roses, and yellow lilies.",
+      es: "Un centro de mesa de otoño con mini calabaza, girasol, rosas rojas y crema y lirios amarillos.",
+    },
+    description: {
+      en: "A fall centerpiece made for the harvest table — a mini pumpkin and a sunflower among red and cream roses, yellow lilies, red spray roses, waxflower, and baby's breath, tied with a raffia bow. Low and full to sit at the center of a Thanksgiving dinner, a host's table, or an autumn celebration.",
+      es: "Un centro de mesa de otoño hecho para la mesa de cosecha — una mini calabaza y un girasol entre rosas rojas y crema, lirios amarillos, mini rosas rojas, flor de cera y nube, atado con un lazo de rafia. Bajo y lleno para el centro de una cena de Acción de Gracias, la mesa de quien recibe o una celebración de otoño.",
+    },
+    images: [
+      { src: "/products/harvest-table.jpg", alt: { en: "Harvest Table", es: "Mesa de Cosecha" }, aspect: "4/5" },
+      { src: "/products/harvest-table-2.jpg", alt: { en: "Harvest Table, view 2", es: "Mesa de Cosecha, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9999 },
+    ],
+    tags: ["same-day", "seasonal"],
+    occasions: ["thank-you", "just-because", "congrats", "thinking-of-you"],
+    colorFamily: ["mixed"],
+    active: true,
+    seasonMonths: [9, 10, 11],
+    seo: {
+      title: { en: "Harvest Table — Fall Sunflower & Rose Centerpiece | Diva Flowers", es: "Mesa de Cosecha — Centro de Mesa de Otoño con Girasol y Rosas | Diva Flowers" },
+      description: {
+        en: "A fall centerpiece with a mini pumpkin, a sunflower, red and cream roses, and yellow lilies. Same-day delivery on Long Island.",
+        es: "Un centro de mesa de otoño con mini calabaza, girasol, rosas rojas y crema y lirios amarillos. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-rose-cloud",
+    slug: "rose-cloud",
+    addedAt: "2026-10-15",
+    title: { en: "Rose Cloud", es: "Nube de Rosas" },
+    category: "arrangements",
+    blurb: {
+      en: "A dome of 24 red roses set in a cloud of baby's breath with eucalyptus.",
+      es: "Una cúpula de 24 rosas rojas en una nube de gypsophila con eucalipto.",
+    },
+    description: {
+      en: "Twenty-four deep-red roses gathered into a full, rounded dome and set in a soft cloud of baby's breath, with silver eucalyptus and golden solidago spilling over the edge of a low container. Classic and romantic for an anniversary, a birthday, Mother's Day, or a thinking-of-you that should feel grand.",
+      es: "Veinticuatro rosas rojas intensas reunidas en una cúpula llena y redonda, dentro de una nube suave de gypsophila, con eucalipto plateado y solidago dorado que caen por el borde de un recipiente bajo. Clásico y romántico para un aniversario, un cumpleaños, el Día de la Madre o un pensando en ti que debe sentirse grande.",
+    },
+    images: [
+      { src: "/products/rose-cloud.jpg", alt: { en: "Rose Cloud", es: "Nube de Rosas" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "24 roses", es: "24 rosas" }, priceCents: 16999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["romance", "anniversary", "birthday", "mothers-day", "thinking-of-you"],
+    colorFamily: ["red", "white"],
+    active: true,
+    seo: {
+      title: { en: "Rose Cloud — 24 Red Roses with Baby's Breath | Diva Flowers", es: "Nube de Rosas — 24 Rosas Rojas con Gypsophila | Diva Flowers" },
+      description: {
+        en: "A dome of 24 red roses set in a cloud of baby's breath with eucalyptus. Same-day delivery on Long Island.",
+        es: "Una cúpula de 24 rosas rojas en una nube de gypsophila con eucalipto. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-hydrangea-sky",
+    slug: "hydrangea-sky",
+    addedAt: "2026-10-22",
+    title: { en: "Hydrangea Sky", es: "Cielo de Hortensias" },
+    category: "arrangements",
+    blurb: {
+      en: "Blue hydrangea with pink roses, white cymbidium orchids, and purple lisianthus in a green glass vase.",
+      es: "Hortensia azul con rosas rosadas, orquídeas cymbidium blancas y lisianthus morado en un jarrón de vidrio verde.",
+    },
+    description: {
+      en: "A soft, sky-colored arrangement — blue hydrangea with blush-pink roses, white cymbidium orchids, purple lisianthus, and lime-green hydrangea, gathered in a green glass vase. Fresh and gentle for a birthday, Mother's Day, a new baby, or a thinking-of-you. Choose the size that fits the moment.",
+      es: "Un arreglo suave en colores de cielo — hortensia azul con rosas rosadas, orquídeas cymbidium blancas, lisianthus morado e hortensia verde lima, en un jarrón de vidrio verde. Fresco y delicado para un cumpleaños, el Día de la Madre, un bebé o un pensando en ti. Elige el tamaño que va con el momento.",
+    },
+    images: [
+      { src: "/products/hydrangea-sky.jpg", alt: { en: "Hydrangea Sky", es: "Cielo de Hortensias" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 8999 },
+      { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 12499 },
+      { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 17499 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "mothers-day", "thinking-of-you", "just-because", "thank-you", "get-well", "congrats", "graduation", "new-baby"],
+    colorFamily: ["pastel", "mixed", "pink", "green"],
+    active: true,
+    seo: {
+      title: { en: "Hydrangea Sky — Blue Hydrangea & Pink Rose Arrangement | Diva Flowers", es: "Cielo de Hortensias — Hortensia Azul y Rosas Rosadas | Diva Flowers" },
+      description: {
+        en: "Blue hydrangea with pink roses, white cymbidium orchids, and purple lisianthus in a green glass vase. Same-day delivery on Long Island.",
+        es: "Hortensia azul con rosas rosadas, orquídeas cymbidium blancas y lisianthus morado en un jarrón de vidrio verde. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-autumn-sunflower",
+    slug: "autumn-sunflower",
+    addedAt: "2026-10-22",
+    title: { en: "Autumn Sunflower", es: "Girasol de Otoño" },
+    category: "arrangements",
+    blurb: {
+      en: "A fall arrangement of sunflowers with red, orange, and yellow roses, mums, and a raffia bow.",
+      es: "Un arreglo de otoño de girasoles con rosas rojas, naranja y amarillas, crisantemos y lazo de rafia.",
+    },
+    description: {
+      en: "Autumn in full color — sunflowers with red, orange, and yellow roses, burgundy chrysanthemums, golden solidago, and fresh greens, finished with a rustic raffia bow. A warm hello for a host, a neighbor, or anyone who loves the season.",
+      es: "El otoño a todo color — girasoles con rosas rojas, naranja y amarillas, crisantemos burdeos, solidago dorado y follaje fresco, rematado con un lazo rústico de rafia. Un saludo cálido para quien te recibe, un vecino o quien ama la temporada.",
+    },
+    images: [
+      { src: "/products/autumn-sunflower.jpg", alt: { en: "Autumn Sunflower", es: "Girasol de Otoño" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9999 },
+    ],
+    tags: ["same-day", "seasonal"],
+    occasions: [],
+    colorFamily: ["mixed"],
+    active: true,
+    seasonMonths: [9, 10, 11],
+    seo: {
+      title: { en: "Autumn Sunflower — Fall Sunflower & Rose Arrangement | Diva Flowers", es: "Girasol de Otoño — Arreglo de Otoño con Girasoles y Rosas | Diva Flowers" },
+      description: {
+        en: "A fall arrangement of sunflowers with red, orange, and yellow roses, mums, and a raffia bow. Same-day delivery on Long Island.",
+        es: "Un arreglo de otoño de girasoles con rosas rojas, naranja y amarillas, crisantemos y lazo de rafia. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-coral-orchid-garden",
+    slug: "coral-orchid-garden",
+    addedAt: "2026-10-22",
+    title: { en: "Coral Orchid Garden", es: "Jardín de Orquídea Coral" },
+    category: "arrangements",
+    blurb: {
+      en: "Pink and yellow roses with coral orchids, blush hydrangea, and white lisianthus.",
+      es: "Rosas rosadas y amarillas con orquídeas coral, hortensia rubor y lisianthus blanco.",
+    },
+    description: {
+      en: "A low, wide garden arrangement — pink and buttery-yellow roses with coral and orange orchids, blush hydrangea, white lisianthus, round allium, and a sweep of bear grass. Lush and joyful for a birthday, a congratulations, or a get-well wish. Choose the size that fits the moment.",
+      es: "Un arreglo de jardín bajo y amplio — rosas rosadas y amarillo mantequilla con orquídeas coral y naranja, hortensia rubor, lisianthus blanco, allium redondo y un arco de bear grass. Frondoso y alegre para un cumpleaños, unas felicitaciones o un deseo de pronta recuperación. Elige el tamaño que va con el momento.",
+    },
+    images: [
+      { src: "/products/coral-orchid-garden.jpg", alt: { en: "Coral Orchid Garden", es: "Jardín de Orquídea Coral" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9999 },
+      { id: "grand", label: { en: "Grand", es: "Grande" }, priceCents: 14999 },
+      { id: "diva", label: { en: "Diva", es: "Diva" }, priceCents: 18999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "get-well", "congrats", "thinking-of-you"],
+    colorFamily: ["mixed", "pink"],
+    active: true,
+    seo: {
+      title: { en: "Coral Orchid Garden — Orchid & Rose Garden Arrangement | Diva Flowers", es: "Jardín de Orquídea Coral — Orquídeas y Rosas de Jardín | Diva Flowers" },
+      description: {
+        en: "Pink and yellow roses with coral orchids, blush hydrangea, and white lisianthus. Same-day delivery on Long Island.",
+        es: "Rosas rosadas y amarillas con orquídeas coral, hortensia rubor y lisianthus blanco. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-autumn-fiesta",
+    slug: "autumn-fiesta",
+    addedAt: "2026-10-22",
+    title: { en: "Autumn Fiesta", es: "Fiesta de Otoño" },
+    category: "arrangements",
+    blurb: {
+      en: "A generous fall arrangement with orange gerberas, sunflowers, red roses, and lilac stock.",
+      es: "Un arreglo de otoño generoso con gerberas naranja, girasoles, rosas rojas y alhelí lila.",
+    },
+    description: {
+      en: "A wide, festive fall arrangement — orange gerbera daisies and sunflowers with red and orange roses, lilac stock, green hydrangea, and baby's breath. Bright and abundant for a birthday, a congratulations, or a thank-you table in autumn.",
+      es: "Un arreglo de otoño amplio y festivo — gerberas naranja y girasoles con rosas rojas y naranja, alhelí lila, hortensia verde y nube. Luminoso y abundante para un cumpleaños, unas felicitaciones o una mesa de gracias en otoño.",
+    },
+    images: [
+      { src: "/products/autumn-fiesta.jpg", alt: { en: "Autumn Fiesta", es: "Fiesta de Otoño" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 14999 },
+    ],
+    tags: ["same-day", "seasonal"],
+    occasions: ["birthday", "congrats", "thank-you"],
+    colorFamily: ["mixed", "green", "pastel"],
+    active: true,
+    seasonMonths: [9, 10, 11],
+    seo: {
+      title: { en: "Autumn Fiesta — Fall Gerbera & Sunflower Arrangement | Diva Flowers", es: "Fiesta de Otoño — Arreglo de Otoño con Gerberas y Girasoles | Diva Flowers" },
+      description: {
+        en: "A generous fall arrangement with orange gerberas, sunflowers, red roses, and lilac stock. Same-day delivery on Long Island.",
+        es: "Un arreglo de otoño generoso con gerberas naranja, girasoles, rosas rojas y alhelí lila. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-chilides-garden",
+    slug: "chilides-garden",
+    addedAt: "2026-10-22",
+    title: { en: "Chilides Garden", es: "Jardín de Chilides" },
+    category: "arrangements",
+    blurb: {
+      en: "Yellow roses with purple stock, red gladiolus, white snapdragon, and a big golden bow.",
+      es: "Rosas amarillas con alhelí morado, gladiolos rojos, boca de dragón blanca y un gran moño dorado.",
+    },
+    description: {
+      en: "A wide, cheerful arrangement with yellow roses, purple stock, red gladiolus, white snapdragon, and green hydrangea, finished with a big golden polka-dot bow at its heart. Bright and celebratory for a birthday, a congratulations, or a thinking-of-you that should shine.",
+      es: "Un arreglo amplio y alegre con rosas amarillas, alhelí morado, gladiolos rojos, boca de dragón blanca e hortensia verde, rematado con un gran moño dorado de lunares al centro. Luminoso y festivo para un cumpleaños, unas felicitaciones o un pensando en ti que debe brillar.",
+    },
+    images: [
+      { src: "/products/chilides-garden.jpg", alt: { en: "Chilides Garden", es: "Jardín de Chilides" }, aspect: "4/5" },
+      { src: "/products/chilides-garden-2.jpg", alt: { en: "Chilides Garden, view 2", es: "Jardín de Chilides, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 14999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "congrats", "thinking-of-you"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Chilides Garden — Yellow Rose & Gladiolus Arrangement | Diva Flowers", es: "Jardín de Chilides — Rosas Amarillas y Gladiolos | Diva Flowers" },
+      description: {
+        en: "Yellow roses with purple stock, red gladiolus, white snapdragon, and a big golden bow. Same-day delivery on Long Island.",
+        es: "Rosas amarillas con alhelí morado, gladiolos rojos, boca de dragón blanca y un gran moño dorado. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-bud-vase-garden",
+    slug: "bud-vase-garden",
+    addedAt: "2026-10-22",
+    title: { en: "Bud Vase Garden", es: "Jardín de Floreros" },
+    category: "arrangements",
+    blurb: {
+      en: "A set of nine bud vases with delphinium, white dahlias, anemones, green orchids, roses, and blue hydrangea.",
+      es: "Un set de nueve floreritos con delphinium, dalias blancas, anémonas, orquídeas verdes, rosas e hortensia azul.",
+    },
+    description: {
+      en: "Nine cut-glass bud vases, each with its own small arrangement — blue delphinium, white dahlias, purple anemones, lime cymbidium orchids, white roses and lisianthus, and blue hydrangea. Sold as a set of nine to run down a long table: made for birthday parties, bridal showers, graduations, and dinners that deserve a centerpiece.",
+      es: "Nueve floreritos de vidrio tallado, cada uno con su pequeño arreglo — delphinium azul, dalias blancas, anémonas moradas, orquídeas cymbidium verde lima, rosas y lisianthus blancos e hortensia azul. Se venden como set de nueve para recorrer una mesa larga: hechos para fiestas de cumpleaños, bridal showers, graduaciones y cenas que merecen un centro de mesa.",
+    },
+    images: [
+      { src: "/products/bud-vase-garden.jpg", alt: { en: "Bud Vase Garden", es: "Jardín de Floreros" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "set-9", label: { en: "Set of 9", es: "Set de 9" }, priceCents: 31499 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "graduation"],
+    colorFamily: ["pastel", "white", "green"],
+    active: true,
+    seo: {
+      title: { en: "Bud Vase Garden — Dahlia & Delphinium Centerpiece Set of 9 | Diva Flowers", es: "Jardín de Floreros — Set de 9 Centros con Dalias | Diva Flowers" },
+      description: {
+        en: "A set of nine bud vases with delphinium, white dahlias, anemones, green orchids, roses, and blue hydrangea. Same-day delivery on Long Island.",
+        es: "Un set de nueve floreritos con delphinium, dalias blancas, anémonas, orquídeas verdes, rosas e hortensia azul. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-crimson-trio",
+    slug: "crimson-trio",
+    addedAt: "2026-10-22",
+    title: { en: "Crimson Trio", es: "Trío Carmesí" },
+    category: "arrangements",
+    blurb: {
+      en: "A trio of leaf-lined cubes with red roses and deep purple blooms, sold as a set of three.",
+      es: "Un trío de cubos forrados de hoja con rosas rojas y flores moradas intensas, en set de tres.",
+    },
+    description: {
+      en: "Three low, leaf-lined glass cubes filled with red roses and deep purple and burgundy blooms — sold as a set of three to dress a table for a birthday dinner, a celebration, or an event. Rich and coordinated, each piece works alone or together as a centerpiece.",
+      es: "Tres cubos bajos de vidrio forrados de hoja con rosas rojas y flores moradas y burdeos intensas — se venden como set de tres para vestir la mesa de una cena de cumpleaños, una celebración o un evento. Intensos y coordinados, cada pieza funciona sola o juntas como centro de mesa.",
+    },
+    images: [
+      { src: "/products/crimson-trio.jpg", alt: { en: "Crimson Trio", es: "Trío Carmesí" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "set-3", label: { en: "Set of 3", es: "Set de 3" }, priceCents: 22499 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "congrats"],
+    colorFamily: ["red", "mixed", "green"],
+    active: true,
+    seo: {
+      title: { en: "Crimson Trio — Red Rose Centerpiece Set of 3 | Diva Flowers", es: "Trío Carmesí — Set de 3 Centros de Rosas Rojas | Diva Flowers" },
+      description: {
+        en: "A trio of leaf-lined cubes with red roses and deep purple blooms, sold as a set of three. Same-day delivery on Long Island.",
+        es: "Un trío de cubos forrados de hoja con rosas rojas y flores moradas intensas, en set de tres. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-pumpkin-patch",
+    slug: "pumpkin-patch",
+    addedAt: "2026-10-22",
+    title: { en: "Pumpkin Patch", es: "Calabaza y Girasol" },
+    category: "arrangements",
+    blurb: {
+      en: "A fall vase with sunflowers, orange gerberas, a little pumpkin, red roses, and mums.",
+      es: "Un jarrón de otoño con girasoles, gerberas naranja, una calabacita, rosas rojas y crisantemos.",
+    },
+    description: {
+      en: "A cheerful fall arrangement in a glass vase — sunflowers and orange gerbera daisies with a little orange pumpkin, red roses, rust chrysanthemums, and golden solidago. A sweet thank-you, a birthday hello, or a bit of autumn for the kitchen table.",
+      es: "Un arreglo de otoño alegre en jarrón de vidrio — girasoles y gerberas naranja con una calabacita naranja, rosas rojas, crisantemos óxido y solidago dorado. Un gracias dulce, un saludo de cumpleaños o un poco de otoño para la mesa de la cocina.",
+    },
+    images: [
+      { src: "/products/pumpkin-patch.jpg", alt: { en: "Pumpkin Patch", es: "Calabaza y Girasol" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 4999 },
+    ],
+    tags: ["same-day", "seasonal"],
+    occasions: ["thank-you", "just-because", "birthday"],
+    colorFamily: ["mixed", "green", "red"],
+    active: true,
+    seasonMonths: [9, 10, 11],
+    seo: {
+      title: { en: "Pumpkin Patch — Fall Sunflower & Gerbera Vase | Diva Flowers", es: "Calabaza y Girasol — Jarrón de Otoño con Girasoles | Diva Flowers" },
+      description: {
+        en: "A fall vase with sunflowers, orange gerberas, a little pumpkin, red roses, and mums. Same-day delivery on Long Island.",
+        es: "Un jarrón de otoño con girasoles, gerberas naranja, una calabacita, rosas rojas y crisantemos. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-lavender-wrap",
+    slug: "lavender-wrap",
+    addedAt: "2026-10-22",
+    title: { en: "Lavender Wrap", es: "Ramo Lavanda" },
+    category: "bouquets",
+    blurb: {
+      en: "A bouquet wrapped in pink paper with purple hydrangea, lilac roses, orange gerberas, and stock.",
+      es: "Un ramo en papel rosa con hortensia morada, rosas lila, gerberas naranja y alhelí.",
+    },
+    description: {
+      en: "A hand-tied bouquet wrapped in soft pink paper — purple hydrangea, lilac roses, orange gerbera daisies, purple stock, and baby's breath. Easy to give and full of color for a birthday, Mother's Day, a congratulations, or a retirement send-off.",
+      es: "Un ramo atado a mano en papel rosa suave — hortensia morada, rosas lila, gerberas naranja, alhelí morado y nube. Fácil de regalar y lleno de color para un cumpleaños, el Día de la Madre, unas felicitaciones o una despedida de jubilación.",
+    },
+    images: [
+      { src: "/products/lavender-wrap.jpg", alt: { en: "Lavender Wrap", es: "Ramo Lavanda" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "bouquet", label: { en: "Bouquet", es: "Ramo" }, priceCents: 8999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "anniversary", "romance", "mothers-day", "just-because", "thank-you", "congrats", "get-well", "graduation", "thinking-of-you"],
+    colorFamily: ["pastel", "mixed", "pink", "white", "green"],
+    active: true,
+    seo: {
+      title: { en: "Lavender Wrap — Hydrangea & Lilac Rose Bouquet | Diva Flowers", es: "Ramo Lavanda — Ramo de Hortensia y Rosas Lila | Diva Flowers" },
+      description: {
+        en: "A bouquet wrapped in pink paper with purple hydrangea, lilac roses, orange gerberas, and stock. Same-day delivery on Long Island.",
+        es: "Un ramo en papel rosa con hortensia morada, rosas lila, gerberas naranja y alhelí. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-sunshine-and-wine",
+    slug: "sunshine-and-wine",
+    addedAt: "2026-10-22",
+    title: { en: "Sunshine & Wine", es: "Sol y Vino" },
+    category: "arrangements",
+    blurb: {
+      en: "Yellow and pink roses with red spray roses and greens in a leaf-lined bowl.",
+      es: "Rosas amarillas y rosadas con mini rosas rojas y follaje en un tazón forrado de hoja.",
+    },
+    description: {
+      en: "Sunshine and wine in one arrangement — bright yellow and soft pink roses with deep red spray roses and fresh greens, set low in a leaf-lined glass bowl. A cheerful, easy gift for a birthday, an anniversary, or a just-because.",
+      es: "Sol y vino en un solo arreglo — rosas amarillas y rosadas suaves con mini rosas rojas intensas y follaje fresco, bajo en un tazón de vidrio forrado de hoja. Un regalo alegre y fácil para un cumpleaños, un aniversario o un porque sí.",
+    },
+    images: [
+      { src: "/products/sunshine-and-wine.jpg", alt: { en: "Sunshine & Wine", es: "Sol y Vino" }, aspect: "4/5" },
+      { src: "/products/sunshine-and-wine-2.jpg", alt: { en: "Sunshine & Wine, view 2", es: "Sol y Vino, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 7999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "anniversary", "just-because", "thank-you", "get-well", "romance", "congrats", "thinking-of-you", "graduation"],
+    colorFamily: ["red", "mixed", "pink", "green"],
+    active: true,
+    seo: {
+      title: { en: "Sunshine & Wine — Yellow & Red Rose Arrangement | Diva Flowers", es: "Sol y Vino — Arreglo de Rosas Amarillas y Rojas | Diva Flowers" },
+      description: {
+        en: "Yellow and pink roses with red spray roses and greens in a leaf-lined bowl. Same-day delivery on Long Island.",
+        es: "Rosas amarillas y rosadas con mini rosas rojas y follaje en un tazón forrado de hoja. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-golden-harvest",
+    slug: "golden-harvest",
+    addedAt: "2026-10-22",
+    title: { en: "Golden Harvest", es: "Cosecha Dorada" },
+    category: "arrangements",
+    blurb: {
+      en: "A fall arrangement of sunflowers, orange and red roses, a little yellow pumpkin, and solidago.",
+      es: "Un arreglo de otoño de girasoles, rosas naranja y rojas, una calabacita amarilla y solidago.",
+    },
+    description: {
+      en: "A golden fall arrangement — sunflowers with orange and red roses, a little yellow pumpkin, golden solidago, and fresh greens. Small and sunny for a thank-you, a get-well wish, or a just-because in autumn.",
+      es: "Un arreglo dorado de otoño — girasoles con rosas naranja y rojas, una calabacita amarilla, solidago dorado y follaje fresco. Pequeño y soleado para un gracias, un deseo de pronta recuperación o un porque sí en otoño.",
+    },
+    images: [
+      { src: "/products/golden-harvest.jpg", alt: { en: "Golden Harvest", es: "Cosecha Dorada" }, aspect: "4/5" },
+      { src: "/products/golden-harvest-2.jpg", alt: { en: "Golden Harvest, view 2", es: "Cosecha Dorada, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 4999 },
+    ],
+    tags: ["same-day", "seasonal"],
+    occasions: ["thank-you", "just-because", "get-well"],
+    colorFamily: ["mixed", "red", "green"],
+    active: true,
+    seasonMonths: [9, 10, 11],
+    seo: {
+      title: { en: "Golden Harvest — Fall Sunflower & Rose Arrangement | Diva Flowers", es: "Cosecha Dorada — Arreglo de Otoño con Girasoles y Rosas | Diva Flowers" },
+      description: {
+        en: "A fall arrangement of sunflowers, orange and red roses, a little yellow pumpkin, and solidago. Same-day delivery on Long Island.",
+        es: "Un arreglo de otoño de girasoles, rosas naranja y rojas, una calabacita amarilla y solidago. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-teddy-love-basket",
+    slug: "teddy-love-basket",
+    addedAt: "2026-10-22",
+    title: { en: "Teddy Love Basket", es: "Canasta Osito de Amor" },
+    category: "arrangements",
+    blurb: {
+      en: "A large basket of red roses, purple delphinium, and gladiolus with a pink teddy bear and red bow.",
+      es: "Una gran canasta de rosas rojas, delphinium morado y gladiolos con un osito rosado y moño rojo.",
+    },
+    description: {
+      en: "A grand gift basket overflowing with red roses, purple delphinium, gladiolus, and lush greens, finished with a red satin bow and long ribbons and a soft pink teddy bear tucked in front. A showstopper for an anniversary, a romantic surprise, a birthday, or a new baby.",
+      es: "Una gran canasta de regalo llena de rosas rojas, delphinium morado, gladiolos y follaje frondoso, rematada con un moño de satín rojo, cintas largas y un osito de peluche rosado al frente. Una pieza de impacto para un aniversario, una sorpresa romántica, un cumpleaños o un bebé.",
+    },
+    images: [
+      { src: "/products/teddy-love-basket.jpg", alt: { en: "Teddy Love Basket", es: "Canasta Osito de Amor" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 29999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["romance", "anniversary", "birthday", "just-because", "thank-you", "congrats", "new-baby", "get-well", "thinking-of-you", "mothers-day", "graduation"],
+    colorFamily: ["red", "pink", "mixed", "green"],
+    active: true,
+    seo: {
+      title: { en: "Teddy Love Basket — Red Rose Basket with Teddy Bear | Diva Flowers", es: "Canasta Osito de Amor — Rosas Rojas con Osito | Diva Flowers" },
+      description: {
+        en: "A large basket of red roses, purple delphinium, and gladiolus with a pink teddy bear and red bow. Same-day delivery on Long Island.",
+        es: "Una gran canasta de rosas rojas, delphinium morado y gladiolos con un osito rosado y moño rojo. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-rose-heart",
+    slug: "rose-heart",
+    addedAt: "2026-10-22",
+    title: { en: "Rose Heart", es: "Corazón de Rosas" },
+    category: "arrangements",
+    blurb: {
+      en: "A heart of tightly packed red roses framed in white hydrangea.",
+      es: "Un corazón de rosas rojas compactas enmarcado en hortensia blanca.",
+    },
+    description: {
+      en: "A romantic heart of tightly packed red roses framed in a soft border of white hydrangea, with a light touch of bear grass at the top. A gift that says it all for an anniversary, a romantic surprise, Mother's Day, or Valentine's Day.",
+      es: "Un corazón romántico de rosas rojas compactas enmarcado en un borde suave de hortensia blanca, con un toque de bear grass arriba. Un regalo que lo dice todo para un aniversario, una sorpresa romántica, el Día de la Madre o San Valentín.",
+    },
+    images: [
+      { src: "/products/rose-heart.jpg", alt: { en: "Rose Heart", es: "Corazón de Rosas" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 19999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["romance", "anniversary", "mothers-day", "just-because", "thinking-of-you", "valentines-day"],
+    colorFamily: ["red", "white", "green"],
+    active: true,
+    seo: {
+      title: { en: "Rose Heart — Red Rose Heart with White Hydrangea | Diva Flowers", es: "Corazón de Rosas — Corazón Rojo con Hortensia Blanca | Diva Flowers" },
+      description: {
+        en: "A heart of tightly packed red roses framed in white hydrangea. Same-day delivery on Long Island.",
+        es: "Un corazón de rosas rojas compactas enmarcado en hortensia blanca. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-garden-bubble",
+    slug: "garden-bubble",
+    addedAt: "2026-10-22",
+    title: { en: "Garden Bubble", es: "Burbuja de Jardín" },
+    category: "arrangements",
+    blurb: {
+      en: "A yellow garden rose with peach roses, lilac stock, and hydrangea in a glass bubble vase.",
+      es: "Una rosa de jardín amarilla con rosas melocotón, alhelí lila e hortensia en un florero de burbuja.",
+    },
+    description: {
+      en: "A soft garden arrangement in a clear glass bubble vase — a buttery-yellow garden rose with peach and blush roses, lilac stock, and green, white, and pink hydrangea, with the stems visible through the glass. Fresh and pretty for a birthday, a congratulations, or a thank-you.",
+      es: "Un arreglo de jardín suave en un florero de burbuja de vidrio transparente — una rosa de jardín amarillo mantequilla con rosas melocotón y rubor, alhelí lila e hortensia verde, blanca y rosa, con los tallos a la vista. Fresco y bonito para un cumpleaños, unas felicitaciones o un gracias.",
+    },
+    images: [
+      { src: "/products/garden-bubble.jpg", alt: { en: "Garden Bubble", es: "Burbuja de Jardín" }, aspect: "4/5" },
+      { src: "/products/garden-bubble-2.jpg", alt: { en: "Garden Bubble, view 2", es: "Burbuja de Jardín, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday", "congrats", "thank-you"],
+    colorFamily: ["pastel", "mixed", "pink", "green", "white"],
+    active: true,
+    seo: {
+      title: { en: "Garden Bubble — Garden Rose & Hydrangea Bubble Vase | Diva Flowers", es: "Burbuja de Jardín — Rosa de Jardín e Hortensia en Burbuja | Diva Flowers" },
+      description: {
+        en: "A yellow garden rose with peach roses, lilac stock, and hydrangea in a glass bubble vase. Same-day delivery on Long Island.",
+        es: "Una rosa de jardín amarilla con rosas melocotón, alhelí lila e hortensia en un florero de burbuja. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-velvet-dahlia",
+    slug: "velvet-dahlia",
+    addedAt: "2026-10-22",
+    title: { en: "Velvet Dahlia", es: "Dalia de Terciopelo" },
+    category: "arrangements",
+    blurb: {
+      en: "Red dahlias with purple anemones, red roses, lisianthus, and calla lilies in a leaf-lined cube.",
+      es: "Dalias rojas con anémonas moradas, rosas rojas, lisianthus y calas en un cubo forrado de hoja.",
+    },
+    description: {
+      en: "A velvety, romantic arrangement — deep red dahlias with purple anemones, red roses, purple lisianthus, and dark calla lilies in a leaf-lined glass cube. Rich and passionate for an anniversary, a romantic surprise, a birthday, or Valentine's Day.",
+      es: "Un arreglo aterciopelado y romántico — dalias rojas intensas con anémonas moradas, rosas rojas, lisianthus morado y calas oscuras en un cubo de vidrio forrado de hoja. Intenso y apasionado para un aniversario, una sorpresa romántica, un cumpleaños o San Valentín.",
+    },
+    images: [
+      { src: "/products/velvet-dahlia.jpg", alt: { en: "Velvet Dahlia", es: "Dalia de Terciopelo" }, aspect: "4/5" },
+      { src: "/products/velvet-dahlia-2.jpg", alt: { en: "Velvet Dahlia, view 2", es: "Dalia de Terciopelo, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["anniversary", "romance", "birthday", "thinking-of-you", "congrats", "just-because", "valentines-day"],
+    colorFamily: ["red", "mixed", "green", "pink"],
+    active: true,
+    seo: {
+      title: { en: "Velvet Dahlia — Red Dahlia & Anemone Arrangement | Diva Flowers", es: "Dalia de Terciopelo — Dalias Rojas y Anémonas | Diva Flowers" },
+      description: {
+        en: "Red dahlias with purple anemones, red roses, lisianthus, and calla lilies in a leaf-lined cube. Same-day delivery on Long Island.",
+        es: "Dalias rojas con anémonas moradas, rosas rojas, lisianthus y calas en un cubo forrado de hoja. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-royal-dahlia",
+    slug: "royal-dahlia",
+    addedAt: "2026-10-22",
+    title: { en: "Royal Dahlia", es: "Dalia Imperial" },
+    category: "arrangements",
+    blurb: {
+      en: "Red dahlias with purple hydrangea, red roses, and lilac lisianthus in a leaf-lined cube.",
+      es: "Dalias rojas con hortensia morada, rosas rojas y lisianthus lila en un cubo forrado de hoja.",
+    },
+    description: {
+      en: "A regal arrangement in red and purple — deep red dahlias with purple hydrangea, red roses, lilac and white lisianthus, and a sweep of bear grass in a leaf-lined glass cube. Full and elegant for an anniversary, a romantic gesture, a birthday, or a congratulations.",
+      es: "Un arreglo imperial en rojo y morado — dalias rojas intensas con hortensia morada, rosas rojas, lisianthus lila y blanco y un arco de bear grass en un cubo de vidrio forrado de hoja. Lleno y elegante para un aniversario, un gesto romántico, un cumpleaños o unas felicitaciones.",
+    },
+    images: [
+      { src: "/products/royal-dahlia.jpg", alt: { en: "Royal Dahlia", es: "Dalia Imperial" }, aspect: "4/5" },
+      { src: "/products/royal-dahlia-2.jpg", alt: { en: "Royal Dahlia, view 2", es: "Dalia Imperial, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 15999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["anniversary", "romance", "birthday", "congrats", "thinking-of-you"],
+    colorFamily: ["red", "mixed", "green", "pastel", "white"],
+    active: true,
+    seo: {
+      title: { en: "Royal Dahlia — Red Dahlia & Purple Hydrangea Cube | Diva Flowers", es: "Dalia Imperial — Dalias Rojas e Hortensia Morada | Diva Flowers" },
+      description: {
+        en: "Red dahlias with purple hydrangea, red roses, and lilac lisianthus in a leaf-lined cube. Same-day delivery on Long Island.",
+        es: "Dalias rojas con hortensia morada, rosas rojas y lisianthus lila en un cubo forrado de hoja. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-golden-autumn",
+    slug: "golden-autumn",
+    addedAt: "2026-10-22",
+    title: { en: "Golden Autumn", es: "Otoño Dorado" },
+    category: "arrangements",
+    blurb: {
+      en: "A fall arrangement with a pumpkin, a sunflower, purple mums, and rudbeckia.",
+      es: "Un arreglo de otoño con calabaza, girasol, crisantemos morados y rudbeckia.",
+    },
+    description: {
+      en: "A warm fall arrangement with a small orange pumpkin and a big sunflower among purple chrysanthemums, rudbeckia, golden solidago, and autumn greens. A cozy touch of the season for a host, a friend, or your own table.",
+      es: "Un arreglo de otoño cálido con una calabacita naranja y un girasol grande entre crisantemos morados, rudbeckias, solidago dorado y follaje otoñal. Un toque acogedor de la temporada para quien te recibe, una amiga o tu propia mesa.",
+    },
+    images: [
+      { src: "/products/golden-autumn.jpg", alt: { en: "Golden Autumn", es: "Otoño Dorado" }, aspect: "4/5" },
+      { src: "/products/golden-autumn-2.jpg", alt: { en: "Golden Autumn, view 2", es: "Otoño Dorado, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 6999 },
+    ],
+    tags: ["same-day", "seasonal"],
+    occasions: [],
+    colorFamily: ["mixed", "green", "pastel", "pink"],
+    active: true,
+    seasonMonths: [9, 10, 11],
+    seo: {
+      title: { en: "Golden Autumn — Fall Sunflower & Pumpkin Arrangement | Diva Flowers", es: "Otoño Dorado — Arreglo de Otoño con Girasol y Calabaza | Diva Flowers" },
+      description: {
+        en: "A fall arrangement with a pumpkin, a sunflower, purple mums, and rudbeckia. Same-day delivery on Long Island.",
+        es: "Un arreglo de otoño con calabaza, girasol, crisantemos morados y rudbeckia. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-monstera-elegance",
+    slug: "monstera-elegance",
+    addedAt: "2026-10-22",
+    title: { en: "Monstera Elegance", es: "Monstera Elegante" },
+    category: "arrangements",
+    blurb: {
+      en: "A tall arrangement with monstera leaves, red roses, white dahlias, and white snapdragon.",
+      es: "Un arreglo alto con hojas de monstera, rosas rojas, dalias blancas y boca de dragón blanca.",
+    },
+    description: {
+      en: "A tall, elegant arrangement framed by sculptural monstera leaves — red roses with white dahlias, white snapdragon, seeded eucalyptus, and loops of bear grass. Striking and romantic for an anniversary, a congratulations, a birthday, or Valentine's Day.",
+      es: "Un arreglo alto y elegante enmarcado por hojas esculturales de monstera — rosas rojas con dalias blancas, boca de dragón blanca, eucalipto y aros de bear grass. Impactante y romántico para un aniversario, unas felicitaciones, un cumpleaños o San Valentín.",
+    },
+    images: [
+      { src: "/products/monstera-elegance.jpg", alt: { en: "Monstera Elegance", es: "Monstera Elegante" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 29999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["anniversary", "congrats", "romance", "birthday", "mothers-day", "thinking-of-you", "valentines-day"],
+    colorFamily: ["red", "white", "green", "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Monstera Elegance — Red Rose & White Dahlia Arrangement | Diva Flowers", es: "Monstera Elegante — Rosas Rojas y Dalias Blancas | Diva Flowers" },
+      description: {
+        en: "A tall arrangement with monstera leaves, red roses, white dahlias, and white snapdragon. Same-day delivery on Long Island.",
+        es: "Un arreglo alto con hojas de monstera, rosas rojas, dalias blancas y boca de dragón blanca. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-grand-tropical-basket",
+    slug: "grand-tropical-basket",
+    addedAt: "2026-10-22",
+    title: { en: "Grand Tropical Basket", es: "Gran Canasta Tropical" },
+    category: "arrangements",
+    blurb: {
+      en: "A grand basket of sunflowers, blue hydrangea, delphinium, orange gladiolus, and red roses.",
+      es: "Una gran canasta de girasoles, hortensia azul, delphinium, gladiolos naranja y rosas rojas.",
+    },
+    description: {
+      en: "A grand, bold basket — sunflowers with blue hydrangea and delphinium, orange gladiolus and calla lilies, red roses, and big tropical leaves. Strong colors and a generous size make it a favorite for a man's birthday, a big congratulations, or a celebration at the office.",
+      es: "Una gran canasta atrevida — girasoles con hortensia y delphinium azules, gladiolos y calas naranja, rosas rojas y grandes hojas tropicales. Sus colores fuertes y su tamaño generoso la hacen ideal para el cumpleaños de un hombre, unas grandes felicitaciones o una celebración en la oficina.",
+    },
+    images: [
+      { src: "/products/grand-tropical-basket.jpg", alt: { en: "Grand Tropical Basket", es: "Gran Canasta Tropical" }, aspect: "4/5" },
+      { src: "/products/grand-tropical-basket-2.jpg", alt: { en: "Grand Tropical Basket, view 2", es: "Gran Canasta Tropical, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 29999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["congrats", "birthday", "new-baby", "thinking-of-you", "just-because"],
+    colorFamily: ["mixed", "green", "red"],
+    active: true,
+    seo: {
+      title: { en: "Grand Tropical Basket — Sunflower & Hydrangea Basket | Diva Flowers", es: "Gran Canasta Tropical — Canasta de Girasoles e Hortensia | Diva Flowers" },
+      description: {
+        en: "A grand basket of sunflowers, blue hydrangea, delphinium, orange gladiolus, and red roses. Same-day delivery on Long Island.",
+        es: "Una gran canasta de girasoles, hortensia azul, delphinium, gladiolos naranja y rosas rojas. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-midnight-roses",
+    slug: "midnight-roses",
+    addedAt: "2026-10-22",
+    title: { en: "Midnight Roses", es: "Rosas de Medianoche" },
+    category: "bouquets",
+    blurb: {
+      en: "A bouquet of 51 red roses with monstera leaves, wrapped in black paper with a red ribbon.",
+      es: "Un ramo de 51 rosas rojas con hojas de monstera, envuelto en papel negro con cinta roja.",
+    },
+    description: {
+      en: "Fifty-one red roses gathered into a full, round bouquet, framed by two glossy monstera leaves and wrapped in black paper with a red satin ribbon. Dramatic and unforgettable for an anniversary, a romantic surprise, a birthday, or Valentine's Day.",
+      es: "Cincuenta y una rosas rojas reunidas en un ramo lleno y redondo, enmarcado por dos hojas brillantes de monstera y envuelto en papel negro con cinta de satín roja. Dramático e inolvidable para un aniversario, una sorpresa romántica, un cumpleaños o San Valentín.",
+    },
+    images: [
+      { src: "/products/midnight-roses.jpg", alt: { en: "Midnight Roses", es: "Rosas de Medianoche" }, aspect: "4/5" },
+      { src: "/products/midnight-roses-2.jpg", alt: { en: "Midnight Roses, view 2", es: "Rosas de Medianoche, vista 2" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "51 roses", es: "51 rosas" }, priceCents: 31999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["romance", "anniversary", "birthday", "mothers-day", "thinking-of-you", "congrats"],
+    colorFamily: ["red", "green"],
+    active: true,
+    seo: {
+      title: { en: "Midnight Roses — 51 Red Rose Bouquet | Diva Flowers", es: "Rosas de Medianoche — Ramo de 51 Rosas Rojas | Diva Flowers" },
+      description: {
+        en: "A bouquet of 51 red roses with monstera leaves, wrapped in black paper with a red ribbon. Same-day delivery on Long Island.",
+        es: "Un ramo de 51 rosas rojas con hojas de monstera, envuelto en papel negro con cinta roja. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
   // ─── TEST PRODUCT — $1 for end-to-end checkout validation. DELETE AFTER TESTING. ─────
   {
     id: "p-test-1usd",
     slug: "test-1-dollar",
+    addedAt: "2026-05-11",
     title: { en: "Test product — DO NOT BUY", es: "Producto de prueba — NO COMPRAR" },
     category: "gifts",
     giftExtra: true,

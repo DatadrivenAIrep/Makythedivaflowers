@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { PRODUCTS } from "@/data/products";
+import { getPricedProducts } from "@/lib/product-prices";
 import { resolveCartLines } from "@/lib/cart-helpers";
 import { formatMoneyCents } from "@/lib/format";
 import type { Order } from "@/types/order";
@@ -13,6 +13,7 @@ import { SignOutButton } from "@/components/account/SignOutButton";
  * thing again without remembering what it was called.
  */
 export async function OrderHistory({ orders, locale }: { orders: Order[]; locale: Locale }) {
+  const products = getPricedProducts();
   const t = await getTranslations("account.history");
   const dateFmt = new Intl.DateTimeFormat(locale === "es" ? "es-ES" : "en-US", {
     year: "numeric",
@@ -29,7 +30,7 @@ export async function OrderHistory({ orders, locale }: { orders: Order[]; locale
 
       <ul className="space-y-4">
         {orders.map((order) => {
-          const lines = resolveCartLines(order.lines, PRODUCTS);
+          const lines = resolveCartLines(order.lines, products);
           const first = lines[0];
           return (
             <li key={order.id}>

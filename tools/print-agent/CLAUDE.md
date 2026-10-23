@@ -11,12 +11,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```powershell
 npm run build          # Compile TypeScript → dist/
 npm run dev            # Run from source via tsx (no compile step — for dev/debugging)
+npm test               # Unit tests (node:test via tsx)
 npm run test-print     # Send a 2-page duplex test sheet to the printer
 npm run install-service   # Register the MakyPrintAgent Windows Service
 npm run uninstall-service # Remove the Windows Service
 ```
 
-`build` and `start` are for production. `dev` is for local iteration without rebuilding. There are no automated tests; `test-print` is the functional smoke test.
+`build` and `start` are for production. `dev` is for local iteration without rebuilding. `npm test` covers the browser cache (`test/`); `test-print` is the functional smoke test on the printer.
 
 ## Environment variables
 
@@ -38,7 +39,7 @@ The agent is a single-process poll loop with no external state beyond the `.env`
 
 1. `index.ts` — boots, runs a health check, then calls `tick()` in a `while(!stopping)` loop separated by `pollIntervalMs`.
 2. `poll.ts` → `api.fetchQueue()` — `GET /api/print/queue` returns an array of `ServerJob { id, orderId, html }`. The server builds the HTML; the agent only renders it.
-3. `print.ts` → `htmlToPdf()` — launches a singleton headless Chrome via `puppeteer-core` (re-used across jobs to avoid cold starts). Renders the HTML to a Letter-landscape PDF with zero margins.
+3. `print.ts` → `htmlToPdf()` — gets headless Chrome from `browser-cache.ts`: one browser re-used across jobs to avoid cold starts, but a failed launch or a browser that disconnects is forgotten so the next attempt relaunches (a cached failed launch froze all printing on 2026-09-26). Renders the HTML to a Letter-landscape PDF with zero margins.
 4. `print.ts` → `pdfPrint()` — writes PDF to `os.tmpdir()` then calls `pdf-to-printer` to send to the named Windows printer. Duplex mode: `simplex` for regular jobs, `duplexlong` for the test page.
 5. `poll.ts` → `api.ack()` — `POST /api/print/jobs/:id/ack` with `status: "printed" | "failed"`. Failed jobs also send the error message. Print is retried up to 4 times (0 s / 5 s / 30 s / 2 min) before acking as failed.
 

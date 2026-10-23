@@ -28,6 +28,15 @@ describe("intakeSchema", () => {
     expect(r.success).toBe(true);
   });
 
+  it("accepts a card message up to 500 chars and rejects longer", () => {
+    const withMsg = (n: number) => ({
+      ...validDelivery,
+      fulfillment: { ...validDelivery.fulfillment, cardMessage: "x".repeat(n) },
+    });
+    expect(intakeSchema.safeParse(withMsg(500)).success).toBe(true);
+    expect(intakeSchema.safeParse(withMsg(501)).success).toBe(false);
+  });
+
   it("accepts a custom line item", () => {
     const r = intakeSchema.safeParse({
       ...validDelivery,

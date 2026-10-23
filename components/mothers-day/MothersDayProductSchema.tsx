@@ -1,4 +1,4 @@
-import { PRODUCTS } from "@/data/products";
+import { getPricedProducts } from "@/lib/product-prices";
 import { startingPriceCents } from "@/data/product-helpers";
 import { SITE } from "@/data/site";
 import type { Locale } from "@/types/locale";
@@ -10,8 +10,9 @@ export function MothersDayProductSchema({
   locale: Locale;
   slugs: string[];
 }) {
+  const catalog = getPricedProducts();
   const products = slugs
-    .map((s) => PRODUCTS.find((p) => p.slug === s))
+    .map((s) => catalog.find((p) => p.slug === s))
     .filter((p): p is NonNullable<typeof p> => Boolean(p && p.active));
 
   const items = products.map((p, i) => ({

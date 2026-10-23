@@ -9,7 +9,7 @@ import type {
 // median ~$125), so each one actually holds products. The previous
 // 200/300 split put nearly the whole shop in a single band.
 export type PriceBand = "under-100" | "100-150" | "150-200" | "200-plus";
-export type Sort = "newest" | "price-asc" | "price-desc" | "staff-pick";
+export type Sort = "recommended" | "newest" | "price-asc" | "price-desc";
 
 export type Filter = {
   occasion?: Occasion;
@@ -53,6 +53,14 @@ export function isAvailableNow(p: Product, date: Date = new Date()): boolean {
   return p.active && !p.giftExtra && isInSeason(p, date);
 }
 
+// Most pieces size as standard/grand/diva; a few use standard/lush/opulent for
+// the same three tiers, so the size filter has to know both names.
+const SIZE_VARIANT_IDS: Record<NonNullable<Filter["size"]>, readonly string[]> = {
+  standard: ["standard"],
+  grand: ["grand", "lush"],
+  diva: ["diva", "opulent"],
+};
+
 export function filterProducts(products: Product[], f: Filter): Product[] {
   return products.filter((p) => {
     if (!p.active) return false;
@@ -61,9 +69,8 @@ export function filterProducts(products: Product[], f: Filter): Product[] {
     if (f.occasion && !p.occasions.includes(f.occasion)) return false;
     if (f.color && !p.colorFamily.includes(f.color)) return false;
     if (f.size) {
-      // Convention: variant IDs are "standard" | "grand" | "diva" in seed data.
-      const has = p.variants.some((v) => v.id === f.size);
-      if (!has) return false;
+      const ids = SIZE_VARIANT_IDS[f.size];
+      if (!p.variants.some((v) => ids.includes(v.id))) return false;
     }
     if (f.sameDay && !p.tags.includes("same-day")) return false;
     if (f.price) {
@@ -78,7 +85,54 @@ export function filterProducts(products: Product[], f: Filter): Product[] {
   });
 }
 
-export function sortProducts(products: Product[], sort: Sort): Product[] {
+/** How long a product counts as new after it joins the catalog. */
+export const NEW_ARRIVAL_DAYS = 30;
+
+export function isNewArrival(p: Product, now: Date = new Date()): boolean {
+  if (!p.addedAt) return false;
+  const cutoff = new Date(now.getTime() - NEW_ARRIVAL_DAYS * 86_400_000).toISOString().slice(0, 10);
+  return p.addedAt >= cutoff;
+}
+
+const byNewest = (a: Product, b: Product) => (b.addedAt ?? "").localeCompare(a.addedAt ?? "");
+
+// Unsold pieces above this starting price sink to the end of "Recommended":
+// they are bought on purpose, not browsed into.
+const PREMIUM_CENTS = 30_000;
+
+export type RankOptions = {
+  /** Sales score per product id (see lib/product-ranking.ts). */
+  sales?: ReadonlyMap<string, number>;
+  /** Send funeral pieces to the end: they have their own page. */
+  demoteSympathy?: boolean;
+};
+
+/**
+ * "Recommended": what sells first (recent sales weigh more), then Maky's
+ * staff picks, then the newest pieces. Premium pieces nobody has bought yet
+ * and, on general listings, funeral pieces go last.
+ */
+function recommendedOrder(products: Product[], { sales, demoteSympathy }: RankOptions): Product[] {
+  const score = (p: Product) => sales?.get(p.id) ?? 0;
+  const key = (p: Product) => {
+    const sold = score(p) > 0;
+    return [
+      demoteSympathy && p.category === "sympathy" ? 1 : 0,
+      sold ? 0 : 1,
+      !sold && startingPriceCents(p) > PREMIUM_CENTS ? 1 : 0,
+      !sold && !p.tags.includes("staff-pick") ? 1 : 0,
+    ];
+  };
+  return products
+    .map((p) => ({ p, k: key(p) }))
+    .sort((a, b) => {
+      for (let i = 0; i < a.k.length; i++) if (a.k[i] !== b.k[i]) return a.k[i] - b.k[i];
+      return score(b.p) - score(a.p) || byNewest(a.p, b.p);
+    })
+    .map(({ p }) => p);
+}
+
+export function sortProducts(products: Product[], sort: Sort, opts: RankOptions = {}): Product[] {
   const arr = [...products];
   switch (sort) {
     case "price-asc":
@@ -86,11 +140,9 @@ export function sortProducts(products: Product[], sort: Sort): Product[] {
     case "price-desc":
       return arr.sort((a, b) => startingPriceCents(b) - startingPriceCents(a));
     case "newest":
-      return arr.sort((a, b) => Number(b.tags.includes("new")) - Number(a.tags.includes("new")));
-    case "staff-pick":
-      return arr.sort((a, b) => Number(b.tags.includes("staff-pick")) - Number(a.tags.includes("staff-pick")));
-    default:
-      return arr;
+      return arr.sort(byNewest);
+    case "recommended":
+      return recommendedOrder(arr, opts);
   }
 }
 
@@ -104,8 +156,8 @@ export function productsByCategory(
 }
 
 export function newestArrivals(products: Product[], limit = 12): Product[] {
-  return [...products]
+  return products
     .filter((p) => p.active && !p.giftExtra && isInSeason(p))
-    .sort((a, b) => Number(b.tags.includes("new")) - Number(a.tags.includes("new")))
+    .sort(byNewest)
     .slice(0, limit);
 }

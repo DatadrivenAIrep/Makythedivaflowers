@@ -24,24 +24,32 @@ const fadeOnly = {
 function ProductGridImpl({ products, locale, motionMode = "default", className, campaign }: Props) {
   const itemVariants = motionMode === "sympathy" ? fadeOnly : staggerItemVariants;
   return (
-    <StaggerGroup
-      className={
-        className ??
-        "grid grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-2 md:gap-y-16 lg:grid-cols-3"
-      }
+    // Full-bleed plaster band (the photos' own background tone) so the uncropped
+    // covers float on it with no visible frame. The band breaks out of the page
+    // container with a viewport-wide pseudo-element painted behind the grid.
+    <div
+      data-testid="product-band"
+      className="relative isolate py-10 before:absolute before:inset-y-0 before:left-1/2 before:-z-10 before:w-screen before:-translate-x-1/2 before:bg-mute-100 before:content-[''] md:py-14"
     >
-      {products.map((p, i) => (
-        <motion.div key={p.id} variants={itemVariants}>
-          <ProductCard
-            product={p}
-            locale={locale}
-            reduceMotion={motionMode === "sympathy"}
-            priority={i < 3}
-            campaign={campaign}
-          />
-        </motion.div>
-      ))}
-    </StaggerGroup>
+      <StaggerGroup
+        className={
+          className ??
+          "grid grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-2 md:gap-y-16 lg:grid-cols-3"
+        }
+      >
+        {products.map((p, i) => (
+          <motion.div key={p.id} variants={itemVariants}>
+            <ProductCard
+              product={p}
+              locale={locale}
+              reduceMotion={motionMode === "sympathy"}
+              priority={i < 3}
+              campaign={campaign}
+            />
+          </motion.div>
+        ))}
+      </StaggerGroup>
+    </div>
   );
 }
 

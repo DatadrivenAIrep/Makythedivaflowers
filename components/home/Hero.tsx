@@ -5,14 +5,20 @@ import { MagneticButton } from "@/components/motion/MagneticButton";
 import { HeroReveal } from "@/components/home/HeroReveal";
 import { PulseDot } from "@/components/home/PulseDot";
 import { HeroMedia } from "@/components/home/HeroMedia";
+import { heroSeason } from "@/lib/hero-season";
 import type { Locale } from "@/types/locale";
 
 export async function Hero({ locale }: { locale: Locale }) {
   const t = await getTranslations("home.hero");
-  const [heroLine1, heroLine2] = t("title").split(/, (.+)/);
+  const season = heroSeason();
+  const copy = await getTranslations(season.copyNamespace);
+  const [heroLine1, heroLine2] = copy("title").split(/, (.+)/);
+  // With the subject on the right, the desktop button sits under the copy where
+  // the eye already is, instead of in the bottom bar (the cookie notice covers it).
+  const inlineCta = season.subject === "right";
 
   return (
-    <section className="relative min-h-[100dvh] overflow-hidden">
+    <section className="relative min-h-[calc(100dvh-var(--nav-offset))] overflow-hidden">
 
       {/* 1. Background — looping video with gradient fallback */}
       <div
@@ -23,19 +29,26 @@ export async function Hero({ locale }: { locale: Locale }) {
             "linear-gradient(160deg, #1A1816 0%, #0E0D0C 55%, #2a0d1a 100%)",
         }}
       >
-        <HeroMedia src="/hero/divavideo.mp4" poster="/hero/divavideo-poster.jpg" />
+        <HeroMedia src={season.video} poster={season.poster} focus={season.focus} />
         {/* Legibility overlay — lighter overall, still anchored dark at the bottom for the CTAs */}
         <div
           aria-hidden
           className="absolute inset-0 bg-gradient-to-b from-charcoal/20 via-charcoal/15 to-charcoal/65"
         />
+        {/* Copy scrim — the subject fills the frame on phones and the right half on desktop */}
+        {season.subject === "right" && (
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-gradient-to-t from-charcoal/85 via-charcoal/45 to-charcoal/10 lg:bg-gradient-to-r lg:from-charcoal/80 lg:via-charcoal/40 lg:to-transparent"
+          />
+        )}
         {/* Brand accent — radial rouge wash from top-right */}
         <div
           aria-hidden
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 60% 50% at 85% 10%, rgba(184,52,94,0.22) 0%, transparent 70%)",
+              `radial-gradient(ellipse 60% 50% at 85% 10%, ${season.accent} 0%, transparent 70%)`,
           }}
         />
       </div>
@@ -46,7 +59,7 @@ export async function Hero({ locale }: { locale: Locale }) {
       {/* 2. Eyebrow pill — top-left */}
       <div className="absolute top-20 left-4 lg:top-28 lg:left-8 z-20">
         <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-bone/90 border border-bone/30 bg-charcoal/40 backdrop-blur-sm px-3 py-1.5 rounded-full inline-block">
-          Long Island, New York · Since 2014
+          {season.key === "default" ? "Long Island, New York · Since 2014" : copy("eyebrow")}
         </span>
       </div>
 
@@ -62,7 +75,13 @@ export async function Hero({ locale }: { locale: Locale }) {
       <PulseDot />
 
       {/* 3. Center hero text block */}
-      <div className="relative z-20 min-h-[100dvh] flex flex-col justify-center px-6 lg:pl-[30%] lg:pr-16">
+      <div
+        className={`relative z-20 min-h-[calc(100dvh-var(--nav-offset))] flex flex-col px-6 ${
+          season.subject === "right"
+            ? "justify-end pb-44 lg:justify-center lg:pt-36 lg:pb-24 lg:pl-16 lg:pr-[50%]"
+            : "justify-center lg:pl-[30%] lg:pr-16"
+        }`}
+      >
         <HeroReveal>
           <div className="pb-2">
             <h1
@@ -84,9 +103,19 @@ export async function Hero({ locale }: { locale: Locale }) {
               className="font-sans text-bone/90 text-base max-w-[46ch] leading-relaxed mt-6"
               style={{ textShadow: "0 1px 12px rgba(14,13,12,0.6)" }}
             >
-              {t("sub")}
+              {copy("sub")}
             </p>
           </div>
+          {inlineCta && (
+            <div className="hidden lg:block mt-10">
+              <MagneticButton
+                href={`/${locale}${season.ctaPath}`}
+                ariaLabel={copy("cta_primary")}
+              >
+                {copy("cta_primary")}
+              </MagneticButton>
+            </div>
+          )}
         </HeroReveal>
       </div>
 
@@ -108,12 +137,14 @@ export async function Hero({ locale }: { locale: Locale }) {
       <div className="absolute bottom-0 left-0 right-0 z-20 [background:var(--material-bg-dark)] [backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] [-webkit-backdrop-filter:blur(var(--material-blur))_saturate(var(--material-saturate))] [box-shadow:inset_0_1px_0_var(--material-edge-dark)]">
         <div className="hidden lg:grid grid-cols-3 items-center py-5 px-8 gap-6">
           <div className="flex items-center">
-            <MagneticButton
-              href={`/${locale}/shop/arrangements`}
-              ariaLabel={t("cta_primary")}
-            >
-              {t("cta_primary")}
-            </MagneticButton>
+            {!inlineCta && (
+              <MagneticButton
+                href={`/${locale}${season.ctaPath}`}
+                ariaLabel={copy("cta_primary")}
+              >
+                {copy("cta_primary")}
+              </MagneticButton>
+            )}
           </div>
           <div className="flex items-center justify-center">
             <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-petal/50 border border-petal/15 px-3 py-1.5 rounded-full">
@@ -133,10 +164,10 @@ export async function Hero({ locale }: { locale: Locale }) {
         {/* Mobile bottom bar */}
         <div className="flex lg:hidden flex-col items-start gap-3 py-5 px-6">
           <MagneticButton
-            href={`/${locale}/shop/arrangements`}
-            ariaLabel={t("cta_primary")}
+            href={`/${locale}${season.ctaPath}`}
+            ariaLabel={copy("cta_primary")}
           >
-            {t("cta_primary")}
+            {copy("cta_primary")}
           </MagneticButton>
           <a
             href={`/${locale}/weddings`}

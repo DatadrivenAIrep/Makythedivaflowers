@@ -2,6 +2,7 @@ import "server-only";
 import { sendMessage } from "@/lib/messaging";
 import { getByPhone } from "@/lib/customer-storage";
 import { hasRecentSuccess } from "@/lib/message-storage";
+import { getDeliveryPhoto, deliveryPhotoUrl, mmsMediaAllowed } from "@/lib/delivery-photos";
 import { getSetting, SETTING_GOOGLE_REVIEW_URL } from "@/lib/settings-storage";
 import { SITE } from "@/data/site";
 import { formatClock } from "@/lib/format";
@@ -141,6 +142,9 @@ export async function dispatchDelivered(order: Order): Promise<void> {
   const channel = customer?.messagingChannel ?? "sms";
   if (channel === "none") return;
   const locale = resolveLocale(customer?.locale, order.locale);
+  // Proof-of-delivery photo rides along as MMS — SMS only (WhatsApp templates
+  // have no media slot) and only when Twilio can reach our public URL.
+  const photo = channel === "sms" && mmsMediaAllowed() ? getDeliveryPhoto(order.id) : undefined;
 
   await sendMessage({
     orderId: order.id,
@@ -154,8 +158,10 @@ export async function dispatchDelivered(order: Order): Promise<void> {
       total: totalLabel(order.totals.totalCents),
       window: windowLabel(order, locale),
       shop_phone: shopPhoneFromSite(),
+      ...(photo ? { has_photo: "1" as const } : {}),
     },
     to: { phone: order.contact.phone, email: order.contact.email },
+    ...(photo ? { mediaUrl: deliveryPhotoUrl(photo.token) } : {}),
   });
 }
 

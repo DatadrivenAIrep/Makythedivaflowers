@@ -10,13 +10,14 @@ async function loadRenderToStaticMarkup() {
   return mod.renderToStaticMarkup;
 }
 import type { Order } from "@/types/order";
-import { PRODUCTS } from "@/data/products";
+import { getPricedProducts } from "@/lib/product-prices";
 import { SITE } from "@/data/site";
 import { resolveCartLine } from "@/lib/cart-helpers";
 import { baseSizeShort } from "@/lib/variant-measure";
 import { formatMoneyCents, formatPhoneUS, formatDeliveryWindow } from "@/lib/format";
 import { formatDateTime } from "@/lib/format-datetime";
 import { orderBalanceCents } from "@/lib/order-balance";
+import { FUNERAL_CARD_BOX, INSIDE_CARD_BOX, fitCardMessage, isLongCardMessage } from "@/lib/card-message-fit";
 import { getPrintStyles, getCardBgDataUri, getLogoDataUri, getProductImageDataUri, getQrWebsiteDataUri } from "@/lib/print-styles";
 import { qrSvgDataUri } from "@/lib/digital-card-qr";
 
@@ -40,6 +41,7 @@ const T = {
     discount: "Discount",
     delivery: "Delivery",
     tax: "Tax",
+    taxExempt: "Tax exempt",
     tip: "Tip",
     giftCard: "Gift card",
     paidAmount: "Paid",
@@ -49,7 +51,7 @@ const T = {
     payment: "Payment",
     methods: {
       cash: "Cash", zelle: "Zelle", "card-terminal": "Card terminal",
-      ach: "ACH", stripe: "Stripe", "gift-card": "Gift card",
+      ach: "ACH", stripe: "Stripe", "gift-card": "Gift card", "house-account": "House account",
     },
   },
   es: {
@@ -69,6 +71,7 @@ const T = {
     discount: "Descuento",
     delivery: "Envío",
     tax: "Tax",
+    taxExempt: "Exento de tax",
     tip: "Propina",
     giftCard: "Gift card",
     paidAmount: "Pagado",
@@ -78,7 +81,7 @@ const T = {
     payment: "Pago",
     methods: {
       cash: "Efectivo", zelle: "Zelle", "card-terminal": "Terminal",
-      ach: "ACH", stripe: "Stripe", "gift-card": "Gift card",
+      ach: "ACH", stripe: "Stripe", "gift-card": "Gift card", "house-account": "A cuenta",
     },
   },
 } as const;
@@ -95,6 +98,7 @@ function itemsDensity(lineCount: number): Density {
 }
 
 function Worksheet({ order }: { order: Order }) {
+  const products = getPricedProducts();
   const locale: Locale = order.locale;
   const t = T[locale];
   const m = (cents: number) => formatMoneyCents(cents, locale);
@@ -109,6 +113,7 @@ function Worksheet({ order }: { order: Order }) {
         <div>
           <div className="ws-brand">{t.eyebrow}</div>
           <h1 className="ws-title">{t.order} #{order.orderNumber ?? order.id}</h1>
+          {order.funeral ? <span className="ws-funeral">Funeral</span> : null}
           <div className="ws-paid">
             <strong>{t.paid}:</strong> {formatDateTime(order.createdAt, locale)}<br />
             {order.stripePaymentIntentId ? <span style={{ opacity: 0.7 }}>Stripe {order.stripePaymentIntentId}</span> : null}
@@ -160,7 +165,7 @@ function Worksheet({ order }: { order: Order }) {
         {order.fulfillment.cardMessage?.trim() ? (
           <div className="ws-section">
             <div className="ws-section-label">{t.cardMessage}</div>
-            <p className="ws-msg-quote">"{order.fulfillment.cardMessage.trim()}"</p>
+            <p className={`ws-msg-quote${isLongCardMessage(order.fulfillment.cardMessage) ? " long" : ""}`}>"{order.fulfillment.cardMessage.trim()}"</p>
           </div>
         ) : null}
       </div>
@@ -188,7 +193,7 @@ function Worksheet({ order }: { order: Order }) {
                     </tr>
                   );
                 }
-                const r = resolveCartLine(line, PRODUCTS);
+                const r = resolveCartLine(line, products);
                 if (!r) return null;
                 const thumb = density === "no-photos" ? null : getProductImageDataUri(r.product.images[0]?.src);
                 const base = baseSizeShort(r.product, r.variant);
@@ -227,7 +232,7 @@ function Worksheet({ order }: { order: Order }) {
               ) : null}
               <tr className="totline">
                 <td></td>
-                <td>{t.tax}</td>
+                <td>{order.taxExempt ? `${t.taxExempt} · #${order.taxExempt.cert}` : t.tax}</td>
                 <td className="price">{m(order.totals.taxCents)}</td>
               </tr>
               {order.totals.tipCents > 0 ? (
@@ -335,53 +340,70 @@ function BrandCoverPanel({ order, qrUri }: { order: Order; qrUri: string }) {
   );
 }
 
-function classifyMessageLength(msg: string | undefined): "short" | "med" | "long" {
-  const len = (msg ?? "").trim().length;
-  if (len === 0) return "short"; // unused; empty branch handled by parent
-  if (len <= 120) return "short";
-  if (len <= 220) return "med";
-  return "long";
-}
-
-// With a digital card the inside panel carries its QR instead of the written
-// message: the card itself is the message.
-function InsideMessagePanel({
-  message,
-  digitalQrUri,
-  locale,
-}: {
+type MessagePanelProps = {
   message: string | undefined;
   digitalQrUri?: string;
   locale: Order["locale"];
-}) {
+};
+
+// With a digital card the inside panel carries its QR instead of the written
+// message: the card itself is the message.
+function MessageBody({
+  message,
+  digitalQrUri,
+  locale,
+  funeral,
+}: MessagePanelProps & { funeral?: boolean }) {
   if (digitalQrUri) {
-    const scanLine = locale === "en" ? "Scan to open your surprise" : "Escanea para abrir tu sorpresa";
+    const scanLine = funeral
+      ? (locale === "en" ? "Scan to open the card" : "Escanea para abrir la tarjeta")
+      : (locale === "en" ? "Scan to open your surprise" : "Escanea para abrir tu sorpresa");
     return (
-      <div className="card-panel inside-msg">
-        <div className="orn-top">❀</div>
+      <>
         <div className="msg-qr">
           <img className="msg-qr-img" src={digitalQrUri} alt={scanLine} />
         </div>
         <div className="msg-qr-caption">{scanLine}</div>
-        <div className="orn-bot">❀</div>
-      </div>
+      </>
     );
   }
   const trimmed = message?.trim();
-  if (!trimmed) {
-    return (
-      <div className="card-panel inside-msg">
-        <div className="orn-top">❀</div>
-        <div className="orn-bot">❀</div>
-      </div>
-    );
-  }
-  const cls = classifyMessageLength(trimmed);
+  if (!trimmed) return null;
+  // The largest size that keeps the whole message on the card (up to 500 chars).
+  const fit = fitCardMessage(trimmed, funeral ? FUNERAL_CARD_BOX : INSIDE_CARD_BOX);
   return (
-    <div className="card-panel inside-msg">
+    <div className="text" style={{ fontSize: `${fit.fontPt}pt`, lineHeight: fit.lineHeight }}>
+      "{fit.text}"
+    </div>
+  );
+}
+
+function InsideMessagePanel(props: MessagePanelProps) {
+  // Small type needs the room the ornaments' spacing takes.
+  const trimmed = props.digitalQrUri ? "" : props.message?.trim();
+  const tight = trimmed ? fitCardMessage(trimmed, INSIDE_CARD_BOX).fontPt <= 12 : false;
+  return (
+    <div className={`card-panel inside-msg${tight ? " tight" : ""}`}>
       <div className="orn-top">❀</div>
-      <div className={`text ${cls}`}>"{trimmed}"</div>
+      <MessageBody {...props} />
       <div className="orn-bot">❀</div>
+    </div>
+  );
+}
+
+// Funeral homes keep only this card and discard the other two, so for a funeral
+// the message sits over the Maky logo and the card carries how to reach the shop.
+function FuneralMessagePanel({ logoUri, ...props }: MessagePanelProps & { logoUri: string }) {
+  return (
+    <div className="card-panel inside-msg funeral">
+      <img className="fn-watermark" src={logoUri} alt="" />
+      <div className="fn-body">
+        <MessageBody {...props} funeral />
+      </div>
+      <div className="fn-contact">
+        <span className="fn-site">{new URL(SITE.url).host}</span>
+        <span className="fn-phone">{SITE.phoneDisplay}</span>
+      </div>
     </div>
   );
 }
@@ -416,11 +438,12 @@ type QrUris = { websiteQrUri: string; digitalQrUri?: string };
 
 function CardRow({ order, logoUri, websiteQrUri, digitalQrUri }: { order: Order; logoUri: string } & QrUris) {
   // Card 1: brand cover + recipient + website QR · Card 2: logo · Card 3: message (or the digital card's QR).
+  const message = { message: order.fulfillment.cardMessage, digitalQrUri, locale: order.locale };
   return (
     <section className="card-row">
       <BrandCoverPanel order={order} qrUri={websiteQrUri} />
       <LogoPanel logoUri={logoUri} />
-      <InsideMessagePanel message={order.fulfillment.cardMessage} digitalQrUri={digitalQrUri} locale={order.locale} />
+      {order.funeral ? <FuneralMessagePanel logoUri={logoUri} {...message} /> : <InsideMessagePanel {...message} />}
     </section>
   );
 }

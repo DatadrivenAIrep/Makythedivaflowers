@@ -16,6 +16,8 @@ const nextConfig: NextConfig = {
       // account exists once you have ordered.
       { source: "/:locale(en|es)/account/sign-up", destination: "/:locale/account", permanent: true },
       { source: "/:locale(en|es)/shop/sympathy", destination: "/:locale/sympathy", permanent: true },
+      // Subscriptions are plans, not catalog products: the shop category would list nothing.
+      { source: "/:locale(en|es)/shop/subscriptions", destination: "/:locale/subscriptions", permanent: true },
       // Sympathy has a fuller page than an occasion landing would give it.
       { source: "/:locale(en|es)/ocasiones/sympathy", destination: "/:locale/sympathy", permanent: true },
       { source: "/:locale(en|es)/product/dozen-roses-bouquet", destination: "/:locale/product/wrapped-red-roses", permanent: true },
@@ -24,6 +26,8 @@ const nextConfig: NextConfig = {
       { source: "/:locale(en|es)/product/dozen-roses-in-yellow", destination: "/:locale/product/wrapped-roses-colored", permanent: true },
       { source: "/:locale(en|es)/product/dozen-roses-in-white", destination: "/:locale/product/wrapped-roses-colored", permanent: true },
       { source: "/:locale(en|es)/product/dozen-roses-in-multi-color", destination: "/:locale/product/wrapped-roses-colored", permanent: true },
+      // Renamed 2026-10-22 at the owner's request (Golden Chilides → Chilides Garden).
+      { source: "/:locale(en|es)/product/golden-chilides", destination: "/:locale/product/chilides-garden", permanent: true },
     ];
   },
   // Cache policy. Next tags statically-prerendered pages with

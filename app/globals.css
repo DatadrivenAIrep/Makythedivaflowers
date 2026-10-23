@@ -38,7 +38,17 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  overflow-x: hidden;
+}
+
+/* No sideways scroll, set on <body> only and with `clip`, never `hidden`:
+   - overflow-x:hidden makes the element a scroll container (overflow-y computes
+     to auto). On html+body that turned <body> into its own scroller, so every
+     position:sticky on the site stopped sticking.
+   - With <html> left `visible`, the browser propagates <body>'s overflow to the
+     viewport, so the scroll locks that set body.style.overflow = "hidden"
+     (CartDrawer, MediaLightbox) actually stop the page from scrolling. */
+body {
+  overflow-x: clip;
 }
 
 ::selection {
@@ -82,3 +92,9 @@ html, body {
   }
 }
 
+
+/* Shop TV (/vitrina): slow push-in on the arrangement while its slide is up. */
+@keyframes tv-zoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.05); }
+}

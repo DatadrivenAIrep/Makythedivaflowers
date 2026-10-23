@@ -17,18 +17,23 @@ import { TrackEvent } from "@/components/analytics/TrackEvent";
 import type { AnalyticsItem } from "@/lib/analytics-types";
 import { productsInShopCategory, type ShopSlug } from "@/lib/shop-categories";
 import { getAllImageOverrides, applyImageOverrides } from "@/lib/product-images";
+import { getAllPriceOverrides, applyPriceOverrides } from "@/lib/product-prices";
+import { getSalesRanking } from "@/lib/product-sales";
 import { localeAlternates } from "@/lib/seo/alternates";
 
+// sympathy and subscriptions redirect (next.config) to their own pages.
 const ALLOWED: ShopSlug[] = [
   "arrangements",
   "bouquets",
   "roses",
   "exotic",
   "centerpieces",
+  "fall",
+  "christmas",
+  "valentines",
   "plants",
   "gifts",
   "sympathy",
-  "subscriptions",
 ];
 
 const CATEGORY_TITLES: Record<ShopSlug, { en: string; es: string }> = {
@@ -37,6 +42,9 @@ const CATEGORY_TITLES: Record<ShopSlug, { en: string; es: string }> = {
   roses: { en: "Roses", es: "Rosas" },
   exotic: { en: "Exotic", es: "Exóticas" },
   centerpieces: { en: "Centerpieces", es: "Centros de mesa" },
+  fall: { en: "Autumn Collection", es: "Colección de otoño" },
+  christmas: { en: "Christmas Collection", es: "Colección de Navidad" },
+  valentines: { en: "Valentine's Day", es: "San Valentín" },
   plants: { en: "Plants & Orchids", es: "Plantas y Orquídeas" },
   gifts: { en: "Gifts", es: "Regalos" },
   sympathy: { en: "Sympathy", es: "Condolencias" },
@@ -63,6 +71,18 @@ const CATEGORY_DESCS: Record<ShopSlug, { en: string; es: string }> = {
   centerpieces: {
     en: "Low, full arrangements made for the table — dinners, showers and celebrations.",
     es: "Arreglos bajos y llenos, hechos para la mesa: cenas, showers y celebraciones.",
+  },
+  christmas: {
+    en: "Holiday arrangements in red, white and evergreen, hand-built for December.",
+    es: "Arreglos navideños en rojo, blanco y verde pino, hechos a mano para diciembre.",
+  },
+  valentines: {
+    en: "Roses and romantic arrangements for February 14, hand-built the morning of delivery.",
+    es: "Rosas y arreglos románticos para el 14 de febrero, armados la mañana del envío.",
+  },
+  fall: {
+    en: "Harvest arrangements for the Thanksgiving table: roses, mums, wheat and mini pumpkins, hand-built daily.",
+    es: "Arreglos de cosecha para la mesa de Thanksgiving: rosas, crisantemos, trigo y mini calabazas, hechos a mano cada día.",
   },
   plants: {
     en: "Long-lasting plants and orchids in studio-poured planters.",
@@ -117,9 +137,12 @@ export default async function CategoryPage({
   const sp = await searchParams;
   const { filter, sort } = parseFilterParams(sp);
 
-  const products = applyImageOverrides(PRODUCTS, getAllImageOverrides());
+  const products = applyImageOverrides(
+    applyPriceOverrides(PRODUCTS, getAllPriceOverrides()),
+    getAllImageOverrides(),
+  );
   const all = productsInShopCategory(products, cat);
-  const filtered = sortProducts(filterProducts(all, filter), sort);
+  const filtered = sortProducts(filterProducts(all, filter), sort, { sales: getSalesRanking() });
 
   const isSympathy = cat === "sympathy";
   const isRoses = cat === "roses";

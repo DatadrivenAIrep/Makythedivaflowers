@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { CARD_MESSAGE_MAX } from "@/lib/card-message-fit";
+import { taxExemptRequest } from "@/schemas/tax-exempt";
 
 const phone = z
   .string()
@@ -30,20 +32,20 @@ const deliveryF = z.object({
   recipient,
   address,
   window,
-  cardMessage: z.string().max(200).optional(),
+  cardMessage: z.string().max(CARD_MESSAGE_MAX).optional(),
 });
 const pickupF = z.object({
   method: z.literal("pickup"),
   recipient,
   window,
-  cardMessage: z.string().max(200).optional(),
+  cardMessage: z.string().max(CARD_MESSAGE_MAX).optional(),
 });
 const inStoreF = z.object({
   method: z.literal("in-store"),
   // No recipient input for "Take it now": the buyer takes the order, so the buyer IS the
   // recipient (populated server-side from the customer). Any recipient the client sends
   // is ignored/stripped here — buyer name + phone are still required via the superRefine.
-  cardMessage: z.string().max(200).optional(),
+  cardMessage: z.string().max(CARD_MESSAGE_MAX).optional(),
 });
 
 const catalogLine = z.object({
@@ -74,6 +76,11 @@ const payment = z.discriminatedUnion("status", [
       method: z.enum(["cash", "zelle", "card-terminal", "ach"]),
     }).optional(),
   }),
+  z.object({
+    status: z.literal("account"),
+    // Charged to a house account; the server validates the account is active.
+    accountId: z.string().min(1),
+  }),
 ]);
 
 export const intakeSchema = z.object({
@@ -98,10 +105,17 @@ export const intakeSchema = z.object({
     })
     .optional(),
   internalNotes: z.string().max(400).optional(),
+  // The order is for a funeral: the message card prints in the sympathy design.
+  funeral: z.boolean().optional(),
+  // Save the delivery day as this recipient's birthday/anniversary on the buyer's profile.
+  rememberDate: z.enum(["birthday", "anniversary"]).optional(),
   giftCardCode: z.string().min(1).max(50).optional(),
   // Only the code travels from the client. The discount is always recomputed on
   // the server from the live promo, so a tampered request cannot set its price.
   promoCode: z.string().min(1).max(50).optional(),
+  // Staff's per-order choice. Absent = the customer's/account's certificate on
+  // file decides; the server always resolves the final exemption itself.
+  taxExempt: taxExemptRequest.optional(),
   payment,
 })
   .superRefine((data, ctx) => {

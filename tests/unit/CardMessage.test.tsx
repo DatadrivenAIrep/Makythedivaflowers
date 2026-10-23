@@ -39,7 +39,7 @@ describe("CardMessage", () => {
   it("renders the textarea and counter", () => {
     render(<CardMessage {...baseProps} />);
     expect(screen.getByRole("textbox")).toBeInTheDocument();
-    expect(screen.getByText(/0\/200/)).toBeInTheDocument();
+    expect(screen.getByText(/0\/500/)).toBeInTheDocument();
   });
 
   it("calls onChange when the user types", async () => {

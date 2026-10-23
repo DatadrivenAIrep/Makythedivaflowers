@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import { SITE } from "@/data/site";
 import { GTMScript } from "@/components/analytics/GTMScript";
 import { ClarityScript } from "@/components/analytics/ClarityScript";
+import { HideOnShopTv } from "@/components/analytics/HideOnShopTv";
 import { ConsentNotice } from "@/components/analytics/ConsentNotice";
 import "./globals.css";
 
@@ -61,8 +62,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${fraunces.variable} ${cabinet.variable} ${jetbrains.variable}`}>
       <body>
-        <GTMScript />
-        <ClarityScript />
+        <HideOnShopTv>
+          <GTMScript />
+          <ClarityScript />
+        </HideOnShopTv>
         {children}
         <ConsentNotice />
       </body>

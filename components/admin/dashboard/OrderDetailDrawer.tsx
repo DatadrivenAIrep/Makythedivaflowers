@@ -1,10 +1,10 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   WhatsappLogo, ArrowsClockwise, Check, CheckCircle,
-  Package, Truck, XCircle, X, Pencil, Eye, Printer, FileText, Storefront, Star, HandCoins,
+  Package, Truck, XCircle, X, Pencil, Eye, Printer, FileText, Storefront, Star, HandCoins, Buildings, PaperPlaneTilt,
 } from "@phosphor-icons/react/dist/ssr";
 import { useTranslations, useLocale } from "next-intl";
 import { formatDateTime } from "@/lib/format-datetime";
@@ -14,6 +14,9 @@ import AdminButton from "./AdminButton";
 import OrderEditForm from "./OrderEditForm";
 import OrderHistoryList from "./OrderHistoryList";
 import DigitalCardSection from "./DigitalCardSection";
+import DeliverSheet from "./DeliverSheet";
+import InvoiceSendPanel from "./InvoiceSendPanel";
+import AccountSearch from "@/components/admin/accounts/AccountSearch";
 import { hasDigitalCard } from "@/lib/digital-card-offer";
 import type { Order, OrderChange } from "@/types/order";
 import type { OrderEditPatch } from "@/lib/order-edit";
@@ -31,6 +34,8 @@ type DetailResp = {
   history?: OrderChange[];
   balanceCents?: number;
   digitalCard?: DigitalCardView | null;
+  houseAccount?: { id: string; name: string; billed: boolean } | null;
+  deliveryPhoto?: { url: string; createdAt: string } | null;
 };
 
 type Props = {
@@ -47,10 +52,18 @@ const DEPOSIT_METHOD_LABEL: Record<DepositMethod, string> = {
   cash: "cash", zelle: "zelle", "card-terminal": "card_terminal", ach: "ach",
 };
 
+const SETTLE_METHODS = ["cash", "zelle", "card-terminal", "ach", "check"] as const;
+type SettleMethod = (typeof SETTLE_METHODS)[number];
+const SETTLE_METHOD_LABEL: Record<SettleMethod, string> = {
+  cash: "settle_method_cash", zelle: "settle_method_zelle", "card-terminal": "settle_method_card-terminal",
+  ach: "settle_method_ach", check: "settle_method_check",
+};
+
 const FULFILLMENT_STEP_IDS = ["pending", "preparing", "out-for-delivery", "delivered"] as const;
 
 export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props) {
   const t = useTranslations("admin_orders");
+  const td = useTranslations("admin_deliver");
   const locale = useLocale();
   const [data, setData] = useState<DetailResp | null>(null);
   const [noteDraft, setNoteDraft] = useState("");
@@ -64,6 +77,14 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
   const [depositText, setDepositText] = useState("");
   const [depositMethod, setDepositMethod] = useState<DepositMethod>("zelle");
   const [depositErr, setDepositErr] = useState<string | null>(null);
+  const [settleOpen, setSettleOpen] = useState(false);
+  const [accountPickOpen, setAccountPickOpen] = useState(false);
+  const [accountErr, setAccountErr] = useState<string | null>(null);
+  const [delivering, setDelivering] = useState(false);
+  const [invoiceSendOpen, setInvoiceSendOpen] = useState(false);
+  // Mirrors `delivering` for the document-level Escape handler (which must not close the drawer under the sheet).
+  const deliveringRef = useRef(false);
+  useEffect(() => { deliveringRef.current = delivering; }, [delivering]);
 
   useEffect(() => {
     let cancelled = false;
@@ -75,10 +96,16 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
         void fetch(`/api/admin/orders/${orderId}/ack`, { method: "POST" });
       }
     })();
-    function onKey(e: KeyboardEvent) { if (e.key === "Escape") onClose(); }
+    function onKey(e: KeyboardEvent) { if (e.key === "Escape" && !deliveringRef.current) onClose(); }
     document.addEventListener("keydown", onKey);
     return () => { cancelled = true; document.removeEventListener("keydown", onKey); };
   }, [orderId, onClose]);
+
+  async function reload() {
+    const refreshed = await fetch(`/api/admin/orders/${orderId}`, { cache: "no-store" });
+    setData((await refreshed.json()) as DetailResp);
+    onChanged();
+  }
 
   async function call(method: string, url: string, body?: unknown) {
     setBusy(true);
@@ -87,11 +114,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
         method, headers: { "content-type": "application/json" },
         body: body ? JSON.stringify(body) : undefined,
       });
-      if (res.ok) {
-        const refreshed = await fetch(`/api/admin/orders/${orderId}`, { cache: "no-store" });
-        setData((await refreshed.json()) as DetailResp);
-        onChanged();
-      }
+      if (res.ok) await reload();
     } finally { setBusy(false); }
   }
 
@@ -112,9 +135,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
       const d = (await res.json().catch(() => ({ ok: false }))) as { ok: boolean; reason?: string; error?: string };
       if (d.ok) {
         setReviewMsg({ ok: true, text: t("review_sent") });
-        const refreshed = await fetch(`/api/admin/orders/${orderId}`, { cache: "no-store" });
-        setData((await refreshed.json()) as DetailResp);
-        onChanged();
+        await reload();
       } else {
         setReviewMsg({ ok: false, text: reviewErr(String(d.reason ?? d.error ?? "")) });
       }
@@ -143,6 +164,20 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
       onChanged();
       setDepositOpen(false);
       setDepositText("");
+    } finally { setBusy(false); }
+  }
+
+  async function accountCall(body: unknown): Promise<boolean> {
+    setBusy(true); setAccountErr(null);
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}/payment`, {
+        method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify(body),
+      });
+      if (!res.ok) { setAccountErr(t("account_error")); return false; }
+      const refreshed = await fetch(`/api/admin/orders/${orderId}`, { cache: "no-store" });
+      setData((await refreshed.json()) as DetailResp);
+      onChanged();
+      return true;
     } finally { setBusy(false); }
   }
 
@@ -187,6 +222,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
   const balance = data.balanceCents ?? order.totals.totalCents - amountPaid;
   // A pending order with money already collected carries a deposit.
   const hasDeposit = order.paymentStatus === "pending" && amountPaid > 0;
+  const onAccount = !!order.houseAccountId;
 
   return (
     <div className="fixed inset-0 z-20 flex" onClick={onClose}>
@@ -199,14 +235,34 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
                 <AdminButton variant="secondary" icon={Pencil} disabled={busy} onClick={() => setEditing(true)}>{t("edit")}</AdminButton>
                 <AdminButton variant="secondary" icon={Eye} href={`/api/admin/orders/${order.id}/sheet`} target="_blank" rel="noreferrer">{t("preview")}</AdminButton>
                 <AdminButton variant="secondary" icon={FileText} href={`/api/admin/orders/${order.id}/invoice`} target="_blank" rel="noreferrer">{t("invoice")}</AdminButton>
+                <AdminButton variant="secondary" icon={PaperPlaneTilt} aria-pressed={invoiceSendOpen}
+                  onClick={() => setInvoiceSendOpen((v) => !v)}>{t("invoice_send")}</AdminButton>
                 <AdminButton variant="secondary" icon={Printer} disabled={busy} onClick={reprint}>{t("reprint")}</AdminButton>
+                <AdminButton variant="secondary" icon={ArrowsClockwise} href={`/${locale}/admin/intake?repeat=${encodeURIComponent(order.id)}`}>{t("repeat_order")}</AdminButton>
               </>
             )}
             <AdminButton variant="secondary" icon={X} onClick={onClose} aria-label={t("close")}>{t("close")}</AdminButton>
           </div>
         </header>
 
-        {!editing && (order.amountPaidCents ?? 0) > 0 && (data.balanceCents ?? 0) !== 0 && (
+        {!editing && invoiceSendOpen && (
+          <InvoiceSendPanel
+            orderId={order.id}
+            defaultPhone={order.contact.phone ?? ""}
+            defaultEmail={order.contact.email ?? ""}
+            onClose={() => setInvoiceSendOpen(false)}
+            onSent={() => void reload()}
+          />
+        )}
+
+        {!editing && onAccount && data.houseAccount && (
+          <div className="mb-3 flex items-center justify-between gap-2 rounded bg-sky-50 px-3 py-2 text-sm font-semibold text-sky-800">
+            <span>{t("on_account", { name: data.houseAccount.name })}{balance > 0 && ` · ${money(balance)}`}</span>
+            <Link href={`/${locale}/admin/accounts/${data.houseAccount.id}`} className="underline">{t("view_account")}</Link>
+          </div>
+        )}
+
+        {!editing && !onAccount && (order.amountPaidCents ?? 0) > 0 && (data.balanceCents ?? 0) !== 0 && (
           <div className={`mb-3 flex items-center justify-between gap-2 rounded px-3 py-2 text-sm font-semibold ${
             (data.balanceCents ?? 0) > 0 ? "bg-amber-50 text-amber-800" : "bg-sky-50 text-sky-800"
           }`}>
@@ -215,11 +271,28 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
               {hasDeposit && <span className="ml-2 font-normal">· {t("deposit")} {money(amountPaid)}</span>}
             </span>
             {!hasDeposit && (
-              <AdminButton variant="secondary" disabled={busy}
-                onClick={() => call("PATCH", `/api/admin/orders/${order.id}/payment`, { settleBalance: true })}>
+              <AdminButton variant="secondary" disabled={busy} onClick={() => setSettleOpen((v) => !v)}>
                 {t("mark_settled")}
               </AdminButton>
             )}
+          </div>
+        )}
+
+        {!editing && !onAccount && !hasDeposit && settleOpen && (order.amountPaidCents ?? 0) > 0 && (data.balanceCents ?? 0) !== 0 && (
+          <div className="mb-3 rounded bg-bone px-3 py-2 text-sm">
+            <div className="mb-1 text-xs uppercase tracking-wide text-ink/50">{t("settle_method")}</div>
+            <div className="flex flex-wrap gap-2" role="group" aria-label={t("settle_method")}>
+              {SETTLE_METHODS.map((m) => (
+                <button key={m} type="button" disabled={busy}
+                  onClick={async () => {
+                    await call("PATCH", `/api/admin/orders/${order.id}/payment`, { settleBalance: true, method: m });
+                    setSettleOpen(false);
+                  }}
+                  className="rounded-full border border-ink/20 bg-white px-3 py-1.5 hover:border-ink disabled:opacity-40">
+                  {t(SETTLE_METHOD_LABEL[m])}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
@@ -266,7 +339,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
             </div>
           )}
           {f.cardMessage && (
-            <div className="mt-2 rounded bg-ink/5 p-2 text-xs italic">&quot;{f.cardMessage}&quot;</div>
+            <div className="mt-2 rounded bg-ink/5 p-2 text-xs italic whitespace-pre-line">&quot;{f.cardMessage}&quot;</div>
           )}
         </section>
 
@@ -321,7 +394,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
                 <span className="text-right">−{money(order.totals.discountCents)}</span>
               </>
             )}
-            <span>{t("tax")}</span><span className="text-right">{money(order.totals.taxCents)}</span>
+            <span>{t("tax")}{order.taxExempt ? ` · ${t("tax_exempt_short", { cert: order.taxExempt.cert })}` : ""}</span><span className="text-right">{money(order.totals.taxCents)}</span>
             {order.totals.tipCents > 0 && (
               <>
                 {/* Shown separately because it is not revenue — it is owed to
@@ -360,11 +433,24 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
           <div className="mt-2 text-xs text-ink/60">
             {t("payment_label")}: {order.paymentStatus === "paid" ? t("paid_with", { method: order.paymentMethod ?? "?" })
               : order.paymentStatus === "refunded" ? t("payment_status.refunded")
+              : onAccount && order.paymentStatus === "pending" ? t("on_account", { name: data.houseAccount?.name ?? "" })
               : hasDeposit ? t("deposit_summary", { paid: money(amountPaid), balance: money(balance) })
               : t("payment_status.pending")}
             {order.paidAt && order.paymentStatus !== "refunded" && ` · ${formatDateTime(order.paidAt, locale)}`}
           </div>
         </section>
+
+        {data.deliveryPhoto && (
+          <section className="mb-3 rounded border border-ink/10 bg-bone p-3 text-sm">
+            <div className="mb-2 text-xs uppercase tracking-wide text-ink/50">
+              {td("photo_section")} · {formatDateTime(data.deliveryPhoto.createdAt, locale)}
+            </div>
+            <a href={data.deliveryPhoto.url} target="_blank" rel="noreferrer">
+              {/* eslint-disable-next-line @next/next/no-img-element -- private token URL, not optimizable */}
+              <img src={data.deliveryPhoto.url} alt={td("photo_section")} className="max-h-64 w-full rounded bg-ink/5 object-contain" />
+            </a>
+          </section>
+        )}
 
         <section className="mb-3 rounded border border-ink/10 bg-bone p-3 text-sm">
           <div className="mb-2 text-xs uppercase tracking-wide text-ink/50">{t("messages", { count: messages.length })}</div>
@@ -410,11 +496,11 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
 
         <footer className="sticky bottom-0 -mx-4 -mb-4 border-t border-ink/10 bg-bone p-3">
           <div className="flex flex-wrap gap-2">
-            {order.paymentStatus === "pending" && order.status !== "canceled" && !depositOpen && (
+            {order.paymentStatus === "pending" && order.status !== "canceled" && !depositOpen && !onAccount && (
               <AdminButton variant="secondary" icon={HandCoins} disabled={busy}
                 onClick={() => { setDepositErr(null); setDepositOpen(true); }}>{t("record_deposit")}</AdminButton>
             )}
-            {order.paymentStatus !== "paid" && (
+            {order.paymentStatus !== "paid" && !onAccount && (
               <>
                 <AdminButton variant="secondary" icon={ArrowsClockwise} disabled={busy}
                   onClick={() => call("POST", `/api/admin/orders/${order.id}/resend`, { kind: "payment_link" })}>{t("resend_link")}</AdminButton>
@@ -423,6 +509,12 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
                 <AdminButton variant="primary" icon={Check} disabled={busy}
                   onClick={() => call("PATCH", `/api/admin/orders/${order.id}/payment`, { method: "zelle" })}>{t("zelle")}</AdminButton>
               </>
+            )}
+            {order.paymentStatus === "pending" && order.status !== "canceled" && !onAccount && !accountPickOpen && (
+              <AdminButton variant="secondary" icon={Buildings} disabled={busy} onClick={() => { setAccountErr(null); setAccountPickOpen(true); }}>{t("move_to_account")}</AdminButton>
+            )}
+            {onAccount && order.paymentStatus === "pending" && order.status !== "canceled" && data.houseAccount && !data.houseAccount.billed && (
+              <AdminButton variant="secondary" icon={Buildings} disabled={busy} onClick={() => accountCall({ removeFromAccount: true })}>{t("remove_from_account")}</AdminButton>
             )}
             {order.status !== "delivered" && order.status !== "canceled" && (
               <>
@@ -435,7 +527,9 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
                     onClick={() => call("PATCH", `/api/admin/orders/${order.id}/fulfillment`, { status: "out-for-delivery" })}>{order.fulfillment.method === "pickup" ? t("ready_for_pickup") : t("out_for_delivery")}</AdminButton>
                 )}
                 <AdminButton variant="primary" icon={CheckCircle} disabled={busy}
-                  onClick={() => call("PATCH", `/api/admin/orders/${order.id}/fulfillment`, { status: "delivered" })}>{order.fulfillment.method === "pickup" ? t("picked_up") : t("delivered")}</AdminButton>
+                  onClick={() => order.fulfillment.method === "delivery"
+                    ? setDelivering(true)
+                    : call("PATCH", `/api/admin/orders/${order.id}/fulfillment`, { status: "delivered" })}>{order.fulfillment.method === "pickup" ? t("picked_up") : t("delivered")}</AdminButton>
               </>
             )}
             <AdminButton variant="secondary" icon={WhatsappLogo}
@@ -486,6 +580,17 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
               </div>
             </div>
           )}
+          {accountErr && <p className="mt-2 text-xs text-error">{accountErr}</p>}
+          {accountPickOpen && (
+            <div className="mt-2 rounded border border-sky-300 bg-sky-50 p-3 text-xs">
+              <div className="mb-2 font-semibold text-sky-900">{t("account_pick")} · {t("balance_due")} {money(balance)}</div>
+              <AccountSearch autoFocus value={null} onSelect={async (a) => {
+                if (!a) return;
+                if (await accountCall({ moveToAccount: { accountId: a.id } })) setAccountPickOpen(false);
+              }} />
+              <div className="mt-2"><AdminButton variant="secondary" disabled={busy} onClick={() => setAccountPickOpen(false)}>{t("back")}</AdminButton></div>
+            </div>
+          )}
           {cancelOpen && (
             <div className="mt-2 rounded border border-red-300 bg-red-50 p-3 text-xs">
               <div className="mb-2 font-semibold text-red-700">{t("cancel_this_order")}</div>
@@ -518,6 +623,13 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
             </div>
           )}
         </footer>
+        {delivering && (
+          <DeliverSheet
+            order={order}
+            onClose={() => setDelivering(false)}
+            onDelivered={() => { setDelivering(false); void reload(); }}
+          />
+        )}
         </>)}
       </div>
     </div>

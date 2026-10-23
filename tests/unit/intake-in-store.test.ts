@@ -66,3 +66,20 @@ describe("POST /api/admin/orders — in-store (Take it now)", () => {
     expect(order.recipient_phone).toBe("5165550100");
   });
 });
+
+describe("POST /api/admin/orders — funeral", () => {
+  it("saves the funeral flag sent by the intake", async () => {
+    const res = await POST(req({ ...inStoreBody, funeral: true }));
+    expect(res.status).toBe(201);
+    const { orderId } = await res.json();
+    const row = getDb().prepare("SELECT funeral FROM orders WHERE id = ?").get(orderId) as { funeral: number };
+    expect(row.funeral).toBe(1);
+  });
+
+  it("defaults to a regular order when the flag is absent", async () => {
+    const res = await POST(req(inStoreBody));
+    const { orderId } = await res.json();
+    const row = getDb().prepare("SELECT funeral FROM orders WHERE id = ?").get(orderId) as { funeral: number };
+    expect(row.funeral).toBe(0);
+  });
+});

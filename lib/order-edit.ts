@@ -2,12 +2,15 @@ import "server-only";
 import { getOrder, updateOrder } from "@/lib/order-storage";
 import { recordOrderChange } from "@/lib/order-history";
 import { resolveOrderTotals } from "@/lib/totals";
+import { resolveOrderExemption } from "@/lib/tax-exempt";
 import { PRODUCTS } from "@/data/products";
+import { getPricedProducts } from "@/lib/product-prices";
 import type {
   Order, OrderFulfillment, CartLine, FieldDiff, OrderTotals,
   Recipient, DeliveryWindow, OrderChange,
 } from "@/types/order";
 import type { Address } from "@/types/address";
+import type { TaxExemptRequest } from "@/types/tax-exempt";
 
 export type OrderEditPatch = {
   contact?: { name?: string; email?: string; phone?: string };
@@ -16,8 +19,10 @@ export type OrderEditPatch = {
   address?: Address;
   window?: DeliveryWindow;
   cardMessage?: string;
+  funeral?: boolean;
   lines?: CartLine[];
   totalsOverride?: Partial<OrderTotals>;
+  taxExempt?: TaxExemptRequest;
 };
 
 function money(c: number): string { return `$${(c / 100).toFixed(2)}`; }
@@ -57,20 +62,37 @@ function applyPatch(cur: Order, patch: OrderEditPatch): Order {
   const lines = patch.lines ?? cur.lines;
   if (lines.length === 0) throw new Error("order must have at least one item");
 
+  // The stored snapshot is the default: an edit never re-adds tax by accident.
+  const exemption = resolveOrderExemption({ fallback: cur.taxExempt ?? null, requested: patch.taxExempt });
+  if (!exemption.ok) throw new Error(exemption.error);
+
   const totals = resolveOrderTotals({
     lines,
+    products: getPricedProducts(),
     fulfillmentMethod: method,
     address: method === "delivery" ? { zip: (address as Address).zip, city: (address as Address).city } : undefined,
-    override: patch.totalsOverride,
+    // Discount and tip are not editable here (the PATCH schema strips them), so
+    // they carry over from the stored order instead of silently dropping to 0.
+    override: {
+      discountCents: cur.totals.discountCents,
+      tipCents: cur.totals.tipCents,
+      ...patch.totalsOverride,
+    },
+    taxExempt: exemption.exemption !== null,
   });
 
-  return {
+  const next: Order = {
     ...cur,
     contact: { ...cur.contact, ...patch.contact },
     fulfillment,
     lines,
     totals,
   };
+  if (patch.funeral === true) next.funeral = true;
+  if (patch.funeral === false) delete next.funeral;
+  if (exemption.exemption) next.taxExempt = exemption.exemption;
+  else delete next.taxExempt;
+  return next;
 }
 
 export function diffOrders(before: Order, after: Order): FieldDiff[] {
@@ -96,6 +118,9 @@ export function diffOrders(before: Order, after: Order): FieldDiff[] {
   push("fulfillment.window", "Entrega", fmtWin(bWin), fmtWin(aWin));
 
   push("cardMessage", "Mensaje de tarjeta", before.fulfillment.cardMessage ?? null, after.fulfillment.cardMessage ?? null);
+  push("funeral", "Funeral", before.funeral ? "sí" : "no", after.funeral ? "sí" : "no");
+  const ex = (o: Order) => (o.taxExempt ? `sí · ${o.taxExempt.cert}` : "no");
+  push("taxExempt", "Exento de impuesto", ex(before), ex(after));
 
   if (JSON.stringify(before.lines) !== JSON.stringify(after.lines)) {
     diffs.push({ field: "lines", label: "Artículos", before: linesSummary(before.lines), after: linesSummary(after.lines) });
@@ -117,6 +142,17 @@ export async function editOrder(
 
   next.updatedAt = new Date().toISOString();
   await updateOrder(next);
+
+  // A changed total on an account order becomes a signed ledger adjustment.
+  if (next.houseAccountId && next.totals.totalCents !== cur.totals.totalCents) {
+    // The order row is already saved; a ledger failure is logged, not thrown, so the edit stands.
+    try {
+      const { syncOrderTotal } = await import("@/lib/house-account-ledger");
+      syncOrderTotal(orderId, cur.totals.totalCents, next.totals.totalCents, actor);
+    } catch (e) {
+      console.error(JSON.stringify({ event: "house_account_sync_failed", orderId, error: String(e) }));
+    }
+  }
 
   const labels = changes.map((c) => c.label).join(", ");
   const change = await recordOrderChange({

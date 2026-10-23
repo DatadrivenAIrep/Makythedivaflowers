@@ -5,13 +5,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { PencilSimple, Check, X, ArrowCounterClockwise, MagnifyingGlass, Camera } from "@phosphor-icons/react/dist/ssr";
 import type { Product } from "@/types/product";
-import type { PriceOverride } from "@/lib/product-prices";
+import type { PriceOverride } from "@/lib/price-overrides";
 import type { ImageOverride } from "@/lib/product-images";
+import { defaultTvVisible, hasTvQualityCover } from "@/lib/tv-showcase";
 
 type Props = {
   products: Product[];
   initialOverrides: PriceOverride[];
   initialImageOverrides: ImageOverride[];
+  initialTvVisibility: Record<string, boolean>;
 };
 
 type EditState = { productId: string; variantId: string; raw: string } | null;
@@ -21,7 +23,7 @@ function money(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
 }
 
-export default function ProductPricesPage({ products, initialOverrides, initialImageOverrides }: Props) {
+export default function ProductPricesPage({ products, initialOverrides, initialImageOverrides, initialTvVisibility }: Props) {
   const t = useTranslations("admin_products");
   const locale = useLocale() as "en" | "es";
 
@@ -32,6 +34,31 @@ export default function ProductPricesPage({ products, initialOverrides, initialI
     () => new Map(initialImageOverrides.map((o) => [o.productId, o.src])),
   );
   const [uploadingId, setUploadingId] = useState<string | null>(null);
+  const [tvVisibility, setTvVisibility] = useState<Map<string, boolean>>(
+    () => new Map(Object.entries(initialTvVisibility)),
+  );
+
+  async function toggleTv(product: Product, next: boolean) {
+    const prev = tvVisibility.get(product.id);
+    setTvVisibility((m) => new Map(m).set(product.id, next));
+    try {
+      const res = await fetch("/api/admin/tv-showcase", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: product.id, visible: next }),
+      });
+      if (!res.ok) throw new Error();
+    } catch {
+      setTvVisibility((m) => {
+        const back = new Map(m);
+        if (prev === undefined) back.delete(product.id);
+        else back.set(product.id, prev);
+        return back;
+      });
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 2500);
+    }
+  }
 
   const [editing, setEditing] = useState<EditState>(null);
   const [status, setStatus] = useState<SaveStatus>("idle");
@@ -245,6 +272,33 @@ export default function ProductPricesPage({ products, initialOverrides, initialI
                   <span className="font-display text-sm text-ink truncate">{product.title[locale]}</span>
                   <span className="text-xs text-mute-400 capitalize flex-shrink-0">{product.category}</span>
                 </div>
+                {(() => {
+                  // The TV shows the cover the shop shows, including Maky's uploaded one.
+                  const shown = customSrc
+                    ? { ...product, images: product.images.map((img, i) => (i === 0 ? { ...img, src: customSrc } : img)) }
+                    : product;
+                  const tvReady = hasTvQualityCover(shown);
+                  const onTv = tvReady && (tvVisibility.get(product.id) ?? defaultTvVisible(product));
+                  return (
+                    <div className="ml-auto flex items-center gap-2 flex-shrink-0">
+                      {!tvReady && <span className="text-xs text-mute-400">{t("tv_low_res")}</span>}
+                      <span className="text-xs text-mute-500">{t("tv_label")}</span>
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={onTv}
+                        aria-label={`${t("tv_label")} — ${product.title[locale]}`}
+                        disabled={!tvReady}
+                        onClick={() => toggleTv(product, !onTv)}
+                        className={`relative h-5 w-9 rounded-full transition-colors disabled:opacity-40 ${onTv ? "bg-rouge" : "bg-mute-200"}`}
+                      >
+                        <span
+                          className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${onTv ? "translate-x-4" : ""}`}
+                        />
+                      </button>
+                    </div>
+                  );
+                })()}
               </div>
 
               <table className="w-full text-sm">

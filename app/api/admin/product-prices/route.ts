@@ -10,14 +10,10 @@ import { PRODUCTS } from "@/data/products";
 
 export const runtime = "nodejs";
 
-// Product pages are statically prerendered and now publish price in JSON-LD, so
-// a price change has to regenerate them or the page quotes a stale number.
-function revalidatePricedSurfaces(productId: string) {
-  const slug = PRODUCTS.find((p) => p.id === productId)?.slug;
-  for (const locale of ["en", "es"]) {
-    if (slug) revalidatePath(`/${locale}/product/${slug}`);
-    revalidatePath(`/${locale}/shop`);
-  }
+// Every page quotes prices now (product JSON-LD, listings, and the bag and
+// checkout through the locale layout), so a price change regenerates them all.
+function revalidatePricedSurfaces() {
+  revalidatePath("/", "layout");
 }
 
 // Guard: productId + variantId must exist in the static catalog.
@@ -52,7 +48,7 @@ export async function PUT(req: Request) {
     return NextResponse.json({ error: "variant_not_found" }, { status: 404 });
 
   setPriceOverride(productId, variantId, priceCents);
-  revalidatePricedSurfaces(productId);
+  revalidatePricedSurfaces();
   return NextResponse.json({ ok: true });
 }
 
@@ -67,6 +63,6 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: "variant_not_found" }, { status: 404 });
 
   deletePriceOverride(productId, variantId);
-  revalidatePricedSurfaces(productId);
+  revalidatePricedSurfaces();
   return NextResponse.json({ ok: true });
 }

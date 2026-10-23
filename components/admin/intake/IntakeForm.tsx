@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, type ReactNode } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import type { Product } from "@/types/product";
 import type { CartLine, OrderTotals } from "@/types/order";
+import type { KnownRecipient } from "@/lib/recipient-history";
 import CustomerBlock, { type CustomerSnapshot } from "./CustomerBlock";
 import FulfillmentBlock, { type FulfillmentState } from "./FulfillmentBlock";
 import ProductPicker from "./ProductPicker";
@@ -10,14 +11,17 @@ import CartLines from "./CartLines";
 import CartTotals from "./CartTotals";
 import PromoField, { type AppliedPromo } from "./PromoField";
 import PaymentBlock, { type PaymentState } from "./PaymentBlock";
-import { toOrderFulfillment } from "./FulfillmentBlock";
+import TaxExemptToggle from "./TaxExemptToggle";
+import { canRememberDate, toOrderFulfillment } from "./FulfillmentBlock";
 import DraftsDrawer from "./DraftsDrawer";
 import type { DraftPayload } from "@/types/draft";
-import { PRODUCTS } from "@/data/products";
+import type { DefaultExemption, TaxExemptRequest } from "@/types/tax-exempt";
+import { isRequestExempt } from "@/lib/tax-exempt";
 import { cartSubtotalCents } from "@/lib/cart-helpers";
 import { computeDeliveryCentsForAddress, resolveOrderTotals } from "@/lib/totals";
 import { useRouter, useSearchParams } from "next/navigation";
-import { formatDateTime } from "@/lib/format-datetime";
+import { formatDate, formatDateTime } from "@/lib/format-datetime";
+import type { RepeatedOrder } from "@/lib/repeat-order";
 import {
   makeInitialFulfillment,
   makeInitialFormState,
@@ -36,8 +40,19 @@ function SectionCard({ title, children }: { title: string; children: ReactNode }
   );
 }
 
-export default function IntakeForm({ products }: { products: Product[] }) {
+export default function IntakeForm({
+  products,
+  repeat = null,
+  repeatMissing = false,
+}: {
+  products: Product[];
+  /** "Repetir orden": the past order's draft, loaded as the form's starting state. */
+  repeat?: RepeatedOrder | null;
+  /** ?repeat= named an order that does not exist. */
+  repeatMissing?: boolean;
+}) {
   const t = useTranslations("admin_intake");
+  const tx = useTranslations("admin_tax_exempt");
   const locale = useLocale() as "en" | "es";
   const channels: { id: Channel; label: string }[] = [
     { id: "walk-in", label: t("channel_walk_in") },
@@ -45,16 +60,25 @@ export default function IntakeForm({ products }: { products: Product[] }) {
     { id: "whatsapp", label: t("channel_whatsapp") },
     { id: "event", label: t("channel_event") },
   ];
-  const [channel, setChannel] = useState<Channel>(INITIAL_CHANNEL);
-  const [customer, setCustomer] = useState<CustomerSnapshot>(() => ({ ...INITIAL_CUSTOMER }));
-  const [fulfillment, setFulfillment] = useState<FulfillmentState>(makeInitialFulfillment);
-  const [lines, setLines] = useState<CartLine[]>([]);
+  const [channel, setChannel] = useState<Channel>(repeat?.payload.channel ?? INITIAL_CHANNEL);
+  const [customer, setCustomer] = useState<CustomerSnapshot>(() => repeat?.payload.customer ?? { ...INITIAL_CUSTOMER });
+  const [fulfillment, setFulfillment] = useState<FulfillmentState>(() => repeat?.payload.fulfillment ?? makeInitialFulfillment());
+  const [lines, setLines] = useState<CartLine[]>(() => repeat?.payload.lines ?? []);
+  // Shown until the form is reset or a draft replaces it.
+  const [repeatInfo, setRepeatInfo] = useState<Omit<RepeatedOrder, "payload"> | null>(() =>
+    repeat ? { from: repeat.from, previousCardMessage: repeat.previousCardMessage, dropped: repeat.dropped } : null,
+  );
+  const [repeatMissingShown, setRepeatMissingShown] = useState(repeatMissing);
   const [override, setOverride] = useState<Partial<OrderTotals>>({});
   const [promo, setPromo] = useState<AppliedPromo | null>(null);
+  // Staff's explicit exemption choice for this order; undefined = follow the default.
+  const [taxExempt, setTaxExempt] = useState<TaxExemptRequest | undefined>(undefined);
   const router = useRouter();
   const searchParams = useSearchParams();
   const okOrderId = searchParams.get("ok");
   const prefillPhone = searchParams.get("phone");
+  const prefillRecipientPhone = searchParams.get("rphone");
+  const prefillRecipientName = searchParams.get("rname");
   const [banner, setBanner] = useState<{
     orderId: string;
     channel?: string;
@@ -86,6 +110,17 @@ export default function IntakeForm({ products }: { products: Product[] }) {
     if (prefillPhone) {
       setCustomer((c) => (c.phone ? c : { ...c, phone: prefillPhone }));
     }
+    // "New order" from a customer's recipient list: the recipient's phone lookup fills the rest.
+    if (prefillRecipientPhone || prefillRecipientName) {
+      setFulfillment((f) => ({
+        ...f,
+        method: f.method === "in-store" ? "delivery" : f.method,
+        recipient: {
+          name: f.recipient.name || prefillRecipientName || "",
+          phone: f.recipient.phone || prefillRecipientPhone || "",
+        },
+      }));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -102,6 +137,75 @@ export default function IntakeForm({ products }: { products: Product[] }) {
   const [payment, setPayment] = useState<PaymentState>(() => ({ ...INITIAL_PAYMENT }));
   // Remounts PaymentBlock (and its typed deposit text) on reset / draft load.
   const [paymentKey, setPaymentKey] = useState(0);
+  // The gift-card field is hidden on account orders; drop any code typed earlier.
+  useEffect(() => { if (payment.status === "account" && giftCardCode) setGiftCardCode(""); }, [payment.status, giftCardCode]);
+  const [linkedAccount, setLinkedAccount] = useState<{ id: string; name: string } | null>(null);
+
+  // A phone that belongs to a house-account contact preselects "A cuenta",
+  // unless staff already chose a paid method or typed a deposit. The id of an
+  // auto-selected account is kept so that, if the phone changes to one with no
+  // account, the preselect is undone; a manual pick (AccountSearch) is never reverted.
+  const autoAccountRef = useRef<string | null>(null);
+  const phoneDigits = customer.phone.replace(/\D/g, "");
+  useEffect(() => {
+    function revertAuto() {
+      const autoId = autoAccountRef.current;
+      if (!autoId) return;
+      autoAccountRef.current = null;
+      setPayment((p) => {
+        if (p.status === "account" && p.accountId === autoId) {
+          setPaymentKey((k) => k + 1);
+          return { status: "pending" };
+        }
+        return p;
+      });
+    }
+    if (phoneDigits.length < 10) { setLinkedAccount(null); revertAuto(); return; }
+    let cancelled = false;
+    fetch(`/api/admin/accounts/for-phone?phone=${phoneDigits}`, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : { account: null }))
+      .then((d: { account: { id: string; name: string } | null }) => {
+        if (cancelled) return;
+        setLinkedAccount(d.account);
+        if (d.account) {
+          const acc = d.account;
+          setPayment((p) => {
+            if (p.status === "pending" && !p.deposit) {
+              autoAccountRef.current = acc.id;
+              setPaymentKey((k) => k + 1);
+              return { status: "account", accountId: acc.id, accountName: acc.name };
+            }
+            return p;
+          });
+        } else {
+          revertAuto();
+        }
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [phoneDigits]);
+
+  // The certificate that applies by default: the house account's when the order
+  // is charged to one, else the buyer's (resolved server-side).
+  const [exemptInfo, setExemptInfo] = useState<{ default: DefaultExemption | null; expired: boolean }>({ default: null, expired: false });
+  const exemptAccountId = payment.status === "account" ? payment.accountId : "";
+  // Same phone the server resolves the order with (app/api/admin/orders): the
+  // buyer's when it has 10+ digits, else the recipient's (who picks up).
+  const recipientDigits = fulfillment.method === "in-store" ? "" : fulfillment.recipient.phone.replace(/\D/g, "");
+  const exemptPhone = phoneDigits.length >= 10 ? phoneDigits : recipientDigits;
+  useEffect(() => {
+    if (exemptPhone.length < 10 && !exemptAccountId) { setExemptInfo({ default: null, expired: false }); return; }
+    let cancelled = false;
+    const qs = new URLSearchParams({ phone: exemptPhone, accountId: exemptAccountId });
+    fetch(`/api/admin/tax-exempt/default?${qs}`, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: { default?: DefaultExemption | null; expired?: boolean } | null) => {
+        if (!cancelled) setExemptInfo({ default: d?.default ?? null, expired: !!d?.expired });
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [exemptPhone, exemptAccountId]);
+  const exemptOn = isRequestExempt(exemptInfo.default, taxExempt);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [draftId, setDraftId] = useState<string | null>(null);
@@ -142,14 +246,28 @@ export default function IntakeForm({ products }: { products: Product[] }) {
     });
   }
 
+  // A past recipient picked from the buyer's history: address the order to them
+  // (and to their last delivery address, when there is one).
+  function pickRecipient(r: KnownRecipient) {
+    setFulfillment((f) => ({
+      ...f,
+      method: r.lastAddress ? "delivery" : f.method === "in-store" ? "delivery" : f.method,
+      recipient: { name: r.name, phone: r.phone },
+      address: r.lastAddress ? { ...r.lastAddress } : f.address,
+    }));
+  }
+
   function resetForm() {
     const init = makeInitialFormState();
+    setRepeatInfo(null);
+    setRepeatMissingShown(false);
     setChannel(init.channel);
     setCustomer(init.customer);
     setFulfillment(init.fulfillment);
     setLines(init.lines);
     setOverride(init.override);
     setPromo(null);
+    setTaxExempt(undefined);
     setGiftCardCode(init.giftCardCode);
     setPayment(init.payment);
     setPaymentKey((k) => k + 1);
@@ -159,7 +277,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
   }
 
   function currentPayload(): DraftPayload {
-    return { version: 1, channel, customer, fulfillment, lines, override, giftCardCode, promoCode: promo?.code ?? "", payment };
+    return { version: 1, channel, customer, fulfillment, lines, override, giftCardCode, promoCode: promo?.code ?? "", payment, taxExempt };
   }
 
   function draftLabel(): string {
@@ -229,6 +347,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
 
   function onResumeDraft(payload: DraftPayload, id: string) {
     draftGenRef.current++;
+    setRepeatInfo(null);
     setDraftSaveState("idle");
     setChannel(payload.channel ?? "walk-in");
     setCustomer(payload.customer ?? { ...INITIAL_CUSTOMER });
@@ -240,6 +359,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
         ? { code: payload.promoCode, discountCents: payload.override?.discountCents ?? 0 }
         : null,
     );
+    setTaxExempt(payload.taxExempt);
     setGiftCardCode(payload.giftCardCode ?? "");
     setPayment(payload.payment ?? { ...INITIAL_PAYMENT });
     setPaymentKey((k) => k + 1);
@@ -253,6 +373,10 @@ export default function IntakeForm({ products }: { products: Product[] }) {
       setError(t("deposit_too_big"));
       return;
     }
+    if (exemptOn && !exemptInfo.default && !taxExempt?.cert?.trim()) {
+      setError(tx("cert_required"));
+      return;
+    }
     setSubmitting(true);
     try {
       const body = {
@@ -262,15 +386,19 @@ export default function IntakeForm({ products }: { products: Product[] }) {
           name: customer.name,
           email: customer.email || undefined,
           messagingChannel: customer.messagingChannel,
-          locale,
+          // The customer's language, not the panel's: it drives every automatic message.
+          locale: customer.locale ?? "en",
           buyerAddress: customer.buyerAddress,
         },
         fulfillment: toOrderFulfillment(fulfillment),
+        funeral: fulfillment.funeral || undefined,
+        rememberDate: canRememberDate(fulfillment) ? fulfillment.rememberDate ?? undefined : undefined,
         lines,
         totalsOverride: override,
-        giftCardCode: giftCardCode || undefined,
+        giftCardCode: payment.status === "account" ? undefined : (giftCardCode || undefined),
         promoCode: promo?.code || undefined,
         payment,
+        ...(taxExempt ? { taxExempt } : {}),
       };
       const res = await fetch("/api/admin/orders", {
         method: "POST",
@@ -295,7 +423,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
 
   // Price context for the promo, resolved the same way the server does: a manual
   // subtotal/delivery override wins, else the live cart + address.
-  const promoSubtotalCents = override.subtotalCents ?? cartSubtotalCents(lines, PRODUCTS);
+  const promoSubtotalCents = override.subtotalCents ?? cartSubtotalCents(lines, products);
   const promoDeliveryCents =
     override.deliveryCents ??
     (fulfillment.method === "delivery"
@@ -306,15 +434,39 @@ export default function IntakeForm({ products }: { products: Product[] }) {
   // "balance due" hint.
   const liveTotalCents = resolveOrderTotals({
     lines,
+    products,
     fulfillmentMethod: fulfillment.method,
     address: fulfillment.method === "delivery" ? fulfillment.address : undefined,
     override,
+    taxExempt: exemptOn,
   }).totalCents;
 
   return (
     <main className="max-w-[1180px] mx-auto p-6">
       <p className="text-mute-500 text-sm mb-2">{t("page_subtitle")}</p>
       <h1 className="font-display text-3xl text-ink mb-6">{t("title_new")}</h1>
+
+      {repeatInfo && (
+        <div role="status" className="mb-4 rounded-2xl border border-mute-200 bg-bone px-5 py-3 text-sm">
+          <p className="font-medium">
+            {t("repeat_banner", {
+              number: repeatInfo.from.orderNumber ? `#${repeatInfo.from.orderNumber}` : repeatInfo.from.id,
+              date: formatDate(repeatInfo.from.createdAt, locale),
+            })}
+          </p>
+          <p className="mt-0.5 text-mute-500">{t("repeat_banner_hint")}</p>
+          {repeatInfo.dropped.length > 0 && (
+            <p className="mt-2 text-rouge">
+              {t("repeat_dropped", { items: repeatInfo.dropped.map((d) => d[locale]).join(", ") })}
+            </p>
+          )}
+        </div>
+      )}
+      {repeatMissingShown && (
+        <div role="status" className="mb-4 rounded-2xl border border-mute-200 bg-bone px-5 py-3 text-sm text-rouge">
+          {t("repeat_missing")}
+        </div>
+      )}
 
       {banner && (
         <div className="mb-4 px-5 py-3 rounded-2xl bg-bone border border-mute-200 flex items-center justify-between gap-3 text-sm">
@@ -408,10 +560,15 @@ export default function IntakeForm({ products }: { products: Product[] }) {
                 value={customer}
                 onChange={setCustomer}
                 onApplyAddress={(addr) => setFulfillment((f) => ({ ...f, address: addr, method: "delivery" }))}
+                onPickRecipient={pickRecipient}
               />
             </SectionCard>
             <SectionCard title={t("section_fulfillment")}>
-              <FulfillmentBlock value={fulfillment} onChange={setFulfillment} />
+              <FulfillmentBlock
+                value={fulfillment}
+                onChange={setFulfillment}
+                previousCardMessage={repeatInfo?.previousCardMessage}
+              />
             </SectionCard>
           </div>
           <div>
@@ -420,6 +577,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
               <div className="mt-4"><CartLines lines={lines} onChangeLines={setLines} /></div>
             </SectionCard>
             <SectionCard title={t("section_payment")}>
+              <TaxExemptToggle fallback={exemptInfo.default} expired={exemptInfo.expired} value={taxExempt} onChange={setTaxExempt} />
               <CartTotals
                 lines={lines}
                 fulfillmentMethod={fulfillment.method}
@@ -427,6 +585,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
                 deliveryCity={fulfillment.address.city}
                 override={override}
                 onOverride={setOverride}
+                taxExempt={exemptOn}
               />
               <div className="mt-4">
                 <PromoField
@@ -441,10 +600,13 @@ export default function IntakeForm({ products }: { products: Product[] }) {
                 />
               </div>
               <div className="mt-4"><PaymentBlock key={paymentKey} value={payment} onChange={setPayment} totalCents={liveTotalCents} /></div>
-              <label className="block mt-4">
-                <span className="mb-1 block text-xs font-semibold">{t("gift_card_label")}</span>
-                <input value={giftCardCode} onChange={(e) => setGiftCardCode(e.target.value)} placeholder="DIVA-XXXX-XXXX" className="w-full rounded-lg border border-ink/20 px-3 py-2 font-mono" />
-              </label>
+              {linkedAccount && <p className="mt-2 text-xs text-mute-600">{t("account_chip", { name: linkedAccount.name })}</p>}
+              {payment.status !== "account" && (
+                <label className="block mt-4">
+                  <span className="mb-1 block text-xs font-semibold">{t("gift_card_label")}</span>
+                  <input value={giftCardCode} onChange={(e) => setGiftCardCode(e.target.value)} placeholder="DIVA-XXXX-XXXX" className="w-full rounded-lg border border-ink/20 px-3 py-2 font-mono" />
+                </label>
+              )}
             </SectionCard>
           </div>
         </div>
@@ -467,7 +629,7 @@ export default function IntakeForm({ products }: { products: Product[] }) {
               </button>
               <button
                 type="button"
-                disabled={submitting || lines.length === 0 || (fulfillment.method !== "pickup" && (customer.name.length === 0 || customer.phone.replace(/\D/g, "").length < 10))}
+                disabled={submitting || lines.length === 0 || (payment.status === "account" && !payment.accountId) || (fulfillment.method !== "pickup" && (customer.name.length === 0 || customer.phone.replace(/\D/g, "").length < 10))}
                 onClick={onSubmit}
                 className="px-7 py-3.5 rounded-full bg-ink text-bone font-display disabled:opacity-40"
               >

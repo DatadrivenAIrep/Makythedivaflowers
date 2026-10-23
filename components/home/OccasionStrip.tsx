@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { BloomImage } from "@/components/motion/BloomImage";
+import { FloatingPhoto } from "@/components/product/FloatingPhoto";
 import { StaggerGroup, StaggerItem } from "@/components/motion/StaggerGroup";
-import { OCCASION_NAV } from "@/lib/occasions-nav";
+import { occasionLinks } from "@/lib/occasions-nav";
 import type { Locale } from "@/types/locale";
 
 /**
@@ -39,23 +39,21 @@ export async function OccasionStrip({ locale }: { locale: Locale }) {
         as="ul"
         className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 md:gap-4 lg:grid-cols-7"
       >
-        {OCCASION_NAV.map((o) => (
+        {occasionLinks().map((o) => (
           <StaggerItem as="li" key={o.slug}>
             <Link
               href={o.path(locale)}
-              className="group relative block aspect-[3/4] overflow-hidden rounded-[var(--radius-product)] bg-mute-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rouge/60 focus-visible:ring-offset-2 focus-visible:ring-offset-bone"
+              className="group block rounded-[var(--radius-product)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rouge/60 focus-visible:ring-offset-2 focus-visible:ring-offset-bone"
             >
-              <BloomImage
-                src={o.img}
-                alt=""
-                className="h-full w-full"
-                sizes="(min-width: 1024px) 200px, (min-width: 640px) 33vw, 50vw"
-              />
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-ink/85 via-ink/35 to-transparent"
-              />
-              <span className="absolute inset-x-3 bottom-3 font-display text-lg leading-tight tracking-tight text-bone [text-shadow:0_1px_3px_rgba(0,0,0,0.55)] md:text-xl">
+              <div className="relative aspect-[3/4] rounded-[var(--radius-product)] bg-mute-100">
+                <FloatingPhoto
+                  src={o.img}
+                  alt=""
+                  sizes="(min-width: 1024px) 200px, (min-width: 640px) 33vw, 50vw"
+                  className="inset-x-2 top-3 bottom-2 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-1.5 motion-reduce:transform-none"
+                />
+              </div>
+              <span className="mt-2.5 block font-display text-lg leading-tight tracking-tight text-ink transition-colors group-hover:text-rouge md:text-xl">
                 {o.label[locale]}
               </span>
             </Link>

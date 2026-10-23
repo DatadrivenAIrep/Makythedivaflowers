@@ -25,10 +25,14 @@ it("returns the metrics payload for a valid range", async () => {
   expect(res.status).toBe(200);
   const body = await res.json();
   expect(body.range).toBe("90d");
-  expect(body.kpis.revenueCents).toBe(6000);
-  expect(body.monthly).toHaveLength(12);
-  expect(Array.isArray(body.topProducts)).toBe(true);
-  expect(Array.isArray(body.byZone)).toBe(true);
+  expect(body.kpis.revenue.value).toBe(6000);
+  expect(Array.isArray(body.trend)).toBe(true);
+  expect(Array.isArray(body.sales.products)).toBe(true);
+});
+
+it("accepts the 7-day range", async () => {
+  const res = await GET(new Request("http://x/api/admin/metrics?range=7d"));
+  expect((await res.json()).range).toBe("7d");
 });
 
 it("falls back to 90d on an invalid range and honors range=all", async () => {
@@ -36,9 +40,9 @@ it("falls back to 90d on an invalid range and honors range=all", async () => {
   seedPaid("o2", 400, 4000);
   const bad = await (await GET(new Request("http://x/api/admin/metrics?range=bogus"))).json();
   expect(bad.range).toBe("90d");
-  expect(bad.kpis.revenueCents).toBe(6000);
+  expect(bad.kpis.revenue.value).toBe(6000);
 
   const all = await (await GET(new Request("http://x/api/admin/metrics?range=all"))).json();
   expect(all.range).toBe("all");
-  expect(all.kpis.revenueCents).toBe(10000);
+  expect(all.kpis.revenue.value).toBe(10000);
 });

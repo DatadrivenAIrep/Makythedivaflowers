@@ -2,12 +2,14 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import type { PaymentMethod } from "@/types/order";
+import AccountSearch from "@/components/admin/accounts/AccountSearch";
 
 export type DepositMethod = "cash" | "zelle" | "card-terminal" | "ach";
 
 export type PaymentState =
   | { status: "paid"; method: PaymentMethod }
-  | { status: "pending"; deposit?: { amountCents: number; method: DepositMethod } };
+  | { status: "pending"; deposit?: { amountCents: number; method: DepositMethod } }
+  | { status: "account"; accountId: string; accountName: string };
 
 type Props = {
   value: PaymentState;
@@ -74,6 +76,15 @@ export default function PaymentBlock({ value, onChange, totalCents }: Props) {
         >
           {t("payment_pending")}
         </button>
+        <button
+          type="button"
+          onClick={() => onChange({ status: "account", accountId: "", accountName: "" })}
+          className={`py-3.5 rounded-xl text-sm font-medium border border-dashed transition ${
+            value.status === "account" ? "bg-ink text-bone border-ink" : "bg-ink/[0.03] border-ink/40 text-ink hover:border-ink"
+          }`}
+        >
+          {t("payment_account")}
+        </button>
       </div>
       {value.status === "pending" && (
         <div className="mt-3 rounded-xl border border-mute-200 bg-white p-3">
@@ -118,6 +129,16 @@ export default function PaymentBlock({ value, onChange, totalCents }: Props) {
               {tooBig ? t("deposit_too_big") : t("deposit_hint", { amount: money(totalCents - depositCents) })}
             </p>
           )}
+        </div>
+      )}
+      {value.status === "account" && (
+        <div className="mt-3 rounded-xl border border-mute-200 bg-white p-3">
+          <label className="block text-[11px] uppercase tracking-widest text-mute-400 mb-2">{t("account_pick")}</label>
+          <AccountSearch
+            autoFocus
+            value={value.accountId ? { id: value.accountId, name: value.accountName } : null}
+            onSelect={(a) => onChange({ status: "account", accountId: a?.id ?? "", accountName: a?.name ?? "" })}
+          />
         </div>
       )}
     </div>

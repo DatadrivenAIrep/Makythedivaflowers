@@ -1,5 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
+import { isBarePath } from "@/lib/bare-paths";
 
 type Props = {
   topNav: React.ReactNode;
@@ -10,9 +11,10 @@ type Props = {
 
 export function LocaleChrome({ topNav, footer, extras, children }: Props) {
   const pathname = usePathname();
-  const isAdmin = /^\/[^/]+\/admin(\/|$)/.test(pathname);
+  // Admin and the shop TV (/vitrina) run full-screen, without the site chrome.
+  const isBare = isBarePath(pathname);
 
-  if (isAdmin) return <>{children}</>;
+  if (isBare) return <>{children}</>;
 
   return (
     <>

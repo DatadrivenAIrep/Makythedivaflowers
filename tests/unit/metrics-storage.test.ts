@@ -1,106 +1,116 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { closeDb, getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
-import { rangeLowerBound, fetchOrderRows, getMetrics } from "@/lib/metrics-storage";
+import { getMetrics } from "@/lib/metrics-storage";
 
-const NOW = new Date("2026-07-04T12:00:00Z");
-const DAY = 86_400_000;
+// 2026-10-12 15:00 New York.
+const NOW = new Date("2026-10-12T19:00:00Z");
+const LABELS = { customProducts: "Personalizados", unknownZone: "Sin zona" };
 
 beforeEach(() => { vi.stubEnv("SQLITE_FILE", ":memory:"); runMigrations(); });
 afterEach(() => { closeDb(); vi.unstubAllEnvs(); });
 
-const LABELS = { customProducts: "Personalizados", unknownZone: "Sin zona" };
-
-function seedOrder(p: {
-  id: string; daysAgo: number; total: number; paid: number;
-  payment?: string; fulfillment?: string; zip?: string | null; lines?: unknown[];
-  customerId?: string;
+let n = 0;
+function seed(p: {
+  at: string; paid?: number; total?: number; source?: string; payment?: string; status?: string;
+  customerId?: string | null; phone?: string; name?: string; zip?: string; lines?: unknown[];
+  windowDate?: string; slot?: string; funeral?: boolean; discount?: number; promo?: string; giftCard?: number;
 }) {
-  const at = new Date(NOW.getTime() - p.daysAgo * DAY).toISOString();
-  const address = p.zip ? JSON.stringify({ street1: "1", city: "X", state: "NY", zip: p.zip, country: "US" }) : null;
+  n += 1;
+  const address = p.zip ? JSON.stringify({ street1: "1 A", city: "X", state: "NY", zip: p.zip, country: "US" }) : null;
   getDb().prepare(
-    `INSERT INTO orders (id, customer_id, locale, source, recipient_name, recipient_phone, contact_phone,
-       fulfillment_method, address_json, lines_json, subtotal_cents, delivery_cents, tax_cents,
-       total_cents, amount_paid_cents, fulfillment_status, payment_status, created_at, updated_at)
-     VALUES (?, ?, 'es', 'web', 'R', '1', '1', ?, ?, ?, 0, 0, 0, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO orders (id, customer_id, locale, source, recipient_name, recipient_phone, contact_name, contact_phone,
+       fulfillment_method, address_json, window_date, window_slot, lines_json, subtotal_cents, delivery_cents, tax_cents,
+       total_cents, amount_paid_cents, fulfillment_status, payment_status, funeral, discount_cents, promo_code,
+       gift_card_cents, created_at, updated_at)
+     VALUES (?, ?, 'es', ?, 'R', '1', ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
-    p.id, p.customerId ?? null, p.zip ? "delivery" : "pickup", address, JSON.stringify(p.lines ?? []),
-    p.total, p.paid, p.fulfillment ?? "delivered", p.payment ?? "paid", at, at,
+    `o${n}`, p.customerId ?? null, p.source ?? "phone", p.name ?? "Ana", p.phone ?? "5165550100",
+    p.zip ? "delivery" : p.windowDate ? "pickup" : "in-store", address, p.windowDate ?? null,
+    p.slot ?? (p.windowDate ? "midday" : null), JSON.stringify(p.lines ?? []),
+    p.total ?? p.paid ?? 10000, p.paid ?? 10000, p.status ?? "delivered", p.payment ?? "paid",
+    p.funeral ? 1 : 0, p.discount ?? 0, p.promo ?? null, p.giftCard ?? null, p.at, p.at,
   );
 }
 
-// Seeds a customer plus `orderCount` linked orders so customerStats() (which
-// derives repeat rate from COUNT(*) of orders joined on customer_id, not the
-// order_count column) sees the intended order history.
-function seedCustomer(id: string, orderCount: number) {
-  getDb().prepare(
-    `INSERT INTO customers (id, name, phone, order_count, first_seen_at, last_seen_at)
-     VALUES (?, ?, ?, ?, '2026-01-01T00:00:00Z', '2026-06-01T00:00:00Z')`,
-  ).run(id, `C${id}`, `phone-${id}`, orderCount);
-  for (let i = 0; i < orderCount; i++) {
-    seedOrder({ id: `cust-${id}-${i}`, daysAgo: 200, total: 1000, paid: 1000, customerId: id });
-  }
-}
-
-describe("rangeLowerBound", () => {
-  it("computes each preset bound; all → null", () => {
-    expect(rangeLowerBound("30d", NOW)).toBe(new Date(NOW.getTime() - 30 * DAY).toISOString());
-    expect(rangeLowerBound("90d", NOW)).toBe(new Date(NOW.getTime() - 90 * DAY).toISOString());
-    expect(rangeLowerBound("ytd", NOW)).toBe("2026-01-01T00:00:00.000Z");
-    expect(rangeLowerBound("all", NOW)).toBeNull();
-  });
-});
-
-describe("fetchOrderRows", () => {
-  it("respects the range window and parses the zip from address_json", () => {
-    seedOrder({ id: "recent", daysAgo: 5, total: 5000, paid: 5000, zip: "11507" });
-    seedOrder({ id: "old", daysAgo: 200, total: 8000, paid: 8000, zip: "11576" });
-    const within90 = fetchOrderRows("90d", NOW);
-    expect(within90).toHaveLength(1);
-    expect(within90[0].addressZip).toBe("11507");
-    expect(fetchOrderRows("all", NOW)).toHaveLength(2);
-  });
-});
-
 describe("getMetrics", () => {
-  it("assembles KPIs, 12-month trend, top products, and by-zone", () => {
-    seedOrder({ id: "o1", daysAgo: 3, total: 6000, paid: 6000, zip: "11507",
-      lines: [{ kind: "catalog", productId: "p-arr-m01", variantId: "standard", addOnIds: [], qty: 2 }] });
-    seedOrder({ id: "o2", daysAgo: 10, total: 10000, paid: 4000, payment: "pending", zip: "11576",
-      lines: [{ kind: "custom", title: "Especial", priceCents: 4000, qty: 1 }] });
-    seedCustomer("a", 3); // recurring
-    seedCustomer("b", 1); // not
-
-    const m = getMetrics("90d", NOW, "es", LABELS);
-    expect(m.kpis.revenueCents).toBe(10000); // 6000 + 4000 collected
-    expect(m.kpis.outstandingCents).toBe(6000); // o2 remainder (10000 - 4000)
-    expect(m.kpis.orderCount).toBe(2);
-    expect(m.kpis.paidOrderCount).toBe(2); // both o1 and o2 have amount_paid > 0
-    expect(m.kpis.aovCents).toBe(5000); // 10000 / 2
-    expect(m.kpis.repeatRatePct).toBe(50); // a out of {a,b}
-    expect(m.monthly).toHaveLength(12);
-    expect(m.topProducts.length).toBeGreaterThanOrEqual(1);
-    expect(m.byZone.map((z) => z.zoneId).sort()).toEqual(["albertson", "roslyn"]);
+  it("compares the period with the one before, in shop time", () => {
+    seed({ at: "2026-10-13T01:30:00Z", paid: 6000 }); // 9:30 pm Oct 12 NY: inside 30d
+    seed({ at: "2026-10-01T15:00:00Z", paid: 4000, source: "web" });
+    seed({ at: "2026-09-01T15:00:00Z", paid: 5000 }); // previous 30 days
+    const m = getMetrics("30d", NOW, "es", LABELS);
+    expect(m.today).toBe("2026-10-12");
+    expect(m.kpis.revenue).toEqual({ value: 10000, delta: { kind: "pct", pct: 100 } });
+    expect(m.kpis.orders).toEqual({ value: 2, delta: { kind: "pct", pct: 100 } });
+    expect(m.trend.find((p) => p.key === "2026-10-12")?.revenueCents).toBe(6000);
+    expect(m.sales.channels.find((c) => c.channel === "web")?.sharePct).toBe(40);
   });
 
-  it("uses the requested locale for product/zone names", () => {
-    seedOrder({ id: "o1", daysAgo: 1, total: 6000, paid: 6000, zip: "11507",
-      lines: [{ kind: "catalog", productId: "p-arr-m01", variantId: "standard", addOnIds: [], qty: 1 }] });
-    const es = getMetrics("30d", NOW, "es", LABELS);
-    expect(es.byZone[0].label).toBe("Albertson");
-    expect(es.topProducts[0].name).not.toBe("p-arr-m01"); // resolved to localized title
+  it("puts last year's same dates on the trend", () => {
+    seed({ at: "2025-10-10T15:00:00Z", paid: 4000 });
+    const m = getMetrics("30d", NOW, "es", LABELS);
+    expect(m.trend.find((p) => p.key === "2026-10-10")?.prevRevenueCents).toBe(4000);
   });
 
-  it("trend spans a full 12 months regardless of the KPI range", () => {
-    // "fivemo" is ~5 months old (2026-02): outside the 90d KPI window but inside
-    // the 12-month trend. KPIs must exclude it; the trend must include it.
-    seedOrder({ id: "recent", daysAgo: 3, total: 6000, paid: 6000, zip: "11507" });
-    seedOrder({ id: "fivemo", daysAgo: 150, total: 9000, paid: 9000, zip: "11507" });
+  it("values custom lines for product revenue and counts pending balances", () => {
+    seed({ at: "2026-10-05T15:00:00Z", lines: [{ kind: "custom", title: "Especial", priceCents: 4000, qty: 2 }] });
+    seed({ at: "2026-10-06T15:00:00Z", total: 9000, paid: 2000, payment: "pending" });
+    const m = getMetrics("30d", NOW, "es", LABELS);
+    expect(m.sales.products[0]).toMatchObject({ key: "__custom__", name: "Personalizados", qty: 2, cents: 8000 });
+    expect(m.kpis.pendingCount).toBe(1);
+    expect(m.kpis.pendingCents).toBe(7000);
+  });
 
-    const m = getMetrics("90d", NOW, "es", LABELS);
-    expect(m.kpis.revenueCents).toBe(6000); // KPI range = 90d, excludes the Feb order
-    expect(m.monthly).toHaveLength(12);
-    expect(m.monthly.reduce((s, b) => s + b.cents, 0)).toBe(15000); // trend includes both
-    expect(m.monthly.find((b) => b.month === "2026-02")?.cents).toBe(9000);
+  it("builds the operations tab from scheduled days", () => {
+    seed({ at: "2026-10-01T15:00:00Z", windowDate: "2026-10-10", slot: "midday" });
+    seed({ at: "2026-10-11T15:00:00Z", windowDate: "2026-10-17", slot: "evening" });
+    const m = getMetrics("30d", NOW, "es", LABELS);
+    expect(m.operations.heatmap.counts[5]).toEqual([0, 1, 0, 0]);
+    expect(m.operations.upcoming[5]).toEqual({ date: "2026-10-17", count: 1 });
+  });
+
+  it("matches unlinked orders to their customer by phone for new vs returning", () => {
+    getDb().prepare(
+      `INSERT INTO customers (id, name, phone, order_count, first_seen_at, last_seen_at)
+       VALUES ('cus_a', 'Ana', '5165550100', 2, '2026-03-01T15:00:00Z', '2026-10-05T15:00:00Z')`,
+    ).run();
+    seed({ at: "2026-03-01T15:00:00Z", customerId: "cus_a" });
+    seed({ at: "2026-10-05T15:00:00Z", customerId: null }); // unlinked, same phone → returning
+    seed({ at: "2026-10-06T15:00:00Z", phone: "5165550199", name: "Beto" }); // new
+    const m = getMetrics("30d", NOW, "es", LABELS);
+    expect(m.customers.split).toMatchObject({ newBuyers: 1, returningBuyers: 1 });
+    expect(m.kpis.newCustomers.value).toBe(1);
+    expect(m.customers.top.map((c) => c.name).sort()).toEqual(["Ana", "Beto"]);
+  });
+
+  it("always returns at least one insight", () => {
+    expect(getMetrics("7d", NOW, "es", LABELS).insights.length).toBeGreaterThan(0);
+  });
+
+  it("ignores abandoned web checkouts everywhere", () => {
+    // A web cart that never got paid: no revenue, but also no order, no balance, no booked slot.
+    seed({
+      at: "2026-10-10T15:00:00Z", source: "web", payment: "pending", status: "received",
+      total: 8000, paid: 0, windowDate: "2026-10-14", slot: "midday", phone: "5165550777", name: "Fantasma",
+    });
+    seed({ at: "2026-10-10T16:00:00Z", paid: 5000 });
+    const m = getMetrics("30d", NOW, "es", LABELS);
+    expect(m.kpis.orders.value).toBe(1);
+    expect(m.kpis.pendingCount).toBe(0);
+    expect(m.kpis.pendingCents).toBe(0);
+    expect(m.operations.upcoming.every((d) => d.count === 0)).toBe(true);
+    expect(m.operations.heatmap.total).toBe(0);
+    expect(m.customers.top.map((c) => c.name)).not.toContain("Fantasma");
+    expect(m.sales.channels.find((c) => c.channel === "web")?.orders).toBe(0);
+  });
+
+  it("flags the weekday peak using the deliveries in the period, not the orders created in it", () => {
+    for (let i = 0; i < 20; i += 1) {
+      seed({ at: "2026-08-01T15:00:00Z", windowDate: "2026-10-03", slot: "midday" }); // placed long ago, delivered in the period
+    }
+    const m = getMetrics("30d", NOW, "es", LABELS);
+    expect(m.kpis.orders.value).toBe(0);
+    expect(m.operations.heatmap.total).toBe(20);
+    expect(m.insights.map((i) => i.id)).toContain("peak_day");
   });
 });

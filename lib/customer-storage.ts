@@ -11,6 +11,8 @@ import {
 } from "@/lib/customer-metrics";
 import type { Address } from "@/types/address";
 import type { MessagingChannel } from "@/types/order";
+import type { TaxExemption } from "@/types/tax-exempt";
+import { normalizeExemptionInput } from "@/lib/tax-exempt";
 
 export type Customer = {
   id: string;
@@ -25,6 +27,7 @@ export type Customer = {
   messagingChannel?: MessagingChannel;
   locale?: "en" | "es";
   notes?: string;
+  taxExemption: TaxExemption;
 };
 
 type CustomerRow = {
@@ -40,6 +43,9 @@ type CustomerRow = {
   messaging_channel: string | null;
   locale: string | null;
   notes: string | null;
+  tax_exempt: number;
+  tax_exempt_cert: string | null;
+  tax_exempt_expires: string | null;
 };
 
 export function normalizePhone(p: string): string {
@@ -60,6 +66,11 @@ function rowToCustomer(r: CustomerRow): Customer {
     messagingChannel: (r.messaging_channel as MessagingChannel | null) ?? undefined,
     locale: (r.locale as "en" | "es" | null) ?? undefined,
     notes: r.notes ?? undefined,
+    taxExemption: {
+      exempt: r.tax_exempt === 1,
+      cert: r.tax_exempt_cert ?? null,
+      expires: r.tax_exempt_expires ?? null,
+    },
   };
 }
 
@@ -175,6 +186,7 @@ export type CustomerPatch = {
   email?: string; // "" clears the stored email
   messagingChannel?: MessagingChannel;
   locale?: "en" | "es";
+  taxExemption?: { exempt: boolean; cert?: string | null; expires?: string | null };
 };
 
 export function updateCustomer(id: string, patch: CustomerPatch): Customer | null {
@@ -190,6 +202,11 @@ export function updateCustomer(id: string, patch: CustomerPatch): Customer | nul
     params.push(patch.messagingChannel);
   }
   if (patch.locale !== undefined) { sets.push("locale = ?"); params.push(patch.locale); }
+  if (patch.taxExemption !== undefined) {
+    const e = normalizeExemptionInput(patch.taxExemption);
+    sets.push("tax_exempt = ?", "tax_exempt_cert = ?", "tax_exempt_expires = ?");
+    params.push(e.exempt ? 1 : 0, e.cert, e.expires);
+  }
   if (sets.length) {
     db.prepare(`UPDATE customers SET ${sets.join(", ")} WHERE id = ?`).run(...params, id);
   }

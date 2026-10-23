@@ -1,14 +1,15 @@
 import { getTranslations } from "next-intl/server";
 import { CategoryOrbit } from "@/components/home/CategoryOrbit";
 import type { Locale } from "@/types/locale";
+import { shopCategoryHref } from "@/lib/shop-categories";
 
 const CATEGORIES = [
-  { slug: "arrangements", img: "/products/flamingo-garden.jpg", index: "01" },
-  { slug: "bouquets", img: "/products/dozen-roses-bouquet.jpg", index: "02" },
+  { slug: "arrangements", img: "/products/island-sunrise.jpg", index: "01" },
+  { slug: "bouquets", img: "/products/peach-sunshine.jpg", index: "02" },
   { slug: "plants", img: "/products/monstera-mood.jpg", index: "03" },
   { slug: "gifts", img: "/products/daydream-parcel.jpg", index: "04" },
   { slug: "sympathy", img: "/products/celestial-peace.jpg", index: "05" },
-  { slug: "subscriptions", img: "/products/timeless-romance.jpg", index: "06" },
+  { slug: "subscriptions", img: "/products/blush-enchantment.jpg", index: "06" },
 ] as const;
 
 export async function CategoryStrip({ locale }: { locale: Locale }) {
@@ -19,7 +20,7 @@ export async function CategoryStrip({ locale }: { locale: Locale }) {
     img: c.img,
     index: c.index,
     name: t(`categories.${c.slug}`),
-    href: `/${locale}/shop/${c.slug}`,
+    href: shopCategoryHref(locale, c.slug),
   }));
 
   const eyebrow =

@@ -14,6 +14,7 @@ import type { Order } from "@/types/order";
 import { SITE } from "@/data/site";
 import { formatAddressLine, formatMoneyCents } from "@/lib/format";
 import { getLogoDataUri } from "@/lib/print-styles";
+import { getPricedProducts } from "@/lib/product-prices";
 import { buildInvoiceModel, type InvoiceModel, type InvoiceRow } from "@/lib/invoice";
 
 const STYLES = `
@@ -46,6 +47,8 @@ table{width:100%;border-collapse:collapse}
 .sums .total td{border-top:1px solid #1d1a17;font-weight:700;font-size:15px;padding-top:8px}
 .sums .gap td{padding-top:12px}
 .sums .balance td{font-weight:700;border-top:1px solid #e6e0d8}
+.online{margin:24px 0 0;text-align:center}
+.online a{display:inline-block;font-weight:600;padding:10px 18px;border-radius:8px;background:#1d1a17;color:#fff;text-decoration:none}
 footer{margin-top:36px;padding-top:16px;border-top:1px solid #e6e0d8;text-align:center;color:#6b635b;font-size:12px}
 @media (max-width:640px){
   .page{margin:12px 0;padding:20px 16px}
@@ -71,15 +74,17 @@ function Row({ row, locale, first }: { row: InvoiceRow; locale: "en" | "es"; fir
   );
 }
 
-function Invoice({ m, logoUri }: { m: InvoiceModel; logoUri: string }) {
+function Invoice({ m, logoUri, onlineLink }: { m: InvoiceModel; logoUri: string; onlineLink?: string }) {
   const s = m.strings;
   const site = SITE.url.replace(/^https?:\/\//, "");
   const money = (c: number | null) => (c == null ? "—" : formatMoneyCents(c, m.locale));
   return (
     <>
-      <div className="toolbar">
-        <button type="button" data-print>{s.print}</button>
-      </div>
+      {onlineLink ? null : (
+        <div className="toolbar">
+          <button type="button" data-print>{s.print}</button>
+        </div>
+      )}
       <main className="page">
         <header>
           <div>
@@ -144,16 +149,30 @@ function Invoice({ m, logoUri }: { m: InvoiceModel; logoUri: string }) {
           </tbody>
         </table>
 
+        {onlineLink ? <p className="online"><a href={onlineLink}>{s.viewOnline}</a></p> : null}
+
         <footer>{s.thanks} · {site}</footer>
       </main>
     </>
   );
 }
 
-export async function buildInvoiceHtml(order: Order, opts: { now?: Date } = {}): Promise<string> {
+/** `forEmail` renders the emailed copy: no print button or script (mail clients
+ *  strip them), the logo by URL (Gmail blocks data: images), and a button to the
+ *  public online copy. */
+export async function buildInvoiceHtml(
+  order: Order,
+  opts: { now?: Date; forEmail?: { link: string; logoUrl: string } } = {},
+): Promise<string> {
   const renderToStaticMarkup = await loadRenderToStaticMarkup();
-  const m = buildInvoiceModel(order, { now: opts.now });
-  const body = renderToStaticMarkup(<Invoice m={m} logoUri={getLogoDataUri()} />);
+  const m = buildInvoiceModel(order, { now: opts.now, products: getPricedProducts() });
+  const email = opts.forEmail;
+  const body = renderToStaticMarkup(
+    <Invoice m={m} logoUri={email ? email.logoUrl : getLogoDataUri()} onlineLink={email?.link} />,
+  );
+  const script = email
+    ? ""
+    : `\n<script>document.querySelector("[data-print]").addEventListener("click", function () { window.print(); });</script>`;
   // m.number is "INV-" + digits or uppercased id chars — safe to interpolate.
   return `<!doctype html>
 <html lang="${m.locale}">
@@ -163,8 +182,21 @@ export async function buildInvoiceHtml(order: Order, opts: { now?: Date } = {}):
 <title>${m.number} · ${SITE.merchantName}</title>
 <style>${STYLES}</style>
 </head>
-<body>${body}
-<script>document.querySelector("[data-print]").addEventListener("click", function () { window.print(); });</script>
+<body>${body}${script}
 </body>
+</html>`;
+}
+
+export function invoiceNotFoundPage(): string {
+  return `<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${SITE.merchantName}</title>
+<style>body{margin:0;background:#f4f1ec;color:#1d1a17;font:15px/1.5 -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
+main{max-width:480px;margin:15vh auto;background:#fff;padding:32px;border-radius:12px;text-align:center}h1{font-size:20px;margin:0 0 8px}p{margin:0;color:#6b635b}</style>
+</head>
+<body><main><h1>No encontramos esta factura · Invoice not found</h1><p>${SITE.phoneDisplay}</p></main></body>
 </html>`;
 }

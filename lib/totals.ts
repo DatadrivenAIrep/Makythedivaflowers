@@ -2,7 +2,7 @@
 import type { CartLine, OrderTotals } from "@/types/order";
 import { findDeliveryZoneByZip, findDeliveryZoneByCity } from "@/lib/delivery-zones";
 import { cartSubtotalCents } from "@/lib/cart-helpers";
-import { PRODUCTS } from "@/data/products";
+import type { Product } from "@/types/product";
 
 // Used when the customer hasn't entered a ZIP yet. Display layer should pass
 // `deliveryPending` to render "—" instead of this number, but if it leaks
@@ -15,6 +15,7 @@ export function computeOrderTotals(
   deliveryCents: number = 0,
   discountCents: number = 0,
   tipCents: number = 0,
+  opts: { taxExempt?: boolean } = {},
 ): OrderTotals {
   if (subtotalCents <= 0) {
     return {
@@ -31,7 +32,8 @@ export function computeOrderTotals(
   // amount code can never drive the total (or the tax) negative.
   const discount = Math.min(Math.max(discountCents, 0), subtotalCents + deliveryCents);
   const taxable = subtotalCents + deliveryCents - discount;
-  const taxCents = Math.round(taxable * TAX_RATE);
+  // An exempt buyer (certificate on file) pays no sales tax at all.
+  const taxCents = opts.taxExempt ? 0 : Math.round(taxable * TAX_RATE);
   // The tip is collected for the team, not earned by the shop, so it is added
   // after tax and never widens the taxable base.
   const tip = Math.max(tipCents, 0);
@@ -70,20 +72,25 @@ export function computeDeliveryCentsForAddress(address: {
 /**
  * Single source of truth for turning lines + fulfillment into totals, with an
  * optional manual override. Used by intake order creation and by editOrder so
- * both price identically.
+ * both price identically. A `taxExempt` order always has taxCents 0, even when
+ * the override carries a tax figure; a pinned totalCents still wins over all.
  */
 export function resolveOrderTotals(input: {
   lines: CartLine[];
+  /** The catalog at today's prices (admin overrides applied). */
+  products: readonly Product[];
   fulfillmentMethod: "in-store" | "delivery" | "pickup";
   address?: { zip: string; city: string };
   override?: Partial<OrderTotals>;
+  taxExempt?: boolean;
 }): OrderTotals {
-  const subtotal = cartSubtotalCents(input.lines, PRODUCTS);
+  const subtotal = cartSubtotalCents(input.lines, input.products);
   let delivery = 0;
   if (input.fulfillmentMethod === "delivery" && input.address) {
     delivery = computeDeliveryCentsForAddress(input.address) ?? 0;
   }
-  const computed = computeOrderTotals(subtotal, delivery);
+  const exempt = input.taxExempt === true;
+  const computed = computeOrderTotals(subtotal, delivery, 0, 0, { taxExempt: exempt });
   const o = input.override ?? {};
   // Cascade: an overridden subtotal/delivery must flow into tax + total (unless
   // those are themselves explicitly overridden). Only a total override pins it.
@@ -94,10 +101,12 @@ export function resolveOrderTotals(input: {
     deliveryCents,
     o.discountCents ?? 0,
     o.tipCents ?? 0,
+    { taxExempt: exempt },
   );
   const discountCents = recomputed.discountCents;
   const tipCents = recomputed.tipCents;
-  const taxCents = o.taxCents ?? recomputed.taxCents;
+  // An exempt order pays no tax, not even a hand-typed tax override.
+  const taxCents = exempt ? 0 : (o.taxCents ?? recomputed.taxCents);
   const totalCents =
     o.totalCents ?? subtotalCents + deliveryCents - discountCents + taxCents + tipCents;
   return { subtotalCents, deliveryCents, discountCents, tipCents, taxCents, totalCents };

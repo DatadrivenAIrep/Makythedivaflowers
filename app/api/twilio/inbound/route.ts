@@ -48,6 +48,7 @@ export async function POST(req: Request): Promise<Response> {
           customerId: customer?.id,
           body,
           providerSid: params.MessageSid,
+          read: STOP_WORDS.has(keyword) || START_WORDS.has(keyword),
         });
       } catch (e) {
         console.error(

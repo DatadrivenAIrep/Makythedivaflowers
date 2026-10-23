@@ -14,3 +14,10 @@ export function formatDateOnly(ymd: string, locale: string): string {
     timeZone: "UTC",
   });
 }
+/** Today's calendar day (YYYY-MM-DD) on the device's own clock. `toISOString()`
+ * is UTC, which in New York flips to tomorrow at 8 pm (7 pm in winter) — so the
+ * shop's "today" must come from local date parts. */
+export function localYmd(now: Date = new Date()): string {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+}

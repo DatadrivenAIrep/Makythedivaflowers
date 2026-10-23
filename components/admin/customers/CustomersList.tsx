@@ -8,9 +8,17 @@ import type {
   CustomerSegmentFilter,
   CustomerSort,
 } from "@/lib/customer-storage";
+import type { BackfillPreview } from "@/lib/backfill-customers";
 import SegmentBadge from "./SegmentBadge";
+import BackfillBanner from "./BackfillBanner";
 
-type Props = { locale: string; initial: CustomerListResult; allTags: string[] };
+type Props = {
+  locale: string;
+  initial: CustomerListResult;
+  allTags: string[];
+  /** Paid orders not yet linked to a customer; drives the "Ligar pedidos" banner. */
+  backfill?: BackfillPreview | null;
+};
 
 function money(c: number) { return `$${(c / 100).toFixed(2)}`; }
 
@@ -30,7 +38,7 @@ const SORTS: Array<{ id: CustomerSort; key: string }> = [
   { id: "name", key: "sort_name" },
 ];
 
-export default function CustomersList({ locale, initial, allTags }: Props) {
+export default function CustomersList({ locale, initial, allTags, backfill }: Props) {
   const t = useTranslations("admin_customers");
   const [q, setQ] = useState("");
   const [segment, setSegment] = useState<CustomerSegmentFilter | "all">("all");
@@ -50,20 +58,20 @@ export default function CustomersList({ locale, initial, allTags }: Props) {
     return sp.toString();
   }
 
+  async function reload() {
+    try {
+      const res = await fetch(`/api/admin/customers?${query()}`, { cache: "no-store" });
+      if (!res.ok) throw new Error(String(res.status));
+      setData((await res.json()) as CustomerListResult);
+      setError(false);
+    } catch {
+      setError(true);
+    }
+  }
+
   useEffect(() => {
     if (firstRender.current) { firstRender.current = false; return; }
-    const handle = setTimeout(() => {
-      void (async () => {
-        try {
-          const res = await fetch(`/api/admin/customers?${query()}`, { cache: "no-store" });
-          if (!res.ok) throw new Error(String(res.status));
-          setData((await res.json()) as CustomerListResult);
-          setError(false);
-        } catch {
-          setError(true);
-        }
-      })();
-    }, 250);
+    const handle = setTimeout(() => { void reload(); }, 250);
     return () => clearTimeout(handle);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q, segment, tag, sort]);
@@ -94,6 +102,8 @@ export default function CustomersList({ locale, initial, allTags }: Props) {
       <div className="mb-3 flex items-center justify-between gap-2">
         <h1 className="text-lg font-semibold">{t("title")}</h1>
       </div>
+
+      {backfill && <BackfillBanner preview={backfill} onLinked={() => { void reload(); }} />}
 
       <div className="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-5">
         {stats.map((st) => (

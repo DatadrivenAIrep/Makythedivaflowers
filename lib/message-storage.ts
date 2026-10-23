@@ -10,7 +10,10 @@ export type MessageTemplate =
   | "out_for_delivery"
   | "ready_for_pickup"
   | "delivered"
-  | "review_request";
+  | "review_request"
+  | "gift_card_issued"
+  | "invoice"
+  | "payment_reminder";
 export type MessageStatus = "queued" | "sent" | "failed" | "skipped";
 
 export type Message = {
@@ -26,6 +29,7 @@ export type Message = {
   status: MessageStatus;
   error?: string;
   body?: string;
+  mediaUrl?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -45,6 +49,7 @@ type MessageRow = {
   status: string;
   error: string | null;
   body: string | null;
+  media_url: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -63,6 +68,7 @@ function rowToMessage(r: MessageRow): Message {
     status: r.status as MessageStatus,
     error: r.error ?? undefined,
     body: r.body ?? undefined,
+    mediaUrl: r.media_url ?? undefined,
     createdAt: r.created_at,
     updatedAt: r.updated_at,
   };
@@ -79,8 +85,8 @@ export function insertMessage(input: InsertInput): string {
   getDb()
     .prepare(
       `INSERT INTO messages
-         (id, order_id, customer_id, channel, template, locale, to_phone, to_email, status, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'queued', ?, ?)`,
+         (id, order_id, customer_id, channel, template, locale, to_phone, to_email, media_url, status, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'queued', ?, ?)`,
     )
     .run(
       id,
@@ -91,6 +97,7 @@ export function insertMessage(input: InsertInput): string {
       input.locale,
       input.toPhone ?? null,
       input.toEmail ?? null,
+      input.mediaUrl ?? null,
       now,
       now,
     );

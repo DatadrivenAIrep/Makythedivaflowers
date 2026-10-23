@@ -10,12 +10,17 @@ import { OccasionStrip } from "@/components/home/OccasionStrip";
 import { DigitalCardsFeature } from "@/components/home/DigitalCardsFeature";
 import { GiftAssuranceBar } from "@/components/conversion/GiftAssuranceBar";
 import { SocialProof } from "@/components/home/SocialProof";
+import { BehindTheScenes } from "@/components/home/BehindTheScenes";
 import { EditorialSplit } from "@/components/home/EditorialSplit";
 import { Verticals } from "@/components/home/Verticals";
 import { SympathyShowcase } from "@/components/home/SympathyShowcase";
 import { StudioVisit } from "@/components/home/StudioVisit";
 import { NewsletterField } from "@/components/home/NewsletterField";
 import { localeAlternates } from "@/lib/seo/alternates";
+
+// The seasonal hero and the occasion strip's seasonal card follow the calendar:
+// regenerate hourly so a season starts on its date, not on the next deploy.
+export const revalidate = 3600;
 
 export async function generateMetadata({
   params,
@@ -52,6 +57,7 @@ export default async function Home({ params }: { params: Promise<{ locale: Local
       <CategoryStrip locale={locale} />
       <SympathyShowcase locale={locale} />
       <Verticals locale={locale} />
+      <BehindTheScenes locale={locale} />
       <EditorialSplit locale={locale} />
       <StudioVisit locale={locale} />
       <NewsletterField />

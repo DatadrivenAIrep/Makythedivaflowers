@@ -6,6 +6,7 @@ import esMessages from "@/messages/es.json";
 import CustomerProfile from "@/components/admin/customers/CustomerProfile";
 import type { CustomerProfileData } from "@/lib/customer-profile";
 import type { Order } from "@/types/order";
+import { NO_EXEMPTION } from "@/types/tax-exempt";
 
 function wrap(ui: React.ReactNode) {
   return render(
@@ -29,7 +30,7 @@ const profile: CustomerProfileData = {
   customer: {
     id: "c1", name: "Ana Flores", phone: "5165550001", email: "ana@x.com",
     orderCount: 2, firstSeenAt: "2026-01-01T00:00:00Z", lastSeenAt: "2026-06-30T10:00:00Z",
-    notes: "Prefiere tulipanes",
+    notes: "Prefiere tulipanes", taxExemption: NO_EXEMPTION,
     lastAddress: { street1: "1 Main St", city: "Albertson", state: "NY", zip: "11507", country: "US" },
   },
   metrics: {
@@ -39,9 +40,19 @@ const profile: CustomerProfileData = {
     isLapsed: false,
   },
   tags: ["boda"],
-  dates: [],
+  dates: [
+    { id: "cid_1", customerId: "c1", kind: "birthday", label: "Mamá Rosa", month: 3, day: 21, recipientPhone: "5165559999",
+      createdAt: "2026-01-01T00:00:00Z", next: { date: "2027-03-21", daysUntil: 100 } },
+  ],
   preferences: { favorite_flower: [], favorite_color: [], dislike: [] },
   orders: [order],
+  dateSuggestions: [
+    { key: "5165559999:06-20", recipientName: "Mamá Rosa", recipientPhone: "5165559999", month: 6, day: 20, years: [2025, 2026] },
+  ],
+  recipients: [
+    { name: "Mamá Rosa", phone: "5165559999", orderCount: 3, lastDate: "2026-06-20", lastOrderId: "do_x", addresses: [], days: [],
+      lastAddress: { street1: "9 Tulip Ct", city: "Bayville", state: "NY", zip: "11709", country: "US" } },
+  ],
 };
 
 const emptyPrefs = { favorite_flower: [], favorite_color: [], dislike: [] };
@@ -58,7 +69,15 @@ describe("CustomerProfile", () => {
     expect(screen.getByText("#1001")).toBeDefined();                // order row
     expect(screen.getByText("Historial de órdenes")).toBeDefined();
     expect(screen.getByText("Fechas importantes")).toBeDefined();
-    expect(screen.getByText("Sin fechas guardadas.")).toBeDefined();
+    expect(screen.getByText("Sus destinatarios")).toBeDefined();
+    expect(screen.getByText("Cumpleaños · 21 mar")).toBeDefined(); // saved date on the recipient
+    expect(screen.getByText("Mamá Rosa recibe flores cerca del 20 jun (2025, 2026)")).toBeDefined();
+    expect(screen.getByText("Mamá Rosa")).toBeDefined();
+    expect(screen.getByText("(516) 555-9999 · 9 Tulip Ct, Bayville")).toBeDefined();
+    expect(screen.getByRole("link", { name: /Nueva orden$/ }).getAttribute("href")).toBe(
+      "/es/admin/intake?phone=5165550001&rphone=5165559999&rname=Mam%C3%A1+Rosa",
+    );
+    expect(screen.queryByText("Sin fechas guardadas.")).toBeNull(); // the fixture has one saved date
     expect(screen.getByText("Preferencias")).toBeDefined();
   });
 
@@ -93,6 +112,19 @@ describe("CustomerProfile", () => {
       expect(init.method).toBe("PATCH");
       expect(JSON.parse(init.body)).toEqual({ name: "Robyn Vega" });
       expect(await screen.findByText("Robyn Vega")).toBeDefined();
+    });
+
+    it("switches the customer's message language", async () => {
+      const user = userEvent.setup();
+      wrap(<CustomerProfile locale="es" initial={profile} suggestions={emptyPrefs} />);
+      // No saved language reads as English.
+      expect(screen.getByRole("radio", { name: "English" })).toHaveAttribute("aria-checked", "true");
+      await user.click(screen.getByRole("radio", { name: "Español" }));
+      await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+      const [url, init] = fetchMock.mock.calls[0];
+      expect(url).toBe("/api/admin/customers/c1");
+      expect(JSON.parse(init.body)).toEqual({ locale: "es" });
+      await waitFor(() => expect(screen.getByRole("radio", { name: "Español" })).toHaveAttribute("aria-checked", "true"));
     });
 
     it("cancels without touching the record", async () => {

@@ -9,6 +9,7 @@ import { PRODUCTS } from "@/data/products";
 import { filterProducts, sortProducts } from "@/data/product-helpers";
 import { getAllImageOverrides, applyImageOverrides } from "@/lib/product-images";
 import { getAllPriceOverrides, applyPriceOverrides } from "@/lib/product-prices";
+import { getSalesRanking } from "@/lib/product-sales";
 import { LOCAL_CITIES } from "@/data/local-seo";
 import { SITE } from "@/data/site";
 import { localeAlternates } from "@/lib/seo/alternates";
@@ -25,6 +26,10 @@ const ROUTED_ELSEWHERE = new Set<Occasion>(["sympathy"]);
 
 /** The occasions that render here; used for the cross-links at the foot. */
 const SLUGS = OCCASIONS_ALL.filter((o) => !ROUTED_ELSEWHERE.has(o));
+
+// Regenerate hourly so the "Recommended" order follows today's sales, not the
+// sales as of the last deploy.
+export const revalidate = 3600;
 
 export function generateStaticParams() {
   // Sympathy is excluded: next.config redirects /ocasiones/sympathy to the
@@ -65,11 +70,12 @@ export default async function OccasionPage({
     applyPriceOverrides(PRODUCTS, getAllPriceOverrides()),
     getAllImageOverrides(),
   );
-  // Staff picks first: on a page someone landed on with an intent, the useful
-  // ordering is "what we would hand you", not "what is newest".
+  // What sells first, then staff picks: on a page someone landed on with an
+  // intent, the useful ordering is "what we would hand you", not "what is newest".
   const products = sortProducts(
     filterProducts(catalog, { occasion: slug as Occasion }),
-    "staff-pick",
+    "recommended",
+    { sales: getSalesRanking() },
   ).slice(0, 12);
 
   return (

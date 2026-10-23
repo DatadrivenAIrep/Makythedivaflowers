@@ -18,11 +18,11 @@ export type InvoiceStrings = {
   title: string; number: string; issued: string; ordered: string;
   billTo: string; deliverTo: string; pickup: string; inStore: string;
   item: string; qty: string; unit: string; amount: string;
-  subtotal: string; delivery: string; discount: string; tax: string; tip: string; total: string;
+  subtotal: string; delivery: string; discount: string; tax: string; exempt: string; tip: string; total: string;
   giftCard: string; paid: string; deposit: string; balanceDue: string; credit: string;
   status: Record<InvoiceStatus, string>;
   methods: Record<PaymentMethod, string>;
-  thanks: string; print: string;
+  thanks: string; print: string; viewOnline: string;
 };
 
 export const INVOICE_STRINGS: Record<"en" | "es", InvoiceStrings> = {
@@ -30,21 +30,21 @@ export const INVOICE_STRINGS: Record<"en" | "es", InvoiceStrings> = {
     title: "Invoice", number: "Invoice #", issued: "Issued", ordered: "Order date",
     billTo: "Bill to", deliverTo: "Deliver to", pickup: "Pickup", inStore: "In-store",
     item: "Item", qty: "Qty", unit: "Unit price", amount: "Amount",
-    subtotal: "Subtotal", delivery: "Delivery", discount: "Discount", tax: "Sales tax (NY)", tip: "Tip", total: "Total",
+    subtotal: "Subtotal", delivery: "Delivery", discount: "Discount", tax: "Sales tax (NY)", exempt: "Exempt", tip: "Tip", total: "Total",
     giftCard: "Gift card", paid: "Paid", deposit: "Deposit", balanceDue: "Balance due", credit: "Credit",
     status: { paid: "Paid", refunded: "Refunded", balance_due: "Balance due", canceled: "Canceled" },
-    methods: { cash: "Cash", zelle: "Zelle", "card-terminal": "Card", ach: "ACH", stripe: "Card (online)", "gift-card": "Gift card" },
-    thanks: "Thank you for choosing Maky The Diva Flowers.", print: "Print / Save PDF",
+    methods: { cash: "Cash", zelle: "Zelle", "card-terminal": "Card", ach: "ACH", stripe: "Card (online)", "gift-card": "Gift card", "house-account": "House account" },
+    thanks: "Thank you for choosing Maky The Diva Flowers.", print: "Print / Save PDF", viewOnline: "View or print this invoice online",
   },
   es: {
     title: "Factura", number: "Factura #", issued: "Emitida", ordered: "Fecha de la orden",
     billTo: "Facturar a", deliverTo: "Entregar a", pickup: "Recogida", inStore: "En tienda",
     item: "Artículo", qty: "Cant.", unit: "Precio unitario", amount: "Importe",
-    subtotal: "Subtotal", delivery: "Envío", discount: "Descuento", tax: "Impuesto (NY)", tip: "Propina", total: "Total",
+    subtotal: "Subtotal", delivery: "Envío", discount: "Descuento", tax: "Impuesto (NY)", exempt: "Exento", tip: "Propina", total: "Total",
     giftCard: "Tarjeta de regalo", paid: "Pagado", deposit: "Depósito", balanceDue: "Saldo pendiente", credit: "Saldo a favor",
     status: { paid: "Pagada", refunded: "Reembolsada", balance_due: "Saldo pendiente", canceled: "Cancelada" },
-    methods: { cash: "Efectivo", zelle: "Zelle", "card-terminal": "Tarjeta", ach: "ACH", stripe: "Tarjeta (en línea)", "gift-card": "Tarjeta de regalo" },
-    thanks: "Gracias por elegir Maky The Diva Flowers.", print: "Imprimir / Guardar PDF",
+    methods: { cash: "Efectivo", zelle: "Zelle", "card-terminal": "Tarjeta", ach: "ACH", stripe: "Tarjeta (en línea)", "gift-card": "Tarjeta de regalo", "house-account": "A cuenta" },
+    thanks: "Gracias por elegir Maky The Diva Flowers.", print: "Imprimir / Guardar PDF", viewOnline: "Ver o imprimir esta factura en línea",
   },
 };
 
@@ -114,7 +114,10 @@ export function buildInvoiceModel(
   if (t.discountCents > 0) {
     totals.push({ label: order.promoCode ? `${s.discount} (${order.promoCode})` : s.discount, cents: t.discountCents, kind: "negative" });
   }
-  totals.push({ label: s.tax, cents: t.taxCents });
+  totals.push({
+    label: order.taxExempt ? `${s.tax} — ${s.exempt} · Cert #${order.taxExempt.cert}` : s.tax,
+    cents: t.taxCents,
+  });
   if (t.tipCents > 0) totals.push({ label: s.tip, cents: t.tipCents });
   totals.push({ label: s.total, cents: t.totalCents, kind: "total" });
 

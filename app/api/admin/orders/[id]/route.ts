@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { taxExemptRequest } from "@/schemas/tax-exempt";
+import { CARD_MESSAGE_MAX } from "@/lib/card-message-fit";
 import { getOrder } from "@/lib/order-storage";
 import { getDb } from "@/lib/db";
 import { recentMessagesForOrder } from "@/lib/message-storage";
@@ -7,7 +9,10 @@ import { listOrderHistory } from "@/lib/order-history";
 import { orderBalanceCents } from "@/lib/order-balance";
 import { editOrder, type OrderEditPatch } from "@/lib/order-edit";
 import { requireAdmin } from "@/lib/admin-auth";
+import { getAccount } from "@/lib/house-account-storage";
+import { entriesForOrder } from "@/lib/house-account-ledger";
 import { digitalCardView, getByOrder as getDigitalCard } from "@/lib/digital-cards";
+import { getDeliveryPhoto, deliveryPhotoPath } from "@/lib/delivery-photos";
 
 export const runtime = "nodejs";
 
@@ -24,10 +29,16 @@ export async function GET(
   const messages = recentMessagesForOrder(id, 50);
   const history = await listOrderHistory(id);
   const card = getDigitalCard(id);
+  const acct = order.houseAccountId ? getAccount(order.houseAccountId) : null;
+  const houseAccount = acct
+    ? { id: acct.id, name: acct.name, billed: entriesForOrder(id).some((e) => e.kind === "charge" && !!e.statementId) }
+    : null;
+  const photo = getDeliveryPhoto(id);
   return NextResponse.json({
-    order, customer, messages, history,
+    order, customer, messages, history, houseAccount,
     balanceCents: orderBalanceCents(order),
     digitalCard: card ? digitalCardView(card) : null,
+    deliveryPhoto: photo ? { url: deliveryPhotoPath(photo.token), createdAt: photo.createdAt } : null,
   });
 }
 
@@ -53,9 +64,11 @@ const patchSchema = z.object({
   fulfillmentMethod: z.enum(["in-store", "delivery", "pickup"]).optional(),
   address: addressSchema.optional(),
   window: windowSchema.optional(),
-  cardMessage: z.string().optional(),
+  cardMessage: z.string().max(CARD_MESSAGE_MAX).optional(),
+  funeral: z.boolean().optional(),
   lines: z.array(lineSchema).optional(),
   totalsOverride: totalsOverrideSchema.optional(),
+  taxExempt: taxExemptRequest.optional(),
 });
 
 export async function PATCH(

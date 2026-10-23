@@ -43,6 +43,7 @@ export async function PATCH(
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     if (/order not found/.test(msg)) return NextResponse.json({ error: "not_found" }, { status: 404 });
+    if (msg === "on_account") return NextResponse.json({ error: msg }, { status: 409 });
     return NextResponse.json({ error: msg }, { status: 400 });
   }
 }

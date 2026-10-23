@@ -3,7 +3,10 @@ import Link from "next/link";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, WhatsappLogo, Phone, X, PencilSimple } from "@phosphor-icons/react/dist/ssr";
-import { formatDate } from "@/lib/format-datetime";
+import { formatDate, localYmd } from "@/lib/format-datetime";
+import { isExemptionValid } from "@/lib/tax-exempt";
+import type { TaxExemption } from "@/types/tax-exempt";
+import TaxExemptFields from "@/components/admin/TaxExemptFields";
 import type { CustomerProfileData } from "@/lib/customer-profile";
 import type { Address } from "@/types/address";
 import type { Order } from "@/types/order";
@@ -11,6 +14,8 @@ import OrderDetailDrawer from "@/components/admin/dashboard/OrderDetailDrawer";
 import SegmentBadge from "./SegmentBadge";
 import ImportantDates from "./ImportantDates";
 import PreferenceChips from "./PreferenceChips";
+import RecipientList from "./RecipientList";
+import { LANGUAGE_CHIPS, type MessageLocale } from "@/components/admin/intake/LanguagePicker";
 import type { PreferencesMap } from "@/lib/customer-dates-storage";
 
 type Props = { locale: string; initial: CustomerProfileData; suggestions: PreferencesMap };
@@ -25,16 +30,22 @@ function itemCount(o: Order): number {
 
 export default function CustomerProfile({ locale, initial, suggestions }: Props) {
   const t = useTranslations("admin_customers");
+  const tx = useTranslations("admin_tax_exempt");
   const [data, setData] = useState<CustomerProfileData>(initial);
   const [notesDraft, setNotesDraft] = useState(initial.customer.notes ?? "");
   const [savingNotes, setSavingNotes] = useState(false);
   const [notesSaved, setNotesSaved] = useState(false);
+  const [exemptDraft, setExemptDraft] = useState<TaxExemption>(initial.customer.taxExemption);
+  const [savingExempt, setSavingExempt] = useState(false);
+  const [exemptSaved, setExemptSaved] = useState(false);
+  const [exemptError, setExemptError] = useState(false);
   const [tagDraft, setTagDraft] = useState("");
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState(initial.customer.name);
   const [savingName, setSavingName] = useState(false);
   const [openOrderId, setOpenOrderId] = useState<string | null>(null);
   const [error, setError] = useState(false);
+  const [savingLocale, setSavingLocale] = useState(false);
 
   const { customer, metrics, tags, orders } = data;
   const digits = customer.phone.replace(/\D/g, "");
@@ -49,6 +60,42 @@ export default function CustomerProfile({ locale, initial, suggestions }: Props)
     } catch {
       setError(true);
     }
+  }
+
+  async function saveLocale(locale: MessageLocale) {
+    if (locale === (data.customer.locale ?? "en")) return;
+    setSavingLocale(true);
+    try {
+      const res = await fetch(`/api/admin/customers/${customer.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ locale }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      setData((d) => ({ ...d, customer: { ...d.customer, locale } }));
+      setError(false);
+    } catch {
+      setError(true);
+    } finally {
+      setSavingLocale(false);
+    }
+  }
+
+  async function saveExempt() {
+    setSavingExempt(true); setExemptSaved(false); setExemptError(false);
+    try {
+      const res = await fetch(`/api/admin/customers/${customer.id}`, {
+        method: "PATCH", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ taxExemption: exemptDraft }),
+      });
+      if (res.status === 400) { setExemptError(true); return; }
+      if (!res.ok) throw new Error(String(res.status));
+      const body = (await res.json()) as { customer: CustomerProfileData["customer"] };
+      setData((d) => ({ ...d, customer: body.customer }));
+      setExemptDraft(body.customer.taxExemption);
+      setExemptSaved(true);
+      setError(false);
+    } catch { setError(true); } finally { setSavingExempt(false); }
   }
 
   async function saveNotes() {
@@ -180,6 +227,7 @@ export default function CustomerProfile({ locale, initial, suggestions }: Props)
           ) : (
             <>
               <h1 className="text-xl font-semibold">{customer.name}</h1>
+              {isExemptionValid(customer.taxExemption, localYmd()) && <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] text-emerald-700">{tx("badge")}</span>}
               <button
                 type="button"
                 aria-label={t("edit_name")}
@@ -192,6 +240,11 @@ export default function CustomerProfile({ locale, initial, suggestions }: Props)
           )}
           <SegmentBadge segment={metrics.segment} />
           {metrics.isVip && metrics.segment !== "vip" && <SegmentBadge segment="vip" />}
+          {data.houseAccount && (
+            <Link href={`/${locale}/admin/accounts/${data.houseAccount.id}`} className="rounded-full bg-rouge/10 px-2 py-0.5 text-xs font-semibold text-rouge hover:bg-rouge/20">
+              {t("house_account_badge", { name: data.houseAccount.name })}
+            </Link>
+          )}
         </div>
         <div className="mt-2 text-sm text-ink/70">
           <span className="mr-2 text-xs uppercase tracking-wide text-ink/50">{t("profile_contact")}</span>
@@ -200,7 +253,28 @@ export default function CustomerProfile({ locale, initial, suggestions }: Props)
             <> · <a href={`mailto:${customer.email}`} className="underline">{customer.email}</a></>
           )}
           {customer.messagingChannel && <> · {t("channel_label")}: {customer.messagingChannel}</>}
-          {customer.locale && <> · {t("locale_label")}: {customer.locale.toUpperCase()}</>}
+        </div>
+        <div className="mt-2 flex flex-wrap items-center gap-1.5 text-sm" role="radiogroup" aria-labelledby="profile-locale-label">
+          <span id="profile-locale-label" className="mr-1 text-xs uppercase tracking-wide text-ink/50">{t("locale_label")}</span>
+          {LANGUAGE_CHIPS.map((c) => {
+            // No saved language reads as English, which is what the messages fall back to.
+            const active = (customer.locale ?? "en") === c.id;
+            return (
+              <button
+                key={c.id}
+                type="button"
+                role="radio"
+                aria-checked={active}
+                disabled={savingLocale}
+                onClick={() => void saveLocale(c.id)}
+                className={`min-h-9 rounded-full px-3 text-xs transition disabled:opacity-50 ${
+                  active ? "bg-ink text-bone" : "border border-ink/20 hover:bg-ink/5"
+                }`}
+              >
+                {c.label}
+              </button>
+            );
+          })}
         </div>
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <span className="text-xs uppercase tracking-wide text-ink/50">{t("tags")}</span>
@@ -277,7 +351,13 @@ export default function CustomerProfile({ locale, initial, suggestions }: Props)
         ))}
       </div>
 
-      <ImportantDates customerId={customer.id} initial={data.dates} locale={locale} />
+      <ImportantDates
+        customerId={customer.id}
+        initial={data.dates}
+        initialSuggestions={data.dateSuggestions ?? []}
+        locale={locale}
+        onDatesChange={(dates) => setData((d) => ({ ...d, dates }))}
+      />
       <PreferenceChips customerId={customer.id} initial={data.preferences} suggestions={suggestions} />
 
       <section className="mb-3 rounded border border-ink/10 bg-bone p-3 text-sm">
@@ -300,6 +380,17 @@ export default function CustomerProfile({ locale, initial, suggestions }: Props)
           ) : (
             t("no_address")
           )}
+        </div>
+      </section>
+
+      <section className="mb-3 rounded border border-ink/10 bg-bone p-3">
+        <div className="mb-1 text-xs uppercase tracking-wide text-ink/50">{tx("title")}</div>
+        <TaxExemptFields value={exemptDraft} onChange={(v) => { setExemptDraft(v); setExemptSaved(false); setExemptError(false); }} today={localYmd()} idPrefix="crm" />
+        <div className="mt-2 flex items-center gap-2">
+          <button type="button" disabled={savingExempt} onClick={() => void saveExempt()}
+            className="min-h-11 rounded-lg bg-rouge px-4 text-sm text-bone disabled:opacity-50">{tx("save")}</button>
+          {exemptSaved && <span className="text-xs text-emerald-700">{tx("saved")}</span>}
+          {exemptError && <span className="text-xs text-rouge">{tx("cert_required")}</span>}
         </div>
       </section>
 
@@ -327,6 +418,8 @@ export default function CustomerProfile({ locale, initial, suggestions }: Props)
           {notesSaved && <span className="text-xs text-emerald-700">{t("notes_saved")}</span>}
         </div>
       </section>
+
+      <RecipientList locale={locale} senderPhone={customer.phone} recipients={data.recipients ?? []} dates={data.dates} />
 
       <section className="mb-3 rounded border border-ink/10 bg-bone p-3">
         <div className="mb-2 text-xs uppercase tracking-wide text-ink/50">{t("order_history")}</div>

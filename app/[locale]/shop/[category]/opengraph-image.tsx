@@ -10,6 +10,7 @@ const CATEGORY_LABELS: Record<string, { en: string; es: string }> = {
   roses: { en: "Roses", es: "Rosas" },
   exotic: { en: "Exotic", es: "Exóticas" },
   centerpieces: { en: "Centerpieces", es: "Centros de mesa" },
+  fall: { en: "Autumn Collection", es: "Colección de otoño" },
   plants: { en: "Plants & Orchids", es: "Plantas y Orquídeas" },
   gifts: { en: "Gifts", es: "Regalos" },
   sympathy: { en: "Sympathy", es: "Condolencias" },

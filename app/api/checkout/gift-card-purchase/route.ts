@@ -39,6 +39,7 @@ export async function POST(req: Request) {
           amountCents: String(d.amountCents),
           recipientEmail: d.recipientEmail,
           recipientName: d.recipientName || "",
+          recipientPhone: d.recipientPhone || "",
           fromLabel: d.fromLabel || "",
           personalMessage: d.personalMessage || "",
           purchaserEmail: d.purchaserEmail,

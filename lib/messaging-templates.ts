@@ -15,7 +15,27 @@ export type TemplateVars = {
   link?: string;
   shop_phone: string;
   order_number?: string;
+  /** Gift card SMS only: the redeemable code and who it is from. */
+  code?: string;
+  from_label?: string;
+  /** "delivered" only: set when the MMS carries the delivery photo. */
+  has_photo?: "1";
+  /** "invoice" only: the invoice number, e.g. "INV-1042". */
+  invoice_number?: string;
 };
+
+/** "Ana sent you" / "You received" — the gift SMS reads naturally either way. */
+function giftOpener(v: TemplateVars, locale: "en" | "es"): string {
+  const from = v.from_label?.trim();
+  if (locale === "es") return from ? `${from} te regaló` : "Recibiste";
+  return from ? `${from} sent you` : "You received";
+}
+
+/** " Joey" for the gift recipient, "" when no name was given. */
+function recipientNamed(v: TemplateVars): string {
+  const n = v.recipient_name?.trim();
+  return n ? ` ${n}` : "";
+}
 
 /** "Orden #1042, total $89.50." — or just "Total $89.50." when the order predates
  *  sequential numbering. Capitalisation differs between the two, so this cannot
@@ -53,9 +73,15 @@ const BODIES: Record<"en" | "es", Record<MessageTemplate, (v: TemplateVars) => s
     ready_for_pickup: (v) =>
       `Hi${named(v)}! Your Diva Flowers order${numbered(v)} is ready for pickup. See you soon! — Maky · ${v.shop_phone}`,
     delivered: (v) =>
-      `Delivered! Your Diva Flowers order has arrived. Thank you! — Maky · ${v.shop_phone}`,
+      `Delivered! Your Diva Flowers order has arrived.${v.has_photo ? " Here's a photo of the delivery 📷" : ""} Thank you! — Maky · ${v.shop_phone}`,
     review_request: (v) =>
       `Hi${named(v)}, thanks for choosing Diva Flowers! Would you leave us a quick Google review? ${v.link ?? ""} — Maky`,
+    gift_card_issued: (v) =>
+      `Hi${recipientNamed(v)}! ${giftOpener(v, "en")} a ${v.total} Diva Flowers gift card. Code: ${v.code ?? ""}. Use it at ${v.link ?? ""} or call ${v.shop_phone}. Reply STOP to opt out.`,
+    invoice: (v) =>
+      `Hi${named(v)}, here is your Diva Flowers invoice ${v.invoice_number ?? ""} (${v.total}): ${v.link ?? ""} — Maky · ${v.shop_phone}`,
+    payment_reminder: (v) =>
+      `Hi${named(v)}, a friendly reminder from Diva Flowers: order${numbered(v)} has a balance of ${v.total}. Pay here: ${v.link ?? ""} — Maky · ${v.shop_phone}`,
   },
   es: {
     order_received: (v) =>
@@ -69,9 +95,15 @@ const BODIES: Record<"en" | "es", Record<MessageTemplate, (v: TemplateVars) => s
     ready_for_pickup: (v) =>
       `¡Hola${named(v)}! Tu pedido${numbered(v)} de Diva Flowers está listo para recoger. ¡Te esperamos! — Maky · ${v.shop_phone}`,
     delivered: (v) =>
-      `¡Entregado! Tu pedido de Diva Flowers ya llegó. ¡Gracias por tu compra! — Maky · ${v.shop_phone}`,
+      `¡Entregado! Tu pedido de Diva Flowers ya llegó.${v.has_photo ? " Aquí tienes una foto de la entrega 📷" : ""} ¡Gracias por tu compra! — Maky · ${v.shop_phone}`,
     review_request: (v) =>
       `¡Hola${named(v)}! Gracias por elegir Diva Flowers 🌸 ¿Nos dejas una reseña en Google? ${v.link ?? ""} — Maky`,
+    gift_card_issued: (v) =>
+      `¡Hola${recipientNamed(v)}! ${giftOpener(v, "es")} una gift card de Diva Flowers por ${v.total}. Código: ${v.code ?? ""}. Úsala en ${v.link ?? ""} o llama al ${v.shop_phone}. Responde STOP para no recibir más mensajes.`,
+    invoice: (v) =>
+      `Hola${named(v)}, aquí está tu factura de Diva Flowers ${v.invoice_number ?? ""} (${v.total}): ${v.link ?? ""} — Maky · ${v.shop_phone}`,
+    payment_reminder: (v) =>
+      `Hola${named(v)}, un recordatorio de Diva Flowers: tu orden${numbered(v)} tiene un saldo de ${v.total}. Puedes pagar aquí: ${v.link ?? ""} — Maky · ${v.shop_phone}`,
   },
 };
 
@@ -102,6 +134,12 @@ export function whatsappContentVars(
       return { "1": vars.buyer_name, "2": vars.shop_phone };
     case "review_request":
       return { "1": vars.buyer_name, "2": vars.link ?? "" };
+    case "gift_card_issued":
+      return { "1": vars.recipient_name, "2": vars.total, "3": vars.code ?? "" };
+    case "invoice":
+      return { "1": vars.buyer_name, "2": vars.invoice_number ?? "", "3": vars.link ?? "" };
+    case "payment_reminder":
+      return { "1": vars.buyer_name, "2": vars.total, "3": vars.link ?? "" };
   }
 }
 

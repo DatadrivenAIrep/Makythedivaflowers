@@ -66,4 +66,32 @@ describe("editOrder", () => {
   it("throws on unknown order", async () => {
     await expect(editOrder("nope", { contact: { phone: "1" } }, "maky")).rejects.toThrow(/order not found/);
   });
+  it("marks an order as funeral and records it in history", async () => {
+    await saveOrder(baseOrder("e5"));
+    const { order } = await editOrder("e5", { funeral: true }, "maky");
+    expect(order.funeral).toBe(true);
+    const diff = (await listOrderHistory("e5"))[0].changes?.find((c) => c.field === "funeral");
+    expect(diff?.before).toBe("no");
+    expect(diff?.after).toBe("sí");
+  });
+
+  it("unmarking a funeral order clears the flag", async () => {
+    await saveOrder(baseOrder("e6", { funeral: true }));
+    const { order } = await editOrder("e6", { funeral: false }, "maky");
+    expect(order.funeral).toBeUndefined();
+  });
+
+  it("leaves the funeral flag alone when the patch omits it", async () => {
+    await saveOrder(baseOrder("e7", { funeral: true }));
+    const { order } = await editOrder("e7", { contact: { phone: "999" } }, "maky");
+    expect(order.funeral).toBe(true);
+  });
+
+  it("keeps the promo discount and the tip when an unrelated field is edited", async () => {
+    await saveOrder(baseOrder("e-dt", {
+      totals: { subtotalCents: 5000, deliveryCents: 1000, discountCents: 500, tipCents: 300, taxCents: 474, totalCents: 6274 },
+    }));
+    const { order } = await editOrder("e-dt", { cardMessage: "Con cariño" }, "maky");
+    expect(order.totals).toEqual({ subtotalCents: 5000, deliveryCents: 1000, discountCents: 500, tipCents: 300, taxCents: 474, totalCents: 6274 });
+  });
 });

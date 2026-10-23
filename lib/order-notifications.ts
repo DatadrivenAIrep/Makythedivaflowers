@@ -2,7 +2,7 @@
 import "server-only";
 import { Resend } from "resend";
 import type { Order } from "@/types/order";
-import { PRODUCTS } from "@/data/products";
+import { getPricedProducts } from "@/lib/product-prices";
 import { SITE } from "@/data/site";
 import { resolveCartLines } from "@/lib/cart-helpers";
 import { formatMoneyCents, formatPhoneUS, formatDeliveryWindow } from "@/lib/format";
@@ -76,7 +76,7 @@ export function __buildBody(order: Order): string {
   lines.push("");
 
   lines.push("ITEMS");
-  const resolved = resolveCartLines(order.lines, PRODUCTS);
+  const resolved = resolveCartLines(order.lines, getPricedProducts());
   for (const r of resolved) {
     const variantLabel = r.variant.label.en;
     const productTitle = r.product.title.en;
@@ -188,7 +188,7 @@ export function __buildHtml(order: Order): string {
           window: "",
         };
 
-  const resolved = resolveCartLines(order.lines, PRODUCTS);
+  const resolved = resolveCartLines(order.lines, getPricedProducts());
   const heroProduct = resolved[0];
   const heroImgSrc = heroProduct?.product.images?.[0]?.src;
   const heroImgUrl = heroImgSrc ? abs(heroImgSrc) : null;

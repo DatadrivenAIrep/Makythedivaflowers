@@ -12,6 +12,17 @@ const QUIET_DAYS = 30;
 /** Never interrupt someone who is already buying, or a member of staff. */
 const NEVER_ON = [/\/checkout/, /\/cart/, /\/order\//, /\/admin/, /\/account/];
 
+/** Grace period after a watched video stops before the popup may appear. */
+const SHOW_AFTER_VIDEO_MS = 3000;
+
+/**
+ * A video someone chose to watch (playing with sound, e.g. the Story film).
+ * Muted loops are decorative and don't count — they'd block the popup forever.
+ */
+function videoWithSound(): HTMLVideoElement | undefined {
+  return Array.from(document.querySelectorAll("video")).find((v) => !v.paused && !v.muted);
+}
+
 function quietUntilPassed(): boolean {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
@@ -46,8 +57,28 @@ export function WelcomeOffer({ locale }: { locale: Locale }) {
 
   useEffect(() => {
     if (blocked || !quietUntilPassed()) return;
-    const id = window.setTimeout(() => setOpen(true), SHOW_AFTER_MS);
-    return () => window.clearTimeout(id);
+    let id: number;
+    let watching: HTMLVideoElement | undefined;
+    const stopWaiting = () => {
+      watching?.removeEventListener("pause", afterVideo);
+      watching?.removeEventListener("ended", afterVideo);
+      watching = undefined;
+    };
+    function afterVideo() {
+      stopWaiting();
+      id = window.setTimeout(tryOpen, SHOW_AFTER_VIDEO_MS);
+    }
+    function tryOpen() {
+      watching = videoWithSound();
+      if (!watching) return setOpen(true);
+      watching.addEventListener("pause", afterVideo);
+      watching.addEventListener("ended", afterVideo);
+    }
+    id = window.setTimeout(tryOpen, SHOW_AFTER_MS);
+    return () => {
+      window.clearTimeout(id);
+      stopWaiting();
+    };
   }, [blocked]);
 
   useEffect(() => {

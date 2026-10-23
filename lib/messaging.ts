@@ -12,6 +12,8 @@ export type SendMessageRequest = {
   template: MessageTemplate;
   vars: TemplateVars;
   to: { phone?: string; email?: string };
+  /** MMS image; honored on the SMS channel only. */
+  mediaUrl?: string;
 };
 
 export type SendMessageResult = {
@@ -25,6 +27,7 @@ function dryRunSid(): string {
 }
 
 export async function sendMessage(req: SendMessageRequest): Promise<SendMessageResult> {
+  const mediaUrl = req.channel === "sms" ? req.mediaUrl : undefined;
   // Audit row first — always have a trail, even on env misconfig.
   const id = insertMessage({
     orderId: req.orderId,
@@ -34,6 +37,7 @@ export async function sendMessage(req: SendMessageRequest): Promise<SendMessageR
     locale: req.locale,
     toPhone: req.to.phone,
     toEmail: req.to.email,
+    mediaUrl,
   });
 
   if (req.channel === "email") {
@@ -71,6 +75,7 @@ export async function sendMessage(req: SendMessageRequest): Promise<SendMessageR
       to: req.to.phone,
       template: req.template,
       locale: req.locale,
+      mediaUrl,
       body,
     }));
     const providerSid = dryRunSid();
@@ -81,7 +86,7 @@ export async function sendMessage(req: SendMessageRequest): Promise<SendMessageR
   try {
     if (req.channel === "sms") {
       const body = renderSmsBody(req.template, req.locale, req.vars);
-      const { sid } = await sendSms(req.to.phone, body);
+      const { sid } = await sendSms(req.to.phone, body, mediaUrl ? { mediaUrl } : undefined);
       updateMessage(id, { status: "sent", providerSid: sid, body });
       return { id, status: "sent" };
     } else {

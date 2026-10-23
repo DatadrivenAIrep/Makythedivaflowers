@@ -56,7 +56,12 @@ export default function TvBoard() {
     },
     (items) => {
       if (enabled) chime();
-      setToast(`Nueva solicitud · ${items[0]?.label ?? ""}`);
+      const first = items[0];
+      setToast(
+        first?.kind === "sms"
+          ? `Nuevo SMS · ${first.label.replace(/^SMS · /, "")}: ${(first.preview ?? "").slice(0, 60)}`
+          : `Nueva solicitud · ${first?.label ?? ""}`,
+      );
       window.setTimeout(() => setToast(null), 6000);
     },
   );

@@ -4,9 +4,13 @@ import { WarningCircle, CheckCircle } from "@phosphor-icons/react/dist/ssr";
 import { useTranslations } from "next-intl";
 import DashboardShell from "./DashboardShell";
 import OrderDetailDrawer from "./OrderDetailDrawer";
+import DeliverSheet from "./DeliverSheet";
 import PendingCard, { type PendingReason, type PendingActionId } from "./PendingCard";
 import AdminButton from "./AdminButton";
 import AttentionDrawer from "./AttentionDrawer";
+import SmsInboxWidget from "./SmsInboxWidget";
+import ReceivablesSection from "./ReceivablesSection";
+import { unreadSmsTotal } from "./useUnreadSmsCount";
 import { useDashboardPolling } from "./useDashboardPolling";
 import type { Order } from "@/types/order";
 
@@ -21,6 +25,10 @@ export default function BandejaView({ locale }: { locale: string }) {
   const audioUnlockedRef = useRef(false);
   const [drawerOrderId, setDrawerOrderId] = useState<string | null>(null);
   const [attnId, setAttnId] = useState<string | null>(null);
+  const [delivering, setDelivering] = useState<Order | null>(null);
+  // Bumped whenever balances may have changed, so "Por cobrar" reloads.
+  const [receivablesVersion, setReceivablesVersion] = useState(0);
+  const bumpReceivables = () => setReceivablesVersion((v) => v + 1);
   const [muted, setMuted] = useState(false);
   const mutedRef = useRef(false);
   mutedRef.current = muted;
@@ -60,7 +68,9 @@ export default function BandejaView({ locale }: { locale: string }) {
   }, []);
 
   const { queue, feed, attention, lastUpdated, error, refresh } = useDashboardPolling({ onNewItem });
-  const newRequests = (attention?.items ?? []).filter((item) => item.kind !== "order");
+  // SMS replies get their own card; orders have the pending queue below.
+  const newRequests = (attention?.items ?? []).filter((item) => item.kind === "inquiry" || item.kind === "contact");
+  const unreadSms = (attention?.items ?? []).filter((item) => item.kind === "sms");
 
   function unlockAudio() {
     if (audioUnlockedRef.current) return;
@@ -95,11 +105,18 @@ export default function BandejaView({ locale }: { locale: string }) {
           body: JSON.stringify({ method: "cash" }), // default; drawer can offer a picker later
         });
         await refresh(); return;
-      case "advance_preparing":
-      case "advance_out":
       case "advance_delivered": {
-        const status = action === "advance_preparing" ? "preparing"
-          : action === "advance_out" ? "out-for-delivery" : "delivered";
+        const order = queue.find((q) => q.orderId === orderId)?.order as Order | undefined;
+        if (order?.fulfillment.method === "delivery") { setDelivering(order); return; }
+        await fetch(`/api/admin/orders/${orderId}/fulfillment`, {
+          method: "PATCH", headers: { "content-type": "application/json" },
+          body: JSON.stringify({ status: "delivered" }),
+        });
+        await refresh(); return;
+      }
+      case "advance_preparing":
+      case "advance_out": {
+        const status = action === "advance_preparing" ? "preparing" : "out-for-delivery";
         await fetch(`/api/admin/orders/${orderId}/fulfillment`, {
           method: "PATCH", headers: { "content-type": "application/json" },
           body: JSON.stringify({ status }),
@@ -115,7 +132,8 @@ export default function BandejaView({ locale }: { locale: string }) {
       <DashboardShell
         locale={locale}
         lastUpdated={lastUpdated ? timeOf(lastUpdated) : undefined}
-        onRefresh={() => { void refresh(); }}
+        onRefresh={() => { void refresh(); bumpReceivables(); }}
+        smsUnread={unreadSmsTotal(attention)}
       >
         {error && (
           <div className="mb-4 flex items-center gap-2 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
@@ -124,6 +142,8 @@ export default function BandejaView({ locale }: { locale: string }) {
             <AdminButton variant="danger" className="ml-auto" onClick={() => { void refresh(); }}>{t("retry")}</AdminButton>
           </div>
         )}
+        <SmsInboxWidget locale={locale} items={unreadSms} />
+
         <section className="mb-6">
           <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-ink/60">
             {t("new_requests")} · {newRequests.length}
@@ -181,6 +201,8 @@ export default function BandejaView({ locale }: { locale: string }) {
           )}
         </section>
 
+        <ReceivablesSection locale={locale} version={receivablesVersion} onOpen={(id) => setDrawerOrderId(id)} />
+
         <section>
           <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-ink/60">
             {t("feed")} · {feed.length} {t("events")}
@@ -202,8 +224,15 @@ export default function BandejaView({ locale }: { locale: string }) {
         {drawerOrderId && (
           <OrderDetailDrawer
             orderId={drawerOrderId}
-            onClose={() => setDrawerOrderId(null)}
-            onChanged={() => { void refresh(); }}
+            onClose={() => { setDrawerOrderId(null); bumpReceivables(); }}
+            onChanged={() => { void refresh(); bumpReceivables(); }}
+          />
+        )}
+        {delivering && (
+          <DeliverSheet
+            order={delivering}
+            onClose={() => setDelivering(null)}
+            onDelivered={() => { setDelivering(null); void refresh(); }}
           />
         )}
         {attnId && (

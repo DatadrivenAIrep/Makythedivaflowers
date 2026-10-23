@@ -3,7 +3,7 @@ import { PRODUCTS } from "@/data/products";
 import { filterProducts } from "@/data/product-helpers";
 import { parseFilterParams } from "@/lib/search-params";
 import { suggestExtrasForCart } from "@/data/gift-extras";
-import { OCCASIONS_ALL, OCCASION_CONTENT } from "@/data/occasion-content";
+import { OCCASIONS_ALL, OCCASION_CONTENT, SEASONAL_OCCASIONS } from "@/data/occasion-content";
 import type { Filter } from "@/data/product-helpers";
 import type { Occasion } from "@/types/product";
 
@@ -82,8 +82,16 @@ describe("occasion taxonomy", () => {
   it("the product union and the content map describe the same set", () => {
     const used = new Set<Occasion>();
     for (const p of PRODUCTS) for (const o of p.occasions) used.add(o);
+    const known = [...OCCASIONS_ALL, ...SEASONAL_OCCASIONS];
     for (const o of used) {
-      expect(OCCASIONS_ALL, `${o} is tagged on a product but has no content`).toContain(o);
+      expect(known, `${o} is tagged on a product but has no content`).toContain(o);
+    }
+  });
+
+  it("seasonal occasions have copy and stay out of the all-year landings", () => {
+    for (const o of SEASONAL_OCCASIONS) {
+      expect(OCCASIONS_ALL).not.toContain(o);
+      expect(OCCASION_CONTENT[o].label.es.length, `${o} label es`).toBeGreaterThan(0);
     }
   });
 });

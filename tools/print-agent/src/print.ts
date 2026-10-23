@@ -4,10 +4,10 @@ import os from "node:os";
 import { print as pdfPrint } from "pdf-to-printer";
 import puppeteer, { type Browser } from "puppeteer-core";
 import { logger } from "./log";
+import { browserCache } from "./browser-cache";
 
-// Singleton browser. Re-used across jobs to avoid Chrome cold-start
-// (~2-3s on Windows) for every print.
-let browserPromise: Promise<Browser> | null = null;
+// One browser re-used across jobs; a failed or dead one is relaunched.
+const browsers = browserCache<Browser>();
 
 const LOCAL_CHROME_ARGS = [
   "--no-sandbox",
@@ -21,14 +21,14 @@ const LOCAL_CHROME_ARGS = [
 ];
 
 async function getBrowser(chromePath: string): Promise<Browser> {
-  if (browserPromise) return browserPromise;
-  browserPromise = puppeteer.launch({
-    args: LOCAL_CHROME_ARGS,
-    defaultViewport: { width: 1100, height: 850 },
-    executablePath: chromePath,
-    headless: true,
-  });
-  return browserPromise;
+  return browsers.get(() =>
+    puppeteer.launch({
+      args: LOCAL_CHROME_ARGS,
+      defaultViewport: { width: 1100, height: 850 },
+      executablePath: chromePath,
+      headless: true,
+    }),
+  );
 }
 
 async function htmlToPdf(html: string, chromePath: string): Promise<Buffer> {
@@ -105,10 +105,9 @@ export async function printJobWithRetry(
 
 // For graceful shutdown.
 export async function closeBrowser(): Promise<void> {
-  if (!browserPromise) return;
-  const b = await browserPromise;
-  browserPromise = null;
-  try { await b.close(); } catch (e) {
+  const launching = browsers.take();
+  if (!launching) return;
+  try { await (await launching).close(); } catch (e) {
     logger.warn({ err: (e as Error).message }, "browser close failed");
   }
 }

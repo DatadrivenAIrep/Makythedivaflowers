@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useCartStore } from "@/lib/cart-store";
 import { suggestExtrasForCart } from "@/data/gift-extras";
-import { PRODUCTS } from "@/data/products";
+import { usePricedProducts } from "@/components/catalog/PricedCatalog";
 import { formatMoneyCents } from "@/lib/format";
 import { CONV_EVENTS } from "@/lib/conversion/events";
 import { cn } from "@/lib/cn";
@@ -15,6 +15,7 @@ type Props = {
 };
 
 export function CartUpsellStrip({ locale }: Props) {
+  const products = usePricedProducts();
   const t = useTranslations("conversion.upsell");
   const lines = useCartStore((s) => s.lines);
   const add = useCartStore((s) => s.add);
@@ -22,11 +23,11 @@ export function CartUpsellStrip({ locale }: Props) {
 
   if (lines.length === 0) return null;
 
-  const suggestions = suggestExtrasForCart(lines, PRODUCTS);
+  const suggestions = suggestExtrasForCart(lines, products);
   if (suggestions.length === 0) return null;
 
   const onAdd = (extraId: string) => {
-    const product = PRODUCTS.find((p) => p.id === extraId);
+    const product = products.find((p) => p.id === extraId);
     if (!product) return;
     const variant = product.variants[0];
     if (!variant) return;
@@ -45,7 +46,7 @@ export function CartUpsellStrip({ locale }: Props) {
       </p>
       <ul className="flex gap-2 overflow-x-auto pb-1 -mx-5 px-5 snap-x snap-mandatory" role="list">
         {suggestions.map((extraId) => {
-          const product = PRODUCTS.find((p) => p.id === extraId);
+          const product = products.find((p) => p.id === extraId);
           if (!product) return null;
           const variant = product.variants[0];
           if (!variant) return null;

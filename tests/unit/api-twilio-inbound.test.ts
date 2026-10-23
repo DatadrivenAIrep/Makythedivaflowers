@@ -95,6 +95,18 @@ describe("POST /api/twilio/inbound", () => {
     }));
   });
 
+  it("stores a normal reply as unread so the panel alerts on it", async () => {
+    await POST(makeReq({ From: "+15168512815", Body: "¿tienen rosas?" }));
+    expect(insertInboundMock).toHaveBeenCalledWith(expect.objectContaining({ read: false }));
+  });
+
+  it("stores a STOP/START keyword already read so it never rings the panel", async () => {
+    await POST(makeReq({ From: "+15168512815", Body: " stop " }));
+    expect(insertInboundMock).toHaveBeenLastCalledWith(expect.objectContaining({ read: true }));
+    await POST(makeReq({ From: "+19995550000", Body: "START" }));
+    expect(insertInboundMock).toHaveBeenLastCalledWith(expect.objectContaining({ read: true }));
+  });
+
   it("stores a STOP too (and still syncs opt-out)", async () => {
     await POST(makeReq({ From: "+15168512815", Body: "STOP" }));
     expect(insertInboundMock).toHaveBeenCalled();

@@ -2,17 +2,24 @@ import type { Product, ProductCategory } from "@/types/product";
 import { isInSeason, productsByCategory } from "@/data/product-helpers";
 
 export const CATS = [
-  { slug: "arrangements", img: "/products/flamingo-garden.jpg" },
+  { slug: "arrangements", img: "/products/island-sunrise.jpg" },
   { slug: "bouquets", img: "/products/dozen-roses-bouquet.jpg" },
-  { slug: "roses", img: "/products/hundred-roses-vase.png" },
+  { slug: "roses", img: "/products/hundred-roses.jpg" },
   { slug: "exotic", img: "/products/paradise-found.jpg" },
   { slug: "centerpieces", img: "/products/garden-party.jpg" },
   { slug: "plants", img: "/products/phalaenopsis-white-single.webp" },
   { slug: "gifts", img: "/products/daydream-parcel.jpg" },
-  { slug: "subscriptions", img: "/products/timeless-romance.jpg" },
+  { slug: "subscriptions", img: "/products/blush-enchantment.jpg" },
 ] as const;
 
 export type CatSlug = (typeof CATS)[number]["slug"];
+
+// Sympathy and subscriptions have their own pages; their /shop/ URLs only redirect there.
+const OWN_PAGE = new Set(["sympathy", "subscriptions"]);
+
+export function shopCategoryHref(locale: string, slug: string): string {
+  return OWN_PAGE.has(slug) ? `/${locale}/${slug}` : `/${locale}/shop/${slug}`;
+}
 
 export const LABELS: Record<CatSlug, { en: string; es: string }> = {
   arrangements: { en: "Arrangements", es: "Arreglos" },
@@ -46,7 +53,9 @@ const EXOTIC_SLUGS = new Set([
   "tropical-paradise",
   "rainforest-rhapsody",
   "abundant-table",
-  "autumn-orchard",
+  "crimson-zen",
+  "fuchsia-tropics",
+  "peacock-paradise",
 ]);
 
 // Exposed for tests: asserts that retired products don't linger in this set.
@@ -69,6 +78,13 @@ const CENTERPIECE_SLUGS = new Set([
   "garden-party",
   "natures-cornucopia",
   "neon-tropic",
+  "coral-chalice",
+  "mint-julep-trio",
+  "long-table-romance",
+  "tangerine-pop",
+  "harvest-table",
+  "bud-vase-garden",
+  "crimson-trio",
 ]);
 
 export const CENTERPIECE_SLUGS_FOR_TEST: ReadonlySet<string> = CENTERPIECE_SLUGS;
@@ -79,12 +95,53 @@ export function isCenterpieceProduct(p: Product): boolean {
   return CENTERPIECE_SLUGS.has(p.slug);
 }
 
-export type ShopSlug = ProductCategory | "roses" | "exotic" | "centerpieces";
+// The autumn collection the fall home hero links to: these named pieces plus
+// anything Maky marks for Sep–Nov, so new harvest arrangements join on their own.
+const FALL_SLUGS = new Set(["autumn-orchard", "autumns-cornucopia", "falling-leaves"]);
+const FALL_MONTHS = [9, 10, 11];
 
-/** What a shop page lists: three slugs are curated lists, the rest are real categories. */
+export const FALL_SLUGS_FOR_TEST: ReadonlySet<string> = FALL_SLUGS;
+
+export function isFallProduct(p: Product): boolean {
+  if (!p.active || p.giftExtra) return false;
+  if (!isInSeason(p)) return false;
+  if (FALL_SLUGS.has(p.slug)) return true;
+  const months = p.seasonMonths ?? [];
+  return months.length > 0 && months.every((m) => FALL_MONTHS.includes(m));
+}
+
+// Christmas: whatever Maky puts on sale for December (Santa's Garden, Under the
+// Mistletoe…), so a new holiday piece joins by its season alone.
+export function isChristmasProduct(p: Product): boolean {
+  if (!p.active || p.giftExtra) return false;
+  if (!isInSeason(p)) return false;
+  return (p.seasonMonths ?? []).includes(12);
+}
+
+// Valentine's Day: the pieces Maky marks with the "valentines-day" occasion
+// (curated in the pricing sheet), not every romance or rose product.
+export function isValentinesProduct(p: Product): boolean {
+  if (!p.active || p.giftExtra || p.category === "sympathy") return false;
+  if (!isInSeason(p)) return false;
+  return p.occasions.includes("valentines-day");
+}
+
+export type ShopSlug =
+  | ProductCategory
+  | "roses"
+  | "exotic"
+  | "centerpieces"
+  | "fall"
+  | "christmas"
+  | "valentines";
+
+/** What a shop page lists: six slugs are curated lists, the rest are real categories. */
 export function productsInShopCategory(products: Product[], slug: ShopSlug): Product[] {
   if (slug === "roses") return products.filter(isRoseProduct);
   if (slug === "exotic") return products.filter(isExoticProduct);
   if (slug === "centerpieces") return products.filter(isCenterpieceProduct);
+  if (slug === "fall") return products.filter(isFallProduct);
+  if (slug === "christmas") return products.filter(isChristmasProduct);
+  if (slug === "valentines") return products.filter(isValentinesProduct);
   return productsByCategory(products, slug);
 }

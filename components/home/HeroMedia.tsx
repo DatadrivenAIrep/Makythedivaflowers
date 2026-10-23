@@ -5,7 +5,16 @@ import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion
 
 // Hero background: video with a subtle compositor-only parallax; static poster
 // when the user prefers reduced motion or has Save-Data on (perf + a11y).
-export function HeroMedia({ src, poster }: { src: string; poster: string }) {
+export function HeroMedia({
+  src,
+  poster,
+  focus = "50% 50%",
+}: {
+  src: string;
+  poster: string;
+  /** object-position for both the video and the poster. */
+  focus?: string;
+}) {
   const reduce = useReducedMotion();
   const [saveData, setSaveData] = useState(false);
   // framer-motion's useReducedMotion caches its matchMedia read process-wide
@@ -48,6 +57,7 @@ export function HeroMedia({ src, poster }: { src: string; poster: string }) {
           alt=""
           src={poster}
           fetchPriority="high"
+          style={{ objectPosition: focus }}
           className="absolute inset-0 h-full w-full object-cover"
         />
       ) : (
@@ -59,7 +69,7 @@ export function HeroMedia({ src, poster }: { src: string; poster: string }) {
           playsInline
           preload="metadata"
           poster={poster}
-          style={{ y, willChange: "transform" }}
+          style={{ y, willChange: "transform", objectPosition: focus }}
           className="absolute inset-0 h-[116%] w-full object-cover"
         >
           <source src={src} type="video/mp4" />

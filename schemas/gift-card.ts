@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { optionalRecipientPhone } from "@/schemas/gift-card-phone";
 import { GIFT_CARD_PARTNER_IDS } from "@/data/gift-card-partners";
 
 // Quick-pick denominations for staff; any whole-dollar amount inside the band is
@@ -16,11 +17,14 @@ export const issueGiftCardSchema = z.object({
     .refine((n) => n % 100 === 0, { message: "amount_whole_dollars" }),
   recipientEmail: z.string().email("email_invalid"),
   recipientName: z.string().max(80).optional(),
+  recipientPhone: optionalRecipientPhone,
   fromLabel: z.string().max(80).optional(),
   personalMessage: z.string().max(400).optional(),
   headline: z.string().trim().max(90).optional(),
   partner: z.enum(GIFT_CARD_PARTNER_IDS).optional(),
-  reason: z.enum(["loyalty", "apology", "prize", "marketing", "other"]).optional(),
+  reason: z.enum(["purchase", "loyalty", "apology", "prize", "marketing", "other"]).optional(),
+  /** Required (by the route) when the reason is `purchase`: how the card was paid. */
+  paymentMethod: z.enum(["cash", "zelle", "card-terminal", "ach"]).optional(),
 });
 
 export type IssueGiftCardInputDTO = z.infer<typeof issueGiftCardSchema>;

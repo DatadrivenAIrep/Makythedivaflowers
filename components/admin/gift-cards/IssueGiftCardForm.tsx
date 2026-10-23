@@ -19,11 +19,16 @@ export default function IssueGiftCardForm({ onIssued }: { onIssued: () => void }
   const [customAmount, setCustomAmount] = useState("");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [from, setFrom] = useState("");
   const [message, setMessage] = useState("");
   const [headline, setHeadline] = useState("");
   const [partner, setPartner] = useState("");
-  const [reason, setReason] = useState<string>("");
+  // Most cards issued here are sold over the counter, so "purchase" is the
+  // default: that asks how it was paid and puts the money in the day's close.
+  // Comps (loyalty, apology...) stay one pick away.
+  const [reason, setReason] = useState<string>("purchase");
+  const [paymentMethod, setPaymentMethod] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,6 +50,15 @@ export default function IssueGiftCardForm({ onIssued }: { onIssued: () => void }
       );
       return;
     }
+    const phoneDigits = phone.replace(/\D/g, "").replace(/^1(?=\d{10}$)/, "");
+    if (phoneDigits && phoneDigits.length !== 10) {
+      setError(t("form_phone_invalid"));
+      return;
+    }
+    if (reason === "purchase" && !paymentMethod) {
+      setError(t("payment_method_required"));
+      return;
+    }
     setBusy(true);
     const res = await fetch("/api/admin/gift-cards", {
       method: "POST",
@@ -53,11 +67,13 @@ export default function IssueGiftCardForm({ onIssued }: { onIssued: () => void }
         amountCents: cents,
         recipientEmail: email,
         recipientName: name || undefined,
+        recipientPhone: phoneDigits || undefined,
         fromLabel: from || undefined,
         personalMessage: message || undefined,
         headline: headline.trim() || undefined,
         partner: partner || undefined,
         reason: reason || undefined,
+        paymentMethod: reason === "purchase" ? paymentMethod : undefined,
       }),
     });
     setBusy(false);
@@ -134,6 +150,15 @@ export default function IssueGiftCardForm({ onIssued }: { onIssued: () => void }
         <input value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-lg border border-ink/20 px-3 py-2" />
       </label>
       <label className="block">
+        <span className="mb-1 block text-xs font-semibold">{t("form_recipient_phone")} <em className="opacity-50">({t("form_optional")})</em></span>
+        <input
+          type="tel" inputMode="tel" autoComplete="off" value={phone} onChange={(e) => setPhone(e.target.value)}
+          placeholder="(516) 555-0123"
+          className="w-full rounded-lg border border-ink/20 px-3 py-2"
+        />
+        <span className="mt-1 block text-[11px] opacity-60">{t("form_recipient_phone_hint")}</span>
+      </label>
+      <label className="block">
         <span className="mb-1 block text-xs font-semibold">{t("form_from")} <em className="opacity-50">({t("form_optional")})</em></span>
         <input value={from} onChange={(e) => setFrom(e.target.value)} className="w-full rounded-lg border border-ink/20 px-3 py-2" />
       </label>
@@ -161,14 +186,30 @@ export default function IssueGiftCardForm({ onIssued }: { onIssued: () => void }
       <label className="block">
         <span className="mb-1 block text-xs font-semibold">{t("form_reason")} <em className="opacity-50">({t("form_optional")})</em></span>
         <select value={reason} onChange={(e) => setReason(e.target.value)} className="w-full rounded-lg border border-ink/20 px-3 py-2">
-          <option value="">—</option>
+          <option value="purchase">{t("reason_purchase")}</option>
           <option value="loyalty">{t("reason_loyalty")}</option>
           <option value="apology">{t("reason_apology")}</option>
           <option value="prize">{t("reason_prize")}</option>
           <option value="marketing">{t("reason_marketing")}</option>
           <option value="other">{t("reason_other")}</option>
+          <option value="">—</option>
         </select>
       </label>
+      {reason === "purchase" && (
+        <label className="block">
+          <span className="mb-1 block text-xs font-semibold">{t("form_payment_method")}</span>
+          <select
+            required value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}
+            className="w-full rounded-lg border border-ink/20 px-3 py-2"
+          >
+            <option value="">—</option>
+            <option value="cash">{t("payment_cash")}</option>
+            <option value="zelle">Zelle</option>
+            <option value="card-terminal">{t("payment_terminal")}</option>
+            <option value="ach">ACH</option>
+          </select>
+        </label>
+      )}
       {error && <p className="text-sm text-rouge">{error}</p>}
       <button type="submit" disabled={busy} className="w-full rounded-lg bg-rouge py-3 font-bold text-bone disabled:opacity-50">
         {busy ? t("form_submitting") : t("form_submit")}

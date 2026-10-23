@@ -7,6 +7,7 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import { cn } from "@/lib/cn";
+import { FloatingPhoto } from "@/components/product/FloatingPhoto";
 
 type Item = {
   slug: string;
@@ -68,38 +69,25 @@ function TileImpl({
       onMouseEnter={handleEnter}
       onMouseLeave={onLeave}
       className={cn(
-        "group relative block overflow-hidden rounded-[var(--radius-product)] border transition-colors duration-500",
-        "h-32 md:h-auto",
+        "group relative block rounded-[var(--radius-product)] border bg-mute-100 transition-colors duration-500",
+        "h-44 md:h-auto",
         layout.col,
         layout.row,
-        "max-md:border-petal/40",
-        isActive ? "md:border-petal/40" : "md:border-petal/15"
+        isActive ? "border-rouge/25" : "border-transparent"
       )}
       style={{ borderRadius: "var(--radius-product)" }}
     >
-      {/* Image — always visible, parallax on hover */}
-      <motion.div
-        className="absolute inset-0"
-        animate={reduce ? undefined : { y: isActive ? "-4%" : "0%" }}
-        transition={{ duration: 0.6, ease: ELEGANT }}
-        style={{ scale: 1.08 }}
-      >
-        <img
-          src={item.img}
-          alt={item.name}
-          className="size-full object-cover"
-        />
-      </motion.div>
-
-      {/* Gradient overlay — deepens on hover */}
-      <motion.div
-        className="absolute inset-0"
-        animate={{ opacity: isActive ? 1 : 0.72 }}
-        transition={{ duration: 0.5, ease: ELEGANT }}
-        style={{
-          background:
-            "linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.18) 55%, rgba(0,0,0,0.04) 100%)",
-        }}
+      {/* The whole arrangement, floating on the plaster; lifts on hover. Phone:
+          photo on the right half so the name keeps the left. */}
+      <FloatingPhoto
+        src={item.img}
+        alt={item.name}
+        sizes="(min-width: 768px) 30vw, 50vw"
+        className={cn(
+          "top-3 bottom-3 left-1/2 right-3 md:inset-x-5 md:top-10 md:bottom-16",
+          "transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transform-none",
+          isActive && !reduce && "-translate-y-2"
+        )}
       />
 
       {/* Shop chip — appears top-right on hover */}
@@ -111,7 +99,7 @@ function TileImpl({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.3, ease: ELEGANT }}
-              className="rounded-full border border-white/20 bg-black/30 px-3 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-bone backdrop-blur-sm"
+              className="rounded-full border border-ink/10 bg-bone/90 px-3 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-ink backdrop-blur-sm"
             >
               {shopLabel} →
             </motion.span>
@@ -131,7 +119,7 @@ function TileImpl({
               "font-mono text-[10px] tracking-[0.25em]",
               "max-md:text-rouge",
               "md:transition-colors md:duration-500",
-              isActive ? "md:text-rouge" : "md:text-petal/40"
+              isActive ? "md:text-rouge" : "md:text-mute-400"
             )}
           >
             {item.index}
@@ -144,7 +132,7 @@ function TileImpl({
               className={cn(
                 "font-display italic tracking-tight",
                 "text-2xl md:text-3xl",
-                "text-bone",
+                "text-ink",
               )}
             >
               {item.name}
@@ -156,7 +144,7 @@ function TileImpl({
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 6 }}
                   transition={{ duration: 0.3, ease: ELEGANT }}
-                  className="hidden md:inline font-mono text-[10px] uppercase tracking-[0.18em] text-petal"
+                  className="hidden md:inline font-mono text-[10px] uppercase tracking-[0.18em] text-rouge"
                 >
                   {shopLabel} {item.name} →
                 </motion.span>
@@ -165,7 +153,7 @@ function TileImpl({
           </div>
 
           {/* Mobile chevron */}
-          <span aria-hidden className="md:hidden font-mono text-sm text-bone/70">→</span>
+          <span aria-hidden className="md:hidden font-mono text-sm text-ink/50">→</span>
 
           {/* Desktop pulse dot */}
           <div className="hidden md:block">
@@ -206,22 +194,18 @@ function CategoryOrbitImpl({
 
   return (
     <section
-      className="relative min-h-[100dvh] overflow-hidden py-16 text-bone md:py-32"
-      style={{
-        backgroundImage:
-          "linear-gradient(to bottom, var(--color-charcoal) 0%, #F2C5D1 100%)",
-      }}
+      className="relative min-h-[100dvh] overflow-hidden bg-bone py-16 text-ink md:py-32"
     >
       <div className="relative z-10 mx-auto max-w-[1600px] px-6">
         <div className="relative z-20 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="flex flex-col gap-4">
-            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-petal/40">
+            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-mute-500">
               {eyebrow}
             </span>
             <motion.h2
               animate={{ opacity: activeSlug ? 0.15 : 1 }}
               transition={{ duration: 0.5, ease: ELEGANT }}
-              className="font-display tracking-tighter leading-[0.95] text-bone"
+              className="font-display tracking-tighter leading-[0.95] text-ink"
               style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}
             >
               {title}
@@ -229,8 +213,8 @@ function CategoryOrbitImpl({
           </div>
 
           <div className="hidden md:flex items-center gap-4">
-            <span aria-hidden className="block h-px w-16 bg-petal/20" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-petal/30">
+            <span aria-hidden className="block h-px w-16 bg-ink/15" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-mute-400">
               {hoverHint}
             </span>
           </div>
@@ -272,7 +256,7 @@ function CategoryOrbitImpl({
                 [ {activeIndex} / 06 ]
               </span>
               <span
-                className="font-display italic tracking-tighter leading-[0.85] text-ink/15"
+                className="font-display italic tracking-tighter leading-[0.85] text-ink/[0.07]"
                 style={{ fontSize: "clamp(8rem, 18vw, 22rem)" }}
               >
                 {activeItem.name}

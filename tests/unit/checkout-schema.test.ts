@@ -46,12 +46,10 @@ describe("checkoutSchema", () => {
     expect(checkoutSchema.safeParse(bad).success).toBe(false);
   });
 
-  it("caps cardMessage at 200 chars", () => {
-    const bad = {
-      ...valid,
-      delivery: { ...valid.delivery, cardMessage: "x".repeat(201) },
-    };
-    expect(checkoutSchema.safeParse(bad).success).toBe(false);
+  it("accepts a 500-char cardMessage and caps it there", () => {
+    const at = (n: number) => ({ ...valid, delivery: { ...valid.delivery, cardMessage: "x".repeat(n) } });
+    expect(checkoutSchema.safeParse(at(500)).success).toBe(true);
+    expect(checkoutSchema.safeParse(at(501)).success).toBe(false);
   });
 
   it("rejects past delivery dates", () => {

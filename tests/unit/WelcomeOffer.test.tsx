@@ -58,6 +58,43 @@ describe("WelcomeOffer", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
+  /** A <video> in the page that jsdom reports as playing. */
+  function playingVideo({ muted }: { muted: boolean }) {
+    const v = document.createElement("video");
+    let paused = false;
+    Object.defineProperty(v, "paused", { get: () => paused });
+    v.muted = muted;
+    document.body.appendChild(v);
+    return {
+      stop() {
+        paused = true;
+        v.dispatchEvent(new Event("pause"));
+      },
+      remove: () => v.remove(),
+    };
+  }
+
+  it("waits while someone watches a video with sound, then appears", async () => {
+    const film = playingVideo({ muted: false });
+    await appear();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+
+    film.stop();
+    await vi.advanceTimersByTimeAsync(5000);
+    expect(await screen.findByRole("dialog")).toBeInTheDocument();
+    film.remove();
+  });
+
+  it("is not held back by a muted decorative loop", async () => {
+    const loop = playingVideo({ muted: true });
+    await appear();
+    expect(await screen.findByRole("dialog")).toBeInTheDocument();
+    loop.remove();
+  });
+
   it("sends the number with the consent the law needs", async () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     await appear();

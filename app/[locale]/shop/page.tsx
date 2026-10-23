@@ -17,6 +17,8 @@ import {
 } from "@/data/product-helpers";
 import { parseFilterParams, type RawSearchParams } from "@/lib/search-params";
 import { getAllImageOverrides, applyImageOverrides } from "@/lib/product-images";
+import { getAllPriceOverrides, applyPriceOverrides } from "@/lib/product-prices";
+import { getSalesRanking } from "@/lib/product-sales";
 import { localeAlternates } from "@/lib/seo/alternates";
 
 export async function generateMetadata({
@@ -50,12 +52,19 @@ export default async function ShopHubPage({
   const sp = await searchParams;
   const { filter, sort } = parseFilterParams(sp);
 
-  const products = applyImageOverrides(PRODUCTS, getAllImageOverrides());
-  const newest = newestArrivals(products.filter((p) => !p.giftExtra), 12);
+  const products = applyImageOverrides(
+    applyPriceOverrides(PRODUCTS, getAllPriceOverrides()),
+    getAllImageOverrides(),
+  );
+  // Funeral pieces have their own page; the shop's front shelf is for gifting.
+  const newest = newestArrivals(products.filter((p) => p.category !== "sympathy"), 12);
   const newestTitle = locale === "es" ? "Lo más nuevo" : "Newest arrivals";
 
   const allActive = products.filter((p) => p.active && !p.giftExtra);
-  const allFiltered = sortProducts(filterProducts(allActive, filter), sort);
+  const allFiltered = sortProducts(filterProducts(allActive, filter), sort, {
+    sales: getSalesRanking(),
+    demoteSympathy: filter.occasion !== "sympathy",
+  });
   const allTitle = filter.q
     ? locale === "es"
       ? "Resultados"

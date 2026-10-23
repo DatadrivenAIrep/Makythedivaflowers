@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import esMessages from "@/messages/es.json";
 import FulfillmentBlock, { type FulfillmentState } from "@/components/admin/intake/FulfillmentBlock";
@@ -60,5 +60,127 @@ describe("FulfillmentBlock delivery time", () => {
       </NextIntlClientProvider>,
     );
     expect(screen.getByText("Franja (según la hora)")).toBeDefined();
+  });
+});
+
+describe("FulfillmentBlock funeral toggle", () => {
+  it("checking 'Es para funeral' sets the flag", () => {
+    const onChange = vi.fn();
+    wrap(<FulfillmentBlock value={baseValue()} onChange={onChange} />);
+    const box = screen.getByRole("checkbox", { name: /Es para funeral/ }) as HTMLInputElement;
+    expect(box.checked).toBe(false);
+    fireEvent.click(box);
+    expect((onChange.mock.calls[0][0] as FulfillmentState).funeral).toBe(true);
+  });
+
+  it("reflects a funeral order as checked", () => {
+    wrap(<FulfillmentBlock value={{ ...baseValue(), funeral: true }} onChange={() => {}} />);
+    expect((screen.getByRole("checkbox", { name: /Es para funeral/ }) as HTMLInputElement).checked).toBe(true);
+  });
+});
+
+describe("FulfillmentBlock recipient lookup", () => {
+  const lastAddress = { street1: "9 Tulip Ct", city: "Bayville", state: "NY", zip: "11709", country: "US" as const };
+  const otherAddress = { street1: "40 Glen St", street2: "Apt 3", city: "Glen Cove", state: "NY", zip: "11542", country: "US" as const };
+  const known = {
+    name: "Carmen", phone: "5165559999", orderCount: 3, lastDate: "2026-06-01", lastAddress,
+    addresses: [
+      { address: lastAddress, orderCount: 2, lastDate: "2026-06-01" },
+      { address: otherAddress, orderCount: 1, lastDate: "2026-02-01" },
+    ],
+    senders: [{ name: "Luis", phone: "5165550200", orderCount: 3 }],
+  };
+
+  // The address autocomplete fetches too, so answer per call and only for the lookup.
+  function mockRecipientLookup() {
+    return vi.spyOn(global, "fetch").mockImplementation(async (input) =>
+      String(input).includes("/api/admin/recipients/lookup")
+        ? new Response(JSON.stringify({ found: true, recipient: known }), { status: 200 })
+        : new Response("{}", { status: 404 }),
+    );
+  }
+
+  function delivery(recipient: { name: string; phone: string }): FulfillmentState {
+    return { ...baseValue(), method: "delivery", recipient };
+  }
+
+  it("fills an empty name and street from a known recipient phone", async () => {
+    const fetchSpy = mockRecipientLookup();
+    const onChange = vi.fn();
+    wrap(<FulfillmentBlock value={delivery({ name: "", phone: "(516) 555-9999" })} onChange={onChange} />);
+    await waitFor(() => expect(onChange).toHaveBeenCalled());
+    const next = onChange.mock.calls[0][0] as FulfillmentState;
+    expect(next.recipient.name).toBe("Carmen");
+    expect(next.address).toEqual(lastAddress);
+    expect(fetchSpy.mock.calls.some(([u]) => String(u).includes("lookup?phone=5165559999"))).toBe(true);
+    expect(await screen.findByText("Ya recibió 3 veces · la última de Luis")).toBeDefined();
+    fetchSpy.mockRestore();
+  });
+
+  it("never overwrites a name or street staff already typed", async () => {
+    const fetchSpy = mockRecipientLookup();
+    const onChange = vi.fn();
+    const value = { ...delivery({ name: "Carmencita", phone: "5165559999" }), address: { ...lastAddress, street1: "1 Other St" } };
+    wrap(<FulfillmentBlock value={value} onChange={onChange} />);
+    await screen.findByText("Direcciones anteriores");
+    expect(onChange).not.toHaveBeenCalled();
+    fetchSpy.mockRestore();
+  });
+
+  it("lists every past address and switches to the one tapped", async () => {
+    const fetchSpy = mockRecipientLookup();
+    const onChange = vi.fn();
+    wrap(<FulfillmentBlock value={{ ...delivery({ name: "Carmen", phone: "5165559999" }), address: lastAddress }} onChange={onChange} />);
+    const picker = await screen.findByRole("radiogroup", { name: "Direcciones anteriores" });
+    const options = within(picker).getAllByRole("radio");
+    expect(options).toHaveLength(2);
+    expect(options[0].getAttribute("aria-checked")).toBe("true"); // the address already on the order
+    expect(options[1].textContent).toContain("40 Glen St, Apt 3");
+    expect(options[1].textContent).toContain("1 vez");
+    fireEvent.click(options[1]);
+    const next = onChange.mock.calls.at(-1)![0] as FulfillmentState;
+    expect(next.address).toEqual(otherAddress);
+    expect(next.method).toBe("delivery");
+    fetchSpy.mockRestore();
+  });
+});
+
+describe("FulfillmentBlock card message", () => {
+  it("counts characters against the 500 limit and warns when long", () => {
+    const long = "a".repeat(300);
+    wrap(<FulfillmentBlock value={{ ...baseValue(), cardMessage: long }} onChange={() => {}} />);
+    expect(screen.getByText("300/500")).toBeDefined();
+    expect(screen.getByText(/Mensaje largo/)).toBeDefined();
+    expect(screen.getByPlaceholderText("Para mi mamá, con todo mi cariño...").getAttribute("maxLength")).toBe("500");
+  });
+});
+
+describe("FulfillmentBlock remember this date", () => {
+  it("offers birthday/anniversary for a dated order to someone and stores the pick", () => {
+    const onChange = vi.fn();
+    wrap(<FulfillmentBlock value={baseValue()} onChange={onChange} />);
+    fireEvent.click(screen.getByRole("radio", { name: "Cumpleaños" }));
+    expect((onChange.mock.calls[0][0] as FulfillmentState).rememberDate).toBe("birthday");
+  });
+
+  it("explains what gets saved once a kind is picked", () => {
+    wrap(<FulfillmentBlock value={{ ...baseValue(), rememberDate: "anniversary" }} onChange={() => {}} />);
+    expect(screen.getByText(/como fecha de Lola en el perfil del cliente/)).toBeDefined();
+  });
+
+  it("is hidden for funerals, in-store sales and orders with no recipient name", () => {
+    const { rerender } = wrap(<FulfillmentBlock value={{ ...baseValue(), funeral: true }} onChange={() => {}} />);
+    expect(screen.queryByText("Recordar esta fecha cada año")).toBeNull();
+    for (const v of [
+      { ...baseValue(), method: "in-store" as const },
+      { ...baseValue(), recipient: { name: " ", phone: "" } },
+    ]) {
+      rerender(
+        <NextIntlClientProvider locale="es" messages={esMessages as Record<string, unknown>}>
+          <FulfillmentBlock value={v} onChange={() => {}} />
+        </NextIntlClientProvider>,
+      );
+      expect(screen.queryByText("Recordar esta fecha cada año")).toBeNull();
+    }
   });
 });
