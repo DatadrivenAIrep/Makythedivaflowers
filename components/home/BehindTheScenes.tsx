@@ -1,8 +1,10 @@
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/locale";
 import { AmbientLoop } from "@/components/media/AmbientLoop";
+import { TikTokContent } from "@/components/home/TikTokStrip";
 
-// Mirrors EditorialSplit (media left, copy right) so the two read as a pair.
+// Media left, copy right, like the studio visit block; the TikTok reels follow
+// in the same section so the page has one behind-the-scenes stop, not two.
 export async function BehindTheScenes({ locale }: { locale: Locale }) {
   const t = await getTranslations("home.behind_scenes");
   return (
@@ -35,6 +37,9 @@ export async function BehindTheScenes({ locale }: { locale: Locale }) {
             {t("cta")} →
           </a>
         </div>
+      </div>
+      <div className="mx-auto max-w-[var(--container-max)] px-6 pt-16 md:pt-24">
+        {await TikTokContent({ locale })}
       </div>
     </section>
   );

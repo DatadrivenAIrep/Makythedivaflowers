@@ -5,6 +5,7 @@ import {
   sortProducts,
   productsByCategory,
   newestArrivals,
+  bestSellers,
   isNewArrival,
   type Filter,
   type Sort,
@@ -235,6 +236,44 @@ describe("newestArrivals", () => {
   it("respects the limit", () => {
     const many = Array.from({ length: 10 }, (_, i) => fx({ id: `p${i}` }));
     expect(newestArrivals(many, 5)).toHaveLength(5);
+  });
+});
+
+describe("bestSellers", () => {
+  const ids = (ps: Product[]) => ps.map((p) => p.id);
+
+  it("follows the shop's Recommended order: sales, then staff picks, then newest", () => {
+    const old = fx({ id: "old", addedAt: "2026-05-01" });
+    const fresh = fx({ id: "fresh", addedAt: "2026-10-14" });
+    const pick = fx({ id: "pick", addedAt: "2026-05-01", tags: ["staff-pick"] });
+    const hit = fx({ id: "hit", addedAt: "2025-01-01" });
+    const sales = new Map([["hit", 4]]);
+    expect(ids(bestSellers([old, fresh, pick, hit], sales))).toEqual(["hit", "pick", "fresh", "old"]);
+  });
+
+  it("leaves out funeral pieces, subscriptions and quote-only pieces, even top sellers", () => {
+    const funeral = fx({ id: "funeral", category: "sympathy" });
+    const sub = fx({ id: "sub", category: "subscriptions" });
+    const quote = fx({ id: "quote", quoteOnly: true });
+    const vase = fx({ id: "vase" });
+    const sales = new Map([["funeral", 9], ["sub", 8], ["quote", 7], ["vase", 1]]);
+    expect(ids(bestSellers([funeral, sub, quote, vase], sales))).toEqual(["vase"]);
+  });
+
+  it("only shows what can be ordered today", () => {
+    const offMonth = ((new Date().getMonth() + 6) % 12) + 1;
+    const inactive = fx({ id: "inactive", active: false });
+    const extra = fx({ id: "extra", giftExtra: true });
+    const outOfSeason = fx({ id: "out", seasonMonths: [offMonth] });
+    const vase = fx({ id: "vase" });
+    const sales = new Map([["inactive", 3], ["extra", 3], ["out", 3]]);
+    expect(ids(bestSellers([inactive, extra, outOfSeason, vase], sales))).toEqual(["vase"]);
+  });
+
+  it("stops at the limit, eight by default", () => {
+    const many = Array.from({ length: 12 }, (_, i) => fx({ id: `p${i}` }));
+    expect(bestSellers(many, new Map())).toHaveLength(8);
+    expect(bestSellers(many, new Map(), 4)).toHaveLength(4);
   });
 });
 

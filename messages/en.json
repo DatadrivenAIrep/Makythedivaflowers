@@ -200,9 +200,21 @@
       "sub": "Harvest arrangements for your Thanksgiving table: roses, mums and mini pumpkins, hand-built daily under our hot-pink arch on Willis Ave.",
       "cta_primary": "Shop the Autumn Collection"
     },
+    "assurance": {
+      "aria": "Why order from Diva",
+      "rating": "{rating} on Google · {count} reviews",
+      "same_day": "Same-day delivery in Nassau & Queens",
+      "redo": "Free redo if it's our miss",
+      "local": "A real shop on Willis Ave since 2014"
+    },
     "occasions": {
       "eyebrow": "Shop by occasion",
       "title": "What is the occasion?"
+    },
+    "best_sellers": {
+      "eyebrow": "Best sellers",
+      "title": "What everyone's sending.",
+      "cta": "Shop all"
     },
     "marquee": "MAKY THE DIVA FLOWERS · ROMANCE BY THE STEM · LONG ISLAND · DESDE 2014 · ENVÍOS HOY · SAME-DAY DELIVERY",
     "bento": {
@@ -272,11 +284,6 @@
       "pause": "Pause video",
       "play": "Play video"
     },
-    "editorial_split": {
-      "eyebrow": "Visit the studio",
-      "title": "Built around our floral arch on Willis Ave.",
-      "body": "We've been arranging flowers under the same pink awning since 2014. Walk in, call ahead, or order online — same-day delivery across Long Island and Queens."
-    },
     "reviews": {
       "eyebrow": "★ Google Reviews",
       "title": "What Our Clients Say",
@@ -297,16 +304,15 @@
     "studio": {
       "eyebrow": "Visit the studio",
       "title": "Walk in, ring the bell, take home a bouquet.",
+      "body": "We've been arranging flowers under the same pink awning since 2014. Walk in, call ahead, or order online — same-day delivery across Long Island and Queens.",
+      "photo_alt": "The Diva Flowers storefront on Willis Ave, framed by its pink floral arch",
       "address_label": "Studio",
       "hours_label": "Hours",
       "phone_label": "Phone",
       "directions_cta": "Get directions",
-      "call_cta": "Call the studio",
-      "map_title": "Map showing Diva Flowers at 1077 Willis Ave, Albertson, NY"
+      "call_cta": "Call the studio"
     },
     "newsletter": {
-      "eyebrow": "Stay in bloom",
-      "title": "Letters from the studio.",
       "placeholder": "you@email.com",
       "cta": "Subscribe",
       "success": "Welcome aboard.",
@@ -321,9 +327,6 @@
         "close": "Close",
         "video_label": "TikTok video"
       }
-    },
-    "social_proof": {
-      "aria": "Customer reviews and social media"
     }
   },
   "footer": {

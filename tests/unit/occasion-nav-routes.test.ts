@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { CHRISTMAS_LINK, EXOTIC_LINK, FALL_LINK, MOTHERS_DAY_LINK, OCCASION_NAV, VALENTINES_LINK, occasionLinks, seasonalLink } from "@/lib/occasions-nav";
+import { CHRISTMAS_LINK, EXOTIC_LINK, FALL_LINK, MOTHERS_DAY_LINK, OCCASION_NAV, VALENTINES_LINK, occasionLinks, occasionLinksSeasonFirst, seasonalLink } from "@/lib/occasions-nav";
 import { mothersDay, nextMothersDay } from "@/lib/metrics/holidays";
 import { isChristmasProduct, isExoticProduct, isFallProduct, isValentinesProduct, productsInShopCategory } from "@/lib/shop-categories";
 import { OCCASIONS_ALL, OCCASION_CONTENT } from "@/data/occasion-content";
@@ -81,6 +81,18 @@ describe("occasion navigation", () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  it("leads the home strip with the running season and keeps every other entry", () => {
+    const slugs = (links: { slug: string }[]) => links.map((l) => l.slug);
+    const fall = new Date("2026-10-15T16:00:00Z");
+    expect(slugs(occasionLinksSeasonFirst(fall))).toEqual([
+      "fall",
+      ...slugs(occasionLinks(fall)).filter((s) => s !== "fall"),
+    ]);
+    expect(occasionLinksSeasonFirst(fall).at(-1)).toBe(EXOTIC_LINK);
+    const offSeason = new Date("2026-07-01T16:00:00Z");
+    expect(slugs(occasionLinksSeasonFirst(offSeason))).toEqual(slugs(occasionLinks(offSeason)));
   });
 
   it("hands the seasonal slot from fall to Christmas to Valentine's", () => {

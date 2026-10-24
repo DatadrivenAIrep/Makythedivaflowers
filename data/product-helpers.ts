@@ -161,3 +161,20 @@ export function newestArrivals(products: Product[], limit = 12): Product[] {
     .sort(byNewest)
     .slice(0, limit);
 }
+
+/**
+ * The home page's best-sellers shelf: the head of the shop's "Recommended"
+ * order, kept to pieces with a price someone can send today. Funeral pieces
+ * and subscriptions have their own blocks on the page; quote-only pieces
+ * hide their price.
+ */
+export function bestSellers(
+  products: Product[],
+  sales: ReadonlyMap<string, number>,
+  limit = 8,
+): Product[] {
+  const shelf = filterProducts(products, {}).filter(
+    (p) => p.category !== "sympathy" && p.category !== "subscriptions" && !p.quoteOnly,
+  );
+  return sortProducts(shelf, "recommended", { sales }).slice(0, limit);
+}

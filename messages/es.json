@@ -200,9 +200,21 @@
       "sub": "Arreglos de cosecha para tu mesa de Thanksgiving: rosas, crisantemos y mini calabazas, hechos a mano cada día bajo nuestro arco rosa en Willis Ave.",
       "cta_primary": "Ver colección de otoño"
     },
+    "assurance": {
+      "aria": "Por qué pedir en Diva",
+      "rating": "{rating} en Google · {count} reseñas",
+      "same_day": "Entrega el mismo día en Nassau y Queens",
+      "redo": "Lo rehacemos gratis si fue error nuestro",
+      "local": "Tienda real en Willis Ave desde 2014"
+    },
     "occasions": {
       "eyebrow": "Compra por ocasión",
       "title": "¿Cuál es la ocasión?"
+    },
+    "best_sellers": {
+      "eyebrow": "Más vendidos",
+      "title": "Lo más pedido.",
+      "cta": "Ver todo"
     },
     "marquee": "MAKY THE DIVA FLOWERS · ROMANCE BY THE STEM · LONG ISLAND · DESDE 2014 · ENVÍOS HOY · SAME-DAY DELIVERY",
     "bento": {
@@ -272,11 +284,6 @@
       "pause": "Pausar video",
       "play": "Reproducir video"
     },
-    "editorial_split": {
-      "eyebrow": "Visita el estudio",
-      "title": "Construido alrededor de nuestro arco floral en Willis Ave.",
-      "body": "Arreglamos flores bajo el mismo toldo rosa desde 2014. Entra, llama o pide en línea — entrega el mismo día en Long Island y Queens."
-    },
     "reviews": {
       "eyebrow": "★ Reseñas en Google",
       "title": "Lo que dicen nuestros clientes",
@@ -297,16 +304,15 @@
     "studio": {
       "eyebrow": "Visítanos",
       "title": "Entra, toca el timbre y llévate un ramo.",
+      "body": "Arreglamos flores bajo el mismo toldo rosa desde 2014. Entra, llama o pide en línea — entrega el mismo día en Long Island y Queens.",
+      "photo_alt": "La fachada de Diva Flowers en Willis Ave, con su arco floral rosa",
       "address_label": "Estudio",
       "hours_label": "Horario",
       "phone_label": "Teléfono",
       "directions_cta": "Cómo llegar",
-      "call_cta": "Llamar al estudio",
-      "map_title": "Mapa mostrando Diva Flowers en 1077 Willis Ave, Albertson, NY"
+      "call_cta": "Llamar al estudio"
     },
     "newsletter": {
-      "eyebrow": "Mantente en flor",
-      "title": "Cartas del estudio.",
       "placeholder": "tu@correo.com",
       "cta": "Suscribirme",
       "success": "Bienvenido a bordo.",
@@ -321,9 +327,6 @@
         "close": "Cerrar",
         "video_label": "Video de TikTok"
       }
-    },
-    "social_proof": {
-      "aria": "Reseñas y redes sociales"
     }
   },
   "footer": {

@@ -13,6 +13,10 @@ type Props = {
   /** sympathy = fade-only stagger, no bloom */
   motionMode?: "default" | "sympathy";
   className?: string;
+  /** Classes for each card's wrapper, e.g. a fixed width inside a swipe row. */
+  itemClassName?: string;
+  /** How many leading photos load eagerly; 0 when the grid starts below the fold. */
+  priorityCount?: number;
   campaign?: string;
 };
 
@@ -21,7 +25,15 @@ const fadeOnly = {
   show: { opacity: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const } },
 };
 
-function ProductGridImpl({ products, locale, motionMode = "default", className, campaign }: Props) {
+function ProductGridImpl({
+  products,
+  locale,
+  motionMode = "default",
+  className,
+  itemClassName,
+  priorityCount = 3,
+  campaign,
+}: Props) {
   const itemVariants = motionMode === "sympathy" ? fadeOnly : staggerItemVariants;
   return (
     // Full-bleed plaster band (the photos' own background tone) so the uncropped
@@ -38,12 +50,12 @@ function ProductGridImpl({ products, locale, motionMode = "default", className, 
         }
       >
         {products.map((p, i) => (
-          <motion.div key={p.id} variants={itemVariants}>
+          <motion.div key={p.id} variants={itemVariants} className={itemClassName}>
             <ProductCard
               product={p}
               locale={locale}
               reduceMotion={motionMode === "sympathy"}
-              priority={i < 3}
+              priority={i < priorityCount}
               campaign={campaign}
             />
           </motion.div>

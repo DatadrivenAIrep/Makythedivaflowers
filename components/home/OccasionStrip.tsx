@@ -2,17 +2,19 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { FloatingPhoto } from "@/components/product/FloatingPhoto";
 import { StaggerGroup, StaggerItem } from "@/components/motion/StaggerGroup";
-import { occasionLinks } from "@/lib/occasions-nav";
+import { occasionLinksSeasonFirst } from "@/lib/occasions-nav";
 import type { Locale } from "@/types/locale";
 
 /**
  * "Shop by occasion" — the entry point every competing Long Island florist puts
  * above the fold and this site was missing. People arrive with an occasion in
  * mind ("it's her birthday", "there's a service Thursday"), not a product type,
- * so this sits directly under the hero, ahead of the category orbit.
+ * so this opens the page right under the hero, ahead of the best sellers.
  *
  * Each tile deep-links into the shop already filtered by that occasion; sympathy
- * goes to its own landing page instead. See `lib/occasions-nav.ts`.
+ * goes to its own landing page instead. See `lib/occasions-nav.ts`. The running
+ * season leads, and on phones the tiles swipe sideways in one row instead of
+ * stacking two screens of photos above the first price.
  */
 export async function OccasionStrip({ locale }: { locale: Locale }) {
   const t = await getTranslations("home.occasions");
@@ -37,10 +39,10 @@ export async function OccasionStrip({ locale }: { locale: Locale }) {
 
       <StaggerGroup
         as="ul"
-        className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 md:gap-4 lg:grid-cols-7"
+        className="-mx-6 flex snap-x snap-mandatory scroll-pl-6 gap-3 overflow-x-auto px-6 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 md:grid-cols-4 md:gap-4 lg:grid-cols-7"
       >
-        {occasionLinks().map((o) => (
-          <StaggerItem as="li" key={o.slug}>
+        {occasionLinksSeasonFirst().map((o) => (
+          <StaggerItem as="li" key={o.slug} className="w-[38vw] shrink-0 snap-start sm:w-auto">
             <Link
               href={o.path(locale)}
               className="group block rounded-[var(--radius-product)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rouge/60 focus-visible:ring-offset-2 focus-visible:ring-offset-bone"

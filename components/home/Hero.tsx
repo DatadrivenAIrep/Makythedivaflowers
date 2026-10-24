@@ -15,6 +15,7 @@ export async function Hero({ locale }: { locale: Locale }) {
   const [heroLine1, heroLine2] = copy("title").split(/, (.+)/);
   // With the subject on the right, the desktop button sits under the copy where
   // the eye already is, instead of in the bottom bar (the cookie notice covers it).
+  // Phones always get it under the copy: there the notice spans the whole bottom.
   const inlineCta = season.subject === "right";
 
   return (
@@ -78,7 +79,7 @@ export async function Hero({ locale }: { locale: Locale }) {
       <div
         className={`relative z-20 min-h-[calc(100dvh-var(--nav-offset))] flex flex-col px-6 ${
           season.subject === "right"
-            ? "justify-end pb-44 lg:justify-center lg:pt-36 lg:pb-24 lg:pl-16 lg:pr-[50%]"
+            ? "justify-end pb-28 lg:justify-center lg:pt-36 lg:pb-24 lg:pl-16 lg:pr-[50%]"
             : "justify-center lg:pl-[30%] lg:pr-16"
         }`}
       >
@@ -106,16 +107,14 @@ export async function Hero({ locale }: { locale: Locale }) {
               {copy("sub")}
             </p>
           </div>
-          {inlineCta && (
-            <div className="hidden lg:block mt-10">
-              <MagneticButton
-                href={`/${locale}${season.ctaPath}`}
-                ariaLabel={copy("cta_primary")}
-              >
-                {copy("cta_primary")}
-              </MagneticButton>
-            </div>
-          )}
+          <div className={inlineCta ? "mt-8 lg:mt-10" : "mt-8 lg:hidden"}>
+            <MagneticButton
+              href={`/${locale}${season.ctaPath}`}
+              ariaLabel={copy("cta_primary")}
+            >
+              {copy("cta_primary")}
+            </MagneticButton>
+          </div>
         </HeroReveal>
       </div>
 
@@ -161,14 +160,8 @@ export async function Hero({ locale }: { locale: Locale }) {
           </div>
         </div>
 
-        {/* Mobile bottom bar */}
+        {/* Mobile bottom bar — the main button lives under the copy on phones */}
         <div className="flex lg:hidden flex-col items-start gap-3 py-5 px-6">
-          <MagneticButton
-            href={`/${locale}${season.ctaPath}`}
-            ariaLabel={copy("cta_primary")}
-          >
-            {copy("cta_primary")}
-          </MagneticButton>
           <a
             href={`/${locale}/weddings`}
             className="font-sans text-sm tracking-tight text-bone/60 hover:text-bone/90 transition-colors duration-300 underline-offset-4 hover:underline"

@@ -162,3 +162,12 @@ export function occasionLinks(now: Date = new Date()): OccasionLink[] {
   const season = seasonalLink(now);
   return [...OCCASION_NAV, ...(season ? [season] : []), EXOTIC_LINK];
 }
+
+/**
+ * The home strip's order: the same entries, but the running season leads,
+ * since it is what the hero above the strip is selling.
+ */
+export function occasionLinksSeasonFirst(now: Date = new Date()): OccasionLink[] {
+  const season = seasonalLink(now);
+  return [...(season ? [season] : []), ...OCCASION_NAV, EXOTIC_LINK];
+}

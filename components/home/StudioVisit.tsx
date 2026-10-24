@@ -1,8 +1,12 @@
 import { getTranslations } from "next-intl/server";
 import { SITE } from "@/data/site";
 import { TelLink } from "@/components/analytics/TelLink";
+import { BloomImage } from "@/components/motion/BloomImage";
 import type { Locale } from "@/types/locale";
 
+// The page's one "come see us" block: the storefront under the pink arch,
+// then address, hours and phone. "Get directions" opens Google Maps, which
+// does a phone's job better than an embedded map would.
 export async function StudioVisit({ locale: _locale }: { locale: Locale }) {
   const t = await getTranslations("home.studio");
 
@@ -10,15 +14,13 @@ export async function StudioVisit({ locale: _locale }: { locale: Locale }) {
     <section className="py-24 md:py-32">
       <div className="max-w-[1400px] mx-auto px-6 grid md:grid-cols-12 gap-10 md:gap-16 items-center">
         <div className="md:col-span-7 md:-ml-6">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-bento)]">
-            <iframe
-              src={SITE.map.embedSrc}
-              title={t("map_title")}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="absolute inset-0 h-full w-full border-0"
-            />
-          </div>
+          <BloomImage
+            src="/storefront.webp"
+            alt={t("photo_alt")}
+            className="aspect-[4/3] rounded-[var(--radius-bento)]"
+            sizes="(min-width: 1024px) 58vw, 100vw"
+            imgClassName="object-[center_20%]"
+          />
         </div>
 
         <div className="md:col-span-5 space-y-6">
@@ -31,6 +33,7 @@ export async function StudioVisit({ locale: _locale }: { locale: Locale }) {
           >
             {t("title")}
           </h2>
+          <p className="text-mute-600 max-w-[42ch] text-base leading-relaxed">{t("body")}</p>
 
           <div className="space-y-1 text-mute-600 text-base leading-relaxed">
             <p>
