@@ -6,6 +6,11 @@ import { journalArticles } from "@/data/journal";
 import { locales } from "@/types/locale";
 import { LOCAL_CITIES, LOCAL_OCCASIONS } from "@/data/local-seo";
 import { OCCASIONS_ALL } from "@/data/occasion-content";
+import { productsInShopCategory, type ShopSlug } from "@/lib/shop-categories";
+
+// Seasonal collections are real, indexable pages but only list products in
+// season, so each one joins the sitemap only while it has something to show.
+const SEASONAL_SHOP_SLUGS: ShopSlug[] = ["fall", "christmas", "valentines"];
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://makythedivaflowers.com";
 
@@ -60,6 +65,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
         changeFrequency,
         priority,
         alternates: { languages: langs(p) },
+      });
+    }
+    for (const slug of SEASONAL_SHOP_SLUGS) {
+      if (productsInShopCategory(PRODUCTS, slug).length === 0) continue;
+      entries.push({
+        url: `${SITE}/${locale}/shop/${slug}`,
+        lastModified: now,
+        changeFrequency: "weekly",
+        priority: 0.8,
+        alternates: { languages: langs(`shop/${slug}`) },
       });
     }
     for (const product of PRODUCTS.filter((p) => isAvailableNow(p))) {
