@@ -29,10 +29,13 @@ export const SYMPATHY_FORMS: Record<SympathyForm, Localized> = {
 export const SYMPATHY_PRODUCT_SLUGS = [
   "tranquil-skies-wreath",
   "garden-halo-wreath",
+  "faithful-cross-wreath",
   "crimson-grace-cross",
   "cloud-cross",
   "beloved-heart",
   "crimson-heart",
+  "heart-of-devotion",
+  "love-and-remembrance-heart",
   "tender-heart",
   "heart-in-full-color",
   "garden-heart-wreath",
@@ -48,6 +51,8 @@ export const SYMPATHY_PRODUCT_SLUGS = [
   "twilight-orchid",
   "amethyst-orchid",
   "orchid-pedestal",
+  "green-obelisk",
+  "signature-exotic",
   "paradise-sympathy-basket",
   "eternal-white",
 ] as const;
