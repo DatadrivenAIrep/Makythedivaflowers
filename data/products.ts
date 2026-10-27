@@ -7048,6 +7048,1226 @@ export const PRODUCTS: Product[] = [
       },
     },
   },
+  {
+    id: "p-oct-autumn-embers",
+    slug: "autumn-embers",
+    addedAt: "2026-10-27",
+    title: { en: "Autumn Embers", es: "Brasas de Otoño" },
+    category: "arrangements",
+    blurb: {
+      en: "A fall arrangement of sunflowers, magenta dahlias, and red and orange roses in a glass cylinder.",
+      es: "Un arreglo de otoño con girasoles, dalias magenta y rosas rojas y naranja en un cilindro de vidrio.",
+    },
+    description: {
+      en: "Sunflowers, magenta dahlias, and red and orange roses gathered with bronze and burgundy chrysanthemums, golden setaria, and solidago, set in a tall glass cylinder. All the warmth of the season in one piece: perfect for a Thanksgiving table, a fall birthday, or a thank-you that feels like autumn. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Girasoles, dalias magenta y rosas rojas y naranja reunidos con crisantemos bronce y burdeos, setaria dorada y solidago, en un cilindro alto de vidrio. Todo el calor de la temporada en una sola pieza: perfecto para la mesa de Acción de Gracias, un cumpleaños en otoño o un agradecimiento con sabor a otoño. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/autumn-embers.jpg", alt: { en: "Fall arrangement of sunflowers, magenta dahlias, and red and orange roses in a glass cylinder", es: "Arreglo de otoño con girasoles, dalias magenta y rosas rojas y naranja en cilindro de vidrio" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 9999 },
+    ],
+    tags: ["seasonal"],
+    occasions: [],
+    colorFamily: ["mixed",  "green",  "red",  "pink"],
+    active: true,
+    seasonMonths: [9, 10, 11],
+    seo: {
+      title: { en: "Autumn Embers — Fall Sunflower & Dahlia Arrangement | Diva Flowers", es: "Brasas de Otoño — Arreglo de Otoño con Girasoles y Dalias | Diva Flowers" },
+      description: {
+        en: "A fall arrangement of sunflowers, magenta dahlias, and red and orange roses in a glass cylinder. Delivered across Long Island.",
+        es: "Un arreglo de otoño con girasoles, dalias magenta y rosas rojas y naranja en un cilindro de vidrio. Entrega en todo Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-pastel-orchid-garden",
+    slug: "pastel-orchid-garden",
+    addedAt: "2026-10-27",
+    title: { en: "Pastel Orchid Garden", es: "Jardín Pastel de Orquídeas" },
+    category: "arrangements",
+    blurb: {
+      en: "White hydrangea, pink and peach garden roses, and cymbidium orchids in a soft pastel arrangement.",
+      es: "Hortensia blanca, rosas de jardín rosadas y melocotón y orquídeas cymbidium en un arreglo pastel.",
+    },
+    description: {
+      en: "A soft, romantic garden of white hydrangea, pink and peach garden roses, pink and white cymbidium orchids, and lavender lisianthus with touches of lime-green hydrangea, set in a leaf-lined green cylinder. Gentle colors that suit a birthday, a congratulations, a get-well wish, or a simple I'm thinking of you. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Un jardín suave y romántico de hortensia blanca, rosas de jardín rosadas y melocotón, orquídeas cymbidium rosas y blancas y lisianthus lavanda, con toques de hortensia verde lima, en un cilindro verde forrado de hoja. Colores delicados para un cumpleaños, una felicitación, un deseo de pronta recuperación o un simple pienso en ti. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/pastel-orchid-garden.jpg", alt: { en: "Pastel arrangement of white hydrangea, pink garden roses, and pink and white cymbidium orchids in a green cylinder", es: "Arreglo pastel de hortensia blanca, rosas de jardín rosadas y orquídeas cymbidium rosas y blancas en cilindro verde" }, aspect: "4/5" },
+      { src: "/products/pastel-orchid-garden-2.jpg", alt: { en: "Pastel arrangement of white hydrangea, pink garden roses, and pink and white cymbidium orchids in a green cylinder, second view", es: "Arreglo pastel de hortensia blanca, rosas de jardín rosadas y orquídeas cymbidium rosas y blancas en cilindro verde, segunda vista" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 16999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "congrats",  "get-well",  "thinking-of-you"],
+    colorFamily: ["pastel",  "pink",  "green",  "mixed",  "white"],
+    active: true,
+    seo: {
+      title: { en: "Pastel Orchid Garden — Hydrangea, Rose & Cymbidium Arrangement | Diva Flowers", es: "Jardín Pastel de Orquídeas — Hortensia, Rosas y Cymbidium | Diva Flowers" },
+      description: {
+        en: "White hydrangea, pink and peach garden roses, and cymbidium orchids in a soft pastel arrangement. Same-day delivery on Long Island.",
+        es: "Hortensia blanca, rosas de jardín rosadas y melocotón y orquídeas cymbidium en un arreglo pastel. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-orchid-festival-basket",
+    slug: "orchid-festival-basket",
+    addedAt: "2026-10-27",
+    title: { en: "Orchid Festival Basket", es: "Cesta Festival de Orquídeas" },
+    category: "arrangements",
+    blurb: {
+      en: "A grand wicker basket of cymbidium orchids, gladiolus, dahlias, calla lilies, and bells of Ireland.",
+      es: "Una gran cesta de mimbre con orquídeas cymbidium, gladiolos, dalias, calas y bells of Ireland.",
+    },
+    description: {
+      en: "Our biggest exotic basket: pink and yellow cymbidium orchids rise over bells of Ireland, white delphinium, orange gladiolus, burgundy dahlias, lilac hydrangea, orange calla lilies, lavender roses, lilies, and stock, framed in monstera and willow in a generous wicker basket. A showstopper for a milestone birthday, an anniversary, Mother's Day, or a tribute for the service. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Nuestra cesta exótica más grande: orquídeas cymbidium rosas y amarillas sobre bells of Ireland, delphinium blanco, gladiolos naranja, dalias burdeos, hortensia lila, calas naranja, rosas lavanda, lirios y alhelí, enmarcados con monstera y sauce en una cesta de mimbre generosa. Una pieza impactante para un cumpleaños especial, un aniversario, el Día de la Madre o un homenaje para el servicio. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/orchid-festival-basket.jpg", alt: { en: "Large wicker basket of pink and yellow cymbidium orchids, gladiolus, dahlias, calla lilies, and bells of Ireland", es: "Gran cesta de mimbre con orquídeas cymbidium rosas y amarillas, gladiolos, dalias, calas y bells of Ireland" }, aspect: "4/5" },
+      { src: "/products/orchid-festival-basket-2.jpg", alt: { en: "Large wicker basket of pink and yellow cymbidium orchids, gladiolus, dahlias, calla lilies, and bells of Ireland, second view", es: "Gran cesta de mimbre con orquídeas cymbidium rosas y amarillas, gladiolos, dalias, calas y bells of Ireland, segunda vista" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 34999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["mothers-day",  "sympathy",  "birthday",  "valentines-day",  "get-well",  "anniversary"],
+    colorFamily: ["mixed",  "green",  "pink"],
+    active: true,
+    seo: {
+      title: { en: "Orchid Festival Basket — Grand Cymbidium & Gladiolus Basket | Diva Flowers", es: "Cesta Festival de Orquídeas — Cymbidium y Gladiolos | Diva Flowers" },
+      description: {
+        en: "A grand wicker basket of cymbidium orchids, gladiolus, dahlias, calla lilies, and bells of Ireland. Same-day delivery on Long Island.",
+        es: "Una gran cesta de mimbre con orquídeas cymbidium, gladiolos, dalias, calas y bells of Ireland. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-royal-orchid-spire",
+    slug: "royal-orchid-spire",
+    addedAt: "2026-10-27",
+    title: { en: "Royal Orchid Spire", es: "Aguja Real de Orquídeas" },
+    category: "arrangements",
+    blurb: {
+      en: "A tall exotic arrangement of pink cymbidium orchids, purple delphinium, and bells of Ireland.",
+      es: "Un arreglo exótico alto de orquídeas cymbidium rosas, delphinium morado y bells of Ireland.",
+    },
+    description: {
+      en: "A tall, regal spire of pink cymbidium orchids rising over purple delphinium, bells of Ireland, cream ornamental kale, white dendrobium orchids, and hydrangea, with arching bear grass, willow, monstera, and palm. Made to stand out in a lobby or a living room: a striking gift for a congratulations, a thank-you, or a birthday. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Una aguja alta y majestuosa de orquídeas cymbidium rosas sobre delphinium morado, bells of Ireland, col ornamental crema, orquídeas dendrobium blancas e hortensia, con bear grass en arco, sauce, monstera y palma. Hecha para destacar en un vestíbulo o una sala: un regalo llamativo para una felicitación, un agradecimiento o un cumpleaños. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/royal-orchid-spire.jpg", alt: { en: "Tall exotic arrangement of pink cymbidium orchids, purple delphinium, and bells of Ireland", es: "Arreglo exótico alto de orquídeas cymbidium rosas, delphinium morado y bells of Ireland" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 17499 },
+    ],
+    tags: ["same-day"],
+    occasions: ["congrats",  "thank-you",  "thinking-of-you",  "birthday",  "get-well"],
+    colorFamily: ["pink",  "mixed",  "green"],
+    active: true,
+    seo: {
+      title: { en: "Royal Orchid Spire — Tall Pink Cymbidium & Delphinium | Diva Flowers", es: "Aguja Real de Orquídeas — Cymbidium Rosa y Delphinium Alto | Diva Flowers" },
+      description: {
+        en: "A tall exotic arrangement of pink cymbidium orchids, purple delphinium, and bells of Ireland. Same-day delivery on Long Island.",
+        es: "Un arreglo exótico alto de orquídeas cymbidium rosas, delphinium morado y bells of Ireland. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-love-in-bloom",
+    slug: "love-in-bloom",
+    addedAt: "2026-10-27",
+    title: { en: "Love in Bloom", es: "Amor en Flor" },
+    category: "arrangements",
+    blurb: {
+      en: "A grand heart of more than 100 roses: pink roses framed in white baby's breath over a mass of red roses.",
+      es: "Un gran corazón de más de 100 rosas: rosas rosadas con borde de gypsophila blanca sobre rosas rojas.",
+    },
+    description: {
+      en: "More than 100 roses built into one unforgettable piece: a heart of pink roses outlined in a soft border of white baby's breath, rising from a full bed of red roses and finished with a red satin bow and trailing ribbons, in a silver cube. Decorative butterflies can be added on request. Because it is made to order, please order at least 24 hours ahead. Made for an anniversary, Valentine's Day, a big birthday, or Mother's Day. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Más de 100 rosas en una pieza inolvidable: un corazón de rosas rosadas con borde suave de gypsophila blanca, sobre una base llena de rosas rojas y terminado con moño y cintas de raso rojo, en un cubo plateado. Podemos añadir mariposas decorativas si lo pides. Como se hace por encargo, ordénalo con al menos 24 horas de anticipación. Hecho para un aniversario, San Valentín, un gran cumpleaños o el Día de la Madre. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/love-in-bloom.jpg", alt: { en: "Heart of pink roses with a white baby's breath border over a mass of red roses, with a red satin bow in a silver cube", es: "Corazón de rosas rosadas con borde de gypsophila blanca sobre rosas rojas, con moño de raso rojo en cubo plateado" }, aspect: "4/5" },
+      { src: "/products/love-in-bloom-2.jpg", alt: { en: "Heart of pink roses with a white baby's breath border over a mass of red roses, with a red satin bow in a silver cube, second view", es: "Corazón de rosas rosadas con borde de gypsophila blanca sobre rosas rojas, con moño de raso rojo en cubo plateado, segunda vista" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "100+ roses", es: "Más de 100 rosas" }, priceCents: 59999 },
+    ],
+    tags: [],
+    occasions: ["romance",  "anniversary",  "valentines-day",  "birthday",  "mothers-day",  "congrats"],
+    colorFamily: ["red",  "pink",  "mixed",  "green"],
+    active: true,
+    seo: {
+      title: { en: "Love in Bloom — 100+ Rose Heart Arrangement | Diva Flowers", es: "Amor en Flor — Corazón de Más de 100 Rosas | Diva Flowers" },
+      description: {
+        en: "A grand heart of more than 100 roses: pink roses framed in white baby's breath over a mass of red roses. Delivered across Long Island.",
+        es: "Un gran corazón de más de 100 rosas: rosas rosadas con borde de gypsophila blanca sobre rosas rojas. Entrega en todo Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-heart-of-devotion",
+    slug: "heart-of-devotion",
+    addedAt: "2026-10-27",
+    title: { en: "Heart of Devotion", es: "Corazón de Devoción" },
+    category: "sympathy",
+    blurb: {
+      en: "A standing funeral heart of 100 red roses with a cascade of white roses on an easel.",
+      es: "Un corazón fúnebre en atril con 100 rosas rojas y una cascada de rosas blancas.",
+    },
+    description: {
+      en: "A standing heart of 100 red roses, sprinkled with white waxflower and baby's breath, with a cascade of white roses and white spray roses trailing Italian ruscus from its point, over a base of aspidistra and fern on a natural wood easel. A deep, generous tribute of love for a funeral, wake, or memorial mass. Because it is made to order, please order at least 24 hours ahead; tell us the words for a ribbon in your card message. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un corazón en atril de 100 rosas rojas, salpicado de waxflower y gypsophila blancas, con una cascada de rosas blancas y mini rosas blancas con ruscus italiano desde su punta, sobre una base de aspidistra y helecho en un atril de madera natural. Un homenaje de amor profundo y generoso para un funeral, velorio o misa memorial. Como se hace por encargo, ordénalo con al menos 24 horas de anticipación; escríbenos las palabras de la cinta en el mensaje de la tarjeta. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/heart-of-devotion.jpg", alt: { en: "Standing funeral heart of 100 red roses with a cascade of white roses on a wooden easel", es: "Corazón fúnebre de 100 rosas rojas con cascada de rosas blancas sobre atril de madera" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "100 roses", es: "100 rosas" }, priceCents: 69999 },
+    ],
+    tags: [],
+    occasions: ["sympathy"],
+    colorFamily: ["red",  "white",  "green"],
+    active: true,
+    seo: {
+      title: { en: "Heart of Devotion — 100 Red Rose Funeral Heart | Diva Flowers", es: "Corazón de Devoción — Corazón Fúnebre de 100 Rosas Rojas | Diva Flowers" },
+      description: {
+        en: "A standing funeral heart of 100 red roses with a cascade of white roses on an easel. Delivered to funeral homes across Long Island.",
+        es: "Un corazón fúnebre en atril con 100 rosas rojas y una cascada de rosas blancas. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-love-and-remembrance-heart",
+    slug: "love-and-remembrance-heart",
+    addedAt: "2026-10-27",
+    title: { en: "Love and Remembrance Heart", es: "Corazón Amor y Memoria" },
+    category: "sympathy",
+    blurb: {
+      en: "An open funeral heart split in two: red roses on one side, white orchids and roses on the other.",
+      es: "Un corazón fúnebre abierto en dos mitades: rosas rojas de un lado y orquídeas y rosas blancas del otro.",
+    },
+    description: {
+      en: "An open standing heart in two halves: on one side, red roses with burgundy spray roses and red hypericum for love; on the other, white phalaenopsis orchids, white roses, and white hydrangea among eucalyptus and monstera for peace, joined by a large white satin bow. Set on an easel for a funeral, wake, or memorial service. Because it is made to order, please order at least 24 hours ahead. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un corazón abierto en atril con dos mitades: de un lado rosas rojas con mini rosas vino e hypericum rojo, por el amor; del otro, orquídeas phalaenopsis blancas, rosas blancas e hortensia blanca entre eucalipto y monstera, por la paz, unidas por un gran moño de raso blanco. Montado en atril para un funeral, velorio o servicio memorial. Como se hace por encargo, ordénalo con al menos 24 horas de anticipación. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/love-and-remembrance-heart.jpg", alt: { en: "Open funeral heart with a half of red roses and a half of white orchids and roses, with a white bow on an easel", es: "Corazón fúnebre abierto con una mitad de rosas rojas y otra de orquídeas y rosas blancas, con moño blanco en atril" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing heart", es: "Corazón en atril" }, priceCents: 49999 },
+    ],
+    tags: [],
+    occasions: ["sympathy"],
+    colorFamily: ["red",  "white"],
+    active: true,
+    seo: {
+      title: { en: "Love and Remembrance Heart — Rose & Orchid Funeral Heart | Diva Flowers", es: "Corazón Amor y Memoria — Corazón Fúnebre de Rosas y Orquídeas | Diva Flowers" },
+      description: {
+        en: "An open funeral heart split in two: red roses on one side, white orchids and roses on the other. Delivered to funeral homes across Long Island.",
+        es: "Un corazón fúnebre abierto en dos mitades: rosas rojas de un lado y orquídeas y rosas blancas del otro. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-faithful-cross-wreath",
+    slug: "faithful-cross-wreath",
+    addedAt: "2026-10-27",
+    title: { en: "Faithful Cross Wreath", es: "Corona Cruz de la Fe" },
+    category: "sympathy",
+    blurb: {
+      en: "A standing wreath of red roses with a white carnation cross and a spray of white orchids.",
+      es: "Una corona en atril de rosas rojas con una cruz de claveles blancos y un ramillete de orquídeas blancas.",
+    },
+    description: {
+      en: "A round standing wreath of tightly packed red roses edged in white baby's breath, crossed by a tall cross of white carnations that rises above the ring, crowned with a spray of white phalaenopsis orchids and red roses, and finished with a plain white satin sash. A tribute of faith and love for a funeral, wake, or memorial mass. Because it is made to order, please order at least 24 hours ahead; tell us the words for the sash in your card message. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Una corona redonda en atril de rosas rojas muy juntas con borde de gypsophila blanca, atravesada por una cruz alta de claveles blancos que sobresale del aro, coronada con un ramillete de orquídeas phalaenopsis blancas y rosas rojas, y terminada con una banda lisa de raso blanco. Un homenaje de fe y amor para un funeral, velorio o misa memorial. Como se hace por encargo, ordénalo con al menos 24 horas de anticipación; escríbenos las palabras de la banda en el mensaje de la tarjeta. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/faithful-cross-wreath.jpg", alt: { en: "Standing funeral wreath of red roses with a white carnation cross and white orchids on an easel", es: "Corona fúnebre en atril de rosas rojas con cruz de claveles blancos y orquídeas blancas" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standing", label: { en: "Standing wreath", es: "Corona en atril" }, priceCents: 69999 },
+    ],
+    tags: [],
+    occasions: ["sympathy"],
+    colorFamily: ["red",  "white",  "green",  "pastel",  "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Faithful Cross Wreath — Red Rose Funeral Wreath with Cross | Diva Flowers", es: "Corona Cruz de la Fe — Corona Fúnebre de Rosas con Cruz | Diva Flowers" },
+      description: {
+        en: "A standing wreath of red roses with a white carnation cross and a spray of white orchids. Delivered to funeral homes across Long Island.",
+        es: "Una corona en atril de rosas rojas con una cruz de claveles blancos y un ramillete de orquídeas blancas. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-cymbidium-cascade",
+    slug: "cymbidium-cascade",
+    addedAt: "2026-10-27",
+    title: { en: "Cymbidium Cascade", es: "Cascada de Cymbidium" },
+    category: "arrangements",
+    blurb: {
+      en: "Tall green cymbidium orchids over a dome of orange roses and blue vanda in a glass cube.",
+      es: "Orquídeas cymbidium verdes altas sobre una cúpula de rosas naranja y vanda azul en un cubo de vidrio.",
+    },
+    description: {
+      en: "Tall green cymbidium orchids cascade over a dome of orange roses, blue-violet vanda orchids, and green hydrangea, with branches for height, in a leaf-lined glass cube. Fresh and modern, a beautiful choice for a birthday, an anniversary, a congratulations, or a get-well wish. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Orquídeas cymbidium verdes altas caen sobre una cúpula de rosas naranja, orquídeas vanda azul violeta e hortensia verde, con ramas para dar altura, en un cubo de vidrio forrado de hoja. Fresco y moderno, una gran opción para un cumpleaños, un aniversario, una felicitación o un deseo de pronta recuperación. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/cymbidium-cascade.jpg", alt: { en: "Green cymbidium orchids over orange roses and blue vanda orchids in a glass cube", es: "Orquídeas cymbidium verdes sobre rosas naranja y vanda azul en cubo de vidrio" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 22499 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "get-well"],
+    colorFamily: ["mixed",  "green",  "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Cymbidium Cascade — Green Orchid & Orange Rose Arrangement | Diva Flowers", es: "Cascada de Cymbidium — Arreglo de Orquídeas Verdes y Rosas | Diva Flowers" },
+      description: {
+        en: "Tall green cymbidium orchids over a dome of orange roses and blue vanda in a glass cube. Same-day delivery on Long Island.",
+        es: "Orquídeas cymbidium verdes altas sobre una cúpula de rosas naranja y vanda azul en un cubo de vidrio. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-carnival-sky",
+    slug: "carnival-sky",
+    addedAt: "2026-10-27",
+    title: { en: "Carnival Sky", es: "Cielo de Carnaval" },
+    category: "arrangements",
+    blurb: {
+      en: "Yellow cymbidium orchids, blue roses, red heliconia, and ginger in a glass cube.",
+      es: "Orquídeas cymbidium amarillas, rosas azules, heliconia roja y ginger en un cubo de vidrio.",
+    },
+    description: {
+      en: "A festival of color: yellow cymbidium orchids with vivid blue roses, red heliconia, red ginger, a pink oriental lily, lilac vanda orchids, and green hydrangea, in a glass cube. Bold and joyful for a birthday, an anniversary, a congratulations, or a thank-you. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Un festival de color: orquídeas cymbidium amarillas con rosas azul intenso, heliconia roja, ginger rojo, un lirio oriental rosado, orquídeas vanda lila e hortensia verde, en un cubo de vidrio. Atrevido y alegre para un cumpleaños, un aniversario, una felicitación o un agradecimiento. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/carnival-sky.jpg", alt: { en: "Exotic arrangement of yellow cymbidium orchids, blue roses, red heliconia, and ginger in a glass cube", es: "Arreglo exótico de orquídeas cymbidium amarillas, rosas azules, heliconia roja y ginger en cubo de vidrio" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 14999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you"],
+    colorFamily: ["mixed",  "green",  "pink"],
+    active: true,
+    seo: {
+      title: { en: "Carnival Sky — Cymbidium, Blue Rose & Heliconia | Diva Flowers", es: "Cielo de Carnaval — Cymbidium, Rosas Azules y Heliconia | Diva Flowers" },
+      description: {
+        en: "Yellow cymbidium orchids, blue roses, red heliconia, and ginger in a glass cube. Same-day delivery on Long Island.",
+        es: "Orquídeas cymbidium amarillas, rosas azules, heliconia roja y ginger en un cubo de vidrio. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-green-cathedral",
+    slug: "green-cathedral",
+    addedAt: "2026-10-27",
+    title: { en: "Green Cathedral", es: "Catedral Verde" },
+    category: "arrangements",
+    blurb: {
+      en: "Green and yellow cymbidium orchids with white calla lilies and bells of Ireland.",
+      es: "Orquídeas cymbidium verdes y amarillas con calas blancas y bells of Ireland.",
+    },
+    description: {
+      en: "A tall, architectural piece of green and yellow cymbidium orchids with white calla lilies and bells of Ireland, accented by purple stock, red hypericum, white hydrangea, and a touch of pink cymbidium, all wrapped in lush leaves. Elegant for a birthday, an anniversary, a congratulations, or a thank-you. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Una pieza alta y arquitectónica de orquídeas cymbidium verdes y amarillas con calas blancas y bells of Ireland, con acentos de alhelí morado, hypericum rojo, hortensia blanca y un toque de cymbidium rosado, todo envuelto en hojas abundantes. Elegante para un cumpleaños, un aniversario, una felicitación o un agradecimiento. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/green-cathedral.jpg", alt: { en: "Tall arrangement of green cymbidium orchids, white calla lilies, and bells of Ireland", es: "Arreglo alto de orquídeas cymbidium verdes, calas blancas y bells of Ireland" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 22999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you",  "just-because"],
+    colorFamily: ["green",  "mixed",  "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Green Cathedral — Cymbidium & Calla Lily Arrangement | Diva Flowers", es: "Catedral Verde — Arreglo de Cymbidium y Calas | Diva Flowers" },
+      description: {
+        en: "Green and yellow cymbidium orchids with white calla lilies and bells of Ireland. Same-day delivery on Long Island.",
+        es: "Orquídeas cymbidium verdes y amarillas con calas blancas y bells of Ireland. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-cobalt-reverie",
+    slug: "cobalt-reverie",
+    addedAt: "2026-10-27",
+    title: { en: "Cobalt Reverie", es: "Ensueño Cobalto" },
+    category: "arrangements",
+    blurb: {
+      en: "Red amaryllis, white calla lilies, fuchsia roses, and white cymbidium in a cobalt-blue bowl.",
+      es: "Amaryllis rojo, calas blancas, rosas fucsia y cymbidium blanco en un cuenco azul cobalto.",
+    },
+    description: {
+      en: "Red amaryllis and white calla lilies over fuchsia roses, purple stock, a pink lily, and white cymbidium orchids with eucalyptus, in a glossy cobalt-blue ceramic bowl that stays as a keepsake. Rich and dramatic for a birthday, an anniversary, or a thank-you. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Amaryllis rojo y calas blancas sobre rosas fucsia, alhelí morado, un lirio rosado y orquídeas cymbidium blancas con eucalipto, en un cuenco de cerámica azul cobalto brillante que se queda de recuerdo. Rico y dramático para un cumpleaños, un aniversario o un agradecimiento. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/cobalt-reverie.jpg", alt: { en: "Red amaryllis, white calla lilies, and fuchsia roses in a cobalt-blue ceramic bowl", es: "Amaryllis rojo, calas blancas y rosas fucsia en cuenco de cerámica azul cobalto" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 34999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "thank-you",  "just-because"],
+    colorFamily: ["mixed",  "green",  "pastel",  "pink"],
+    active: true,
+    seo: {
+      title: { en: "Cobalt Reverie — Amaryllis & Calla Lily in Blue Bowl | Diva Flowers", es: "Ensueño Cobalto — Amaryllis y Calas en Cuenco Azul | Diva Flowers" },
+      description: {
+        en: "Red amaryllis, white calla lilies, fuchsia roses, and white cymbidium in a cobalt-blue bowl. Same-day delivery on Long Island.",
+        es: "Amaryllis rojo, calas blancas, rosas fucsia y cymbidium blanco en un cuenco azul cobalto. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-safari-basket",
+    slug: "safari-basket",
+    addedAt: "2026-10-27",
+    title: { en: "Safari Basket", es: "Cesta Safari" },
+    category: "arrangements",
+    blurb: {
+      en: "A wicker basket of yellow cymbidium orchids, orange roses, fuchsia peonies, and bamboo.",
+      es: "Una cesta de mimbre con orquídeas cymbidium amarillas, rosas naranja, peonías fucsia y bambú.",
+    },
+    description: {
+      en: "A wild, sunny basket: yellow cymbidium orchids over a dome of orange-red roses with fuchsia peonies, purple dendrobium and yellow mokara orchids, white lilies, monstera, and bamboo canes, in a natural wicker basket. A generous gift for a birthday, an anniversary, a congratulations, or a thank-you. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Una cesta salvaje y soleada: orquídeas cymbidium amarillas sobre una cúpula de rosas naranja rojizo con peonías fucsia, orquídeas dendrobium moradas y mokara amarillas, lirios blancos, monstera y cañas de bambú, en una cesta de mimbre natural. Un regalo generoso para un cumpleaños, un aniversario, una felicitación o un agradecimiento. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/safari-basket.jpg", alt: { en: "Wicker basket of yellow cymbidium orchids, orange roses, fuchsia peonies, and bamboo", es: "Cesta de mimbre con orquídeas cymbidium amarillas, rosas naranja, peonías fucsia y bambú" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 34999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you"],
+    colorFamily: ["mixed",  "green",  "pastel",  "red",  "pink"],
+    active: true,
+    seo: {
+      title: { en: "Safari Basket — Cymbidium, Rose & Peony Basket | Diva Flowers", es: "Cesta Safari — Cesta de Cymbidium, Rosas y Peonías | Diva Flowers" },
+      description: {
+        en: "A wicker basket of yellow cymbidium orchids, orange roses, fuchsia peonies, and bamboo. Same-day delivery on Long Island.",
+        es: "Una cesta de mimbre con orquídeas cymbidium amarillas, rosas naranja, peonías fucsia y bambú. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-green-obelisk",
+    slug: "green-obelisk",
+    addedAt: "2026-10-27",
+    title: { en: "Green Obelisk", es: "Obelisco Verde" },
+    category: "sympathy",
+    blurb: {
+      en: "A tall white and green sympathy piece of green cymbidium orchids and white roses.",
+      es: "Una pieza de condolencias alta en blanco y verde con orquídeas cymbidium verdes y rosas blancas.",
+    },
+    description: {
+      en: "A serene, tall tribute of green cymbidium orchids rising over white roses and white dendrobium orchids among glossy leaves, on a silver base. Quiet and dignified for a funeral, a wake, or flowers sent to the family's home. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Un homenaje sereno y alto de orquídeas cymbidium verdes sobre rosas blancas y orquídeas dendrobium blancas entre hojas brillantes, en una base plateada. Discreto y digno para un funeral, un velorio o flores enviadas a la casa de la familia. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/green-obelisk.jpg", alt: { en: "Tall sympathy arrangement of green cymbidium orchids and white roses on a silver base", es: "Arreglo de condolencias alto de orquídeas cymbidium verdes y rosas blancas en base plateada" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 19999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["sympathy"],
+    colorFamily: ["green",  "white"],
+    active: true,
+    seo: {
+      title: { en: "Green Obelisk — Cymbidium & White Rose Sympathy | Diva Flowers", es: "Obelisco Verde — Condolencias de Cymbidium y Rosas Blancas | Diva Flowers" },
+      description: {
+        en: "A tall white and green sympathy piece of green cymbidium orchids and white roses. Delivered to funeral homes across Long Island.",
+        es: "Una pieza de condolencias alta en blanco y verde con orquídeas cymbidium verdes y rosas blancas. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-jewelbox-bouquet",
+    slug: "jewelbox-bouquet",
+    addedAt: "2026-10-27",
+    title: { en: "Jewelbox", es: "Joyero" },
+    category: "arrangements",
+    blurb: {
+      en: "A compact, jewel-toned arrangement of fuchsia peonies, red roses, and green cymbidium orchids.",
+      es: "Un arreglo compacto en tonos joya con peonías fucsia, rosas rojas y orquídeas cymbidium verdes.",
+    },
+    description: {
+      en: "A round, compact arrangement packed like a jewel box: fuchsia peonies, red roses, green cymbidium orchids, white and pink lisianthus, white hydrangea, and red hypericum. Lovely from every angle and easy to place on a table, for a birthday, an anniversary, a romantic surprise, or just because. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Un arreglo redondo y compacto lleno como un joyero: peonías fucsia, rosas rojas, orquídeas cymbidium verdes, lisianthus blanco y rosa, hortensia blanca e hypericum rojo. Bonito desde todos los ángulos y fácil de poner en una mesa, para un cumpleaños, un aniversario, una sorpresa romántica o porque sí. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/jewelbox-bouquet.jpg", alt: { en: "Compact arrangement of fuchsia peonies, red roses, and green cymbidium orchids seen from above", es: "Arreglo compacto de peonías fucsia, rosas rojas y orquídeas cymbidium verdes visto desde arriba" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 14999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you",  "just-because",  "romance"],
+    colorFamily: ["red",  "pink",  "white",  "green",  "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Jewelbox — Peony, Rose & Cymbidium Arrangement | Diva Flowers", es: "Joyero — Arreglo de Peonías, Rosas y Cymbidium | Diva Flowers" },
+      description: {
+        en: "A compact, jewel-toned arrangement of fuchsia peonies, red roses, and green cymbidium orchids. Same-day delivery on Long Island.",
+        es: "Un arreglo compacto en tonos joya con peonías fucsia, rosas rojas y orquídeas cymbidium verdes. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-tropic-ember",
+    slug: "tropic-ember",
+    addedAt: "2026-10-27",
+    title: { en: "Tropic Ember", es: "Brasa Tropical" },
+    category: "arrangements",
+    blurb: {
+      en: "Tall green cymbidium orchids over a dome of orange-red roses and white dendrobium.",
+      es: "Orquídeas cymbidium verdes altas sobre una cúpula de rosas naranja rojizo y dendrobium blanco.",
+    },
+    description: {
+      en: "Tall green cymbidium orchids over a dome of orange-red roses, white dendrobium orchids, and white hydrangea, with arching bear grass and ruscus, in a low dark bowl. Warm and modern for a birthday, an anniversary, a congratulations, or a thank-you. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Orquídeas cymbidium verdes altas sobre una cúpula de rosas naranja rojizo, orquídeas dendrobium blancas e hortensia blanca, con bear grass en arco y ruscus, en un cuenco bajo oscuro. Cálido y moderno para un cumpleaños, un aniversario, una felicitación o un agradecimiento. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/tropic-ember.jpg", alt: { en: "Green cymbidium orchids over orange-red roses and white dendrobium in a low dark bowl", es: "Orquídeas cymbidium verdes sobre rosas naranja rojizo y dendrobium blanco en cuenco bajo oscuro" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 24999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you",  "just-because"],
+    colorFamily: ["mixed",  "green",  "red",  "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Tropic Ember — Cymbidium & Orange Rose Arrangement | Diva Flowers", es: "Brasa Tropical — Arreglo de Cymbidium y Rosas Naranja | Diva Flowers" },
+      description: {
+        en: "Tall green cymbidium orchids over a dome of orange-red roses and white dendrobium. Same-day delivery on Long Island.",
+        es: "Orquídeas cymbidium verdes altas sobre una cúpula de rosas naranja rojizo y dendrobium blanco. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-golden-wild",
+    slug: "golden-wild",
+    addedAt: "2026-10-27",
+    title: { en: "Golden Wild", es: "Dorado Salvaje" },
+    category: "arrangements",
+    blurb: {
+      en: "Sunflowers, red and orange roses, lilies, and purple dendrobium orchids on a golden base.",
+      es: "Girasoles, rosas rojas y naranja, lirios y orquídeas dendrobium moradas en una base dorada.",
+    },
+    description: {
+      en: "Sunflowers with red and orange roses, lilies, purple dendrobium orchids, and white hydrangea among golden leaves, on a leaf-wrapped golden base. Bright and generous for a birthday, an anniversary, a congratulations, or a thank-you. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Girasoles con rosas rojas y naranja, lirios, orquídeas dendrobium moradas e hortensia blanca entre hojas doradas, sobre una base dorada envuelta en hoja. Luminoso y generoso para un cumpleaños, un aniversario, una felicitación o un agradecimiento. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/golden-wild.jpg", alt: { en: "Arrangement of sunflowers, red and orange roses, lilies, and purple dendrobium orchids on a golden base", es: "Arreglo de girasoles, rosas rojas y naranja, lirios y orquídeas dendrobium moradas en base dorada" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 19999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you",  "just-because"],
+    colorFamily: ["mixed",  "green",  "pink"],
+    active: true,
+    seo: {
+      title: { en: "Golden Wild — Sunflower, Rose & Dendrobium Arrangement | Diva Flowers", es: "Dorado Salvaje — Arreglo de Girasoles, Rosas y Dendrobium | Diva Flowers" },
+      description: {
+        en: "Sunflowers, red and orange roses, lilies, and purple dendrobium orchids on a golden base. Same-day delivery on Long Island.",
+        es: "Girasoles, rosas rojas y naranja, lirios y orquídeas dendrobium moradas en una base dorada. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-onyx-garden",
+    slug: "onyx-garden",
+    addedAt: "2026-10-27",
+    title: { en: "Onyx Garden", es: "Jardín Ónix" },
+    category: "arrangements",
+    blurb: {
+      en: "Green cymbidium orchids, white calla lilies, red roses, and bamboo in a glossy black bowl.",
+      es: "Orquídeas cymbidium verdes, calas blancas, rosas rojas y bambú en un cuenco negro brillante.",
+    },
+    description: {
+      en: "Green cymbidium orchids with white calla lilies, red roses, purple and white dendrobium orchids, white hydrangea, eucalyptus, and bamboo canes, set low in a glossy black bowl. Sophisticated and striking for an anniversary, a romantic gesture, Valentine's Day, Mother's Day, or a birthday. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Orquídeas cymbidium verdes con calas blancas, rosas rojas, orquídeas dendrobium moradas y blancas, hortensia blanca, eucalipto y cañas de bambú, en un cuenco bajo negro brillante. Sofisticado e impactante para un aniversario, un gesto romántico, San Valentín, el Día de la Madre o un cumpleaños. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/onyx-garden.jpg", alt: { en: "Green cymbidium orchids, white calla lilies, and red roses with bamboo in a glossy black bowl", es: "Orquídeas cymbidium verdes, calas blancas y rosas rojas con bambú en cuenco negro brillante" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 49999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you",  "just-because",  "mothers-day",  "romance",  "valentines-day"],
+    colorFamily: ["mixed",  "green",  "red"],
+    active: true,
+    seo: {
+      title: { en: "Onyx Garden — Cymbidium, Calla & Red Rose Arrangement | Diva Flowers", es: "Jardín Ónix — Arreglo de Cymbidium, Calas y Rosas Rojas | Diva Flowers" },
+      description: {
+        en: "Green cymbidium orchids, white calla lilies, red roses, and bamboo in a glossy black bowl. Same-day delivery on Long Island.",
+        es: "Orquídeas cymbidium verdes, calas blancas, rosas rojas y bambú en un cuenco negro brillante. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-amaryllis-rise",
+    slug: "amaryllis-rise",
+    addedAt: "2026-10-27",
+    title: { en: "Amaryllis Rise", es: "Amaryllis Ascendente" },
+    category: "arrangements",
+    blurb: {
+      en: "Tall white amaryllis over red and yellow cymbidium orchids, red roses, and calla lilies.",
+      es: "Amaryllis blanco alto sobre orquídeas cymbidium rojas y amarillas, rosas rojas y calas.",
+    },
+    description: {
+      en: "Tall white amaryllis rise over red and yellow cymbidium orchids, purple and white dendrobium orchids, white hydrangea, red roses, and calla lilies, in a low dark bowl. A grand, elegant gift for a birthday, an anniversary, Mother's Day, or a congratulations. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Amaryllis blanco alto sobre orquídeas cymbidium rojas y amarillas, orquídeas dendrobium moradas y blancas, hortensia blanca, rosas rojas y calas, en un cuenco bajo oscuro. Un regalo grande y elegante para un cumpleaños, un aniversario, el Día de la Madre o una felicitación. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/amaryllis-rise.jpg", alt: { en: "Tall white amaryllis with red and yellow cymbidium orchids and red roses in a low dark bowl", es: "Amaryllis blanco alto con orquídeas cymbidium rojas y amarillas y rosas rojas en cuenco bajo oscuro" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 49999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you",  "just-because",  "mothers-day"],
+    colorFamily: ["mixed"],
+    active: true,
+    seo: {
+      title: { en: "Amaryllis Rise — White Amaryllis & Cymbidium | Diva Flowers", es: "Amaryllis Ascendente — Amaryllis Blanco y Cymbidium | Diva Flowers" },
+      description: {
+        en: "Tall white amaryllis over red and yellow cymbidium orchids, red roses, and calla lilies. Same-day delivery on Long Island.",
+        es: "Amaryllis blanco alto sobre orquídeas cymbidium rojas y amarillas, rosas rojas y calas. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-orchid-fan",
+    slug: "orchid-fan",
+    addedAt: "2026-10-27",
+    title: { en: "Orchid Fan", es: "Abanico de Orquídeas" },
+    category: "arrangements",
+    blurb: {
+      en: "A fan of pink and white cymbidium orchids with pink gerberas and roses.",
+      es: "Un abanico de orquídeas cymbidium rosas y blancas con gerberas y rosas rosadas.",
+    },
+    description: {
+      en: "Pink and white cymbidium orchids open like a fan over pink gerberas, white and pink roses, white dendrobium orchids, and white hydrangea, on a low leaf-covered base. Soft and feminine for Mother's Day, an anniversary, a birthday, or a romantic surprise. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Orquídeas cymbidium rosas y blancas se abren como un abanico sobre gerberas rosadas, rosas blancas y rosadas, orquídeas dendrobium blancas e hortensia blanca, en una base baja cubierta de hojas. Suave y femenino para el Día de la Madre, un aniversario, un cumpleaños o una sorpresa romántica. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/orchid-fan.jpg", alt: { en: "Fan of pink and white cymbidium orchids with pink gerberas and roses", es: "Abanico de orquídeas cymbidium rosas y blancas con gerberas y rosas rosadas" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 49999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you",  "just-because",  "romance",  "mothers-day",  "valentines-day",  "thinking-of-you"],
+    colorFamily: ["pink",  "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Orchid Fan — Pink & White Cymbidium with Gerberas | Diva Flowers", es: "Abanico de Orquídeas — Cymbidium Rosa y Blanco con Gerberas | Diva Flowers" },
+      description: {
+        en: "A fan of pink and white cymbidium orchids with pink gerberas and roses. Same-day delivery on Long Island.",
+        es: "Un abanico de orquídeas cymbidium rosas y blancas con gerberas y rosas rosadas. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-ginger-jewel",
+    slug: "ginger-jewel",
+    addedAt: "2026-10-27",
+    title: { en: "Ginger Jewel", es: "Jengibre Joya" },
+    category: "arrangements",
+    blurb: {
+      en: "A wicker basket of red ginger, pink cymbidium orchids, roses, and lavender hydrangea.",
+      es: "Una cesta de mimbre con ginger rojo, orquídeas cymbidium rosas, rosas e hortensia lavanda.",
+    },
+    description: {
+      en: "Red ginger and pink cymbidium orchids over pink and red roses, lavender hydrangea, red hypericum, purple statice, and a lily, in a natural wicker basket. Tropical and romantic for a birthday, an anniversary, Valentine's Day, or Mother's Day. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Ginger rojo y orquídeas cymbidium rosas sobre rosas rosadas y rojas, hortensia lavanda, hypericum rojo, statice morado y un lirio, en una cesta de mimbre natural. Tropical y romántica para un cumpleaños, un aniversario, San Valentín o el Día de la Madre. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/ginger-jewel.jpg", alt: { en: "Wicker basket of red ginger, pink cymbidium orchids, pink and red roses, and lavender hydrangea", es: "Cesta de mimbre con ginger rojo, orquídeas cymbidium rosas, rosas rosadas y rojas e hortensia lavanda" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 29999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you",  "just-because",  "romance",  "mothers-day",  "valentines-day"],
+    colorFamily: ["pink",  "mixed",  "red",  "pastel",  "green"],
+    active: true,
+    seo: {
+      title: { en: "Ginger Jewel — Ginger, Cymbidium & Rose Basket | Diva Flowers", es: "Jengibre Joya — Cesta de Ginger, Cymbidium y Rosas | Diva Flowers" },
+      description: {
+        en: "A wicker basket of red ginger, pink cymbidium orchids, roses, and lavender hydrangea. Same-day delivery on Long Island.",
+        es: "Una cesta de mimbre con ginger rojo, orquídeas cymbidium rosas, rosas e hortensia lavanda. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-copper-orchid",
+    slug: "copper-orchid",
+    addedAt: "2026-10-27",
+    title: { en: "Copper Orchid", es: "Orquídea Cobre" },
+    category: "arrangements",
+    blurb: {
+      en: "Tall copper-peach cymbidium orchids with orange roses and a red gerbera.",
+      es: "Orquídeas cymbidium altas color cobre melocotón con rosas naranja y una gerbera roja.",
+    },
+    description: {
+      en: "Tall copper-peach cymbidium orchids over orange roses, a red gerbera, yellow cymbidium, white dendrobium orchids, green hydrangea, and monstera. Warm, unusual color for a birthday, a congratulations, a thank-you, or a get-well wish. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Orquídeas cymbidium altas color cobre melocotón sobre rosas naranja, una gerbera roja, cymbidium amarillo, orquídeas dendrobium blancas, hortensia verde y monstera. Un color cálido y poco común para un cumpleaños, una felicitación, un agradecimiento o un deseo de pronta recuperación. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/copper-orchid.jpg", alt: { en: "Tall copper cymbidium orchids with orange roses and a red gerbera", es: "Orquídeas cymbidium altas color cobre con rosas naranja y una gerbera roja" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 24999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "congrats",  "thank-you",  "just-because",  "get-well",  "anniversary"],
+    colorFamily: ["mixed",  "pastel",  "green"],
+    active: true,
+    seo: {
+      title: { en: "Copper Orchid — Copper Cymbidium & Orange Rose | Diva Flowers", es: "Orquídea Cobre — Cymbidium Cobre y Rosas Naranja | Diva Flowers" },
+      description: {
+        en: "Tall copper-peach cymbidium orchids with orange roses and a red gerbera. Same-day delivery on Long Island.",
+        es: "Orquídeas cymbidium altas color cobre melocotón con rosas naranja y una gerbera roja. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-heliconia-bowl",
+    slug: "heliconia-bowl",
+    addedAt: "2026-10-27",
+    title: { en: "Heliconia Bowl", es: "Cuenco Heliconia" },
+    category: "arrangements",
+    blurb: {
+      en: "White phalaenopsis orchids, red and yellow heliconia, and bird of paradise in a tropical bowl.",
+      es: "Orquídeas phalaenopsis blancas, heliconia roja y amarilla y ave del paraíso en un cuenco tropical.",
+    },
+    description: {
+      en: "A tall white phalaenopsis orchid over red and yellow heliconia, bird of paradise, orange cymbidium and orange roses, purple hydrangea, and pink cymbidium. A true tropical statement for a birthday, an anniversary, Mother's Day, or a congratulations. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Una orquídea phalaenopsis blanca alta sobre heliconia roja y amarilla, ave del paraíso, cymbidium y rosas naranja, hortensia morada y cymbidium rosa. Una verdadera pieza tropical para un cumpleaños, un aniversario, el Día de la Madre o una felicitación. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/heliconia-bowl.jpg", alt: { en: "Tropical arrangement of white phalaenopsis orchids, red and yellow heliconia, and bird of paradise", es: "Arreglo tropical de orquídeas phalaenopsis blancas, heliconia roja y amarilla y ave del paraíso" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 49999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you",  "just-because",  "mothers-day",  "valentines-day",  "romance",  "get-well",  "thinking-of-you"],
+    colorFamily: ["mixed",  "white",  "green",  "pink"],
+    active: true,
+    seo: {
+      title: { en: "Heliconia Bowl — Phalaenopsis & Bird of Paradise | Diva Flowers", es: "Cuenco Heliconia — Phalaenopsis y Ave del Paraíso | Diva Flowers" },
+      description: {
+        en: "White phalaenopsis orchids, red and yellow heliconia, and bird of paradise in a tropical bowl. Same-day delivery on Long Island.",
+        es: "Orquídeas phalaenopsis blancas, heliconia roja y amarilla y ave del paraíso en un cuenco tropical. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-snow-amaryllis",
+    slug: "snow-amaryllis",
+    addedAt: "2026-10-27",
+    title: { en: "Snow Amaryllis", es: "Amaryllis Nieve" },
+    category: "arrangements",
+    blurb: {
+      en: "White amaryllis and white orchids with red roses in an oval white bowl.",
+      es: "Amaryllis blanco y orquídeas blancas con rosas rojas en un cuenco blanco ovalado.",
+    },
+    description: {
+      en: "White amaryllis in bud with white cymbidium and white dendrobium orchids, red roses, and hydrangea, in an oval white bowl. Pure and elegant, it suits an anniversary, a birthday, Mother's Day, a winter celebration, or a gentle tribute of sympathy. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Amaryllis blanco en botón con orquídeas cymbidium y dendrobium blancas, rosas rojas e hortensia, en un cuenco blanco ovalado. Puro y elegante, sirve para un aniversario, un cumpleaños, el Día de la Madre, una celebración de invierno o un homenaje sereno de condolencias. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/snow-amaryllis.jpg", alt: { en: "White amaryllis and white orchids with red roses in an oval white bowl", es: "Amaryllis blanco y orquídeas blancas con rosas rojas en cuenco blanco ovalado" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 64999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you",  "just-because",  "romance",  "mothers-day",  "sympathy",  "valentines-day",  "get-well"],
+    colorFamily: ["white",  "red",  "mixed",  "green"],
+    active: true,
+    seo: {
+      title: { en: "Snow Amaryllis — White Amaryllis & Orchid Arrangement | Diva Flowers", es: "Amaryllis Nieve — Arreglo de Amaryllis y Orquídeas Blancas | Diva Flowers" },
+      description: {
+        en: "White amaryllis and white orchids with red roses in an oval white bowl. Same-day delivery on Long Island.",
+        es: "Amaryllis blanco y orquídeas blancas con rosas rojas en un cuenco blanco ovalado. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-winter-green",
+    slug: "winter-green",
+    addedAt: "2026-10-27",
+    title: { en: "Winter Green", es: "Verde Invierno" },
+    category: "arrangements",
+    blurb: {
+      en: "A low white and green arrangement of cymbidium orchids, calla lilies, and lilies.",
+      es: "Un arreglo bajo en blanco y verde con orquídeas cymbidium, calas y lirios.",
+    },
+    description: {
+      en: "A low white and green arrangement of green cymbidium orchids, white calla lilies, white dendrobium orchids, white lilies, and green hydrangea, in a white rectangular container. Fresh and calm all year, lovely as a Christmas table piece, and fitting for a birthday, a thank-you, a get-well wish, or sympathy. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Un arreglo bajo en blanco y verde de orquídeas cymbidium verdes, calas blancas, orquídeas dendrobium blancas, lirios blancos e hortensia verde, en un recipiente blanco rectangular. Fresco y sereno todo el año, precioso como centro de mesa navideño y adecuado para un cumpleaños, un agradecimiento, una pronta recuperación o condolencias. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/winter-green.jpg", alt: { en: "Low white and green arrangement of cymbidium orchids, calla lilies, and lilies in a white container", es: "Arreglo bajo blanco y verde de orquídeas cymbidium, calas y lirios en recipiente blanco" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 24999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you",  "just-because",  "sympathy",  "get-well"],
+    colorFamily: ["white",  "green",  "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Winter Green — White Cymbidium & Calla Lily Centerpiece | Diva Flowers", es: "Verde Invierno — Centro de Cymbidium y Calas Blancas | Diva Flowers" },
+      description: {
+        en: "A low white and green arrangement of cymbidium orchids, calla lilies, and lilies. Same-day delivery on Long Island.",
+        es: "Un arreglo bajo en blanco y verde con orquídeas cymbidium, calas y lirios. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-orchid-duet",
+    slug: "orchid-duet",
+    addedAt: "2026-10-27",
+    title: { en: "Orchid Duet", es: "Dúo de Orquídeas" },
+    category: "arrangements",
+    blurb: {
+      en: "White and magenta cymbidium orchids with purple vanda and a blush peony.",
+      es: "Orquídeas cymbidium blancas y magenta con vanda morada y una peonía rosa pálido.",
+    },
+    description: {
+      en: "A duet of white and magenta cymbidium orchids with purple vanda orchids, a blush peony, green cymbidium, dendrobium orchids, and monstera. Graceful for an anniversary, Mother's Day, a birthday, a romantic gesture, or a tribute of sympathy. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Un dúo de orquídeas cymbidium blancas y magenta con orquídeas vanda moradas, una peonía rosa pálido, cymbidium verde, orquídeas dendrobium y monstera. Elegante para un aniversario, el Día de la Madre, un cumpleaños, un gesto romántico o un homenaje de condolencias. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/orchid-duet.jpg", alt: { en: "Arrangement of white and magenta cymbidium orchids with purple vanda and a blush peony", es: "Arreglo de orquídeas cymbidium blancas y magenta con vanda morada y una peonía rosa pálido" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 44999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you",  "just-because",  "romance",  "mothers-day",  "sympathy"],
+    colorFamily: ["pink",  "white",  "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Orchid Duet — White & Magenta Cymbidium with Peony | Diva Flowers", es: "Dúo de Orquídeas — Cymbidium Blanco y Magenta con Peonía | Diva Flowers" },
+      description: {
+        en: "White and magenta cymbidium orchids with purple vanda and a blush peony. Same-day delivery on Long Island.",
+        es: "Orquídeas cymbidium blancas y magenta con vanda morada y una peonía rosa pálido. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-sunlit-cymbidium",
+    slug: "sunlit-cymbidium",
+    addedAt: "2026-10-27",
+    title: { en: "Sunlit Cymbidium", es: "Cymbidium al Sol" },
+    category: "arrangements",
+    blurb: {
+      en: "Two stems of yellow cymbidium orchids with red and orange roses and heliconia.",
+      es: "Dos varas de orquídeas cymbidium amarillas con rosas rojas y naranja y heliconia.",
+    },
+    description: {
+      en: "Two stems of yellow cymbidium orchids over red and orange roses, a white lily, heliconia, white dendrobium orchids, and white hydrangea, in a low light-gray bowl. Sunny and cheerful for a birthday, a get-well wish, an anniversary, or a thank-you. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Dos varas de orquídeas cymbidium amarillas sobre rosas rojas y naranja, un lirio blanco, heliconia, orquídeas dendrobium blancas e hortensia blanca, en un cuenco bajo gris claro. Soleado y alegre para un cumpleaños, una pronta recuperación, un aniversario o un agradecimiento. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/sunlit-cymbidium.jpg", alt: { en: "Yellow cymbidium orchids with red and orange roses and heliconia in a light-gray bowl", es: "Orquídeas cymbidium amarillas con rosas rojas y naranja y heliconia en cuenco gris claro" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 39999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you",  "just-because",  "romance",  "get-well",  "valentines-day",  "thinking-of-you",  "mothers-day"],
+    colorFamily: ["mixed",  "green",  "red",  "white"],
+    active: true,
+    seo: {
+      title: { en: "Sunlit Cymbidium — Yellow Orchid & Rose Arrangement | Diva Flowers", es: "Cymbidium al Sol — Arreglo de Orquídeas Amarillas y Rosas | Diva Flowers" },
+      description: {
+        en: "Two stems of yellow cymbidium orchids with red and orange roses and heliconia. Same-day delivery on Long Island.",
+        es: "Dos varas de orquídeas cymbidium amarillas con rosas rojas y naranja y heliconia. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-calla-sculpture",
+    slug: "calla-sculpture",
+    addedAt: "2026-10-27",
+    title: { en: "Calla Sculpture", es: "Escultura de Calas" },
+    category: "arrangements",
+    blurb: {
+      en: "White and purple calla lilies with white cymbidium orchids on a bamboo structure.",
+      es: "Calas blancas y moradas con orquídeas cymbidium blancas sobre una estructura de bambú.",
+    },
+    description: {
+      en: "A sculptural piece of white and purple calla lilies and white cymbidium orchids on a crossed bamboo and moss structure, with green-yellow cymbidium, white and green hydrangea, fuchsia roses, blue hyacinth, white dendrobium orchids, and monstera, in a low gray-green bowl. A work of art for an anniversary, a birthday, Mother's Day, or a congratulations. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Una pieza escultural de calas blancas y moradas y orquídeas cymbidium blancas sobre una estructura cruzada de bambú y musgo, con cymbidium verde amarillo, hortensia blanca y verde, rosas fucsia, jacinto azul, orquídeas dendrobium blancas y monstera, en un cuenco bajo gris verdoso. Una obra de arte para un aniversario, un cumpleaños, el Día de la Madre o una felicitación. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/calla-sculpture.jpg", alt: { en: "Sculptural arrangement of white and purple calla lilies and white cymbidium orchids on bamboo", es: "Arreglo escultural de calas blancas y moradas y orquídeas cymbidium blancas sobre bambú" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 64999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you",  "just-because",  "romance",  "valentines-day",  "mothers-day",  "thinking-of-you",  "get-well"],
+    colorFamily: ["mixed",  "green",  "red",  "white",  "pink"],
+    active: true,
+    seo: {
+      title: { en: "Calla Sculpture — Calla Lily & Cymbidium on Bamboo | Diva Flowers", es: "Escultura de Calas — Cymbidium y Calas Moradas sobre Bambú | Diva Flowers" },
+      description: {
+        en: "White and purple calla lilies with white cymbidium orchids on a bamboo structure. Same-day delivery on Long Island.",
+        es: "Calas blancas y moradas con orquídeas cymbidium blancas sobre una estructura de bambú. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-lavender-cascade",
+    slug: "lavender-cascade",
+    addedAt: "2026-10-27",
+    title: { en: "Lavender Cascade", es: "Cascada Lavanda" },
+    category: "arrangements",
+    blurb: {
+      en: "Tall lavender-pink cymbidium orchids with pink and fuchsia roses in a white vase.",
+      es: "Orquídeas cymbidium altas lavanda rosado con rosas rosadas y fucsia en un jarrón blanco.",
+    },
+    description: {
+      en: "Two tall stems of lavender-pink cymbidium orchids over pink and fuchsia roses, lilac stock, green viburnum, white hydrangea, purple mokara orchids, and statice, in a white vase. Romantic and soft for Mother's Day, an anniversary, a birthday, or Valentine's Day. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Dos varas altas de orquídeas cymbidium lavanda rosado sobre rosas rosadas y fucsia, alhelí lila, viburnum verde, hortensia blanca, orquídeas mokara moradas y statice, en un jarrón blanco. Romántico y suave para el Día de la Madre, un aniversario, un cumpleaños o San Valentín. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/lavender-cascade.jpg", alt: { en: "Tall lavender cymbidium orchids with pink and fuchsia roses in a white vase", es: "Orquídeas cymbidium altas lavanda con rosas rosadas y fucsia en jarrón blanco" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 59999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you",  "just-because",  "romance",  "get-well",  "valentines-day",  "mothers-day",  "thinking-of-you"],
+    colorFamily: ["pastel",  "pink",  "mixed",  "green",  "red"],
+    active: true,
+    seo: {
+      title: { en: "Lavender Cascade — Lavender Cymbidium & Rose Vase | Diva Flowers", es: "Cascada Lavanda — Jarrón de Cymbidium Lavanda y Rosas | Diva Flowers" },
+      description: {
+        en: "Tall lavender-pink cymbidium orchids with pink and fuchsia roses in a white vase. Same-day delivery on Long Island.",
+        es: "Orquídeas cymbidium altas lavanda rosado con rosas rosadas y fucsia en un jarrón blanco. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-orchid-torch",
+    slug: "orchid-torch",
+    addedAt: "2026-10-27",
+    title: { en: "Orchid Torch", es: "Antorcha de Orquídea" },
+    category: "arrangements",
+    blurb: {
+      en: "A tall magenta cymbidium orchid with red anthurium and red roses in a plastic dish.",
+      es: "Una orquídea cymbidium magenta alta con anthurium rojo y rosas rojas en un plato plástico.",
+    },
+    description: {
+      en: "A tall magenta cymbidium orchid rises like a torch over red anthurium, red roses, white hydrangea, yellow mokara orchids, and white lilies, framed in aspidistra and monstera and arranged in a plastic dish. Vivid and passionate for an anniversary, Valentine's Day, a birthday, or a congratulations. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Una orquídea cymbidium magenta alta se alza como una antorcha sobre anthurium rojo, rosas rojas, hortensia blanca, orquídeas mokara amarillas y lirios blancos, enmarcada con aspidistra y monstera y arreglada en un plato plástico. Vivo y apasionado para un aniversario, San Valentín, un cumpleaños o una felicitación. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/orchid-torch.jpg", alt: { en: "Tall magenta cymbidium orchid with red anthurium and red roses", es: "Orquídea cymbidium magenta alta con anthurium rojo y rosas rojas" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 19999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "congrats",  "thank-you",  "just-because",  "thinking-of-you",  "anniversary",  "romance",  "valentines-day",  "get-well",  "mothers-day"],
+    colorFamily: ["red",  "mixed",  "pink",  "green"],
+    active: true,
+    seo: {
+      title: { en: "Orchid Torch — Magenta Cymbidium & Red Anthurium | Diva Flowers", es: "Antorcha de Orquídea — Cymbidium Magenta y Anthurium Rojo | Diva Flowers" },
+      description: {
+        en: "A tall magenta cymbidium orchid with red anthurium and red roses in a plastic dish. Same-day delivery on Long Island.",
+        es: "Una orquídea cymbidium magenta alta con anthurium rojo y rosas rojas en un plato plástico. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-mokara-vase",
+    slug: "mokara-vase",
+    addedAt: "2026-10-27",
+    title: { en: "Mokara Vase", es: "Jarrón Mokara" },
+    category: "arrangements",
+    blurb: {
+      en: "Purple dendrobium, yellow mokara orchids, and red roses in a tall glass vase.",
+      es: "Dendrobium morado, orquídeas mokara amarillas y rosas rojas en un jarrón alto de vidrio.",
+    },
+    description: {
+      en: "Purple dendrobium and yellow mokara orchids with red roses, a pink lily, white hydrangea, willow branches, and monstera, in a tall glass vase. Colorful and easy to love for a birthday, a congratulations, a thank-you, or a get-well wish. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Orquídeas dendrobium moradas y mokara amarillas con rosas rojas, un lirio rosado, hortensia blanca, ramas de sauce y monstera, en un jarrón alto de vidrio. Colorido y fácil de querer para un cumpleaños, una felicitación, un agradecimiento o una pronta recuperación. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/mokara-vase.jpg", alt: { en: "Purple dendrobium and yellow mokara orchids with red roses in a tall glass vase", es: "Orquídeas dendrobium moradas y mokara amarillas con rosas rojas en jarrón alto de vidrio" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 19999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "congrats",  "thank-you",  "just-because",  "thinking-of-you",  "get-well"],
+    colorFamily: ["mixed",  "red",  "green",  "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Mokara Vase — Dendrobium, Mokara & Rose in Glass | Diva Flowers", es: "Jarrón Mokara — Dendrobium, Mokara y Rosas en Vidrio | Diva Flowers" },
+      description: {
+        en: "Purple dendrobium, yellow mokara orchids, and red roses in a tall glass vase. Same-day delivery on Long Island.",
+        es: "Dendrobium morado, orquídeas mokara amarillas y rosas rojas en un jarrón alto de vidrio. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-scarlet-amaryllis",
+    slug: "scarlet-amaryllis",
+    addedAt: "2026-10-27",
+    title: { en: "Scarlet Amaryllis", es: "Amaryllis Escarlata" },
+    category: "arrangements",
+    blurb: {
+      en: "Red and white amaryllis with green cymbidium orchids, a sunflower, and red roses in a glass cube.",
+      es: "Amaryllis rojo y blanco con orquídeas cymbidium verdes, un girasol y rosas rojas en un cubo de vidrio.",
+    },
+    description: {
+      en: "Red and white amaryllis with green cymbidium orchids, a sunflower, red roses, purple hyacinth, orange mokara orchids, and white hydrangea, with aspidistra, monstera, and willow, in a leaf-lined glass cube. Bold and festive for a birthday, an anniversary, Valentine's Day, or a congratulations. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Amaryllis rojo y blanco con orquídeas cymbidium verdes, un girasol, rosas rojas, jacinto morado, orquídeas mokara naranja e hortensia blanca, con aspidistra, monstera y sauce, en un cubo de vidrio forrado de hoja. Atrevido y festivo para un cumpleaños, un aniversario, San Valentín o una felicitación. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/scarlet-amaryllis.jpg", alt: { en: "Red and white amaryllis with green cymbidium orchids, a sunflower, and red roses in a glass cube", es: "Amaryllis rojo y blanco con orquídeas cymbidium verdes, un girasol y rosas rojas en cubo de vidrio" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 19999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you",  "just-because",  "romance",  "mothers-day",  "get-well",  "thinking-of-you",  "valentines-day"],
+    colorFamily: ["red",  "mixed",  "green"],
+    active: true,
+    seo: {
+      title: { en: "Scarlet Amaryllis — Red Amaryllis, Cymbidium & Sunflower | Diva Flowers", es: "Amaryllis Escarlata — Amaryllis, Cymbidium y Girasol | Diva Flowers" },
+      description: {
+        en: "Red and white amaryllis with green cymbidium orchids, a sunflower, and red roses in a glass cube. Same-day delivery on Long Island.",
+        es: "Amaryllis rojo y blanco con orquídeas cymbidium verdes, un girasol y rosas rojas en un cubo de vidrio. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-emerald-ember",
+    slug: "emerald-ember",
+    addedAt: "2026-10-27",
+    title: { en: "Emerald Ember", es: "Brasa Esmeralda" },
+    category: "arrangements",
+    blurb: {
+      en: "Green and white cymbidium orchids with a pink peony and orange roses, a Thanksgiving centerpiece.",
+      es: "Orquídeas cymbidium verdes y blancas con una peonía rosa y rosas naranja, un centro de mesa de Acción de Gracias.",
+    },
+    description: {
+      en: "Tall green and white cymbidium orchids over a pink peony, orange roses, red anthurium, orange mokara orchids, white and green hydrangea, and purple dendrobium, with monstera and willow, in a lilac-gray ceramic bowl. A beautiful centerpiece for the Thanksgiving table, and a gift for a birthday, an anniversary, or a thank-you. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Orquídeas cymbidium verdes y blancas altas sobre una peonía rosa, rosas naranja, anthurium rojo, orquídeas mokara naranja, hortensia blanca y verde y dendrobium morado, con monstera y sauce, en un cuenco de cerámica gris lila. Un hermoso centro de mesa para Acción de Gracias, y un regalo para un cumpleaños, un aniversario o un agradecimiento. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/emerald-ember.jpg", alt: { en: "Centerpiece of green and white cymbidium orchids, a pink peony, and orange roses in a ceramic bowl", es: "Centro de mesa de orquídeas cymbidium verdes y blancas, una peonía rosa y rosas naranja en cuenco de cerámica" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 39999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you",  "just-because",  "romance",  "mothers-day",  "valentines-day",  "get-well",  "thinking-of-you"],
+    colorFamily: ["mixed",  "green",  "white"],
+    active: true,
+    seo: {
+      title: { en: "Emerald Ember — Cymbidium & Peony Thanksgiving Centerpiece | Diva Flowers", es: "Brasa Esmeralda — Centro de Cymbidium y Peonía | Diva Flowers" },
+      description: {
+        en: "Green and white cymbidium orchids with a pink peony and orange roses, a Thanksgiving centerpiece. Same-day delivery on Long Island.",
+        es: "Orquídeas cymbidium verdes y blancas con una peonía rosa y rosas naranja, un centro de mesa de Acción de Gracias. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-orchid-wing",
+    slug: "orchid-wing",
+    addedAt: "2026-10-27",
+    title: { en: "Orchid Wing", es: "Ala de Orquídea" },
+    category: "arrangements",
+    blurb: {
+      en: "An arching pink cymbidium orchid with a pink lily, a peony, and red roses in a plastic dish.",
+      es: "Una orquídea cymbidium rosa en arco con un lirio rosado, una peonía y rosas rojas en un plato plástico.",
+    },
+    description: {
+      en: "A tall pink cymbidium orchid arches like a wing over a pink lily, a pink peony, red roses, purple dendrobium, white hydrangea, and mokara orchids, with aspidistra, monstera, and branches, arranged in a plastic dish. Graceful for Mother's Day, an anniversary, a birthday, or Valentine's Day. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Una orquídea cymbidium rosa alta se curva como un ala sobre un lirio rosado, una peonía rosa, rosas rojas, dendrobium morado, hortensia blanca y orquídeas mokara, con aspidistra, monstera y ramas, arreglada en un plato plástico. Elegante para el Día de la Madre, un aniversario, un cumpleaños o San Valentín. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/orchid-wing.jpg", alt: { en: "Arching pink cymbidium orchid with a pink lily, a peony, and red roses", es: "Orquídea cymbidium rosa en arco con un lirio rosado, una peonía y rosas rojas" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 19999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you",  "just-because",  "romance",  "mothers-day",  "valentines-day",  "get-well"],
+    colorFamily: ["pink",  "mixed",  "white",  "green"],
+    active: true,
+    seo: {
+      title: { en: "Orchid Wing — Pink Cymbidium, Lily & Peony | Diva Flowers", es: "Ala de Orquídea — Cymbidium Rosa, Lirio y Peonía | Diva Flowers" },
+      description: {
+        en: "An arching pink cymbidium orchid with a pink lily, a peony, and red roses in a plastic dish. Same-day delivery on Long Island.",
+        es: "Una orquídea cymbidium rosa en arco con un lirio rosado, una peonía y rosas rojas en un plato plástico. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-anthurium-flame",
+    slug: "anthurium-flame",
+    addedAt: "2026-10-27",
+    title: { en: "Anthurium Flame", es: "Llama de Anthurium" },
+    category: "arrangements",
+    blurb: {
+      en: "Pink cymbidium orchids, red anthurium, and pink lilies in a leaf-lined glass cylinder.",
+      es: "Orquídeas cymbidium rosas, anthurium rojo y lirios rosados en un cilindro de vidrio forrado de hoja.",
+    },
+    description: {
+      en: "Pink cymbidium orchids with red anthurium, pink lilies, yellow mokara orchids, red roses, white hydrangea, and green cymbidium, with aspidistra, monstera, and willow, in a leaf-lined glass cylinder. Warm and lively for a birthday, an anniversary, Valentine's Day, or a get-well wish. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Orquídeas cymbidium rosas con anthurium rojo, lirios rosados, orquídeas mokara amarillas, rosas rojas, hortensia blanca y cymbidium verde, con aspidistra, monstera y sauce, en un cilindro de vidrio forrado de hoja. Cálido y vivo para un cumpleaños, un aniversario, San Valentín o una pronta recuperación. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/anthurium-flame.jpg", alt: { en: "Pink cymbidium orchids with red anthurium and pink lilies in a glass cylinder", es: "Orquídeas cymbidium rosas con anthurium rojo y lirios rosados en cilindro de vidrio" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 17499 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you",  "just-because",  "romance",  "get-well",  "thinking-of-you",  "mothers-day",  "valentines-day"],
+    colorFamily: ["red",  "mixed",  "green"],
+    active: true,
+    seo: {
+      title: { en: "Anthurium Flame — Cymbidium & Red Anthurium in Glass | Diva Flowers", es: "Llama de Anthurium — Cymbidium y Anthurium Rojo en Vidrio | Diva Flowers" },
+      description: {
+        en: "Pink cymbidium orchids, red anthurium, and pink lilies in a leaf-lined glass cylinder. Same-day delivery on Long Island.",
+        es: "Orquídeas cymbidium rosas, anthurium rojo y lirios rosados en un cilindro de vidrio forrado de hoja. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-bamboo-sunrise",
+    slug: "bamboo-sunrise",
+    addedAt: "2026-10-27",
+    title: { en: "Bamboo Sunrise", es: "Amanecer de Bambú" },
+    category: "arrangements",
+    blurb: {
+      en: "Tall yellow cymbidium orchids on a bamboo structure with gerberas and roses in a wicker basket.",
+      es: "Orquídeas cymbidium amarillas altas sobre estructura de bambú con gerberas y rosas en cesta de mimbre.",
+    },
+    description: {
+      en: "Tall yellow cymbidium orchids on a bamboo and moss structure, over a fuchsia gerbera, red and orange roses, pink lilies, orange mokara orchids, green cymbidium, and variegated pittosporum, in a wicker basket. A sunny, sculptural gift for a birthday, an anniversary, Mother's Day, or a congratulations. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Orquídeas cymbidium amarillas altas sobre una estructura de bambú y musgo, con una gerbera fucsia, rosas rojas y naranja, lirios rosados, orquídeas mokara naranja, cymbidium verde y pittosporum variegado, en una cesta de mimbre. Un regalo soleado y escultural para un cumpleaños, un aniversario, el Día de la Madre o una felicitación. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/bamboo-sunrise.jpg", alt: { en: "Yellow cymbidium orchids on bamboo with gerberas and roses in a wicker basket", es: "Orquídeas cymbidium amarillas sobre bambú con gerberas y rosas en cesta de mimbre" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 49999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you",  "just-because",  "romance",  "mothers-day",  "get-well",  "valentines-day"],
+    colorFamily: ["mixed",  "green",  "red",  "pink"],
+    active: true,
+    seo: {
+      title: { en: "Bamboo Sunrise — Yellow Cymbidium Basket on Bamboo | Diva Flowers", es: "Amanecer de Bambú — Cesta de Cymbidium Amarillo con Bambú | Diva Flowers" },
+      description: {
+        en: "Tall yellow cymbidium orchids on a bamboo structure with gerberas and roses in a wicker basket. Same-day delivery on Long Island.",
+        es: "Orquídeas cymbidium amarillas altas sobre estructura de bambú con gerberas y rosas en cesta de mimbre. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-tropical-blush",
+    slug: "tropical-blush",
+    addedAt: "2026-10-27",
+    title: { en: "Tropical Blush", es: "Rubor Tropical" },
+    category: "arrangements",
+    blurb: {
+      en: "A tall pink cymbidium orchid with red roses, yellow and green cymbidium, and white lilies.",
+      es: "Una orquídea cymbidium rosa alta con rosas rojas, cymbidium amarillo y verde y lirios blancos.",
+    },
+    description: {
+      en: "A tall pink cymbidium orchid over red roses, yellow and green cymbidium, orange mokara orchids, white lilies, white hydrangea, and monstera. Bright and warm for a birthday, an anniversary, Mother's Day, a get-well wish, or a gentle tribute of sympathy. Made by hand in our Albertson shop and delivered across Long Island.",
+      es: "Una orquídea cymbidium rosa alta sobre rosas rojas, cymbidium amarillo y verde, orquídeas mokara naranja, lirios blancos, hortensia blanca y monstera. Luminoso y cálido para un cumpleaños, un aniversario, el Día de la Madre, una pronta recuperación o un homenaje sereno de condolencias. Hecho a mano en nuestra tienda de Albertson y entregado en todo Long Island.",
+    },
+    images: [
+      { src: "/products/tropical-blush.jpg", alt: { en: "Tall pink cymbidium orchid with red roses, yellow cymbidium, and white lilies", es: "Orquídea cymbidium rosa alta con rosas rojas, cymbidium amarillo y lirios blancos" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 39999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["birthday",  "anniversary",  "congrats",  "thank-you",  "just-because",  "romance",  "mothers-day",  "get-well",  "valentines-day",  "thinking-of-you",  "sympathy"],
+    colorFamily: ["pink",  "red",  "green",  "mixed"],
+    active: true,
+    seo: {
+      title: { en: "Tropical Blush — Pink Cymbidium & Red Rose Arrangement | Diva Flowers", es: "Rubor Tropical — Arreglo de Cymbidium Rosa y Rosas Rojas | Diva Flowers" },
+      description: {
+        en: "A tall pink cymbidium orchid with red roses, yellow and green cymbidium, and white lilies. Same-day delivery on Long Island.",
+        es: "Una orquídea cymbidium rosa alta con rosas rojas, cymbidium amarillo y verde y lirios blancos. Entrega el mismo día en Long Island.",
+      },
+    },
+  },
+  {
+    id: "p-oct-signature-exotic",
+    slug: "signature-exotic",
+    addedAt: "2026-10-27",
+    title: { en: "Signature Exotic", es: "Exótica Insignia" },
+    category: "sympathy",
+    blurb: {
+      en: "Green cymbidium and white phalaenopsis orchids with blush roses and fan palm in a white container.",
+      es: "Orquídeas cymbidium verdes y phalaenopsis blancas con rosas rosa pálido y palma en abanico en un recipiente blanco.",
+    },
+    description: {
+      en: "Green cymbidium and white phalaenopsis orchids with blush roses and green hydrangea, framed by fan palm, mossed bamboo canes, and ruscus, in a white container. Calm and refined for sympathy flowers sent to the family's home or the service, and for an anniversary. Made by hand in our shop and delivered to the funeral home, church, or home anywhere on Long Island.",
+      es: "Orquídeas cymbidium verdes y phalaenopsis blancas con rosas rosa pálido e hortensia verde, enmarcadas con palma en abanico, cañas de bambú con musgo y ruscus, en un recipiente blanco. Sereno y refinado para flores de condolencias enviadas a la casa de la familia o al servicio, y para un aniversario. Hecho a mano en nuestra tienda y entregado en la funeraria, iglesia o casa en cualquier punto de Long Island.",
+    },
+    images: [
+      { src: "/products/signature-exotic.jpg", alt: { en: "Green cymbidium and white phalaenopsis orchids with blush roses and fan palm in a white container", es: "Orquídeas cymbidium verdes y phalaenopsis blancas con rosas rosa pálido y palma en abanico en recipiente blanco" }, aspect: "4/5" },
+    ],
+    variants: [
+      { id: "standard", label: { en: "Standard", es: "Estándar" }, priceCents: 29999 },
+    ],
+    tags: ["same-day"],
+    occasions: ["sympathy",  "anniversary"],
+    colorFamily: ["white",  "green",  "mixed",  "pastel"],
+    active: true,
+    seo: {
+      title: { en: "Signature Exotic — Cymbidium & Phalaenopsis Sympathy | Diva Flowers", es: "Exótica Insignia — Condolencias de Cymbidium y Phalaenopsis | Diva Flowers" },
+      description: {
+        en: "Green cymbidium and white phalaenopsis orchids with blush roses and fan palm in a white container. Delivered to funeral homes across Long Island.",
+        es: "Orquídeas cymbidium verdes y phalaenopsis blancas con rosas rosa pálido y palma en abanico en un recipiente blanco. Entrega en funerarias de Long Island.",
+      },
+    },
+  },
   // ─── TEST PRODUCT — $1 for end-to-end checkout validation. DELETE AFTER TESTING. ─────
   {
     id: "p-test-1usd",

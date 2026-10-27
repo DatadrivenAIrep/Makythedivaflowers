@@ -19,10 +19,12 @@ const bySlug = (slug: string) => PRODUCTS.find((p) => p.slug === slug)!;
 
 const FALL_COLLECTION = [
   "abundant-table",
+  "autumn-embers",
   "autumn-fiesta",
   "autumn-orchard",
   "autumn-sunflower",
   "autumns-cornucopia",
+  "emerald-ember",
   "falling-leaves",
   "golden-autumn",
   "golden-harvest",

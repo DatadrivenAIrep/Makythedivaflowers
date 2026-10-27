@@ -32,6 +32,7 @@ const CENTERPIECES = [
   "bud-vase-garden",
   "coral-chalice",
   "crimson-trio",
+  "emerald-ember",
   "evergreen-horizon",
   "eye-candy",
   "falling-leaves",

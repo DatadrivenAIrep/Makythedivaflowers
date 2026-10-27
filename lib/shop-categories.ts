@@ -56,6 +56,36 @@ const EXOTIC_SLUGS = new Set([
   "crimson-zen",
   "fuchsia-tropics",
   "peacock-paradise",
+  "orchid-festival-basket",
+  "royal-orchid-spire",
+  "cymbidium-cascade",
+  "carnival-sky",
+  "green-cathedral",
+  "cobalt-reverie",
+  "safari-basket",
+  "jewelbox-bouquet",
+  "tropic-ember",
+  "golden-wild",
+  "onyx-garden",
+  "amaryllis-rise",
+  "orchid-fan",
+  "ginger-jewel",
+  "copper-orchid",
+  "heliconia-bowl",
+  "snow-amaryllis",
+  "winter-green",
+  "orchid-duet",
+  "sunlit-cymbidium",
+  "calla-sculpture",
+  "lavender-cascade",
+  "orchid-torch",
+  "mokara-vase",
+  "scarlet-amaryllis",
+  "emerald-ember",
+  "orchid-wing",
+  "anthurium-flame",
+  "bamboo-sunrise",
+  "tropical-blush",
 ]);
 
 // Exposed for tests: asserts that retired products don't linger in this set.
@@ -85,6 +115,7 @@ const CENTERPIECE_SLUGS = new Set([
   "harvest-table",
   "bud-vase-garden",
   "crimson-trio",
+  "emerald-ember",
 ]);
 
 export const CENTERPIECE_SLUGS_FOR_TEST: ReadonlySet<string> = CENTERPIECE_SLUGS;
@@ -97,7 +128,7 @@ export function isCenterpieceProduct(p: Product): boolean {
 
 // The autumn collection the fall home hero links to: these named pieces plus
 // anything Maky marks for Sep–Nov, so new harvest arrangements join on their own.
-const FALL_SLUGS = new Set(["autumn-orchard", "autumns-cornucopia", "falling-leaves"]);
+const FALL_SLUGS = new Set(["autumn-orchard", "autumns-cornucopia", "falling-leaves", "emerald-ember"]);
 const FALL_MONTHS = [9, 10, 11];
 
 export const FALL_SLUGS_FOR_TEST: ReadonlySet<string> = FALL_SLUGS;
