@@ -8,6 +8,7 @@ import { BentoGrid } from "@/components/home/BentoGrid";
 import { BestSellers } from "@/components/home/BestSellers";
 import { CategoryStrip } from "@/components/home/CategoryStrip";
 import { OccasionStrip } from "@/components/home/OccasionStrip";
+import { SeasonalPicks } from "@/components/home/SeasonalPicks";
 import { DigitalCardsFeature } from "@/components/home/DigitalCardsFeature";
 import { SocialProof } from "@/components/home/SocialProof";
 import { BehindTheScenes } from "@/components/home/BehindTheScenes";
@@ -45,6 +46,7 @@ export default async function Home({ params }: { params: Promise<{ locale: Local
     <main className="bg-bone text-ink">
       <Hero locale={locale} />
       <AssuranceStrip />
+      <SeasonalPicks locale={locale} />
       <OccasionStrip locale={locale} />
       <BestSellers locale={locale} />
       <SocialProof />

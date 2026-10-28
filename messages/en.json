@@ -207,6 +207,9 @@
       "redo": "Free redo if it's our miss",
       "local": "A real shop on Willis Ave since 2014"
     },
+    "picks": {
+      "title": "What are you looking for?"
+    },
     "occasions": {
       "eyebrow": "Shop by occasion",
       "title": "What is the occasion?"
