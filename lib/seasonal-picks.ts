@@ -27,6 +27,14 @@ export const EVERGREEN_PICKS: SeasonalPick[] = [
     img: "/products/hundred-roses.jpg",
     path: (l) => `/${l}/shop/roses`,
   },
+  // The "can't decide?" way in: Maky picks the stems. Second so it shows on
+  // the first swipe on phones.
+  {
+    slug: "designers-choice",
+    label: { en: "Let Maky choose", es: "Que Maky elija" },
+    img: "/products/designers-choice-maky.jpg",
+    path: (l) => `/${l}/product/designers-choice-maky`,
+  },
   {
     slug: "centerpieces",
     label: { en: "Centerpieces", es: "Centros de mesa" },

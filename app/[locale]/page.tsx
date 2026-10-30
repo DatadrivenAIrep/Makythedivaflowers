@@ -4,7 +4,6 @@ import type { Locale } from "@/types/locale";
 import { SITE } from "@/data/site";
 import { Hero } from "@/components/home/Hero";
 import { AssuranceStrip } from "@/components/home/AssuranceStrip";
-import { BentoGrid } from "@/components/home/BentoGrid";
 import { BestSellers } from "@/components/home/BestSellers";
 import { CategoryStrip } from "@/components/home/CategoryStrip";
 import { OccasionStrip } from "@/components/home/OccasionStrip";
@@ -53,7 +52,6 @@ export default async function Home({ params }: { params: Promise<{ locale: Local
       <CategoryStrip locale={locale} />
       <DigitalCardsFeature locale={locale} />
       <SympathyShowcase locale={locale} />
-      <BentoGrid locale={locale} />
       <Verticals locale={locale} />
       <BehindTheScenes locale={locale} />
       <StudioVisit locale={locale} />
