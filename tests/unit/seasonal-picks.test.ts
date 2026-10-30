@@ -11,6 +11,7 @@ describe("home seasonal picks", () => {
       "fall",
       "thanksgiving",
       "roses",
+      "designers-choice",
       "centerpieces",
       "exotic",
       "sympathy",
@@ -55,6 +56,10 @@ describe("home seasonal picks", () => {
       expect(harvest && isCenterpieceProduct(harvest)).toBe(true);
       const sympathy = owner(EVERGREEN_PICKS.find((p) => p.slug === "sympathy")!.img);
       expect(sympathy?.active).toBe(true);
+      const pick = EVERGREEN_PICKS.find((p) => p.slug === "designers-choice")!;
+      const choice = owner(pick.img);
+      expect(choice?.active).toBe(true);
+      expect(pick.path("en")).toBe(`/en/product/${choice!.slug}`);
     } finally {
       vi.useRealTimers();
     }
