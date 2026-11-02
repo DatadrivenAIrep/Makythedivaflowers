@@ -3,6 +3,9 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./i18n.ts");
 
+// Maky's loyalty card lives in a separate app (Tarjeta Fiel).
+const LOYALTY_SIGNUP_URL = "https://lightsalmon-dinosaur-949507.hostingersite.com/makythedivaflowers";
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -28,6 +31,11 @@ const nextConfig: NextConfig = {
       { source: "/:locale(en|es)/product/dozen-roses-in-multi-color", destination: "/:locale/product/wrapped-roses-colored", permanent: true },
       // Renamed 2026-10-22 at the owner's request (Golden Chilides → Chilides Garden).
       { source: "/:locale(en|es)/product/golden-chilides", destination: "/:locale/product/chilides-garden", permanent: true },
+      // Loyalty card sign-up (the printed QR posters point here). Temporary
+      // (307) on purpose: if the loyalty app moves, update LOYALTY_SIGNUP_URL
+      // and every printed poster keeps working.
+      { source: "/club", destination: LOYALTY_SIGNUP_URL, permanent: false },
+      { source: "/:locale(en|es)/club", destination: LOYALTY_SIGNUP_URL, permanent: false },
     ];
   },
   // Cache policy. Next tags statically-prerendered pages with
