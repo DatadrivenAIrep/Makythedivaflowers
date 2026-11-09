@@ -164,13 +164,16 @@ describe("POST /api/checkout/loyalty/send-code", () => {
 
   it("send-code failures are logged without the phone and the response is unchanged", async () => {
     const err = vi.spyOn(console, "error").mockImplementation(() => {});
-    sendSms.mockRejectedValue(new Error("twilio_not_configured"));
+    sendSms.mockRejectedValue(
+      Object.assign(new Error("The 'To' number +15165550100 is not valid"), { code: 21211, status: 400 }),
+    );
     const res = await sendCode({ phone: "(516) 555-0100", locale: "es" });
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ sent: true });
     expect(err).toHaveBeenCalledTimes(1);
-    const args = JSON.stringify(err.mock.calls[0].map((a) => (a instanceof Error ? a.message : a)));
-    expect(args).not.toMatch(/5165550100|516/);
+    expect(err.mock.calls[0][1]).toEqual({ name: "Error", code: 21211, status: 400 });
+    const logged = JSON.stringify(err.mock.calls) + err.mock.calls.flat().map(String).join(" ");
+    expect(logged).not.toMatch(/5165550100|555/);
   });
 
   it("lookup and verify log API failures", async () => {

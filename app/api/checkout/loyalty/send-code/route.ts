@@ -46,8 +46,14 @@ export async function POST(req: Request) {
     }
   } catch (e) {
     // API or Twilio failure: the shopper simply gets no code and can retry.
-    // Log the error only, never the phone or the code.
-    console.error("[loyalty] send-code failed", e);
+    // Twilio error text can echo the destination number, so log only the
+    // error's name and numeric code/status, never its message.
+    const err = e as { name?: unknown; code?: unknown; status?: unknown } | null;
+    console.error("[loyalty] send-code failed", {
+      name: typeof err?.name === "string" ? err.name : "Error",
+      ...(typeof err?.code === "number" ? { code: err.code } : {}),
+      ...(typeof err?.status === "number" ? { status: err.status } : {}),
+    });
   }
   return sent;
 }
