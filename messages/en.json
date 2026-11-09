@@ -1638,6 +1638,7 @@
   },
   "admin_dashboard": {
     "nav_bandeja": "Inbox",
+    "nav_loyalty": "Loyalty",
     "nav_sections": "Admin sections",
     "nav_run_sheet": "Deliveries today",
     "nav_ledger": "Order book",

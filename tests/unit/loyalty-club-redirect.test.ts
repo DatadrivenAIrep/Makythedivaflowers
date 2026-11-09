@@ -13,4 +13,12 @@ describe("/club loyalty redirect", () => {
       expect("permanent" in r! && r!.permanent).toBe(false);
     }
   });
+
+  it("sends the dashboard's loyalty tab to the program's owner panel, temporarily", async () => {
+    const redirects = await config.redirects!();
+    const r = redirects.find((x) => x.source === "/club/panel");
+    expect(r).toBeDefined();
+    expect(r!.destination).toBe("https://lightsalmon-dinosaur-949507.hostingersite.com/maky-the-diva-flowers/panel");
+    expect("permanent" in r! && r!.permanent).toBe(false);
+  });
 });

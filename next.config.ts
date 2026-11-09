@@ -36,6 +36,8 @@ const nextConfig: NextConfig = {
       // and every printed poster keeps working.
       { source: "/club", destination: LOYALTY_SIGNUP_URL, permanent: false },
       { source: "/:locale(en|es)/club", destination: LOYALTY_SIGNUP_URL, permanent: false },
+      // Owner panel (stamps, QR scanner), linked from the dashboard's section row.
+      { source: "/club/panel", destination: `${LOYALTY_SIGNUP_URL}/panel`, permanent: false },
     ];
   },
   // Cache policy. Next tags statically-prerendered pages with

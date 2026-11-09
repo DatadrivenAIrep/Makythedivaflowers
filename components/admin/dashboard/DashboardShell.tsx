@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowsClockwise, Plus, GearSix } from "@phosphor-icons/react/dist/ssr";
+import { ArrowsClockwise, Plus, GearSix, QrCode } from "@phosphor-icons/react/dist/ssr";
 import { useTranslations } from "next-intl";
 import { LocaleSwitcher } from "@/components/nav/LocaleSwitcher";
 import type { Locale } from "@/types/locale";
@@ -89,6 +89,17 @@ export default function DashboardShell({ locale, children, lastUpdated, onRefres
               aria-current={isBandeja ? "page" : undefined}
               className={`flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-lg px-3 ${isBandeja ? "bg-rouge text-bone" : "hover:bg-ink/5"}`}
             >{t("nav_bandeja")}</Link>
+            {/* Second on purpose: used at the counter, so it stays visible on phones without scrolling.
+                Its own tab because the loyalty panel can't be framed and owns the camera permission. */}
+            <a
+              href="/club/panel"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg px-3 hover:bg-ink/5"
+            >
+              <QrCode size={16} weight="bold" aria-hidden />
+              {t("nav_loyalty")}
+            </a>
             <Link
               href={`${base}/run-sheet`}
               aria-current={isRunSheet ? "page" : undefined}

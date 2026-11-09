@@ -1638,6 +1638,7 @@
   },
   "admin_dashboard": {
     "nav_bandeja": "Bandeja",
+    "nav_loyalty": "Fidelización",
     "nav_sections": "Secciones del panel",
     "nav_run_sheet": "Entregas hoy",
     "nav_ledger": "Libro de órdenes",

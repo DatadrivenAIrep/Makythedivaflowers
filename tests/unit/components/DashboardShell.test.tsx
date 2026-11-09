@@ -39,6 +39,16 @@ describe("DashboardShell", () => {
     expect(screen.getByRole("navigation")).not.toContainElement(newOrder);
   });
 
+  it("opens the loyalty panel in its own tab, from the section row", () => {
+    render(<DashboardShell locale="es"><div>content</div></DashboardShell>);
+    const loyalty = screen.getByRole("link", { name: "nav_loyalty" });
+    // The panel refuses to be framed and only allows the camera on its own origin.
+    expect(loyalty).toHaveAttribute("href", "/club/panel");
+    expect(loyalty).toHaveAttribute("target", "_blank");
+    expect(loyalty.getAttribute("rel")).toContain("noopener");
+    expect(screen.getByRole("navigation")).toContainElement(loyalty);
+  });
+
   it("names the refresh button even when its label is hidden on phones", () => {
     render(<DashboardShell locale="es" onRefresh={() => {}}><div>content</div></DashboardShell>);
     expect(screen.getByRole("button", { name: "refresh" })).toBeInTheDocument();
