@@ -113,6 +113,18 @@
       "zip_not_in_zone": "Aún no entregamos en ese código postal.",
       "payment_init_failed": "No pudimos iniciar el pago. Intenta de nuevo."
     },
+    "loyalty_has_reward": "Tienes premios en tu tarjeta",
+    "loyalty_use": "Usar premio",
+    "loyalty_send_code": "Te enviaremos un código por SMS",
+    "loyalty_code_label": "Código de 6 dígitos",
+    "loyalty_confirm": "Confirmar",
+    "loyalty_applied": "Premio aplicado",
+    "loyalty_remove": "Quitar",
+    "loyalty_wrong_code": "Ese código no es correcto",
+    "loyalty_expired_code": "El código venció. Pide otro",
+    "loyalty_rate_limited": "Demasiados intentos. Intenta más tarde",
+    "loyalty_unavailable": "Ese premio ya no está disponible",
+    "join_card_label": "Quiero unirme a la tarjeta de fidelización de Diva Flowers y acumular sellos con mis compras.",
     "promo": {
       "label": "Código promocional",
       "placeholder": "Ingresa un código",

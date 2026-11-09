@@ -14,6 +14,8 @@ import { DeliveryStep } from "@/components/checkout/DeliveryStep";
 import { StripePaymentStep } from "@/components/checkout/StripePaymentStep";
 import GiftCardField from "@/components/checkout/GiftCardField";
 import { PromoCodeField, type AppliedPromo } from "@/components/checkout/PromoCodeField";
+import { LoyaltyRewardField, type AppliedLoyaltyReward, type LoyaltyStatus } from "@/components/checkout/LoyaltyRewardField";
+import { rewardDiscountCents } from "@/lib/loyalty-rewards";
 import { TipField } from "@/components/checkout/TipField";
 import { FormShell } from "@/components/ui/form/shell/FormShell";
 import { OrderSummaryPanel } from "@/components/checkout/OrderSummaryPanel";
@@ -51,6 +53,8 @@ async function createIntent(payload: {
   form: CheckoutInput;
   giftCardCode?: string;
   promoCode?: string;
+  loyaltyRewardId?: string;
+  loyaltyProof?: string;
   tipCents?: number;
   orderId?: string;
 }): Promise<{ clientSecret: string; orderId: string } | { paid: true; orderId: string } | { error: string }> {
@@ -79,7 +83,16 @@ const KNOWN_ERROR_CODES = new Set([
   "unknown_error",
 ]);
 
+// The server refuses the applied reward (spent, or the proof expired). The buyer
+// sees the same message for all of them and the reward is removed.
+const LOYALTY_ERROR_CODES = new Set([
+  "loyalty_reward_unavailable",
+  "loyalty_proof_invalid",
+  "loyalty_with_promo",
+]);
+
 function errorKey(code: string): string {
+  if (LOYALTY_ERROR_CODES.has(code)) return "loyalty_unavailable";
   return KNOWN_ERROR_CODES.has(code) ? `errors.${code}` : "errors.unknown_error";
 }
 
@@ -126,6 +139,11 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
   const [intent, setIntent] = useState<IntentState>({ status: "idle" });
   const [giftCard, setGiftCard] = useState<{ code: string; appliedCents: number } | null>(null);
   const [promo, setPromo] = useState<AppliedPromo | null>(null);
+  const [loyalty, setLoyalty] = useState<AppliedLoyaltyReward | null>(null);
+  const [loyaltyStatus, setLoyaltyStatus] = useState<LoyaltyStatus>("unavailable");
+  const [loyaltyNotice, setLoyaltyNotice] = useState<string | null>(null);
+  // Bumped when a reward is applied so the promo field empties itself.
+  const [promoClearSignal, setPromoClearSignal] = useState(0);
   const [tipCents, setTipCents] = useState(0);
   const stripeRef = useRef<{ stripe: StripeJs; elements: StripeElements } | null>(null);
   // Whether a PaymentIntent exists yet (i.e. the buyer reached step 3) and the
@@ -171,9 +189,11 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
   const deliveryCents = isPickup ? 0 : (zipFee ?? 0);
   // The server revalidates the code and recomputes the discount on every intent,
   // so this is a preview for the buyer, never the price of record.
+  const discountCents =
+    promo?.discountCents ?? (loyalty ? rewardDiscountCents(subtotal, loyalty.percent) : 0);
   const totals = useMemo(
-    () => computeOrderTotals(subtotal, deliveryCents, promo?.discountCents ?? 0, tipCents),
-    [subtotal, deliveryCents, promo, tipCents],
+    () => computeOrderTotals(subtotal, deliveryCents, discountCents, tipCents),
+    [subtotal, deliveryCents, discountCents, tipCents],
   );
   const payableCents = Math.max(0, totals.totalCents - (giftCard?.appliedCents ?? 0));
 
@@ -190,9 +210,9 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
   // that effect runs. A dependency that changes identity every render (a store
   // callback, a router object) would re-run the effect and cancel the request it
   // had just fired — the exact failure this section replaced.
-  const latestRef = useRef({ locale, lines, form, giftCard, promo, tipCents, clear, closeDrawer, router });
+  const latestRef = useRef({ locale, lines, form, giftCard, promo, loyalty, tipCents, clear, closeDrawer, router });
   useEffect(() => {
-    latestRef.current = { locale, lines, form, giftCard, promo, tipCents, clear, closeDrawer, router };
+    latestRef.current = { locale, lines, form, giftCard, promo, loyalty, tipCents, clear, closeDrawer, router };
   });
 
   useEffect(() => {
@@ -210,11 +230,14 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
         form: l.form.getValues(),
         giftCardCode: l.giftCard?.code,
         promoCode: l.promo?.code,
+        loyaltyRewardId: l.loyalty?.id,
+        loyaltyProof: l.loyalty?.proof,
         tipCents: l.tipCents,
         orderId: orderIdRef.current ?? undefined,
       });
       if (cancelled) return;
       if ("error" in r) {
+        if (LOYALTY_ERROR_CODES.has(r.error)) dropRefusedReward();
         // Unpin the amount so a later change retries instead of being skipped.
         syncedAmountRef.current = null;
         setIntent({ status: "error", message: r.error });
@@ -237,6 +260,31 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
       cancelled = true;
     };
   }, [payableCents, totals.totalCents]);
+
+  // The server refused the reward: remove it and say why. Removing it changes
+  // the payable amount, which re-prices the intent without the reward.
+  function dropRefusedReward() {
+    setLoyalty(null);
+    setLoyaltyNotice(t("loyalty_unavailable"));
+  }
+
+  function applyReward(r: AppliedLoyaltyReward) {
+    setLoyaltyNotice(null);
+    setPromo(null);
+    setPromoClearSignal((n) => n + 1);
+    setLoyalty(r);
+  }
+
+  function applyPromo(p: AppliedPromo) {
+    setLoyalty(null);
+    setPromo(p);
+  }
+
+  function handleLoyaltyStatus(s: LoyaltyStatus) {
+    setLoyaltyStatus(s);
+    // The box only exists for buyers without a card; never keep a stale tick.
+    if (s !== "no_card") form.setValue("joinLoyaltyCard", false);
+  }
 
   async function nextFrom(step: StepKey) {
     const fields: Record<StepKey, string[]> = {
@@ -279,8 +327,9 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
       // it stays disabled until hasIntentRef flips on success below.
       setIntent({ status: "creating" });
       syncedAmountRef.current = payableCents;
-      const r = await createIntent({ locale, lines, form: form.getValues(), giftCardCode: giftCard?.code, promoCode: promo?.code, tipCents, orderId: orderIdRef.current ?? undefined });
+      const r = await createIntent({ locale, lines, form: form.getValues(), giftCardCode: giftCard?.code, promoCode: promo?.code, loyaltyRewardId: loyalty?.id, loyaltyProof: loyalty?.proof, tipCents, orderId: orderIdRef.current ?? undefined });
       if ("error" in r) {
+        if (LOYALTY_ERROR_CODES.has(r.error)) dropRefusedReward();
         setIntent({ status: "error", message: r.error });
         setTopError(t(errorKey(r.error)));
         return;
@@ -376,7 +425,18 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
           onHeaderClick={() => setOpen("contact")}
           reduce={!!reduce}
         >
-          <ContactStep form={form} />
+          <ContactStep form={form} showJoinCard={loyaltyStatus === "no_card"} />
+          <LoyaltyRewardField
+            phone={form.watch("contact.phone") ?? ""}
+            locale={locale}
+            applied={loyalty}
+            onApply={applyReward}
+            onClear={() => setLoyalty(null)}
+            onStatus={handleLoyaltyStatus}
+          />
+          {loyaltyNotice && (
+            <p role="alert" className="font-mono text-[11px] text-error">{loyaltyNotice}</p>
+          )}
           <div className="pt-4">
             <Button type="button" variant="primary" size="md" onClick={() => nextFrom("contact")}>
               {t("continue")}
@@ -420,8 +480,9 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
             locale={locale}
             phone={form.watch("contact.phone")}
             email={form.watch("contact.email")}
-            onApply={setPromo}
+            onApply={applyPromo}
             onClear={() => setPromo(null)}
+            clearSignal={promoClearSignal}
           />
           <GiftCardField
             totalCents={totals.totalCents}

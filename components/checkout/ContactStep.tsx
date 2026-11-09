@@ -6,9 +6,9 @@ import { FormField } from "@/components/ui/form/FormField";
 import { TextInput } from "@/components/ui/form/TextInput";
 import type { CheckoutInput } from "@/schemas/checkout";
 
-type Props = { form: UseFormReturn<CheckoutInput> };
+type Props = { form: UseFormReturn<CheckoutInput>; showJoinCard: boolean };
 
-export function ContactStep({ form }: Props) {
+export function ContactStep({ form, showJoinCard }: Props) {
   const t = useTranslations("checkout");
   const locale = useLocale();
   const { register, formState } = form;
@@ -51,6 +51,16 @@ export function ContactStep({ form }: Props) {
           />
           <span className="text-sm text-ink">{t("consent_marketing_label")}</span>
         </label>
+        {showJoinCard && (
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              className="mt-0.5 h-5 w-5 shrink-0 accent-rouge"
+              {...register("joinLoyaltyCard")}
+            />
+            <span className="text-sm text-ink">{t("join_card_label")}</span>
+          </label>
+        )}
         <p className="text-xs text-ink/60">
           {t("consent_fine")}{" "}
           <a href={`/${locale}/legal/terms`} target="_blank" rel="noopener noreferrer" className="underline">

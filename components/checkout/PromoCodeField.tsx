@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { formatMoneyCents } from "@/lib/format";
 import type { Locale } from "@/types/locale";
@@ -15,6 +15,8 @@ type Props = {
   email?: string;
   onApply: (promo: AppliedPromo) => void;
   onClear: () => void;
+  /** Bumped by the parent to empty the field without calling onClear. */
+  clearSignal: number;
 };
 
 /** Reasons the server can return. Anything else falls back to the generic message. */
@@ -39,12 +41,23 @@ export function PromoCodeField({
   email,
   onApply,
   onClear,
+  clearSignal,
 }: Props) {
   const t = useTranslations("checkout");
   const [code, setCode] = useState("");
   const [applied, setApplied] = useState<AppliedPromo | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  // The parent bumps the signal when a loyalty reward takes over the discount.
+  const lastSignal = useRef(clearSignal);
+  useEffect(() => {
+    if (lastSignal.current === clearSignal) return;
+    lastSignal.current = clearSignal;
+    setApplied(null);
+    setCode("");
+    setError(null);
+  }, [clearSignal]);
 
   async function apply() {
     const trimmed = code.trim();

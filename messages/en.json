@@ -113,6 +113,18 @@
       "zip_not_in_zone": "We don't deliver to that ZIP yet.",
       "payment_init_failed": "We couldn't start the payment. Please try again."
     },
+    "loyalty_has_reward": "You have rewards on your card",
+    "loyalty_use": "Use reward",
+    "loyalty_send_code": "We'll text you a code",
+    "loyalty_code_label": "6-digit code",
+    "loyalty_confirm": "Confirm",
+    "loyalty_applied": "Reward applied",
+    "loyalty_remove": "Remove",
+    "loyalty_wrong_code": "That code isn't correct",
+    "loyalty_expired_code": "That code expired. Request a new one",
+    "loyalty_rate_limited": "Too many attempts. Try again later",
+    "loyalty_unavailable": "That reward is no longer available",
+    "join_card_label": "I want to join the Diva Flowers loyalty card and earn stamps with my orders.",
     "promo": {
       "label": "Promo code",
       "placeholder": "Enter a code",

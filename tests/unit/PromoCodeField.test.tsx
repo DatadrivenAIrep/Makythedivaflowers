@@ -29,6 +29,7 @@ function setup(props: Partial<React.ComponentProps<typeof PromoCodeField>> = {})
       locale="en"
       onApply={onApply}
       onClear={onClear}
+      clearSignal={0}
       {...props}
     />,
   );
@@ -115,5 +116,22 @@ describe("PromoCodeField", () => {
     await user.click(screen.getByRole("button", { name: "promo.apply" }));
 
     expect(screen.getByRole("alert")).toHaveTextContent("promo.error.invalid");
+  });
+
+  it("empties an applied code when the parent bumps clearSignal, without calling onClear", async () => {
+    const user = userEvent.setup();
+    fetchMock.mockReturnValue(json({ valid: true, code: "TEN", discountCents: 2000 }));
+    const onApply = vi.fn();
+    const onClear = vi.fn();
+    const props = { subtotalCents: 20000, deliveryCents: 1500, locale: "en" as const, onApply, onClear };
+    const { rerender } = render(<PromoCodeField {...props} clearSignal={0} />);
+
+    await user.type(screen.getByLabelText("promo.label"), "TEN");
+    await user.click(screen.getByRole("button", { name: "promo.apply" }));
+    await screen.findByRole("button", { name: "promo.remove" });
+
+    rerender(<PromoCodeField {...props} clearSignal={1} />);
+    expect(screen.getByLabelText("promo.label")).toHaveValue("");
+    expect(onClear).not.toHaveBeenCalled();
   });
 });
