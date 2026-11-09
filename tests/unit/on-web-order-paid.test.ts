@@ -26,6 +26,13 @@ vi.mock("@/lib/order-dispatch", () => ({
 const notifyOwnerMock = vi.fn();
 vi.mock("@/lib/notify-owner", () => ({ notifyOwner: (...a: unknown[]) => notifyOwnerMock(...a) }));
 
+const enqueueOrderSyncMock = vi.fn();
+const runSyncMock = vi.fn();
+vi.mock("@/lib/loyalty-sync", () => ({
+  enqueueOrderSync: (...a: unknown[]) => enqueueOrderSyncMock(...a),
+  runSync: (...a: unknown[]) => runSyncMock(...a),
+}));
+
 import { onWebOrderPaid } from "@/lib/on-web-order-paid";
 
 const ORDER: Order = {
@@ -72,6 +79,8 @@ beforeEach(() => {
   updateOrderMock.mockReset().mockResolvedValue(undefined);
   dispatchPaymentConfirmedMock.mockReset().mockResolvedValue(undefined);
   notifyOwnerMock.mockReset();
+  enqueueOrderSyncMock.mockReset();
+  runSyncMock.mockReset().mockResolvedValue(undefined);
 });
 
 describe("onWebOrderPaid", () => {
@@ -193,5 +202,36 @@ describe("onWebOrderPaid", () => {
     expect(msg).toContain("$86.90");
     // windowLabel renders the delivery date + slot; "entrega" must precede it.
     expect(msg).toMatch(/entrega .+/);
+  });
+});
+
+describe("loyalty card sync", () => {
+  it("enqueues before the customerId guard, so a repeated webhook keeps one row", async () => {
+    getOrderMock.mockResolvedValue({ ...ORDER, customerId: "cus_existing" });
+    await onWebOrderPaid("do_1");
+    expect(enqueueOrderSyncMock).toHaveBeenCalledTimes(1);
+    expect(enqueueOrderSyncMock).toHaveBeenCalledWith(expect.objectContaining({ id: "do_1" }));
+    expect(runSyncMock).toHaveBeenCalledWith("do_1");
+    expect(upsertOnOrderMock).not.toHaveBeenCalled();
+  });
+
+  it("a rejected runSync never reaches the caller", async () => {
+    runSyncMock.mockRejectedValue(new Error("boom"));
+    await expect(onWebOrderPaid("do_1")).resolves.toBeUndefined();
+    await new Promise((r) => setTimeout(r, 0));
+    expect(dispatchPaymentConfirmedMock).toHaveBeenCalled();
+  });
+
+  it("a throwing enqueue does not stop the rest of the paid hook", async () => {
+    enqueueOrderSyncMock.mockImplementation(() => { throw new Error("db locked"); });
+    await onWebOrderPaid("do_1");
+    expect(dispatchPaymentConfirmedMock).toHaveBeenCalled();
+  });
+
+  it("does nothing for a missing order", async () => {
+    getOrderMock.mockResolvedValue(null);
+    await onWebOrderPaid("missing");
+    expect(enqueueOrderSyncMock).not.toHaveBeenCalled();
+    expect(runSyncMock).not.toHaveBeenCalled();
   });
 });

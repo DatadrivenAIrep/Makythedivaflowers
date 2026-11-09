@@ -4,6 +4,7 @@ import { getOrder, updateOrder } from "@/lib/order-storage";
 import { dispatchPaymentConfirmed, windowLabel } from "@/lib/order-dispatch";
 import { notifyOwner } from "@/lib/notify-owner";
 import { rewardsOnOrderPaid } from "@/lib/promo-rewards";
+import { enqueueOrderSync, runSync } from "@/lib/loyalty-sync";
 import type { Order } from "@/types/order";
 
 /** The buyer names the customer record — the record keyed by the BUYER's phone.
@@ -30,6 +31,16 @@ export async function onWebOrderPaid(orderId: string): Promise<void> {
   try {
     const order = await getOrder(orderId);
     if (!order) return;
+    // Queue the loyalty-card stamp before the customerId guard below: a repeated
+    // webhook must still find the row (INSERT OR IGNORE keeps it single), and a
+    // failed first attempt is retried from the queue. Fire and forget; neither
+    // call may reach the webhook.
+    try {
+      enqueueOrderSync(order);
+      void runSync(order.id).catch(() => {});
+    } catch {
+      // The queue is best effort; the payment hook carries on.
+    }
     // Idempotency: Stripe retries webhooks, and upsertOnOrder increments
     // order_count on every call. The link is the guard.
     if (order.customerId) return;
