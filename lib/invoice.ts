@@ -112,7 +112,7 @@ export function buildInvoiceModel(
     totals.push({ label: s.delivery, cents: t.deliveryCents });
   }
   if (t.discountCents > 0) {
-    totals.push({ label: order.promoCode ? `${s.discount} (${order.promoCode})` : s.discount, cents: t.discountCents, kind: "negative" });
+    totals.push({ label: (order.promoCode ?? order.loyaltyRewardLabel) ? `${s.discount} (${order.promoCode ?? order.loyaltyRewardLabel})` : s.discount, cents: t.discountCents, kind: "negative" });
   }
   totals.push({
     label: order.taxExempt ? `${s.tax} — ${s.exempt} · Cert #${order.taxExempt.cert}` : s.tax,

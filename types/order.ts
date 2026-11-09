@@ -120,6 +120,12 @@ export type Order = {
   /** Promo code applied at checkout. The discount itself lives in totals.discountCents. */
   promoId?: string;
   promoCode?: string;
+  /** Loyalty-card reward applied at checkout (label shown where a promo code would be). */
+  loyaltyRewardId?: string;
+  loyaltyRewardLabel?: string;
+  loyaltyRewardPercent?: number;
+  /** Buyer asked to join the loyalty program with this order. */
+  loyaltyJoin?: boolean;
   /** Set when the order is charged to a house account (payment_method "house-account"). */
   houseAccountId?: string;
   /** The order is for a funeral: the message card prints in the sympathy design. */

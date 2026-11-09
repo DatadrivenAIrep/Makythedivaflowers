@@ -390,7 +390,7 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
             <span>{t("delivery")}</span><span className="text-right">{money(order.totals.deliveryCents)}</span>
             {order.totals.discountCents > 0 && (
               <>
-                <span>{t("discount")}{order.promoCode ? ` · ${order.promoCode}` : ""}</span>
+                <span>{t("discount")}{(order.promoCode ?? order.loyaltyRewardLabel) ? ` · ${order.promoCode ?? order.loyaltyRewardLabel}` : ""}</span>
                 <span className="text-right">−{money(order.totals.discountCents)}</span>
               </>
             )}

@@ -37,6 +37,10 @@ export type OrderRow = {
   gift_card_cents: number | null;
   promo_id: string | null;
   promo_code: string | null;
+  loyalty_reward_id: string | null;
+  loyalty_reward_label: string | null;
+  loyalty_reward_percent: number | null;
+  loyalty_join: number;
   house_account_id: string | null;
   funeral: number;
   tax_exempt: number;
@@ -88,6 +92,10 @@ export function orderToRow(o: Order): OrderRow {
     gift_card_cents: o.giftCardCents ?? null,
     promo_id: o.promoId ?? null,
     promo_code: o.promoCode ?? null,
+    loyalty_reward_id: o.loyaltyRewardId ?? null,
+    loyalty_reward_label: o.loyaltyRewardLabel ?? null,
+    loyalty_reward_percent: o.loyaltyRewardPercent ?? null,
+    loyalty_join: o.loyaltyJoin ? 1 : 0,
     house_account_id: o.houseAccountId ?? null,
     funeral: o.funeral ? 1 : 0,
     tax_exempt: o.taxExempt ? 1 : 0,
@@ -163,6 +171,10 @@ export function rowToOrder(r: OrderRow): Order {
     ...(r.gift_card_cents != null ? { giftCardCents: r.gift_card_cents } : {}),
     ...(r.promo_id != null ? { promoId: r.promo_id } : {}),
     ...(r.promo_code != null ? { promoCode: r.promo_code } : {}),
+    ...(r.loyalty_reward_id != null ? { loyaltyRewardId: r.loyalty_reward_id } : {}),
+    ...(r.loyalty_reward_label != null ? { loyaltyRewardLabel: r.loyalty_reward_label } : {}),
+    ...(r.loyalty_reward_percent != null ? { loyaltyRewardPercent: r.loyalty_reward_percent } : {}),
+    ...(r.loyalty_join === 1 ? { loyaltyJoin: true } : {}),
     ...(r.house_account_id != null ? { houseAccountId: r.house_account_id } : {}),
     ...(r.funeral === 1 ? { funeral: true } : {}),
     ...(r.tax_exempt === 1 ? { taxExempt: { cert: r.tax_exempt_cert ?? "" } } : {}),

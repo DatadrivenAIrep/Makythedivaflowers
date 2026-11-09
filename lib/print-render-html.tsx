@@ -219,7 +219,7 @@ function Worksheet({ order }: { order: Order }) {
               {order.totals.discountCents > 0 ? (
                 <tr className="totline neg">
                   <td></td>
-                  <td>{t.discount}{order.promoCode ? ` · ${order.promoCode}` : ""}</td>
+                  <td>{t.discount}{(order.promoCode ?? order.loyaltyRewardLabel) ? ` · ${order.promoCode ?? order.loyaltyRewardLabel}` : ""}</td>
                   <td className="price">−{m(order.totals.discountCents)}</td>
                 </tr>
               ) : null}
