@@ -216,4 +216,42 @@ describe("LoyaltyRewardField", () => {
     expect(container.textContent).not.toMatch(/Maria|Lopez|stamp|sello|visit/i);
     expect(container.textContent).not.toMatch(/\b7\b|\b12\b/);
   });
+
+  it("after an expired code the buyer can request a new one", async () => {
+    const user = userEvent.setup();
+    routes({
+      "/api/checkout/loyalty/lookup": () => res({ status: "card", rewards: REWARDS }),
+      "/api/checkout/loyalty/send-code": () => res({ sent: true }),
+      "/api/checkout/loyalty/verify": () => res({ reason: "expired" }, 400),
+    });
+    render(<Harness />);
+    const sends = () =>
+      fetchMock.mock.calls.filter((c) => c[0] === "/api/checkout/loyalty/send-code").length;
+
+    await user.click(await screen.findByRole("button", { name: "loyalty_use" }));
+    await user.type(await screen.findByLabelText("loyalty_code_label"), "123456");
+    await user.click(screen.getByRole("button", { name: "loyalty_confirm" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("loyalty_expired_code");
+    expect(sends()).toBe(1);
+    await user.click(screen.getByRole("button", { name: "loyalty_use" }));
+    await waitFor(() => expect(sends()).toBe(2));
+  });
+
+  it("lets the buyer go back from the code step and request another code", async () => {
+    const user = userEvent.setup();
+    routes({
+      "/api/checkout/loyalty/lookup": () => res({ status: "card", rewards: REWARDS }),
+      "/api/checkout/loyalty/send-code": () => res({ sent: true }),
+    });
+    render(<Harness />);
+    const sends = () =>
+      fetchMock.mock.calls.filter((c) => c[0] === "/api/checkout/loyalty/send-code").length;
+
+    await user.click(await screen.findByRole("button", { name: "loyalty_use" }));
+    await screen.findByLabelText("loyalty_code_label");
+    await user.click(screen.getByRole("button", { name: "loyalty_send_code" }));
+    await user.click(await screen.findByRole("button", { name: "loyalty_use" }));
+    await waitFor(() => expect(sends()).toBe(2));
+  });
 });

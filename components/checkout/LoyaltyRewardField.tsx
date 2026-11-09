@@ -132,6 +132,9 @@ export function LoyaltyRewardField({ phone, locale, applied, onApply, onClear, o
         return;
       }
       if (data?.reason === "expired") {
+        // Back to the list so "Use reward" sends a fresh code; keep the message.
+        setStep("pick");
+        setCode("");
         setError(t("loyalty_expired_code"));
         return;
       }
@@ -246,6 +249,17 @@ export function LoyaltyRewardField({ phone, locale, applied, onApply, onClear, o
               {t("loyalty_confirm")}
             </button>
           </div>
+          <button
+            type="button"
+            onClick={() => {
+              setStep("pick");
+              setCode("");
+              setError(null);
+            }}
+            className="font-mono text-[11px] text-ink/60 underline underline-offset-4 hover:text-ink"
+          >
+            {t("loyalty_send_code")}
+          </button>
         </div>
       )}
       {error && (
