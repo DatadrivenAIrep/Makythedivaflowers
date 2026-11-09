@@ -129,7 +129,7 @@ it("migration creates loyalty_sync and rejects an unknown status");
   - `send-code` `{ phone, locale }` → `{ sent: true }`, o 429 `{ reason: "rate_limited" }`. Límites: 3 por hora por celular y 10 por minuto por IP.
   - `verify` `{ phone, code }` → `{ proof, rewards }`, o 400 `{ reason: "wrong" | "expired" }`, o 503 `{ reason: "unavailable" }`.
 
-Valores: código de 6 dígitos con `crypto.randomInt`, 10 minutos, 5 intentos; constancia de 15 minutos. La constancia es `base64url(JSON).firma`, con HMAC-SHA256 usando una clave derivada de `LOYALTY_API_KEY` y comparación en tiempo constante. `status` es `"unavailable"` si la conexión está apagada, si `twilioSmsEnabled()` es falso o si la API falla. `send-code` solo envía si ese número tiene premios aplicables. Con `twilioDryRun()`, el código va a `console.log` en vez de enviarse, con el mismo formato de `promo_reward_dry_run`.
+Valores: código de 6 dígitos con `crypto.randomInt`, 10 minutos, 5 intentos; constancia de 15 minutos. La constancia es `base64url(JSON).firma`, con HMAC-SHA256 usando una clave derivada de `LOYALTY_API_KEY` y comparación en tiempo constante. `status` es `"unavailable"` si la conexión está apagada o si la API falla. Con `twilioSmsEnabled()` falso, la respuesta es normal pero con `rewards: []`, para que la casilla de unirse siga disponible. `send-code` solo envía si ese número tiene premios aplicables. Con `twilioDryRun()`, el código va a `console.log` en vez de enviarse, con el mismo formato de `promo_reward_dry_run`.
 
 Texto del SMS: `Tu código de Diva Flowers es {code}. Vence en 10 minutos.` / `Your Diva Flowers code is {code}. It expires in 10 minutes.`, según `locale` del cuerpo. `verify` llama a `lookupCustomer` para armar los premios de la constancia.
 
@@ -141,7 +141,8 @@ it("proof is rejected for another phone, after 15 minutes, and when tampered");
 it("code expires after 10 minutes and dies on the fifth wrong attempt");
 it("a used code cannot be used twice");
 it("lookup never includes name, stamps or visits");
-it("lookup returns unavailable when SMS is off or the API is down");
+it("lookup returns unavailable when the API is down or the connection is off");
+it("lookup with SMS off returns no_card or card with rewards []");
 it("lookup filters rewards with no percent");
 it("send-code refuses the fourth send for one phone within the hour");
 it("send-code sends nothing for a number with no rewards");
@@ -166,7 +167,7 @@ it("verify returns a proof containing only applicable rewards");
 - Produces, en `requestSchema`: `loyaltyRewardId` y `loyaltyProof`, opcionales. En `checkoutSchema`: `joinLoyaltyCard: z.boolean().optional().default(false)`.
 - Produces, errores 400: `{ errors: { formErrors: ["loyalty_proof_invalid"] } }`, `["loyalty_reward_unavailable"]`, `["loyalty_with_promo"]`.
 
-Lógica de `resolveRewardDiscount`: leer la constancia y exigir que incluya `rewardId`. Consultar `lookupCustomer` con 2500 ms. Si responde y el premio sigue en `applicableRewards`, usar el porcentaje actual. Si responde y no está, `reward_unavailable`. Si `LoyaltyApiError` con `unavailable`, usar el porcentaje de la constancia.
+Lógica de `resolveRewardDiscount`: leer la constancia y exigir que incluya `rewardId`. Consultar `lookupCustomer` con 2500 ms. Si responde y el premio sigue en `applicableRewards`, usar el porcentaje actual. Si responde y no está, `reward_unavailable`. Con cualquier `LoyaltyApiError` (tiempo agotado, red, 429, 5xx), usar el porcentaje de la constancia.
 
 - [ ] **Step 1: Write the failing test**
 
