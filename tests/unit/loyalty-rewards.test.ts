@@ -27,7 +27,10 @@ describe("applicableRewards", () => {
 });
 
 describe("rewardDiscountCents", () => {
-  it("rounds down to whole cents", () => {
+  it("rounds to the nearest cent and never exceeds the subtotal", () => {
     expect(rewardDiscountCents(10001, 15)).toBe(1500);
+    expect(rewardDiscountCents(10004, 15)).toBe(1501); // 1500.6: round differs from floor
+    expect(rewardDiscountCents(0, 50)).toBe(0);
+    expect(rewardDiscountCents(1, 99)).toBe(1); // capped at the subtotal
   });
 });

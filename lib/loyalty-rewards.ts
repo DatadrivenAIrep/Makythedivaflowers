@@ -21,5 +21,5 @@ export function applicableRewards(available: { id: string; reward: string }[]): 
 }
 
 export function rewardDiscountCents(subtotalCents: number, percent: number): number {
-  return Math.floor((subtotalCents * percent) / 100);
+  return Math.min(Math.round((subtotalCents * percent) / 100), subtotalCents);
 }
