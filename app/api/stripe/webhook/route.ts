@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { stripe } from "@/lib/stripe-server";
-import { getOrderByPaymentIntent, updateOrderStatusByPaymentIntent, getOrderByCheckoutSessionId, updateOrderPaidByCheckoutSession } from "@/lib/order-storage";
+import { getOrder, getOrderByPaymentIntent, updateOrderStatusByPaymentIntent, getOrderByCheckoutSessionId, updateOrderPaidByCheckoutSession } from "@/lib/order-storage";
 import { dispatchPaymentConfirmed } from "@/lib/order-dispatch";
 import { notifyOrderPaid } from "@/lib/order-notifications";
 import { onWebOrderPaid } from "@/lib/on-web-order-paid";
+import { enqueueOrderSync } from "@/lib/loyalty-sync";
 import { redeem, issueGiftCardForPayment, getGiftCardByPaymentIntent } from "@/lib/gift-card-storage";
 import { notifyGiftCardIssued } from "@/lib/gift-card-notifications";
 import { notifyGiftCardSms } from "@/lib/gift-card-sms";
@@ -29,6 +30,22 @@ function orderToPurchasePayload(order: Order) {
     shipping: centsToDollars(order.totals.deliveryCents),
     items: resolved.map(resolvedLineToAnalyticsItem),
   };
+}
+
+/**
+ * Queues the loyalty stamp from a fresh read, right after the paid write and
+ * before anything that can throw. A Stripe retry skips the paid side effects, so
+ * this is what keeps a stamp from being lost; the cron then works the row. Runs
+ * on replays too, and can never fail the webhook.
+ */
+async function queueLoyaltyStamp(orderId: string): Promise<void> {
+  try {
+    const paid = await getOrder(orderId);
+    if (paid) enqueueOrderSync(paid);
+  } catch (e) {
+    const { name, code, status } = (e ?? {}) as { name?: unknown; code?: unknown; status?: unknown };
+    console.error("[loyalty] webhook enqueue failed", { name, code, status });
+  }
 }
 
 export async function POST(req: Request) {
@@ -97,6 +114,7 @@ export async function POST(req: Request) {
         // Task 5 will move this to paymentStatus. For now, check both.
         const wasAlreadyPaid = (order?.status as string) === "paid" || order?.paymentStatus === "paid";
         await updateOrderStatusByPaymentIntent(pi.id, "paid");
+        if (order) await queueLoyaltyStamp(order.id);
         if (order && !wasAlreadyPaid) {
           if (order.giftCardId && order.giftCardCents && order.giftCardCents > 0) {
             try {
@@ -163,9 +181,13 @@ export async function POST(req: Request) {
           });
           break;
         }
-        if (csOrder.paymentStatus === "paid") break; // idempotent
+        if (csOrder.paymentStatus === "paid") {
+          await queueLoyaltyStamp(csOrder.id);
+          break; // idempotent
+        }
 
         await updateOrderPaidByCheckoutSession(session.id);
+        await queueLoyaltyStamp(csOrder.id);
         // Payment-link orders (intake, and web resend) redeem the promo here —
         // the payment_intent.succeeded branch above never fires for them.
         if (csOrder.promoId && csOrder.totals.discountCents > 0) {

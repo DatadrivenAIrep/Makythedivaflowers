@@ -31,10 +31,11 @@ export async function onWebOrderPaid(orderId: string): Promise<void> {
   try {
     const order = await getOrder(orderId);
     if (!order) return;
-    // Queue the loyalty-card stamp before the customerId guard below: a repeated
-    // webhook must still find the row (INSERT OR IGNORE keeps it single), and a
-    // failed first attempt is retried from the queue. Fire and forget; neither
-    // call may reach the webhook.
+    // Queue the loyalty-card stamp and try it once. The Stripe webhook has already
+    // queued this row, because a retried webhook never reaches this hook; the gift
+    // card path has not, so this enqueue stays (INSERT OR IGNORE keeps one row).
+    // Before the customerId guard below so an order already linked still gets its
+    // attempt. Fire and forget; neither call may reach the webhook.
     try {
       enqueueOrderSync(order);
       void runSync(order.id).catch(() => {});
