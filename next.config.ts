@@ -4,7 +4,7 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./i18n.ts");
 
 // Maky's loyalty card lives in a separate app (Tarjeta Fiel).
-const LOYALTY_SIGNUP_URL = "https://lightsalmon-dinosaur-949507.hostingersite.com/makythedivaflowers";
+const LOYALTY_SIGNUP_URL = "https://lightsalmon-dinosaur-949507.hostingersite.com/maky-the-diva-flowers";
 
 const nextConfig: NextConfig = {
   images: {

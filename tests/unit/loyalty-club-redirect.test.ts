@@ -8,7 +8,7 @@ describe("/club loyalty redirect", () => {
     for (const source of ["/club", "/:locale(en|es)/club"]) {
       const r = redirects.find((x) => x.source === source);
       expect(r, source).toBeDefined();
-      expect(r!.destination).toBe("https://lightsalmon-dinosaur-949507.hostingersite.com/makythedivaflowers");
+      expect(r!.destination).toBe("https://lightsalmon-dinosaur-949507.hostingersite.com/maky-the-diva-flowers");
       // 307, not 308: browsers must not cache it, so the target can change.
       expect("permanent" in r! && r!.permanent).toBe(false);
     }
