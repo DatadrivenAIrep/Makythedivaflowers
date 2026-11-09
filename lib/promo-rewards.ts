@@ -7,6 +7,7 @@ import { grantLoyaltyReward, REFERRAL_CENTS, LOYALTY_AT_ORDER } from "@/lib/prom
 import { sendSms } from "@/lib/twilio-server";
 import { twilioSmsEnabled, twilioDryRun } from "@/lib/twilio-config";
 import { OPT_OUT_FOOTER } from "@/lib/campaign-sender";
+import { loyaltyEnabled } from "@/lib/loyalty-client";
 import type { Order } from "@/types/order";
 
 /**
@@ -108,6 +109,9 @@ async function creditReferrer(order: Order): Promise<void> {
 
 /** Text the loyalty code the moment the customer's fifth order comes into view. */
 async function loyalty(order: Order): Promise<void> {
+  // With the loyalty-card connection on, the card replaces this reward. Codes
+  // already issued stay valid; only new grants stop.
+  if (loyaltyEnabled()) return;
   if (!order.customerId) return;
   if (!optedIntoMarketing(order.customerId)) return;
   // Granted once four are behind them, so the fifth is the discounted one.

@@ -3,6 +3,7 @@ import { z } from "zod";
 import { cancelOrder } from "@/lib/order-mutations";
 import { getOrder } from "@/lib/order-storage";
 import { refund } from "@/lib/gift-card-storage";
+import { enqueueOrderReverse, runReverse } from "@/lib/loyalty-sync";
 
 export const runtime = "nodejs";
 
@@ -26,6 +27,20 @@ async function restoreGiftCardIfNeeded(id: string): Promise<void> {
   }
 }
 
+/**
+ * Undo the order's stamp on the loyalty card. Queued first so a program outage
+ * only delays it; the attempt itself is fire-and-forget. Nothing here may fail
+ * or slow the cancellation.
+ */
+function reverseLoyaltyIfNeeded(id: string): void {
+  try {
+    enqueueOrderReverse(id);
+    void runReverse(id).catch((e) => console.error("[loyalty] reverse on cancel failed for order", id, e));
+  } catch (e) {
+    console.error("[loyalty] reverse on cancel failed for order", id, e);
+  }
+}
+
 export async function PATCH(
   req: Request,
   ctx: { params: Promise<{ id: string }> },
@@ -39,6 +54,7 @@ export async function PATCH(
   try {
     const order = await cancelOrder(id, parsed.data);
     await restoreGiftCardIfNeeded(id);
+    reverseLoyaltyIfNeeded(id);
     return NextResponse.json({ order });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
