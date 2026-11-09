@@ -10,6 +10,8 @@ import { stripe } from "@/lib/stripe-server";
 import type Stripe from "stripe";
 import { validateForRedemption, redeem } from "@/lib/gift-card-storage";
 import { validatePromo, redeemPromo } from "@/lib/promo";
+import { loyaltyEnabled } from "@/lib/loyalty-client";
+import { resolveRewardDiscount } from "@/lib/loyalty-checkout";
 import { buyerHasPaidOrder } from "@/lib/buyer-history";
 import { notifyOrderPaid } from "@/lib/order-notifications";
 import { enqueuePrintJob } from "@/lib/print-queue";
@@ -33,6 +35,10 @@ const requestSchema = z.object({
   // Only the code travels from the client. The discount is always recomputed
   // here, so a tampered request cannot dictate its own price.
   promoCode: z.string().min(1).max(50).optional(),
+  // Same rule for loyalty: only the reward id and the signed proof travel from
+  // the client; label, percent and amount are resolved on the server.
+  loyaltyRewardId: z.string().min(1).max(100).optional(),
+  loyaltyProof: z.string().min(1).max(4000).optional(),
   // Capped rather than open-ended: a typo turning $10 into $1,000 should be
   // refused, not charged. Staff can take a larger tip over the phone.
   tipCents: z.number().int().min(0).max(20000).optional(),
@@ -116,6 +122,24 @@ export async function POST(req: Request) {
     discountCents = check.discountCents;
   }
 
+  // --- Loyalty reward (optional; never combined with a promo code) ---
+  let loyalty: { rewardId: string; label: string; percent: number } | undefined;
+  if (parsed.data.loyaltyRewardId) {
+    const fail = (code: string) =>
+      NextResponse.json({ errors: { formErrors: [code] } }, { status: 400 });
+    if (parsed.data.promoCode) return fail("loyalty_with_promo");
+    if (!loyaltyEnabled()) return fail("loyalty_reward_unavailable");
+    const reward = await resolveRewardDiscount({
+      phone: form.contact.phone,
+      rewardId: parsed.data.loyaltyRewardId,
+      proof: parsed.data.loyaltyProof ?? "",
+      subtotalCents: subtotal,
+    });
+    if (!reward.ok) return fail(`loyalty_${reward.reason}`);
+    loyalty = { rewardId: reward.rewardId, label: reward.label, percent: reward.percent };
+    discountCents = reward.discountCents;
+  }
+
   const tipCents = parsed.data.tipCents ?? 0;
   const totals = computeOrderTotals(subtotal, deliveryCents, discountCents, tipCents);
 
@@ -166,6 +190,10 @@ export async function POST(req: Request) {
     contact: form.contact,
     promoId,
     promoCode,
+    loyaltyRewardId: loyalty?.rewardId,
+    loyaltyRewardLabel: loyalty?.label,
+    loyaltyRewardPercent: loyalty?.percent,
+    loyaltyJoin: form.joinLoyaltyCard,
     smsConsent: form.smsConsent,
     smsMarketingConsent: form.smsMarketingConsent,
     totals,
