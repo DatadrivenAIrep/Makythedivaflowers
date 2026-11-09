@@ -85,4 +85,37 @@ describe("loyalty client", () => {
     expect(fetchMock.mock.calls[1][0]).toBe("https://loyalty.test/api/v1/customers/42/stamps");
     expect(JSON.parse(fetchMock.mock.calls[1][1].body)).toEqual({ orderId: "diva-9", count: 1 });
   });
+
+  describe("a 200 with an unexpected shape", () => {
+    const malformed: [string, unknown][] = [
+      ["an empty object", {}],
+      ["customer null", { customer: null }],
+      ["customer not an object", { customer: "x" }],
+      ["id not a number", { customer: { ...customer, id: "42" } }],
+      ["no rewards", { customer: { id: 42, cardUrl: "u" } }],
+      ["rewards without available", { customer: { id: 42, cardUrl: "u", rewards: {} } }],
+      ["available not an array", { customer: { id: 42, cardUrl: "u", rewards: { available: "no" } } }],
+      ["a reward with no text", { customer: { id: 42, cardUrl: "u", rewards: { available: [{ id: "a" }] } } }],
+      ["a null body", null],
+    ];
+
+    it.each(malformed)("lookupCustomer throws unavailable on %s", async (_name, body) => {
+      fetchMock.mockResolvedValue(json(body));
+      const err = await lookupCustomer("+1", { timeoutMs: 100 }).catch((e) => e);
+      expect(err).toBeInstanceOf(LoyaltyApiError);
+      expect(err).toMatchObject({ code: "unavailable", status: 0 });
+    });
+
+    it.each(malformed)("createCustomer throws unavailable on %s", async (_name, body) => {
+      fetchMock.mockResolvedValue(json(body));
+      const err = await createCustomer({ name: "Ana", phone: "+1" }, { timeoutMs: 100 }).catch((e) => e);
+      expect(err).toBeInstanceOf(LoyaltyApiError);
+      expect(err).toMatchObject({ code: "unavailable", status: 0 });
+    });
+
+    it("still accepts a well-formed customer", async () => {
+      fetchMock.mockResolvedValue(json({ customer }));
+      await expect(lookupCustomer("+1", { timeoutMs: 100 })).resolves.toEqual(customer);
+    });
+  });
 });
