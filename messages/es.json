@@ -2232,7 +2232,8 @@
     "col_recipients": "Destinatarios",
     "col_sent": "Enviados",
     "col_failed": "Fallidos",
-    "col_date": "Fecha"
+    "col_date": "Fecha",
+    "open_draft": "Abrir"
   },
   "admin_messages": {
     "title": "Mensajes",

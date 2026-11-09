@@ -8,10 +8,12 @@ export default function CampaignHistory({
   campaigns,
   locale,
   error,
+  onOpenDraft,
 }: {
   campaigns: Campaign[];
   locale: string;
   error?: boolean;
+  onOpenDraft: (id: string) => void;
 }) {
   const t = useTranslations("admin_campaigns");
 
@@ -40,6 +42,7 @@ export default function CampaignHistory({
                 <th className="px-3 py-2 text-right font-medium">{t("col_sent")}</th>
                 <th className="px-3 py-2 text-right font-medium">{t("col_failed")}</th>
                 <th className="px-3 py-2 font-medium">{t("col_date")}</th>
+                <th className="px-3 py-2" aria-label={t("open_draft")} />
               </tr>
             </thead>
             <tbody>
@@ -60,6 +63,17 @@ export default function CampaignHistory({
                   </td>
                   <td className="whitespace-nowrap px-3 py-2 text-ink/70">
                     {formatDate(c.createdAt, locale)}
+                  </td>
+                  <td className="px-3 py-2 text-right">
+                    {c.status === "draft" && (
+                      <button
+                        type="button"
+                        onClick={() => onOpenDraft(c.id)}
+                        className="min-h-11 rounded-lg border border-ink/20 px-3 text-sm hover:bg-ink/5"
+                      >
+                        {t("open_draft")}
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

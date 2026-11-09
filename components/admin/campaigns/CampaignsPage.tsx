@@ -63,6 +63,37 @@ export default function CampaignsPage({ locale }: { locale: string }) {
     void loadHistory();
   }, [loadHistory]);
 
+  // The server-rendered preview for a saved draft; returns the draft as stored.
+  async function loadPreview(id: string): Promise<Campaign> {
+    const res = await fetch(`/api/admin/campaigns/${id}`);
+    if (!res.ok) throw new Error();
+    const d = await res.json();
+    setPreview({
+      recipientCount: d.recipientCount,
+      previewEs: d.previewEs,
+      previewEn: d.previewEn,
+      segmentsEs: d.segmentsEs,
+      segmentsEn: d.segmentsEn,
+    });
+    return d.campaign as Campaign;
+  }
+
+  // Bring a draft saved earlier back into the composer, ready to edit, test or send.
+  async function openDraft(id: string) {
+    setError(null);
+    setSendResult(null);
+    setTest({ state: "idle" });
+    try {
+      const campaign = await loadPreview(id);
+      setDraftId(campaign.id);
+      setBodyEs(campaign.bodyEs);
+      setBodyEn(campaign.bodyEn);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch {
+      setError(t("error"));
+    }
+  }
+
   // Save (create or update the draft), then load the server-rendered preview. Editing
   // and re-saving PATCHes the same draft row (no duplicate drafts in history).
   async function saveDraft() {
@@ -90,16 +121,8 @@ export default function CampaignsPage({ locale }: { locale: string }) {
         id = created.campaign.id as string;
         setDraftId(id);
       }
-      const dres = await fetch(`/api/admin/campaigns/${id}`);
-      if (!dres.ok) throw new Error();
-      const d = await dres.json();
-      setPreview({
-        recipientCount: d.recipientCount,
-        previewEs: d.previewEs,
-        previewEn: d.previewEn,
-        segmentsEs: d.segmentsEs,
-        segmentsEn: d.segmentsEn,
-      });
+      await loadPreview(id);
+      void loadHistory();
     } catch {
       setError(t("error"));
     } finally {
@@ -330,7 +353,7 @@ export default function CampaignsPage({ locale }: { locale: string }) {
       )}
 
       {/* 4. History */}
-      <CampaignHistory campaigns={history} locale={locale} error={historyError} />
+      <CampaignHistory campaigns={history} locale={locale} error={historyError} onOpenDraft={openDraft} />
     </div>
   );
 }

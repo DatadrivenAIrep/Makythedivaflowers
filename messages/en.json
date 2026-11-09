@@ -2232,7 +2232,8 @@
     "col_recipients": "Recipients",
     "col_sent": "Sent",
     "col_failed": "Failed",
-    "col_date": "Date"
+    "col_date": "Date",
+    "open_draft": "Open"
   },
   "admin_messages": {
     "title": "Messages",
