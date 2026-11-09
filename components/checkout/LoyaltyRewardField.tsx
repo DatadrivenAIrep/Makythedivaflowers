@@ -6,6 +6,8 @@ import type { Locale } from "@/types/locale";
 
 export type AppliedLoyaltyReward = { id: string; percent: number; label: string; proof: string };
 export type LoyaltyStatus = "unavailable" | "no_card" | "card";
+/** The signed proof from one SMS check, held by the parent so it outlives this field. */
+export type VerifiedLoyalty = { phone: string; proof: string; rewards: LoyaltyReward[]; expiresAt: number };
 
 type Props = {
   phone: string;
@@ -14,10 +16,19 @@ type Props = {
   onApply: (r: AppliedLoyaltyReward) => void;
   onClear: () => void;
   onStatus: (s: LoyaltyStatus) => void;
+  verified: VerifiedLoyalty | null;
+  onVerified: (v: VerifiedLoyalty) => void;
 };
 
 const MIN_DIGITS = 10;
 const LOOKUP_DELAY_MS = 400;
+// Matches the server's proof lifetime. The server stays the authority: a proof it
+// refuses earlier sends the buyer back to the code flow through the parent.
+const PROOF_TTL_MS = 15 * 60_000;
+
+function liveProof(verified: VerifiedLoyalty | null, phone: string): VerifiedLoyalty | null {
+  return verified && verified.phone === phone && Date.now() < verified.expiresAt ? verified : null;
+}
 
 function highest(rewards: LoyaltyReward[]): LoyaltyReward | null {
   return rewards.reduce<LoyaltyReward | null>(
@@ -36,7 +47,7 @@ async function post(url: string, body: unknown): Promise<{ status: number; data:
   return { status: res.status, data };
 }
 
-export function LoyaltyRewardField({ phone, locale, applied, onApply, onClear, onStatus }: Props) {
+export function LoyaltyRewardField({ phone, locale, applied, onApply, onClear, onStatus, verified, onVerified }: Props) {
   const t = useTranslations("checkout");
   const [rewards, setRewards] = useState<LoyaltyReward[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -98,6 +109,18 @@ export function LoyaltyRewardField({ phone, locale, applied, onApply, onClear, o
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phone]);
 
+  /** A reward the live proof already covers applies at once; anything else needs a code. */
+  function chooseReward() {
+    const proof = liveProof(verified, phone);
+    const covered = proof?.rewards.find((r) => r.id === selectedId);
+    if (proof && covered) {
+      setError(null);
+      onApply({ id: covered.id, percent: covered.percent, label: covered.label, proof: proof.proof });
+      return;
+    }
+    void sendCode();
+  }
+
   async function sendCode() {
     if (!selectedId) return;
     setBusy(true);
@@ -143,6 +166,7 @@ export function LoyaltyRewardField({ phone, locale, applied, onApply, onClear, o
         return;
       }
       const fresh = data.rewards as LoyaltyReward[];
+      onVerified({ phone, proof: data.proof, rewards: fresh, expiresAt: Date.now() + PROOF_TTL_MS });
       const chosen = fresh.find((r) => r.id === selectedId);
       if (!chosen) {
         // The reward was spent meanwhile. Show what is still available and make
@@ -184,6 +208,8 @@ export function LoyaltyRewardField({ phone, locale, applied, onApply, onClear, o
 
   if (rewards.length === 0) return null;
 
+  const codeNeeded = !liveProof(verified, phone)?.rewards.some((r) => r.id === selectedId);
+
   return (
     <div className="space-y-3 rounded-lg border border-ink/10 bg-bone/60 p-3">
       <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-mute-500">
@@ -205,10 +231,10 @@ export function LoyaltyRewardField({ phone, locale, applied, onApply, onClear, o
               </label>
             ))}
           </div>
-          <p className="text-xs text-ink/60">{t("loyalty_send_code")}</p>
+          {codeNeeded && <p className="text-xs text-ink/60">{t("loyalty_send_code")}</p>}
           <button
             type="button"
-            onClick={() => void sendCode()}
+            onClick={chooseReward}
             disabled={busy || !selectedId}
             className="rounded-lg border border-ink/15 px-3 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-ink transition hover:bg-ink/[0.04] disabled:opacity-50"
           >

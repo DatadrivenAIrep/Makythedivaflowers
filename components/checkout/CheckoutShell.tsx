@@ -14,7 +14,7 @@ import { DeliveryStep } from "@/components/checkout/DeliveryStep";
 import { StripePaymentStep } from "@/components/checkout/StripePaymentStep";
 import GiftCardField from "@/components/checkout/GiftCardField";
 import { PromoCodeField, type AppliedPromo } from "@/components/checkout/PromoCodeField";
-import { LoyaltyRewardField, type AppliedLoyaltyReward, type LoyaltyStatus } from "@/components/checkout/LoyaltyRewardField";
+import { LoyaltyRewardField, type AppliedLoyaltyReward, type LoyaltyStatus, type VerifiedLoyalty } from "@/components/checkout/LoyaltyRewardField";
 import { rewardDiscountCents } from "@/lib/loyalty-rewards";
 import { TipField } from "@/components/checkout/TipField";
 import { FormShell } from "@/components/ui/form/shell/FormShell";
@@ -142,19 +142,24 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
   const [loyalty, setLoyalty] = useState<AppliedLoyaltyReward | null>(null);
   const [loyaltyStatus, setLoyaltyStatus] = useState<LoyaltyStatus>("unavailable");
   const [loyaltyNotice, setLoyaltyNotice] = useState<string | null>(null);
+  // The SMS proof, kept here because the field unmounts when its step collapses.
+  const [verifiedLoyalty, setVerifiedLoyalty] = useState<VerifiedLoyalty | null>(null);
   // Bumped when a reward is applied so the promo field empties itself.
   const [promoClearSignal, setPromoClearSignal] = useState(0);
   const [tipCents, setTipCents] = useState(0);
   const stripeRef = useRef<{ stripe: StripeJs; elements: StripeElements } | null>(null);
   // Whether a PaymentIntent exists yet (i.e. the buyer reached step 3) and the
-  // amount the live one was created for. Held in refs so the sync effect below
+  // price the live one was created for. Held in refs so the sync effect below
   // never lists `intent` as a dependency: doing so made the effect re-run the
   // instant it called setIntent({status:"creating"}), and the re-run's cleanup
   // cancelled the request it had just fired. The result was discarded, the state
   // stayed "creating" forever, and the card form never came back — so the buyer
   // could not pay while an orphan PaymentIntent sat in Stripe untouched.
   const hasIntentRef = useRef(false);
-  const syncedAmountRef = useRef<number | null>(null);
+  const syncedKeyRef = useRef<string | null>(null);
+  // Numbers each intent request. Only the newest may report back, so a slow
+  // response cannot put an out-of-date order in front of the buyer.
+  const intentRunRef = useRef(0);
   // The order this checkout opened. Echoed back on every re-price so the server
   // updates that row instead of writing another pending order per change, and
   // kept in sessionStorage so a reload continues the same order rather than
@@ -196,6 +201,19 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
     [subtotal, deliveryCents, discountCents, tipCents],
   );
   const payableCents = Math.max(0, totals.totalCents - (giftCard?.appliedCents ?? 0));
+  // A promo and a reward can discount the same amount, and the order still has
+  // to record which one was spent.
+  const repriceKey = `${payableCents}|${promo?.code ?? ""}|${loyalty?.id ?? ""}`;
+
+  const phone = form.watch("contact.phone") ?? "";
+  const lastPhoneRef = useRef(phone);
+  useEffect(() => {
+    if (lastPhoneRef.current === phone) return;
+    lastPhoneRef.current = phone;
+    // The proof and any refusal belong to the number they were issued for.
+    setVerifiedLoyalty(null);
+    setLoyaltyNotice(null);
+  }, [phone]);
 
   // Keep the PaymentIntent in step with the amount actually being charged: tip,
   // promo, gift card and delivery zone can all change it after step 3. Transition
@@ -218,9 +236,10 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
   useEffect(() => {
     if (!hasIntentRef.current) return;
     if (totals.totalCents <= 0) return;
-    if (syncedAmountRef.current === payableCents) return;
-    syncedAmountRef.current = payableCents;
+    if (syncedKeyRef.current === repriceKey) return;
+    syncedKeyRef.current = repriceKey;
     let cancelled = false;
+    const run = ++intentRunRef.current;
     setIntent({ status: "creating" });
     (async () => {
       const l = latestRef.current;
@@ -235,11 +254,11 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
         tipCents: l.tipCents,
         orderId: orderIdRef.current ?? undefined,
       });
-      if (cancelled) return;
+      if (cancelled || run !== intentRunRef.current) return;
       if ("error" in r) {
-        if (LOYALTY_ERROR_CODES.has(r.error)) dropRefusedReward();
-        // Unpin the amount so a later change retries instead of being skipped.
-        syncedAmountRef.current = null;
+        if (LOYALTY_ERROR_CODES.has(r.error)) dropRefusedReward(r.error, l.loyalty?.id);
+        // Unpin the price so a later change retries instead of being skipped.
+        syncedKeyRef.current = null;
         setIntent({ status: "error", message: r.error });
       } else if ("paid" in r && r.paid) {
         forgetOrder();
@@ -259,13 +278,20 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
     return () => {
       cancelled = true;
     };
-  }, [payableCents, totals.totalCents]);
+  }, [repriceKey, totals.totalCents]);
 
   // The server refused the reward: remove it and say why. Removing it changes
-  // the payable amount, which re-prices the intent without the reward.
-  function dropRefusedReward() {
+  // the re-price key, which re-prices the intent without the reward. A spent
+  // reward leaves the proof good for the others; any other refusal means the
+  // proof itself is no use and the buyer goes back to the code flow.
+  function dropRefusedReward(code: string, rewardId: string | undefined) {
     setLoyalty(null);
     setLoyaltyNotice(t("loyalty_unavailable"));
+    setVerifiedLoyalty((v) =>
+      v && code === "loyalty_reward_unavailable"
+        ? { ...v, rewards: v.rewards.filter((r) => r.id !== rewardId) }
+        : null,
+    );
   }
 
   function applyReward(r: AppliedLoyaltyReward) {
@@ -276,6 +302,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
   }
 
   function applyPromo(p: AppliedPromo) {
+    setLoyaltyNotice(null);
     setLoyalty(null);
     setPromo(p);
   }
@@ -313,25 +340,39 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
       payment: [],
     };
     const valid = await form.trigger(fields[step] as never);
-    if (!valid) return;
+    if (!valid) {
+      // The payment header can land here from another step; show the errors.
+      if (step === "delivery") setOpen("delivery");
+      return;
+    }
 
     if (step === "delivery") {
+      // Step 1 can be edited after it was validated, and the intent carries it.
+      if (!(await form.trigger(fields.contact as never))) {
+        setOpen("contact");
+        return;
+      }
       const items = resolved.map(resolvedLineToAnalyticsItem);
       trackAddShippingInfo("standard", items);
       const cardMessage = form.getValues("delivery.cardMessage") ?? "";
       trackRecipientInfoCompleted(cardMessage.trim().length > 0);
       trackAddPaymentInfo("card", items);
 
-      // Create the PaymentIntent before showing step 3. Pin the amount now so the
+      // Create the PaymentIntent before showing step 3. Pin the price now so the
       // sync effect doesn't fire a duplicate request while this one is in flight;
       // it stays disabled until hasIntentRef flips on success below.
       setIntent({ status: "creating" });
-      syncedAmountRef.current = payableCents;
+      syncedKeyRef.current = repriceKey;
+      const run = ++intentRunRef.current;
       const r = await createIntent({ locale, lines, form: form.getValues(), giftCardCode: giftCard?.code, promoCode: promo?.code, loyaltyRewardId: loyalty?.id, loyaltyProof: loyalty?.proof, tipCents, orderId: orderIdRef.current ?? undefined });
+      if (run !== intentRunRef.current) return;
       if ("error" in r) {
-        if (LOYALTY_ERROR_CODES.has(r.error)) dropRefusedReward();
+        syncedKeyRef.current = null;
         setIntent({ status: "error", message: r.error });
-        setTopError(t(errorKey(r.error)));
+        if (LOYALTY_ERROR_CODES.has(r.error)) dropRefusedReward(r.error, loyalty?.id);
+        // Step 3 shows the intent error, so take a buyer already past it there.
+        else if (hasIntentRef.current) setOpen("payment");
+        else setTopError(t(errorKey(r.error)));
         return;
       }
       if ("paid" in r && r.paid) {
@@ -355,7 +396,17 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
     setOpen(step === "contact" ? "delivery" : "payment");
   }
 
+  // Once an intent exists the header re-sends the order like "Continue" does:
+  // anything edited in steps 1 and 2 has to reach the order before paying.
+  function openPayment() {
+    if (open === "payment" || intent.status === "creating") return;
+    if (hasIntentRef.current) void nextFrom("delivery");
+    else setOpen("payment");
+  }
+
   async function onSubmit() {
+    // Enter in an earlier step submits the form too; only step 3 can pay.
+    if (open !== "payment") return;
     setTopError(null);
     setPaymentError(null);
     if (lines.length === 0) {
@@ -395,6 +446,11 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
     router.push(`/${locale}/order/${intent.orderId}/confirmation`);
   }
 
+  // Each section renders it, and only the open section is mounted.
+  const loyaltyNoticeEl = loyaltyNotice && (
+    <p role="alert" className="font-mono text-[11px] text-error">{loyaltyNotice}</p>
+  );
+
   const leftPanel = (
     <OrderSummaryPanel
       items={resolved.map((r) => ({
@@ -427,16 +483,16 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
         >
           <ContactStep form={form} showJoinCard={loyaltyStatus === "no_card"} />
           <LoyaltyRewardField
-            phone={form.watch("contact.phone") ?? ""}
+            phone={phone}
             locale={locale}
             applied={loyalty}
             onApply={applyReward}
             onClear={() => setLoyalty(null)}
             onStatus={handleLoyaltyStatus}
+            verified={verifiedLoyalty}
+            onVerified={setVerifiedLoyalty}
           />
-          {loyaltyNotice && (
-            <p role="alert" className="font-mono text-[11px] text-error">{loyaltyNotice}</p>
-          )}
+          {loyaltyNoticeEl}
           <div className="pt-4">
             <Button type="button" variant="primary" size="md" onClick={() => nextFrom("contact")}>
               {t("continue")}
@@ -451,6 +507,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
           reduce={!!reduce}
         >
           <DeliveryStep form={form} />
+          {loyaltyNoticeEl}
           <div className="pt-4 flex gap-3">
             <Button type="button" variant="ghost" size="md" onClick={() => setOpen("contact")}>
               {t("back")}
@@ -470,9 +527,10 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
         <Section
           title={`3. ${t("step_payment")}`}
           isOpen={open === "payment"}
-          onHeaderClick={() => setOpen("payment")}
+          onHeaderClick={openPayment}
           reduce={!!reduce}
         >
+          {loyaltyNoticeEl}
           <TipField value={tipCents} onChange={setTipCents} locale={locale} />
           <PromoCodeField
             subtotalCents={totals.subtotalCents}
@@ -499,7 +557,7 @@ export function CheckoutShell({ locale }: { locale: Locale }) {
           {intent.status === "creating" && (
             <p className="font-mono text-[11px] text-ink/60">{t("payment_loading")}</p>
           )}
-          {intent.status === "error" && (
+          {intent.status === "error" && !LOYALTY_ERROR_CODES.has(intent.message) && (
             <p className="font-mono text-[11px] text-error">
               {t(errorKey(intent.message))}
             </p>

@@ -5,6 +5,7 @@ import userEvent from "@testing-library/user-event";
 import {
   LoyaltyRewardField,
   type AppliedLoyaltyReward,
+  type VerifiedLoyalty,
 } from "@/components/checkout/LoyaltyRewardField";
 
 vi.mock("next-intl", () => ({ useTranslations: () => (k: string) => k }));
@@ -50,6 +51,8 @@ function Harness({
 }) {
   const [phone, setPhone] = useState(initialPhone);
   const [applied, setApplied] = useState<AppliedLoyaltyReward | null>(null);
+  // Lives in CheckoutShell in the real page, so it survives the field unmounting.
+  const [verified, setVerified] = useState<VerifiedLoyalty | null>(null);
   return (
     <>
       <button type="button" onClick={() => setPhone("5559999999")}>
@@ -68,6 +71,8 @@ function Harness({
           onClear?.();
         }}
         onStatus={(s) => onStatus?.(s)}
+        verified={verified}
+        onVerified={setVerified}
       />
     </>
   );
@@ -197,6 +202,64 @@ describe("LoyaltyRewardField", () => {
     await user.click(screen.getByRole("button", { name: "change-phone" }));
     await waitFor(() => expect(onClear).toHaveBeenCalledTimes(1));
     expect(screen.queryByText("loyalty_applied")).not.toBeInTheDocument();
+  });
+
+  it("applies another shown reward from the proof without a second SMS", async () => {
+    const user = userEvent.setup();
+    const onApply = vi.fn();
+    routes({
+      "/api/checkout/loyalty/lookup": () => res({ status: "card", rewards: REWARDS }),
+      "/api/checkout/loyalty/send-code": () => res({ sent: true }),
+      "/api/checkout/loyalty/verify": () => res({ proof: "P1", rewards: REWARDS }),
+    });
+    render(<Harness onApply={onApply} />);
+    const sends = () =>
+      fetchMock.mock.calls.filter((c) => c[0] === "/api/checkout/loyalty/send-code").length;
+
+    await user.click(await screen.findByRole("button", { name: "loyalty_use" }));
+    await user.type(await screen.findByLabelText("loyalty_code_label"), "123456");
+    await user.click(screen.getByRole("button", { name: "loyalty_confirm" }));
+    await screen.findByText("loyalty_applied");
+
+    await user.click(screen.getByRole("button", { name: "loyalty_remove" }));
+    // No code will be sent, so the field must not promise one.
+    expect(screen.queryByText("loyalty_send_code")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("radio", { name: "5% off" }));
+    await user.click(screen.getByRole("button", { name: "loyalty_use" }));
+
+    await waitFor(() =>
+      expect(onApply).toHaveBeenLastCalledWith({ id: "r5", percent: 5, label: "5% off", proof: "P1" }),
+    );
+    expect(sends()).toBe(1);
+  });
+
+  it("goes back to the code flow once the proof has expired", async () => {
+    const user = userEvent.setup();
+    routes({
+      "/api/checkout/loyalty/lookup": () => res({ status: "card", rewards: REWARDS }),
+      "/api/checkout/loyalty/send-code": () => res({ sent: true }),
+      "/api/checkout/loyalty/verify": () => res({ proof: "P1", rewards: REWARDS }),
+    });
+    render(<Harness />);
+    const sends = () =>
+      fetchMock.mock.calls.filter((c) => c[0] === "/api/checkout/loyalty/send-code").length;
+
+    await user.click(await screen.findByRole("button", { name: "loyalty_use" }));
+    await user.type(await screen.findByLabelText("loyalty_code_label"), "123456");
+    await user.click(screen.getByRole("button", { name: "loyalty_confirm" }));
+    await screen.findByText("loyalty_applied");
+    await user.click(screen.getByRole("button", { name: "loyalty_remove" }));
+
+    const later = Date.now() + 15 * 60_000 + 1000;
+    const clock = vi.spyOn(Date, "now").mockReturnValue(later);
+    try {
+      await user.click(screen.getByRole("radio", { name: "5% off" }));
+      await user.click(screen.getByRole("button", { name: "loyalty_use" }));
+      await waitFor(() => expect(sends()).toBe(2));
+      expect(await screen.findByLabelText("loyalty_code_label")).toBeInTheDocument();
+    } finally {
+      clock.mockRestore();
+    }
   });
 
   it("the rendered text never contains a name or stamp count", async () => {
