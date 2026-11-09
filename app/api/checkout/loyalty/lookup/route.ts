@@ -24,7 +24,8 @@ export async function POST(req: Request) {
   let customer;
   try {
     customer = await lookupCustomer(e164(parsed.data.phone), { timeoutMs: 2500 });
-  } catch {
+  } catch (e) {
+    console.error("[loyalty] lookup failed", e);
     return NextResponse.json({ status: "unavailable" });
   }
   if (!customer) return NextResponse.json({ status: "no_card" });

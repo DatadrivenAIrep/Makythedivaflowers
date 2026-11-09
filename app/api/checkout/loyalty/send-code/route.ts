@@ -44,8 +44,10 @@ export async function POST(req: Request) {
     } else {
       await sendSms(phone, body);
     }
-  } catch {
+  } catch (e) {
     // API or Twilio failure: the shopper simply gets no code and can retry.
+    // Log the error only, never the phone or the code.
+    console.error("[loyalty] send-code failed", e);
   }
   return sent;
 }

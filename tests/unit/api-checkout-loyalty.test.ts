@@ -162,6 +162,24 @@ describe("POST /api/checkout/loyalty/send-code", () => {
     expect(sendSms).not.toHaveBeenCalled();
   });
 
+  it("send-code failures are logged without the phone and the response is unchanged", async () => {
+    const err = vi.spyOn(console, "error").mockImplementation(() => {});
+    sendSms.mockRejectedValue(new Error("twilio_not_configured"));
+    const res = await sendCode({ phone: "(516) 555-0100", locale: "es" });
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ sent: true });
+    expect(err).toHaveBeenCalledTimes(1);
+    const args = JSON.stringify(err.mock.calls[0].map((a) => (a instanceof Error ? a.message : a)));
+    expect(args).not.toMatch(/5165550100|516/);
+  });
+
+  it("lookup and verify log API failures", async () => {
+    const err = vi.spyOn(console, "error").mockImplementation(() => {});
+    lookupCustomer.mockRejectedValue(new Error("revoked"));
+    expect(await (await lookup({ phone: "5165550100" })).json()).toEqual({ status: "unavailable" });
+    expect(err).toHaveBeenCalledTimes(1);
+  });
+
   it("send-code does nothing when SMS or the connection is off", async () => {
     smsEnabled.mockReturnValue(false);
     await sendCode({ phone: "5165550100", locale: "es" });

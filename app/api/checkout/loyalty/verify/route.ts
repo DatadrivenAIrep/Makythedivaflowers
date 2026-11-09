@@ -29,7 +29,8 @@ export async function POST(req: Request) {
   try {
     const customer = await lookupCustomer(phone, { timeoutMs: 2500 });
     rewards = customer ? applicableRewards(customer.rewards.available) : [];
-  } catch {
+  } catch (e) {
+    console.error("[loyalty] verify lookup failed", e);
     return unavailable;
   }
   return NextResponse.json({ proof: signProof(phone, rewards), rewards });
