@@ -12,6 +12,16 @@ describe("rewardPercent", () => {
     expect(rewardPercent("100%")).toBeNull();
     expect(rewardPercent("0%")).toBeNull();
   });
+  it("does not read the tail of a longer number as the percent", () => {
+    expect(rewardPercent("12.5%")).toBeNull();
+    expect(rewardPercent("12,5%")).toBeNull();
+    expect(rewardPercent("1015%")).toBeNull();
+    expect(rewardPercent("15%")).toBe(15);
+    expect(rewardPercent("Premio: 15% de descuento")).toBe(15);
+  });
+  it("still counts a decimal percent as a second percent", () => {
+    expect(rewardPercent("10% + 12.5% extra")).toBeNull();
+  });
 });
 
 describe("applicableRewards", () => {

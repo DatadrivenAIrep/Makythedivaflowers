@@ -4,9 +4,12 @@ export type LoyaltyReward = { id: string; percent: number; label: string };
 
 // A reward is a percent discount only when its text holds exactly one "N%"
 // with N between 1 and 99. Anything else (free item, "10% + 5%", 100%) is not applicable.
+// The whole number before the "%" is captured, so "12.5%" and "1015%" are one
+// invalid percent rather than a misread 5% or 15%, and still count as a percent
+// when deciding whether the text holds exactly one.
 export function rewardPercent(text: string): number | null {
-  const matches = [...text.matchAll(/(\d{1,3})\s*%/g)];
-  if (matches.length !== 1) return null;
+  const matches = [...text.matchAll(/([\d.,]*\d)\s*%/g)];
+  if (matches.length !== 1 || !/^\d{1,3}$/.test(matches[0][1])) return null;
   const n = Number(matches[0][1]);
   return n >= 1 && n <= 99 ? n : null;
 }

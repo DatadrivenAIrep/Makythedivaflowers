@@ -113,6 +113,11 @@ describe("enqueueOrderSync", () => {
     expect(row()).toBeUndefined();
   });
 
+  it("skips an order canceled while unpaid whose payment then succeeded", () => {
+    enqueueOrderSync({ ...ORDER, status: "canceled" });
+    expect(row()).toBeUndefined();
+  });
+
   it("keeps one row when called twice", () => {
     enqueueOrderSync(ORDER);
     enqueueOrderSync(ORDER);
@@ -290,6 +295,19 @@ describe("runDuePending", () => {
     expect(notifyMock).toHaveBeenCalledTimes(1);
     expect(notifyMock).toHaveBeenCalledWith(
       "Tarjeta: la orden #1042 no se pudo registrar en 72 horas. — Diva Flowers",
+    );
+  });
+
+  it("tells the owner a reverse row that gave up was not undone", async () => {
+    setup(ORDER);
+    enqueueOrderReverse("do_1");
+    await runSync("do_1"); // the reverse row cancels the stamp, leaving only the reverse due
+    const later = new Date(Date.now() + 73 * 3600_000);
+    expect(await runDuePending(later)).toEqual({ done: 0, pending: 0, failed: 1 });
+    expect(row("do_1", "reverse")!.status).toBe("failed");
+    expect(notifyMock).toHaveBeenCalledTimes(1);
+    expect(notifyMock).toHaveBeenCalledWith(
+      "Tarjeta: la orden #1042 se canceló pero no se pudo revertir en 72 horas. Revísala en el panel de la tarjeta. — Diva Flowers",
     );
   });
 

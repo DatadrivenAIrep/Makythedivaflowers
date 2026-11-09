@@ -98,6 +98,8 @@ async function refFor(orderId: string): Promise<string> {
 export function enqueueOrderSync(order: Order): void {
   try {
     if (!loyaltyEnabled() || order.source !== "web" || order.paymentStatus !== "paid") return;
+    // Canceled while unpaid, then the intent succeeded: nothing would ever reverse the stamp.
+    if (order.status === "canceled") return;
     const now = new Date().toISOString();
     db()
       .prepare(
@@ -250,8 +252,11 @@ export async function runDuePending(now: Date = new Date()): Promise<{ done: num
             .run(now.toISOString(), r.order_id, r.kind);
           if (res.changes > 0) {
             counts.failed++;
+            const ref = await refFor(r.order_id);
             await notifyOwner(
-              `Tarjeta: la orden ${await refFor(r.order_id)} no se pudo registrar en 72 horas. — Diva Flowers`,
+              r.kind === "reverse"
+                ? `Tarjeta: la orden ${ref} se canceló pero no se pudo revertir en 72 horas. Revísala en el panel de la tarjeta. — Diva Flowers`
+                : `Tarjeta: la orden ${ref} no se pudo registrar en 72 horas. — Diva Flowers`,
             );
           }
           continue;
