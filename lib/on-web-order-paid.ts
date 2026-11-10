@@ -2,6 +2,7 @@ import "server-only";
 import { upsertOnOrder, addTag } from "@/lib/customer-storage";
 import { getOrder, updateOrder } from "@/lib/order-storage";
 import { dispatchPaymentConfirmed, windowLabel } from "@/lib/order-dispatch";
+import { scanOrderByIdSafe } from "@/lib/card-dates-scan";
 import { notifyOwner } from "@/lib/notify-owner";
 import { rewardsOnOrderPaid } from "@/lib/promo-rewards";
 import { enqueueOrderSync, runSync } from "@/lib/loyalty-sync";
@@ -67,6 +68,7 @@ export async function onWebOrderPaid(orderId: string): Promise<void> {
 
     const linked: Order = { ...order, customerId: customer.id };
     await updateOrder(linked);
+    scanOrderByIdSafe(linked.id); // the link is written: the order now has a customer to hold the date.
     await dispatchPaymentConfirmed(linked);
 
     // Referral credit and the loyalty reward. Deliberately after the link is

@@ -8,6 +8,7 @@ import { toLogMethod, type PaymentRowInput } from "@/lib/payments-storage";
 import { enqueuePrintJob } from "@/lib/print-queue";
 import { getByPhoneUS, upsertOnOrder } from "@/lib/customer-storage";
 import { rememberRecipientDate } from "@/lib/customer-dates-storage";
+import { scanOrderByIdSafe } from "@/lib/card-dates-scan";
 import { dispatchOrderReceived } from "@/lib/order-dispatch";
 import { validateForRedemption, redeem } from "@/lib/gift-card-storage";
 import { validatePromo, redeemPromo } from "@/lib/promo";
@@ -275,6 +276,11 @@ export async function POST(req: Request) {
       console.error(JSON.stringify({ event: "remember_date_failed", orderId: order.id, error: String(e) }));
     }
   }
+
+  // Read the card message for a birthday or anniversary. After the "remember this
+  // date" block so a ticked date already exists and the card's is a duplicate.
+  // Never throws, and the order is saved, so no transaction is open here.
+  scanOrderByIdSafe(order.id);
 
   const job = await enqueuePrintJob(order);
 

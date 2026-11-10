@@ -16,6 +16,7 @@ import "server-only";
  * Replaying confirmations for months-old orders would be an incident, not a
  * feature. Keep it that way.
  */
+import { scanOrderByIdSafe } from "@/lib/card-dates-scan";
 import { getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import { upsertOnOrder, normalizePhone } from "@/lib/customer-storage";
@@ -131,6 +132,9 @@ export function runBackfill(): BackfillReport {
        FROM customers WHERE phone = ?`,
   );
   const link = db.prepare("UPDATE orders SET customer_id = ? WHERE id = ?");
+  // Orders linked this run. Their cards are read only after the loop: the scan
+  // opens its own BEGIN IMMEDIATE, which cannot nest inside the per-order one.
+  const linkedIds: string[] = [];
   const restoreNewer = db.prepare(
     `UPDATE customers SET
        first_seen_at = ?,
@@ -199,6 +203,7 @@ export function runBackfill(): BackfillReport {
 
       link.run(customer.id, row.id);
       db.exec("COMMIT");
+      linkedIds.push(row.id);
       if (before) report.ordersMerged += 1;
       else report.customersCreated += 1;
     } catch (e) {
@@ -210,6 +215,9 @@ export function runBackfill(): BackfillReport {
       });
     }
   }
+
+  // Every transaction above is closed: read the linked orders' card messages.
+  for (const id of linkedIds) scanOrderByIdSafe(id);
 
   return report;
 }

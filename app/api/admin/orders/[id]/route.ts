@@ -7,6 +7,7 @@ import { getDb } from "@/lib/db";
 import { recentMessagesForOrder } from "@/lib/message-storage";
 import { listOrderHistory } from "@/lib/order-history";
 import { orderBalanceCents } from "@/lib/order-balance";
+import { scanOrderByIdSafe } from "@/lib/card-dates-scan";
 import { editOrder, type OrderEditPatch } from "@/lib/order-edit";
 import { requireAdmin } from "@/lib/admin-auth";
 import { getAccount } from "@/lib/house-account-storage";
@@ -91,6 +92,7 @@ export async function PATCH(
   }
   try {
     const { order, change } = await editOrder(id, parsed.data as OrderEditPatch, "maky");
+    scanOrderByIdSafe(id); // editOrder has returned: its transaction is closed.
     return NextResponse.json({ order, change });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
