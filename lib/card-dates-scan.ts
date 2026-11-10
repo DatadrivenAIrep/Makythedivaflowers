@@ -5,9 +5,9 @@ import "server-only";
 // shop deletes never comes back. Nothing here sends a message.
 import { getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
-import { withTransaction } from "@/lib/db-tx";
-import { NAME_MAX, NAME_PATTERN } from "@/lib/account-dates";
-import { readCard, type CardReading } from "@/lib/card-dates";
+import { inTransaction, withTransaction } from "@/lib/db-tx";
+import { isValidPersonName } from "@/lib/account-dates";
+import { readCard, yearsInRange, type CardReading } from "@/lib/card-dates";
 import type { RelationshipCode } from "@/lib/customer-dates";
 import { addImportantDate, findDateByRelationship, findRecipientDate } from "@/lib/customer-dates-storage";
 import { getCustomerById } from "@/lib/customer-storage";
@@ -244,7 +244,16 @@ export function scanOrderByIdSafe(orderId: string): void {
 
 // ── History, preview and review ─────────────────────────────────────────────
 
-export type CardScanReport = { scanned: number; saved: number; review: number; duplicate: number; excluded: number; none: number };
+export type CardScanReport = {
+  scanned: number;
+  saved: number;
+  review: number;
+  duplicate: number;
+  excluded: number;
+  none: number;
+  /** Orders that could not be read this time; they get no row and are retried next run. */
+  failed: number;
+};
 export type CardScanPreview = { pendingOrders: number; wouldSave: number; wouldReview: number; unlinkedOrders: number };
 export type CardReview = {
   orderId: string;
@@ -269,6 +278,11 @@ const READABLE_STATUS = "o.fulfillment_status NOT IN ('canceled', 'failed')";
  * Reads every order not read yet, oldest first: a card, a customer that still
  * exists, not canceled or failed. Each order commits on its own (or joins the
  * caller's transaction). Counts only orders that were actually read.
+ *
+ * An order that throws is logged by id, counted in `failed` and given no scan
+ * row, so the next run tries it again; the rest of the history still runs. Its
+ * own transaction rolls its writes back before the catch (inside the preview,
+ * the preview's rollback does).
  */
 export function scanPendingCardDates(now: Date = new Date()): CardScanReport {
   runMigrations();
@@ -281,9 +295,16 @@ export function scanPendingCardDates(now: Date = new Date()): CardScanReport {
         ORDER BY o.created_at, o.id`,
     )
     .all() as OrderRow[];
-  const report: CardScanReport = { scanned: 0, saved: 0, review: 0, duplicate: 0, excluded: 0, none: 0 };
+  const report: CardScanReport = { scanned: 0, saved: 0, review: 0, duplicate: 0, excluded: 0, none: 0, failed: 0 };
   for (const row of rows) {
-    const outcome = scanOrderForDates(rowToOrder(row), now);
+    let outcome: ScanOutcome | null;
+    try {
+      outcome = scanOrderForDates(rowToOrder(row), now);
+    } catch (e) {
+      console.error(JSON.stringify({ event: "card_dates_scan_failed", orderId: row.id, error: safeErrorMessage(e) }));
+      report.failed += 1;
+      continue;
+    }
     if (outcome === null) continue;
     report.scanned += 1;
     report[outcome] += 1;
@@ -304,10 +325,11 @@ class PreviewRollback extends Error {}
 
 /**
  * What scanPendingCardDates would do now, without keeping any of it: the same
- * run inside one transaction that is always rolled back. Call it at top level,
- * never from inside another transaction (the rollback would not happen).
+ * run inside one transaction that is always rolled back. Refuses to run inside
+ * another transaction, where its writes would join that one and survive.
  */
 export function previewCardScan(now: Date = new Date()): CardScanPreview {
+  if (inTransaction()) throw new Error("previewCardScan must not run inside a transaction");
   runMigrations();
   let report: CardScanReport | undefined;
   try {
@@ -372,9 +394,6 @@ export function listCardReviews(): CardReview[] {
   return reviews;
 }
 
-/** Most years each occasion can mean, as the card reader allows. */
-const MAX_YEARS: Record<CardKind, number> = { birthday: 110, anniversary: 80 };
-
 function setOutcome(orderId: string, outcome: "saved" | "duplicate" | "dismissed", dateId: string | null): void {
   getDb()
     .prepare("UPDATE card_date_scans SET outcome = ?, date_id = ? WHERE order_id = ? AND outcome = 'review'")
@@ -403,21 +422,16 @@ export function resolveCardReview(
     }
 
     const name = choice.name?.trim() || undefined;
-    if (name !== undefined && (name.length > NAME_MAX || !NAME_PATTERN.test(name))) return "name_required";
+    if (name !== undefined && !isValidPersonName(name)) return "name_required";
 
     const order = loadOrder(orderId);
     const buyer = order ? buyerOf(order) : null;
     if (!order || !buyer) return "not_found";
 
     const { relationship, years } = cluesOf(readCard(order.fulfillment.cardMessage ?? ""));
-    const inRange = years !== undefined && years >= 1 && years <= MAX_YEARS[choice.kind];
-    const placed = placeCardDate(
-      order,
-      buyer,
-      { kind: choice.kind, relationship, years: inRange ? years : undefined },
-      now,
-      name,
-    );
+    // A review reading allows a birthday's range; the chosen occasion may allow less.
+    const placement = { kind: choice.kind, relationship, years: yearsInRange(years, choice.kind) };
+    const placed = placeCardDate(order, buyer, placement, now, name);
     if (placed.outcome === "review") return "name_required";
     setOutcome(orderId, placed.outcome, placed.outcome === "saved" ? placed.dateId : null);
     return placed.outcome;

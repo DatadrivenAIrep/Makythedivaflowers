@@ -2,6 +2,7 @@ import fs from "node:fs";
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { closeDb, getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
+import { inTransaction, withTransaction } from "@/lib/db-tx";
 import { saveOrder } from "@/lib/order-storage";
 import { addImportantDate, listDatesFor } from "@/lib/customer-dates-storage";
 import type { Order } from "@/types/order";
@@ -93,7 +94,20 @@ const scans = () =>
 
 const scanOf = (orderId: string) => scans().find((s) => s.order_id === orderId);
 
-const EMPTY = { scanned: 0, saved: 0, review: 0, duplicate: 0, excluded: 0, none: 0 };
+const EMPTY = { scanned: 0, saved: 0, review: 0, duplicate: 0, excluded: 0, none: 0, failed: 0 };
+
+/**
+ * A birthday, an order whose stored lines are damaged (they hold its card text,
+ * which JSON.parse quotes in its error), and an anniversary, in that order.
+ */
+async function withDamagedOrder() {
+  const first = await saved();
+  const card = "Feliz cumpleaños, Luz Gómez";
+  const broken = await saved({ fulfillment: delivery(card, { name: "Luz Gómez", phone: "5165550903" }) });
+  getDb().prepare("UPDATE orders SET lines_json = ? WHERE id = ?").run(card, broken.id);
+  const last = await saved({ fulfillment: delivery("Happy anniversary", { name: "Marta Ruiz", phone: "5165550904" }) });
+  return { first, broken, last };
+}
 
 beforeEach(() => {
   vi.stubEnv("SQLITE_FILE", ":memory:");
@@ -111,7 +125,7 @@ afterEach(() => {
 describe("scanPendingCardDates", () => {
   it("runs the history once", async () => {
     await threeOrders();
-    expect(scanPendingCardDates(NOW)).toEqual({ scanned: 3, saved: 1, review: 1, duplicate: 0, excluded: 0, none: 1 });
+    expect(scanPendingCardDates(NOW)).toEqual({ scanned: 3, saved: 1, review: 1, duplicate: 0, excluded: 0, none: 1, failed: 0 });
     expect(scanPendingCardDates(NOW)).toEqual(EMPTY);
     expect(scans()).toHaveLength(3);
     expect(listDatesFor("c1", NOW)).toHaveLength(1);
@@ -141,6 +155,30 @@ describe("scanPendingCardDates", () => {
     expect(scans()).toEqual([]);
     expect(previewCardScan(NOW)).toMatchObject({ pendingOrders: 0, wouldSave: 0, wouldReview: 0 });
   });
+
+  it("one damaged order does not stop the history", async () => {
+    const { first, broken, last } = await withDamagedOrder();
+    const err = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    expect(scanPendingCardDates(NOW)).toEqual({ ...EMPTY, scanned: 2, saved: 2, failed: 1 });
+    expect(scans().map((s) => [s.order_id, s.outcome])).toEqual([
+      [first.id, "saved"],
+      [last.id, "saved"],
+    ]);
+    // No row for the damaged order: the next run tries it again.
+    expect(scanOf(broken.id)).toBeUndefined();
+    expect(listDatesFor("c1", NOW)).toHaveLength(2);
+
+    // The log names the order and never carries the card or the person.
+    expect(err).toHaveBeenCalledTimes(1);
+    expect(err.mock.calls[0]).toHaveLength(1);
+    const line = String(err.mock.calls[0][0]);
+    expect(JSON.parse(line)).toEqual({ event: "card_dates_scan_failed", orderId: broken.id, error: expect.any(String) });
+    for (const fragment of ["Feliz", "cumple", "Luz", "Gómez"]) expect(line).not.toContain(fragment);
+
+    expect(scanPendingCardDates(NOW)).toEqual({ ...EMPTY, failed: 1 });
+    expect(scanOf(broken.id)).toBeUndefined();
+  });
 });
 
 describe("previewCardScan", () => {
@@ -164,11 +202,37 @@ describe("previewCardScan", () => {
     expect(previewCardScan(NOW)).toEqual({ pendingOrders: 0, wouldSave: 0, wouldReview: 0, unlinkedOrders: 1 });
   });
 
-  it("rolls back and rethrows any other error", async () => {
+  it("reads past a damaged order and writes nothing", async () => {
+    await withDamagedOrder();
+    const err = vi.spyOn(console, "error").mockImplementation(() => {});
+    expect(previewCardScan(NOW)).toEqual({ pendingOrders: 2, wouldSave: 2, wouldReview: 0, unlinkedOrders: 0 });
+    expect(err).toHaveBeenCalledTimes(1);
+    expect(scans()).toEqual([]);
+    expect(listDatesFor("c1", NOW)).toEqual([]);
+  });
+
+  it("still rethrows an error outside the per-order reading", async () => {
     await saved();
-    const broken = await saved({ fulfillment: delivery("Happy anniversary") });
-    getDb().prepare("UPDATE orders SET lines_json = 'not json' WHERE id = ?").run(broken.id);
-    expect(() => previewCardScan(NOW)).toThrow(SyntaxError);
+    getDb().exec("DROP TABLE card_date_scans");
+    expect(() => previewCardScan(NOW)).toThrow(/card_date_scans/);
+    // The transaction was closed: a new one can start.
+    expect(inTransaction()).toBe(false);
+    expect(withTransaction(() => "ok")).toBe("ok");
+    expect(listDatesFor("c1", NOW)).toEqual([]);
+  });
+
+  it("refuses to run inside a transaction", async () => {
+    await saved();
+    expect(inTransaction()).toBe(false);
+    let inside: boolean | undefined;
+    expect(() =>
+      withTransaction(() => {
+        inside = inTransaction();
+        return previewCardScan(NOW);
+      }),
+    ).toThrow("previewCardScan must not run inside a transaction");
+    expect(inside).toBe(true);
+    expect(inTransaction()).toBe(false);
     expect(scans()).toEqual([]);
     expect(listDatesFor("c1", NOW)).toEqual([]);
   });

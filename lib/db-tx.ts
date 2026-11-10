@@ -3,6 +3,11 @@ import { getDb } from "@/lib/db";
 
 let depth = 0;
 
+/** True while a withTransaction call is running (its work will join that transaction). */
+export function inTransaction(): boolean {
+  return depth > 0;
+}
+
 /**
  * Run `fn` in one SQLite write transaction. Nested calls join the outer one, so
  * a writer can wrap its own update and still be called from a wider transaction.

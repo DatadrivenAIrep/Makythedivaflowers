@@ -96,7 +96,15 @@ function readRelationship(text: string): RelationshipCode | undefined {
   return undefined;
 }
 
-const inRange = (n: number | undefined, max: number) => (n !== undefined && n >= 1 && n <= max ? n : undefined);
+type CardKind = "birthday" | "anniversary";
+
+/** Most years each occasion can mean: an age up to 110, a marriage up to 80. */
+export const MAX_YEARS: Record<CardKind, number> = { birthday: 110, anniversary: 80 };
+
+/** The years, when they are a plausible age or marriage length for that occasion. */
+export function yearsInRange(n: number | undefined, kind: CardKind): number | undefined {
+  return n !== undefined && n >= 1 && n <= MAX_YEARS[kind] ? n : undefined;
+}
 
 export function readCard(message: string): CardReading {
   const text = normalize(message);
@@ -108,14 +116,15 @@ export function readCard(message: string): CardReading {
   if (!birthday && !anniversary && rawYears === undefined) return { result: "none" };
 
   const relationship = readRelationship(text);
-  const extras = (max: number) => {
-    const years = inRange(rawYears, max);
+  const extras = (kind: CardKind) => {
+    const years = yearsInRange(rawYears, kind);
     return { ...(relationship ? { relationship } : {}), ...(years !== undefined ? { years } : {}) };
   };
 
   if (birthday !== anniversary) {
     const kind = birthday ? "birthday" : "anniversary";
-    return { result: "date", kind, ...extras(birthday ? 110 : 80) };
+    return { result: "date", kind, ...extras(kind) };
   }
-  return { result: "review", ...extras(110) };
+  // Either occasion may be meant: keep any years a birthday could mean (the widest range).
+  return { result: "review", ...extras("birthday") };
 }

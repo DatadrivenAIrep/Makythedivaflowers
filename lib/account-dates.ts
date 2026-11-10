@@ -24,6 +24,11 @@ export const MAX_DATES = 12;
 export const NAME_PATTERN = /^\p{L}[\p{L} .'-]*$/u;
 export const NAME_MAX = 40;
 
+/** A name a date can be saved under: starts with a letter, then letters, spaces, . ' -; at most NAME_MAX. */
+export function isValidPersonName(name: string): boolean {
+  return name.length >= 1 && name.length <= NAME_MAX && NAME_PATTERN.test(name);
+}
+
 export type AccountDate = ImportantDate & { prefs: DatePreferences };
 
 export type AccountDatesView = {
@@ -78,7 +83,7 @@ export function addCustomerDate(
   now: Date = new Date(),
 ): { ok: true; date: ImportantDate; stamp: boolean } | { ok: false; error: "too_many_dates" | "invalid" } {
   const name = input.name.trim();
-  if (name.length < 1 || name.length > NAME_MAX || !NAME_PATTERN.test(name)) return { ok: false, error: "invalid" };
+  if (!isValidPersonName(name)) return { ok: false, error: "invalid" };
   if (!isValidMonthDay(input.month, input.day)) return { ok: false, error: "invalid" };
 
   const created = withTransaction((): ImportantDate | "too_many_dates" => {
