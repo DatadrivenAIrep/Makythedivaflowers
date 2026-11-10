@@ -243,3 +243,20 @@ describe("hasRecentPaidOrder", () => {
     expect(hasRecentPaidOrder("1", NOW)).toBe(false);
   });
 });
+
+describe("fechas leídas de tarjetas", () => {
+  it.each([
+    ["d7", 7, "0"],
+    ["d7", 7, "1"],
+    ["d3", 3, "0"],
+    ["d3", 3, "1"],
+  ] as const)("dueReminders skips card dates in every stage (%s, rewards=%s)", (stage, days, flag) => {
+    vi.stubEnv("DATE_REWARDS_ENABLED", flag);
+    seedCustomer("9");
+    const { month, day } = monthDayIn(days);
+    addImportantDate("9", { kind: "birthday", label: "Ana", month, day, source: "admin" });
+    addImportantDate("9", { kind: "birthday", label: "Beto", month, day, source: "card" });
+    const due = dueReminders({ leadDays: days, stage, now: NOW });
+    expect(due.map((d) => d.label)).toEqual(["Ana"]);
+  });
+});

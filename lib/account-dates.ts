@@ -83,7 +83,8 @@ export function addCustomerDate(
 
   const created = withTransaction((): ImportantDate | "too_many_dates" => {
     const before = listDatesFor(customerId, now);
-    if (before.length >= MAX_DATES) return "too_many_dates";
+    // Dates read from order cards are the florist's notes, not the customer's.
+    if (before.filter((d) => d.source !== "card").length >= MAX_DATES) return "too_many_dates";
     const known = new Set(before.map((d) => d.id));
     const inherited = preferencesForRecipient(customerId, { name });
     const after = addImportantDate(

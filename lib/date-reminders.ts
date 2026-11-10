@@ -55,7 +55,8 @@ export function dueReminders({
               c.name AS customer_name, c.phone, c.locale
          FROM customer_important_dates d
          JOIN customers c ON c.id = d.customer_id
-        WHERE ${channelCondition}
+        WHERE d.source <> 'card' AND
+          ${channelCondition}
           ${stoppedCondition}
           ${kindCondition}
           EXISTS (

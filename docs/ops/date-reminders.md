@@ -37,6 +37,7 @@ from outside instead.
   To do a real dry run without consuming the sends, point the job at a copy of
   the database.
 - **One bad number does not stop the batch.**
+- **Dates read from order cards never get a reminder.** They are the florist's notes about a recipient (`source = 'card'`), not something the customer asked to be reminded of.
 
 ## Checking it ran
 

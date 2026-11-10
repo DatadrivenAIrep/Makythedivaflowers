@@ -166,6 +166,11 @@ describe("promptQuestion", () => {
     const q = promptQuestion(makeOrder(), NOW);
     expect(q).toEqual({ kind: "likes", dateId: d.id, recipientName: "Laura", prefill: null });
   });
+  it("a card date counts as saved for the prompt", () => {
+    addImportantDate("c1", { kind: "birthday", label: "Laura", month: 3, day: 18, source: "card" });
+    const d = findRecipientDate("c1", { name: "Laura" })!;
+    expect(promptQuestion(makeOrder(), NOW)).toEqual({ kind: "likes", dateId: d.id, recipientName: "Laura", prefill: null });
+  });
   it("evitar solo no cuenta como gustos", () => {
     addImportantDate("c1", { kind: "birthday", label: "Laura", month: 3, day: 18 });
     const d = findRecipientDate("c1", { name: "Laura" })!;

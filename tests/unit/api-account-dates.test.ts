@@ -124,6 +124,21 @@ describe("/api/account/dates", () => {
     expect(getDatePreferences(created.id)).toEqual({ flowers: ["roses"], colors: [], avoid: ["lilies"] });
   });
 
+  it("card dates do not count toward the 12", async () => {
+    for (let i = 0; i < 12; i++) {
+      addImportantDate("c1", { kind: "birthday", label: `Tarjeta${i}`, month: 1 + (i % 12), day: 9, source: "card" });
+    }
+    expect((await add({ name: "Propia", month: 2, day: 3 })).status).toBe(200);
+  });
+
+  it("12 customer dates still block a 13th", async () => {
+    for (let i = 0; i < 12; i++) {
+      addImportantDate("c1", { kind: "birthday", label: `Propia${i}`, month: 1 + (i % 12), day: 9, source: "customer" });
+    }
+    const res = await add({ name: "Otra" });
+    expect(res.status).toBe(409);
+  });
+
   it("la fecha 13 da 409 too_many_dates", async () => {
     for (let i = 0; i < 12; i++) {
       expect((await add({ name: "Laura", month: 1 + (i % 12), day: 5 })).status).toBe(200);
