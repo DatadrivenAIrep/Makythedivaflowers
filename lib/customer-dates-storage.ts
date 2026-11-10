@@ -336,3 +336,23 @@ export function findRecipientDate(
   }
   return null;
 }
+
+/**
+ * The customer's saved date of this kind for this relative (e.g. Mom's
+ * birthday), named or not. Oldest first when several match.
+ */
+export function findDateByRelationship(
+  customerId: string,
+  kind: DateKind,
+  relationship: RelationshipCode,
+): ImportantDate | null {
+  runMigrations();
+  const row = getDb()
+    .prepare(
+      `SELECT * FROM customer_important_dates
+       WHERE customer_id = ? AND kind = ? AND relationship = ?
+       ORDER BY created_at, id LIMIT 1`,
+    )
+    .get(customerId, kind, relationship) as DateRow | undefined;
+  return row ? rowToDate(row, new Date()) : null;
+}

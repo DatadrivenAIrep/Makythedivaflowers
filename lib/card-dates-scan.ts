@@ -8,7 +8,7 @@ import { runMigrations } from "@/lib/db-migrate";
 import { withTransaction } from "@/lib/db-tx";
 import { readCard } from "@/lib/card-dates";
 import type { RelationshipCode } from "@/lib/customer-dates";
-import { addImportantDate, findRecipientDate } from "@/lib/customer-dates-storage";
+import { addImportantDate, findDateByRelationship, findRecipientDate } from "@/lib/customer-dates-storage";
 import { getCustomerById } from "@/lib/customer-storage";
 import { rowToOrder, type OrderRow } from "@/lib/order-row";
 import { isSympathyProduct } from "@/lib/product-add-ons";
@@ -106,7 +106,7 @@ function yearFor(day: Day, years: number | undefined): number | undefined {
 /**
  * Step 7: the customer already has this occasion for this person, whatever the
  * day (same rule as rememberRecipientDate). Without a label, the person is the
- * relationship.
+ * relationship: any date of this kind for that relative counts, named or not.
  */
 function isDuplicate(
   customerId: string,
@@ -117,14 +117,8 @@ function isDuplicate(
   if (person.label) {
     return findRecipientDate(customerId, { name: person.label, phone: person.recipientPhone }, [kind]) !== null;
   }
-  const row = getDb()
-    .prepare(
-      `SELECT 1 FROM customer_important_dates
-       WHERE customer_id = ? AND kind = ? AND (label IS NULL OR TRIM(label) = '') AND relationship IS ?
-       LIMIT 1`,
-    )
-    .get(customerId, kind, relationship ?? null);
-  return row !== undefined;
+  // personFor only returns an unnamed person when there is a relationship.
+  return relationship !== undefined && findDateByRelationship(customerId, kind, relationship) !== null;
 }
 
 type Placement = { kind: CardKind; relationship?: RelationshipCode; years?: number };

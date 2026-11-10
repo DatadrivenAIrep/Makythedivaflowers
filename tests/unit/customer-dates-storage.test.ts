@@ -5,6 +5,7 @@ import {
   addImportantDate, removeImportantDate, listDatesFor,
   normalizePreference, addPreference, removePreference,
   listPreferencesFor, listPreferenceValues, listUpcomingOccasions, findRecipientDate,
+  findDateByRelationship,
 } from "@/lib/customer-dates-storage";
 
 const NOW = new Date("2026-07-04T12:00:00Z");
@@ -140,5 +141,23 @@ describe("findRecipientDate / source", () => {
     const dates = addImportantDate("c1", { kind: "birthday", label: "B", month: 8, day: 2, source: "customer" }, NOW);
     expect(dates.find((d) => d.label === "A")?.source).toBe("admin");
     expect(dates.find((d) => d.label === "B")?.source).toBe("customer");
+  });
+});
+
+describe("findDateByRelationship", () => {
+  it("finds the oldest date of that kind and relationship, named or not", () => {
+    seedCustomer("c1", "Ana", "5551");
+    seedCustomer("c2", "Bea", "5552");
+    addImportantDate("c1", { kind: "birthday", month: 8, day: 1, relationship: "madre" }, new Date("2026-05-01T00:00:00Z"));
+    addImportantDate(
+      "c1",
+      { kind: "birthday", label: "Rosa", month: 9, day: 1, relationship: "madre" },
+      new Date("2026-02-01T00:00:00Z"),
+    );
+    addImportantDate("c1", { kind: "birthday", label: "Leo", month: 10, day: 1 }, NOW);
+    expect(findDateByRelationship("c1", "birthday", "madre")?.label).toBe("Rosa");
+    expect(findDateByRelationship("c1", "anniversary", "madre")).toBeNull();
+    expect(findDateByRelationship("c1", "birthday", "padre")).toBeNull();
+    expect(findDateByRelationship("c2", "birthday", "madre")).toBeNull();
   });
 });

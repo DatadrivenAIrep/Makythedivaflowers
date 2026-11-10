@@ -279,6 +279,22 @@ describe("scanOrderForDates", () => {
     expect(listDatesFor("c2", NOW)).toHaveLength(2);
   });
 
+  it("a card without a name is a duplicate of a named date for the same relative", async () => {
+    // "Rosa Pérez · madre" is saved first.
+    const named = await saved();
+    expect(scanOrderForDates(named, NOW)).toBe("saved");
+
+    // Later the buyer sends one to herself: no name to go by, same relationship.
+    const unnamed = await saved({
+      fulfillment: delivery("Happy birthday Mom", { name: "Ana", phone: BUYER_PHONE, date: "2026-04-02" }),
+    });
+    expect(scanOrderForDates(unnamed, NOW)).toBe("duplicate");
+    const dates = listDatesFor("c1", NOW);
+    expect(dates).toHaveLength(1);
+    expect(dates[0]).toMatchObject({ label: "Rosa Pérez", relationship: "madre", sourceOrderId: named.id });
+    expect(scans().find((s) => s.order_id === unnamed.id)).toMatchObject({ outcome: "duplicate", date_id: null });
+  });
+
   it("reads an order once, even after the date is deleted", async () => {
     const o = await saved();
     expect(scanOrderForDates(o, NOW)).toBe("saved");
@@ -294,11 +310,14 @@ describe("scanOrderForDates", () => {
 describe("scanOrderByIdSafe", () => {
   it("two scans of the same order leave one date", async () => {
     const o = await saved();
+    const err = vi.spyOn(console, "error").mockImplementation(() => {});
     scanOrderByIdSafe(o.id);
     scanOrderByIdSafe(o.id);
     expect(listDatesFor("c1")).toHaveLength(1);
     expect(scans()).toHaveLength(1);
     expect(scans()[0].outcome).toBe("saved");
+    // The second scan stops at "already read", not at a swallowed key conflict.
+    expect(err).not.toHaveBeenCalled();
   });
 
   it("never throws on an unknown order", () => {
