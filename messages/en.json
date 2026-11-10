@@ -460,7 +460,8 @@
     "title": "Your account.",
     "tabs": {
       "sign-in": "Sign in",
-      "orders": "Orders"
+      "orders": "Orders",
+      "dates": "My dates"
     },
     "orders": {
       "empty_title": "No orders yet.",
@@ -489,6 +490,34 @@
       "order_again": "Send this again",
       "delivered_to": "Delivered to",
       "picked_up": "Picked up at the shop"
+    },
+    "dates": {
+      "title": "My dates",
+      "intro": "The dates of the people you send flowers to, so we can remind you ahead of time and get their favorites right.",
+      "empty": "No dates saved yet.",
+      "list_label": "Saved dates",
+      "likes_line": "Likes: {likes}",
+      "add_likes": "Add likes",
+      "edit_likes": "Edit likes",
+      "save_likes": "Save likes",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "delete_label": "Delete {name}'s date",
+      "add_title": "Add a date",
+      "name_label": "Whose is it?",
+      "name_hint": "Just the name, up to 40 letters.",
+      "add": "Add",
+      "suggestions_title": "You might want to save",
+      "suggestion_line": "{name}: {date}. You've sent flowers around then for several years.",
+      "suggestion_save": "Save",
+      "suggestion_dismiss": "Not now",
+      "sms_title": "Text reminders",
+      "sms_on": "On: we text you before these dates and send you offers.",
+      "sms_remove": "Turn off",
+      "sms_off_note": "Permission removed. We won't text you reminders or offers anymore.",
+      "error": "Couldn't save. Try again.",
+      "error_invalid": "Check the name and the date.",
+      "error_too_many": "You already have {max} dates. Delete one to add another."
     }
   },
   "journal": {

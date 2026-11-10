@@ -460,7 +460,8 @@
     "title": "Tu cuenta.",
     "tabs": {
       "sign-in": "Iniciar sesión",
-      "orders": "Pedidos"
+      "orders": "Pedidos",
+      "dates": "Mis fechas"
     },
     "orders": {
       "empty_title": "Sin pedidos aún.",
@@ -489,6 +490,34 @@
       "order_again": "Mandar esto otra vez",
       "delivered_to": "Entregado en",
       "picked_up": "Recogido en la tienda"
+    },
+    "dates": {
+      "title": "Mis fechas",
+      "intro": "Las fechas de las personas a las que les mandas flores, para avisarte antes y acertar con lo que les gusta.",
+      "empty": "Todavía no hay fechas guardadas.",
+      "list_label": "Fechas guardadas",
+      "likes_line": "Le gustan: {likes}",
+      "add_likes": "Agregar gustos",
+      "edit_likes": "Editar gustos",
+      "save_likes": "Guardar gustos",
+      "cancel": "Cancelar",
+      "delete": "Borrar",
+      "delete_label": "Borrar la fecha de {name}",
+      "add_title": "Agregar fecha",
+      "name_label": "¿De quién es?",
+      "name_hint": "Solo el nombre, hasta 40 letras.",
+      "add": "Agregar",
+      "suggestions_title": "Quizás quieras guardar",
+      "suggestion_line": "{name}: {date}. Le has mandado flores por esos días varios años.",
+      "suggestion_save": "Guardar",
+      "suggestion_dismiss": "Ahora no",
+      "sms_title": "Avisos por SMS",
+      "sms_on": "Activos: te avisamos antes de estas fechas y te mandamos ofertas.",
+      "sms_remove": "Quitar",
+      "sms_off_note": "Quitamos el permiso. Ya no te mandaremos avisos ni ofertas.",
+      "error": "No se pudo guardar. Intenta de nuevo.",
+      "error_invalid": "Revisa el nombre y la fecha.",
+      "error_too_many": "Ya tienes {max} fechas. Borra una para agregar otra."
     }
   },
   "journal": {

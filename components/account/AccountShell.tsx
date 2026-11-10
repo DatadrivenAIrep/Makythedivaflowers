@@ -1,6 +1,7 @@
 // components/account/AccountShell.tsx
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { dateRewardsEnabled } from "@/lib/date-rewards-flags";
 import type { Locale } from "@/types/locale";
 
 // No sign-up tab: sign-in is by SMS code and the account exists once you have
@@ -8,16 +9,19 @@ import type { Locale } from "@/types/locale";
 const TABS = [
   { key: "sign-in", href: (locale: Locale) => `/${locale}/account` },
   { key: "orders", href: (locale: Locale) => `/${locale}/account/orders` },
+  { key: "dates", href: (locale: Locale) => `/${locale}/account/dates` },
 ] as const;
 
 type Props = {
   locale: Locale;
-  activeTab: "sign-in" | "orders";
+  activeTab: "sign-in" | "orders" | "dates";
   children: React.ReactNode;
 };
 
 export async function AccountShell({ locale, activeTab, children }: Props) {
   const t = await getTranslations({ locale, namespace: "account" });
+  // "Mis fechas" exists only while the dates feature is on; off, the account looks as before.
+  const tabs = TABS.filter((tab) => tab.key !== "dates" || dateRewardsEnabled());
   return (
     <main className="pt-32 pb-24">
       <div className="mx-auto max-w-2xl px-4 sm:px-6">
@@ -26,7 +30,7 @@ export async function AccountShell({ locale, activeTab, children }: Props) {
           <h1 className="mt-3 font-display text-5xl text-ink leading-[0.95] tracking-tighter">{t("title")}</h1>
         </header>
         <nav className="flex gap-1 mb-10 border-b border-ink/10">
-          {TABS.map((tab) => (
+          {tabs.map((tab) => (
             <Link
               key={tab.key}
               href={tab.href(locale)}
