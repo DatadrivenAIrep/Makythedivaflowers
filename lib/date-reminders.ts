@@ -59,7 +59,7 @@ export function dueReminders({
   }>;
 
   const alreadySent = getDb().prepare(
-    "SELECT 1 FROM date_reminder_sends WHERE date_id = ? AND occurrence_date = ? LIMIT 1",
+    "SELECT 1 FROM date_reminder_sends WHERE date_id = ? AND occurrence_date = ? AND stage = 'd7' LIMIT 1",
   );
 
   return rows
@@ -86,8 +86,8 @@ export function markReminderSent(dateId: string, occurrenceDate: string): void {
   runMigrations();
   getDb()
     .prepare(
-      `INSERT OR IGNORE INTO date_reminder_sends (date_id, occurrence_date, sent_at)
-       VALUES (?, ?, ?)`,
+      `INSERT OR IGNORE INTO date_reminder_sends (date_id, occurrence_date, stage, status, recorded_at)
+       VALUES (?, ?, 'd7', 'sent', ?)`,
     )
     .run(dateId, occurrenceDate, new Date().toISOString());
 }
