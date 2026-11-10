@@ -12,6 +12,9 @@ import { findAccountForCustomer } from "@/lib/house-account-storage";
 import { recipientsForSender, type KnownRecipient } from "@/lib/recipient-history";
 import { suggestRecipientDates, type DateSuggestion } from "@/lib/date-suggestions";
 import { listDismissedSuggestions } from "@/lib/customer-dates-storage";
+import { getDatePreferences } from "@/lib/date-preferences-storage";
+import { dateRewardsEnabled } from "@/lib/date-rewards-flags";
+import type { AccountDate } from "@/lib/account-dates";
 import type { Order } from "@/types/order";
 
 export type CustomerProfileData = {
@@ -21,7 +24,9 @@ export type CustomerProfileData = {
   orders: Order[];
   recipients: KnownRecipient[];
   dateSuggestions: DateSuggestion[];
-  dates: ImportantDate[];
+  dates: AccountDate[];
+  /** Feature flag: the panel only renders source, likes and avoid when on. */
+  showDatePrefs: boolean;
   preferences: PreferencesMap;
   houseAccount?: { id: string; name: string };
 };
@@ -53,7 +58,8 @@ export function getCustomerProfile(id: string, now: Date = new Date()): Customer
     orders,
     recipients,
     dateSuggestions: dateSuggestionsFor(id, recipients, dates),
-    dates,
+    dates: dates.map((d) => ({ ...d, prefs: getDatePreferences(d.id) })),
+    showDatePrefs: dateRewardsEnabled(),
     preferences: listPreferencesFor(id),
     ...(acct ? { houseAccount: { id: acct.id, name: acct.name } } : {}),
   };

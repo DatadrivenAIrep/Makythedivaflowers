@@ -9,16 +9,22 @@ import {
   type DateKind,
 } from "@/lib/customer-dates";
 import type { ImportantDate } from "@/lib/customer-dates-storage";
+import type { AccountDate } from "@/lib/account-dates";
+import { FLOWERS } from "@/lib/date-preference-options";
+import { PreferencePicker, type PickerValue } from "@/components/dates/PreferencePicker";
+import type { Locale } from "@/types/locale";
 import type { DateSuggestion } from "@/lib/date-suggestions";
 
 type Props = {
   customerId: string;
-  initial: ImportantDate[];
+  initial: Array<ImportantDate | AccountDate>;
+  /** Date rewards flag: shows origin, likes and avoid, and lets staff edit them. */
+  showPrefs?: boolean;
   locale: string;
   /** Yearly patterns found in the order history (lib/date-suggestions). */
   initialSuggestions?: DateSuggestion[];
   /** Lets the profile keep other sections (e.g. the recipients list) in sync. */
-  onDatesChange?: (dates: ImportantDate[]) => void;
+  onDatesChange?: (dates: AccountDate[]) => void;
 };
 
 const KIND_ICONS: Record<DateKind, typeof Cake> = {
@@ -28,13 +34,23 @@ const KIND_ICONS: Record<DateKind, typeof Cake> = {
 };
 const MONTHS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-export default function ImportantDates({ customerId, initial, locale, initialSuggestions = [], onDatesChange }: Props) {
+const EMPTY_PREFS: PickerValue = { flowers: [], colors: [], avoid: [] };
+
+export default function ImportantDates({ customerId, initial, locale, initialSuggestions = [], onDatesChange, showPrefs = false }: Props) {
   const t = useTranslations("admin_customers");
+  const tp = useTranslations("date_prefs");
   const [dates, setDatesState] = useState<ImportantDate[]>(initial);
+  // Server lists after add/remove carry no likes; keep what we know by date id.
+  const [prefs, setPrefs] = useState<Record<string, PickerValue>>(() => {
+    const m: Record<string, PickerValue> = {};
+    for (const d of initial) if ("prefs" in d) m[d.id] = d.prefs;
+    return m;
+  });
+  const [editing, setEditing] = useState<{ id: string; value: PickerValue } | null>(null);
   const [suggestions, setSuggestions] = useState<DateSuggestion[]>(initialSuggestions);
   function setDates(next: ImportantDate[]) {
     setDatesState(next);
-    onDatesChange?.(next);
+    onDatesChange?.(next.map((d) => ({ ...d, prefs: prefs[d.id] ?? EMPTY_PREFS })));
   }
   const [kind, setKind] = useState<DateKind>("birthday");
   const [month, setMonth] = useState(1);
@@ -102,6 +118,28 @@ export default function ImportantDates({ customerId, initial, locale, initialSug
     }
   }
 
+  async function savePrefs() {
+    if (!editing) return;
+    try {
+      const res = await fetch(`/api/admin/customers/${customerId}/dates/${editing.id}/preferences`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editing.value),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      const out = (await res.json()) as { prefs: PickerValue };
+      setPrefs((p) => ({ ...p, [editing.id]: out.prefs }));
+      setEditing(null);
+      setError(false);
+    } catch {
+      setError(true);
+    }
+  }
+
+  function codeLabel(c: string): string {
+    return (FLOWERS as readonly string[]).includes(c) ? tp(`flowers.${c}`) : tp(`avoid.${c}`);
+  }
+
   async function remove(id: string) {
     try {
       const res = await fetch(`/api/admin/customers/${customerId}/dates`, {
@@ -130,12 +168,15 @@ export default function ImportantDates({ customerId, initial, locale, initialSug
           {dates.map((d) => {
             const Icon = KIND_ICONS[d.kind];
             return (
-              <div
-                key={d.id}
-                className="flex flex-wrap items-center gap-2 rounded border border-ink/10 px-3 py-2 text-sm"
-              >
+              <div key={d.id} className="rounded border border-ink/10 px-3 py-2 text-sm">
+              <div className="flex flex-wrap items-center gap-2">
                 <Icon size={16} weight="bold" className="text-rouge" />
                 <span className="font-semibold">{t(`date_kind_${d.kind}`)}</span>
+                {showPrefs && (
+                  <span className="rounded-full bg-ink/5 px-2 py-0.5 text-xs text-ink/70">
+                    {d.source === "customer" ? t("date_source_customer") : t("date_source_panel")}
+                  </span>
+                )}
                 {d.label && <span className="text-ink/70">· {d.label}</span>}
                 <span className="text-ink/70">
                   · {formatMonthDay(d.month, d.day, locale)}
@@ -156,6 +197,56 @@ export default function ImportantDates({ customerId, initial, locale, initialSug
                 >
                   <X size={14} weight="bold" />
                 </button>
+              </div>
+              {showPrefs && (() => {
+                const p = prefs[d.id] ?? EMPTY_PREFS;
+                const likes = [
+                  ...p.flowers.map((c) => tp(`flowers.${c}`)),
+                  ...p.colors.map((c) => tp(`colors.${c}`)),
+                ];
+                return (
+                  <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+                    {likes.length > 0 && <span className="text-ink/70">{likes.join(", ")}</span>}
+                    {p.avoid.length > 0 && (
+                      <span className="font-semibold text-amber-800">
+                        {t("date_prefs_avoid", { items: p.avoid.map(codeLabel).join(", ") })}
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setEditing({ id: d.id, value: p })}
+                      className="underline hover:text-ink"
+                    >
+                      {t("date_prefs_edit")}
+                    </button>
+                  </div>
+                );
+              })()}
+              {showPrefs && editing?.id === d.id && (
+                <div className="mt-2 rounded border border-ink/10 p-2">
+                  <PreferencePicker
+                    value={editing.value}
+                    onChange={(value) => setEditing({ id: d.id, value })}
+                    locale={locale as Locale}
+                  />
+                  <div className="mt-2 flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => void savePrefs()}
+                      className="min-h-9 rounded-lg bg-rouge px-3 text-xs text-bone"
+                    >
+                      {t("date_prefs_save")}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditing(null)}
+                      className="min-h-9 rounded-lg border border-ink/20 px-3 text-xs"
+                    >
+                      {t("date_prefs_cancel")}
+                    </button>
+                  </div>
+                </div>
+              )}
               </div>
             );
           })}

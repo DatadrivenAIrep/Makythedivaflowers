@@ -1605,7 +1605,8 @@
     "payment_status_deposit": "Depósito",
     "card_terminal": "Terminal",
     "ach": "ACH",
-    "repeat_order": "Repetir orden"
+    "repeat_order": "Repetir orden",
+    "avoid_warning": "Evitar: {items}"
   },
   "admin_ledger": {
     "date": "Fecha",
@@ -1855,7 +1856,25 @@
     "edit_name": "Editar nombre",
     "name_label": "Nombre",
     "save_name": "Guardar nombre",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "date_source_customer": "Cliente",
+    "date_source_panel": "Panel",
+    "date_prefs_avoid": "Evitar: {items}",
+    "date_prefs_edit": "Editar gustos",
+    "date_prefs_save": "Guardar",
+    "date_prefs_cancel": "Cancelar",
+    "results_title": "Resultados de las fechas (últimos 90 días)",
+    "results_customers": "Clientes con fechas propias",
+    "results_with_sms": "Con permiso de SMS",
+    "results_stops": "STOP en 48 h",
+    "results_stage": "Mensaje",
+    "results_sent": "Enviados",
+    "results_skipped": "Omitidos",
+    "results_orders": "Pedidos",
+    "results_revenue": "Ventas",
+    "results_stage_d7": "Aviso de 7 días",
+    "results_stage_d3": "Oferta de 3 días",
+    "results_note": "Coincidencia, no causa"
   },
   "admin_accounts": {
     "account_search_placeholder": "Buscar cuenta por nombre",

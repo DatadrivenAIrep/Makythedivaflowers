@@ -42,8 +42,10 @@ const profile: CustomerProfileData = {
   tags: ["boda"],
   dates: [
     { id: "cid_1", customerId: "c1", kind: "birthday", label: "Mamá Rosa", month: 3, day: 21, recipientPhone: "5165559999", source: "admin",
-      createdAt: "2026-01-01T00:00:00Z", next: { date: "2027-03-21", daysUntil: 100 } },
+      createdAt: "2026-01-01T00:00:00Z", next: { date: "2027-03-21", daysUntil: 100 },
+      prefs: { flowers: [], colors: [], avoid: [] } },
   ],
+  showDatePrefs: false,
   preferences: { favorite_flower: [], favorite_color: [], dislike: [] },
   orders: [order],
   dateSuggestions: [

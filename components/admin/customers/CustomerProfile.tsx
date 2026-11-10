@@ -354,6 +354,7 @@ export default function CustomerProfile({ locale, initial, suggestions }: Props)
       <ImportantDates
         customerId={customer.id}
         initial={data.dates}
+        showPrefs={data.showDatePrefs}
         initialSuggestions={data.dateSuggestions ?? []}
         locale={locale}
         onDatesChange={(dates) => setData((d) => ({ ...d, dates }))}

@@ -7,6 +7,7 @@ import {
   Package, Truck, XCircle, X, Pencil, Eye, Printer, FileText, Storefront, Star, HandCoins, Buildings, PaperPlaneTilt,
 } from "@phosphor-icons/react/dist/ssr";
 import { useTranslations, useLocale } from "next-intl";
+import { FLOWERS } from "@/lib/date-preference-options";
 import { formatDateTime } from "@/lib/format-datetime";
 import { formatClock } from "@/lib/format";
 import { resolveLine } from "./product-lookup";
@@ -36,6 +37,7 @@ type DetailResp = {
   digitalCard?: DigitalCardView | null;
   houseAccount?: { id: string; name: string; billed: boolean } | null;
   deliveryPhoto?: { url: string; createdAt: string } | null;
+  recipientAvoid?: string[];
 };
 
 type Props = {
@@ -59,11 +61,13 @@ const SETTLE_METHOD_LABEL: Record<SettleMethod, string> = {
   ach: "settle_method_ach", check: "settle_method_check",
 };
 
+const FLOWER_CODES: readonly string[] = FLOWERS;
 const FULFILLMENT_STEP_IDS = ["pending", "preparing", "out-for-delivery", "delivered"] as const;
 
 export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props) {
   const t = useTranslations("admin_orders");
   const td = useTranslations("admin_deliver");
+  const tp = useTranslations("date_prefs");
   const locale = useLocale();
   const [data, setData] = useState<DetailResp | null>(null);
   const [noteDraft, setNoteDraft] = useState("");
@@ -223,6 +227,9 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
   // A pending order with money already collected carries a deposit.
   const hasDeposit = order.paymentStatus === "pending" && amountPaid > 0;
   const onAccount = !!order.houseAccountId;
+  const avoidText = (data.recipientAvoid ?? [])
+    .map((c) => (FLOWER_CODES.includes(c) ? tp(`flowers.${c}`) : tp(`avoid.${c}`)))
+    .join(", ");
 
   return (
     <div className="fixed inset-0 z-20 flex" onClick={onClose}>
@@ -336,6 +343,11 @@ export default function OrderDetailDrawer({ orderId, onClose, onChanged }: Props
           {f.recipient.phone && (
             <div className="mt-1 text-xs text-ink/60">
               {t("recipient_phone")}: <a href={`tel:${f.recipient.phone}`} className="underline">{f.recipient.phone}</a>
+            </div>
+          )}
+          {avoidText && (
+            <div role="alert" className="mt-2 rounded bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-900">
+              {t("avoid_warning", { items: avoidText })}
             </div>
           )}
           {f.cardMessage && (

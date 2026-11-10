@@ -12,6 +12,8 @@ import { requireAdmin } from "@/lib/admin-auth";
 import { getAccount } from "@/lib/house-account-storage";
 import { entriesForOrder } from "@/lib/house-account-ledger";
 import { digitalCardView, getByOrder as getDigitalCard } from "@/lib/digital-cards";
+import { preferencesForRecipient } from "@/lib/date-preferences-storage";
+import { dateRewardsEnabled } from "@/lib/date-rewards-flags";
 import { getDeliveryPhoto, deliveryPhotoPath } from "@/lib/delivery-photos";
 
 export const runtime = "nodejs";
@@ -34,8 +36,13 @@ export async function GET(
     ? { id: acct.id, name: acct.name, billed: entriesForOrder(id).some((e) => e.kind === "charge" && !!e.statementId) }
     : null;
   const photo = getDeliveryPhoto(id);
+  const recipient = order.fulfillment.recipient;
+  const recipientAvoid =
+    dateRewardsEnabled() && order.customerId && recipient.name
+      ? (preferencesForRecipient(order.customerId, { name: recipient.name, phone: recipient.phone })?.avoid ?? [])
+      : [];
   return NextResponse.json({
-    order, customer, messages, history, houseAccount,
+    order, customer, messages, history, houseAccount, recipientAvoid,
     balanceCents: orderBalanceCents(order),
     digitalCard: card ? digitalCardView(card) : null,
     deliveryPhoto: photo ? { url: deliveryPhotoPath(photo.token), createdAt: photo.createdAt } : null,

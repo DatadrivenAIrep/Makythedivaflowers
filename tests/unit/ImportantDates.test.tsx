@@ -1,9 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import esMessages from "@/messages/es.json";
 import ImportantDates from "@/components/admin/customers/ImportantDates";
 import type { ImportantDate } from "@/lib/customer-dates-storage";
+import type { AccountDate } from "@/lib/account-dates";
 
 function wrap(ui: React.ReactNode) {
   return render(
@@ -42,5 +43,33 @@ describe("ImportantDates", () => {
   it("shows the empty state when there are no dates", () => {
     wrap(<ImportantDates customerId="c1" initial={[]} locale="es" />);
     expect(screen.getByText("Sin fechas guardadas.")).toBeDefined();
+  });
+});
+
+describe("ImportantDates gustos", () => {
+  const withPrefs: AccountDate[] = [
+    { ...dates[0], source: "customer", prefs: { flowers: ["roses"], colors: ["pink"], avoid: ["strong_scent"] } },
+    { ...dates[1], prefs: { flowers: [], colors: [], avoid: [] } },
+  ];
+
+  it("muestra origen, gustos y evitar con la variable encendida", () => {
+    wrap(<ImportantDates customerId="c1" initial={withPrefs} locale="es" showPrefs />);
+    expect(screen.getByText("Cliente")).toBeDefined();
+    expect(screen.getByText("Panel")).toBeDefined();
+    expect(screen.getByText(/Rosas/)).toBeDefined();
+    expect(screen.getByText(/Evitar: Perfume fuerte/)).toBeDefined();
+  });
+
+  it("sin la variable se ve como antes", () => {
+    wrap(<ImportantDates customerId="c1" initial={withPrefs} locale="es" />);
+    expect(screen.queryByText("Cliente")).toBeNull();
+    expect(screen.queryByText(/Evitar:/)).toBeNull();
+    expect(screen.queryByText("Editar gustos")).toBeNull();
+  });
+
+  it("Editar abre el selector", () => {
+    wrap(<ImportantDates customerId="c1" initial={withPrefs} locale="es" showPrefs />);
+    fireEvent.click(screen.getAllByText("Editar gustos")[0]);
+    expect(screen.getByRole("group", { name: "Flores favoritas" })).toBeDefined();
   });
 });

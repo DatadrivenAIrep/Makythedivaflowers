@@ -1605,7 +1605,8 @@
     "payment_status_deposit": "Deposit",
     "card_terminal": "Card terminal",
     "ach": "ACH",
-    "repeat_order": "Repeat order"
+    "repeat_order": "Repeat order",
+    "avoid_warning": "Avoid: {items}"
   },
   "admin_ledger": {
     "date": "Date",
@@ -1855,7 +1856,25 @@
     "edit_name": "Edit name",
     "name_label": "Name",
     "save_name": "Save name",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "date_source_customer": "Customer",
+    "date_source_panel": "Panel",
+    "date_prefs_avoid": "Avoid: {items}",
+    "date_prefs_edit": "Edit likes",
+    "date_prefs_save": "Save",
+    "date_prefs_cancel": "Cancel",
+    "results_title": "Date results (last 90 days)",
+    "results_customers": "Customers with their own dates",
+    "results_with_sms": "With SMS permission",
+    "results_stops": "STOP within 48 h",
+    "results_stage": "Message",
+    "results_sent": "Sent",
+    "results_skipped": "Skipped",
+    "results_orders": "Orders",
+    "results_revenue": "Sales",
+    "results_stage_d7": "7-day reminder",
+    "results_stage_d3": "3-day offer",
+    "results_note": "Coincidence, not cause"
   },
   "admin_accounts": {
     "account_search_placeholder": "Search account by name",
