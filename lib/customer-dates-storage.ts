@@ -281,6 +281,18 @@ export function rememberRecipientDate(
 }
 
 /**
+ * The one rule for "same person": same last 10 digits of the phone, or the same
+ * label ignoring case and edge spaces.
+ */
+export function recipientMatcher(who: { name: string; phone?: string }) {
+  const phone = (who.phone ?? "").replace(/\D/g, "").slice(-10);
+  const name = who.name.trim().toLowerCase();
+  return (row: { label: string | null; recipient_phone: string | null }): boolean =>
+    (phone.length === 10 && row.recipient_phone === phone) ||
+    (name !== "" && (row.label ?? "").trim().toLowerCase() === name);
+}
+
+/**
  * The customer's saved date for this person: same last 10 digits of the phone, or
  * the same label (ignoring case and edge spaces). Oldest first when several match.
  */
@@ -290,17 +302,14 @@ export function findRecipientDate(
   kinds?: DateKind[],
 ): ImportantDate | null {
   runMigrations();
-  const phone = (who.phone ?? "").replace(/\D/g, "").slice(-10);
-  const name = who.name.trim().toLowerCase();
+  const matches = recipientMatcher(who);
   const rows = getDb()
     .prepare("SELECT * FROM customer_important_dates WHERE customer_id = ? ORDER BY created_at, id")
     .all(customerId) as DateRow[];
   const now = new Date();
   for (const r of rows) {
     if (kinds && !kinds.includes(r.kind as DateKind)) continue;
-    const byPhone = phone.length === 10 && r.recipient_phone === phone;
-    const byName = name !== "" && (r.label ?? "").trim().toLowerCase() === name;
-    if (byPhone || byName) return rowToDate(r, now);
+    if (matches(r)) return rowToDate(r, now);
   }
   return null;
 }

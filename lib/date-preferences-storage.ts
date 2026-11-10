@@ -1,6 +1,7 @@
 import "server-only";
 import { getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
+import { recipientMatcher } from "@/lib/customer-dates-storage";
 import { withTransaction } from "@/lib/db-tx";
 import {
   AVOID, COLORS, FLOWERS,
@@ -68,8 +69,7 @@ export function preferencesForRecipient(
   who: { name: string; phone?: string },
 ): DatePreferences | null {
   runMigrations();
-  const phone = (who.phone ?? "").replace(/\D/g, "").slice(-10);
-  const name = who.name.trim().toLowerCase();
+  const matches = recipientMatcher(who);
   const rows = getDb()
     .prepare(
       `SELECT id, label, recipient_phone FROM customer_important_dates
@@ -77,10 +77,7 @@ export function preferencesForRecipient(
     )
     .all(customerId) as Array<{ id: string; label: string | null; recipient_phone: string | null }>;
   for (const r of rows) {
-    const same =
-      (phone.length === 10 && r.recipient_phone === phone) ||
-      (name !== "" && (r.label ?? "").trim().toLowerCase() === name);
-    if (!same) continue;
+    if (!matches(r)) continue;
     const prefs = getDatePreferences(r.id);
     if (prefs.flowers.length || prefs.colors.length || prefs.avoid.length) return prefs;
   }
