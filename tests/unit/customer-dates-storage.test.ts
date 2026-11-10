@@ -4,7 +4,7 @@ import { runMigrations } from "@/lib/db-migrate";
 import {
   addImportantDate, removeImportantDate, listDatesFor,
   normalizePreference, addPreference, removePreference,
-  listPreferencesFor, listPreferenceValues, listUpcomingOccasions,
+  listPreferencesFor, listPreferenceValues, listUpcomingOccasions, findRecipientDate,
 } from "@/lib/customer-dates-storage";
 
 const NOW = new Date("2026-07-04T12:00:00Z");
@@ -113,5 +113,32 @@ describe("listUpcomingOccasions", () => {
     addImportantDate("c1", { kind: "birthday", ...monthDayIn(3) }, NOW);
     addImportantDate("c2", { kind: "birthday", ...monthDayIn(3) }, NOW);
     expect(listUpcomingOccasions(7, NOW).map((o) => o.customerName)).toEqual(["Ana", "Zoe"]);
+  });
+});
+
+describe("findRecipientDate / source", () => {
+  it("finds by last 10 digits and by label ignoring case and edge spaces", () => {
+    seedCustomer("c1", "Ana", "5551");
+    addImportantDate("c1", { kind: "birthday", label: "Mamá", month: 8, day: 1, recipientPhone: "3001234567" }, NOW);
+    expect(findRecipientDate("c1", { name: "x", phone: "+57 300 123 4567" })?.label).toBe("Mamá");
+    expect(findRecipientDate("c1", { name: "  mamá " })?.label).toBe("Mamá");
+    expect(findRecipientDate("c1", { name: "Otra", phone: "3009999999" })).toBeNull();
+    expect(findRecipientDate("c1", { name: "mamá" }, ["anniversary"])).toBeNull();
+    expect(findRecipientDate("c1", { name: "mamá" }, ["birthday"])).not.toBeNull();
+  });
+
+  it("returns the oldest when several match", () => {
+    seedCustomer("c1", "Ana", "5551");
+    addImportantDate("c1", { kind: "anniversary", label: "Mamá", month: 9, day: 1 }, new Date("2026-05-01T00:00:00Z"));
+    addImportantDate("c1", { kind: "birthday", label: "mamá", month: 8, day: 1 }, new Date("2026-02-01T00:00:00Z"));
+    expect(findRecipientDate("c1", { name: "Mamá" })?.kind).toBe("birthday");
+  });
+
+  it("stores source 'customer' when asked and 'admin' by default", () => {
+    seedCustomer("c1", "Ana", "5551");
+    addImportantDate("c1", { kind: "birthday", label: "A", month: 8, day: 1 }, NOW);
+    const dates = addImportantDate("c1", { kind: "birthday", label: "B", month: 8, day: 2, source: "customer" }, NOW);
+    expect(dates.find((d) => d.label === "A")?.source).toBe("admin");
+    expect(dates.find((d) => d.label === "B")?.source).toBe("customer");
   });
 });

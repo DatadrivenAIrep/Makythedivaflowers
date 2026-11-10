@@ -2411,5 +2411,32 @@
     "sales_pending": "Still to collect",
     "history_title": "History",
     "history_empty": "No closes saved yet."
+  },
+  "date_prefs": {
+    "flowers": {
+      "roses": "Roses",
+      "hydrangeas": "Hydrangeas",
+      "peonies": "Peonies",
+      "tulips": "Tulips",
+      "sunflowers": "Sunflowers",
+      "orchids": "Orchids",
+      "lilies": "Lilies",
+      "carnations": "Carnations",
+      "gerberas": "Gerberas",
+      "lisianthus": "Lisianthus"
+    },
+    "colors": {
+      "red": "Red",
+      "pink": "Pink",
+      "white": "White",
+      "lavender": "Lavender",
+      "yellow": "Yellow",
+      "orange": "Orange",
+      "pastel": "Pastel"
+    },
+    "avoid": {
+      "strong_scent": "Strong scent",
+      "heavy_pollen": "Lots of pollen"
+    }
   }
 }

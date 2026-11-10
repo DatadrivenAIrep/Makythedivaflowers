@@ -16,12 +16,12 @@ function wrap(ui: React.ReactNode) {
 const dates: ImportantDate[] = [
   {
     id: "d1", customerId: "c1", kind: "birthday", label: "esposa María",
-    month: 3, day: 15, createdAt: "2026-07-01T00:00:00Z",
+    month: 3, day: 15, source: "admin", createdAt: "2026-07-01T00:00:00Z",
     next: { date: "2027-03-15", daysUntil: 23 },
   },
   {
     id: "d2", customerId: "c1", kind: "anniversary",
-    month: 7, day: 4, year: 2010, createdAt: "2026-07-01T00:00:00Z",
+    month: 7, day: 4, year: 2010, source: "admin", createdAt: "2026-07-01T00:00:00Z",
     next: { date: "2026-07-04", daysUntil: 0 },
   },
 ];

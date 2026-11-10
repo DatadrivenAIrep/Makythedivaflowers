@@ -1,6 +1,7 @@
 import "server-only";
 import { getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
+import { withTransaction } from "@/lib/db-tx";
 import {
   nextOccurrence,
   PREFERENCE_KINDS,
@@ -8,6 +9,8 @@ import {
   type NextOccurrence,
   type PreferenceKind,
 } from "@/lib/customer-dates";
+
+export type DateSource = "admin" | "customer";
 
 export type ImportantDate = {
   id: string;
@@ -19,6 +22,7 @@ export type ImportantDate = {
   year?: number;
   /** Last 10 digits of the recipient this date belongs to, when it came from an order. */
   recipientPhone?: string;
+  source: DateSource;
   createdAt: string;
   next: NextOccurrence;
 };
@@ -45,6 +49,7 @@ type DateRow = {
   day: number;
   year: number | null;
   recipient_phone: string | null;
+  source: string;
   created_at: string;
 };
 
@@ -62,6 +67,7 @@ function rowToDate(r: DateRow, now: Date): ImportantDate {
     day: r.day,
     year: r.year ?? undefined,
     recipientPhone: r.recipient_phone ?? undefined,
+    source: r.source === "customer" ? "customer" : "admin",
     createdAt: r.created_at,
     next: nextOccurrence(r.month, r.day, now),
   };
@@ -74,6 +80,8 @@ export type ImportantDateInput = {
   day: number;
   year?: number;
   recipientPhone?: string;
+  /** Who saved it: the shop (default) or the customer themselves. */
+  source?: DateSource;
 };
 
 export function addImportantDate(
@@ -84,8 +92,8 @@ export function addImportantDate(
   runMigrations();
   getDb()
     .prepare(
-      `INSERT INTO customer_important_dates (id, customer_id, kind, label, month, day, year, recipient_phone, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO customer_important_dates (id, customer_id, kind, label, month, day, year, recipient_phone, source, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
     .run(
       newId(),
@@ -96,6 +104,7 @@ export function addImportantDate(
       input.day,
       input.year ?? null,
       input.recipientPhone || null,
+      input.source ?? "admin",
       now.toISOString(),
     );
   return listDatesFor(customerId, now);
@@ -107,9 +116,15 @@ export function removeImportantDate(
   now: Date = new Date(),
 ): ImportantDate[] {
   runMigrations();
-  getDb()
-    .prepare("DELETE FROM customer_important_dates WHERE customer_id = ? AND id = ?")
-    .run(customerId, dateId);
+  const db = getDb();
+  withTransaction(() => {
+    const owned = db
+      .prepare("SELECT 1 FROM customer_important_dates WHERE customer_id = ? AND id = ?")
+      .get(customerId, dateId);
+    if (!owned) return;
+    db.prepare("DELETE FROM date_preferences WHERE date_id = ?").run(dateId);
+    db.prepare("DELETE FROM customer_important_dates WHERE customer_id = ? AND id = ?").run(customerId, dateId);
+  });
   return listDatesFor(customerId, now);
 }
 
@@ -255,11 +270,7 @@ export function rememberRecipientDate(
   const name = input.recipientName.trim();
   if (!m || !name) return false;
   const phone = (input.recipientPhone ?? "").replace(/\D/g, "").slice(-10);
-  const already = listDatesFor(customerId, now).some(
-    (d) =>
-      d.kind === input.kind &&
-      ((phone.length === 10 && d.recipientPhone === phone) || (d.label ?? "").trim().toLowerCase() === name.toLowerCase()),
-  );
+  const already = findRecipientDate(customerId, { name, phone }, [input.kind]) !== null;
   if (already) return false;
   addImportantDate(
     customerId,
@@ -267,4 +278,29 @@ export function rememberRecipientDate(
     now,
   );
   return true;
+}
+
+/**
+ * The customer's saved date for this person: same last 10 digits of the phone, or
+ * the same label (ignoring case and edge spaces). Oldest first when several match.
+ */
+export function findRecipientDate(
+  customerId: string,
+  who: { name: string; phone?: string },
+  kinds?: DateKind[],
+): ImportantDate | null {
+  runMigrations();
+  const phone = (who.phone ?? "").replace(/\D/g, "").slice(-10);
+  const name = who.name.trim().toLowerCase();
+  const rows = getDb()
+    .prepare("SELECT * FROM customer_important_dates WHERE customer_id = ? ORDER BY created_at, id")
+    .all(customerId) as DateRow[];
+  const now = new Date();
+  for (const r of rows) {
+    if (kinds && !kinds.includes(r.kind as DateKind)) continue;
+    const byPhone = phone.length === 10 && r.recipient_phone === phone;
+    const byName = name !== "" && (r.label ?? "").trim().toLowerCase() === name;
+    if (byPhone || byName) return rowToDate(r, now);
+  }
+  return null;
 }

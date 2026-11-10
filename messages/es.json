@@ -2411,5 +2411,32 @@
     "sales_pending": "Por cobrar",
     "history_title": "Historial",
     "history_empty": "Todavía no hay cierres guardados."
+  },
+  "date_prefs": {
+    "flowers": {
+      "roses": "Rosas",
+      "hydrangeas": "Hortensias",
+      "peonies": "Peonías",
+      "tulips": "Tulipanes",
+      "sunflowers": "Girasoles",
+      "orchids": "Orquídeas",
+      "lilies": "Lirios",
+      "carnations": "Claveles",
+      "gerberas": "Gerberas",
+      "lisianthus": "Lisianthus"
+    },
+    "colors": {
+      "red": "Rojo",
+      "pink": "Rosa",
+      "white": "Blanco",
+      "lavender": "Lavanda",
+      "yellow": "Amarillo",
+      "orange": "Naranja",
+      "pastel": "Pastel"
+    },
+    "avoid": {
+      "strong_scent": "Perfume fuerte",
+      "heavy_pollen": "Mucho polen"
+    }
   }
 }
