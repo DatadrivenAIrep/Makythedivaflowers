@@ -106,15 +106,20 @@ export function DatePromptCard({ orderId, locale }: Props) {
   }
 
   const name = question.recipientName;
+  // Only flowers or colors earn the likes reward; "avoid" alone or nothing never does.
+  const earnsLikes = prefs.flowers.length > 0 || prefs.colors.length > 0;
   const rewardLine =
-    reward === null
-      ? t("promise")
-      : reward.kind === "stamp"
-        ? t("reward_stamp")
-        : t(question.kind === "date" ? "reward_date" : "reward_likes", { reward: reward.reward });
+    question.kind === "likes" && !earnsLikes
+      ? null
+      : reward === null
+        ? t("promise")
+        : reward.kind === "stamp"
+          ? t("reward_stamp")
+          : t(question.kind === "date" ? "reward_date" : "reward_likes", { reward: reward.reward });
   const monthFmt = new Intl.DateTimeFormat(locale, { month: "long" });
   const maxDay = month ? DAYS_IN_MONTH[month - 1] : 31;
-  const canSave = question.kind === "likes" || (month > 0 && day > 0);
+  const hasPrefs = prefs.flowers.length + prefs.colors.length + prefs.avoid.length > 0;
+  const canSave = question.kind === "likes" ? hasPrefs : month > 0 && day > 0;
   const field = "rounded-lg border border-ink/20 bg-bone px-3 py-2 text-sm text-ink";
 
   return (
@@ -178,7 +183,7 @@ export function DatePromptCard({ orderId, locale }: Props) {
         <PreferencePicker value={prefs} onChange={setPrefs} locale={locale} />
       )}
 
-      <p className="text-sm text-rouge">{rewardLine}</p>
+      {rewardLine && <p className="text-sm text-rouge">{rewardLine}</p>}
 
       {permission === "none" && (
         <div className="space-y-1">

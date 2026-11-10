@@ -79,8 +79,37 @@ describe("DatePromptCard", () => {
   it("usa el texto de premio de gustos en la pregunta de gustos", async () => {
     mockFetch({ status: 200, body: prompt({ question: LIKES_Q }) });
     renderCard();
-    await screen.findByText("Guárdalo y llévate 15% en tu próxima compra");
+    const favorites = await screen.findByRole("group", { name: "Flores favoritas" });
     expect(screen.getByText("¿Qué le gusta?")).toBeTruthy();
+    expect(screen.queryByText(/llévate/)).toBeNull();
+    fireEvent.click(within(favorites).getByRole("button", { name: "Rosas" }));
+    expect(screen.getByText("Guárdalo y llévate 15% en tu próxima compra")).toBeTruthy();
+  });
+
+  it("gustos: Guardar sigue apagado con el selector vacío", async () => {
+    mockFetch({ status: 200, body: prompt({ question: LIKES_Q }) });
+    renderCard();
+    const save = (await screen.findByRole("button", { name: "Guardar" })) as HTMLButtonElement;
+    expect(save.disabled).toBe(true);
+    expect(screen.queryByText("Te avisamos antes para que no se te pase.")).toBeNull();
+  });
+
+  it("gustos: solo 'evitar' no promete premio pero deja guardar", async () => {
+    const fetchMock = mockFetch(
+      { status: 200, body: prompt({ question: LIKES_Q }) },
+      { status: 200, body: { ok: true, permission: "none", stamp: false } },
+    );
+    renderCard();
+    const avoid = await screen.findByRole("group", { name: "Mejor evitar" });
+    fireEvent.click(within(avoid).getByRole("button", { name: "Mucho polen" }));
+    expect(screen.queryByText(/llévate/)).toBeNull();
+    expect(screen.queryByText("Gana 1 sello")).toBeNull();
+    expect(screen.queryByText("Te avisamos antes para que no se te pase.")).toBeNull();
+    const save = screen.getByRole("button", { name: "Guardar" }) as HTMLButtonElement;
+    expect(save.disabled).toBe(false);
+    fireEvent.click(save);
+    await screen.findByText("Listo. Lo tendremos en cuenta.");
+    expect(JSON.parse(fetchMock.mock.calls[1][1].body).avoid).toEqual(["heavy_pollen"]);
   });
 
   it("la casilla empieza sin marcar y no aparece con permiso", async () => {
