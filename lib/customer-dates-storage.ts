@@ -3,14 +3,16 @@ import { getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import { withTransaction } from "@/lib/db-tx";
 import {
+  isRelationshipCode,
   nextOccurrence,
   PREFERENCE_KINDS,
   type DateKind,
   type NextOccurrence,
   type PreferenceKind,
+  type RelationshipCode,
 } from "@/lib/customer-dates";
 
-export type DateSource = "admin" | "customer";
+export type DateSource = "admin" | "customer" | "card";
 
 export type ImportantDate = {
   id: string;
@@ -23,6 +25,12 @@ export type ImportantDate = {
   /** Last 10 digits of the recipient this date belongs to, when it came from an order. */
   recipientPhone?: string;
   source: DateSource;
+  /** Who the person is to the buyer (e.g. madre), when read from a card message. */
+  relationship?: RelationshipCode;
+  /** The order whose card message this date was read from. */
+  sourceOrderId?: string;
+  /** Short number of that order, when it still exists. */
+  sourceOrderNumber?: number;
   createdAt: string;
   next: NextOccurrence;
 };
@@ -50,6 +58,9 @@ type DateRow = {
   year: number | null;
   recipient_phone: string | null;
   source: string;
+  relationship?: string | null;
+  source_order_id?: string | null;
+  source_order_number?: number | null;
   created_at: string;
 };
 
@@ -67,7 +78,10 @@ function rowToDate(r: DateRow, now: Date): ImportantDate {
     day: r.day,
     year: r.year ?? undefined,
     recipientPhone: r.recipient_phone ?? undefined,
-    source: r.source === "customer" ? "customer" : "admin",
+    source: r.source === "customer" || r.source === "card" ? r.source : "admin",
+    relationship: isRelationshipCode(r.relationship) ? r.relationship : undefined,
+    sourceOrderId: r.source_order_id ?? undefined,
+    sourceOrderNumber: r.source_order_number ?? undefined,
     createdAt: r.created_at,
     next: nextOccurrence(r.month, r.day, now),
   };
@@ -82,6 +96,8 @@ export type ImportantDateInput = {
   recipientPhone?: string;
   /** Who saved it: the shop (default) or the customer themselves. */
   source?: DateSource;
+  relationship?: RelationshipCode;
+  sourceOrderId?: string;
 };
 
 export function addImportantDate(
@@ -92,8 +108,8 @@ export function addImportantDate(
   runMigrations();
   getDb()
     .prepare(
-      `INSERT INTO customer_important_dates (id, customer_id, kind, label, month, day, year, recipient_phone, source, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO customer_important_dates (id, customer_id, kind, label, month, day, year, recipient_phone, source, relationship, source_order_id, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
     .run(
       newId(),
@@ -105,6 +121,8 @@ export function addImportantDate(
       input.year ?? null,
       input.recipientPhone || null,
       input.source ?? "admin",
+      input.relationship ?? null,
+      input.sourceOrderId ?? null,
       now.toISOString(),
     );
   return listDatesFor(customerId, now);
@@ -131,7 +149,12 @@ export function removeImportantDate(
 export function listDatesFor(customerId: string, now: Date = new Date()): ImportantDate[] {
   runMigrations();
   const rows = getDb()
-    .prepare("SELECT * FROM customer_important_dates WHERE customer_id = ?")
+    .prepare(
+      `SELECT d.*, o.order_number AS source_order_number
+       FROM customer_important_dates d
+       LEFT JOIN orders o ON o.id = d.source_order_id
+       WHERE d.customer_id = ?`,
+    )
     .all(customerId) as DateRow[];
   return rows
     .map((r) => rowToDate(r, now))

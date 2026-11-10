@@ -5,6 +5,19 @@
 export type DateKind = "birthday" | "anniversary" | "custom";
 export type PreferenceKind = "favorite_flower" | "favorite_color" | "dislike";
 
+export type RelationshipCode =
+  | "madre" | "padre" | "esposa" | "esposo" | "hija" | "hijo" | "hermana"
+  | "hermano" | "abuela" | "abuelo" | "tia" | "tio" | "novia" | "novio";
+
+export const RELATIONSHIP_CODES: readonly RelationshipCode[] = [
+  "madre", "padre", "esposa", "esposo", "hija", "hijo", "hermana",
+  "hermano", "abuela", "abuelo", "tia", "tio", "novia", "novio",
+];
+
+export function isRelationshipCode(v: unknown): v is RelationshipCode {
+  return typeof v === "string" && (RELATIONSHIP_CODES as readonly string[]).includes(v);
+}
+
 export const DATE_KINDS: readonly DateKind[] = ["birthday", "anniversary", "custom"];
 export const PREFERENCE_KINDS: readonly PreferenceKind[] = [
   "favorite_flower",
