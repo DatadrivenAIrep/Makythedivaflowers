@@ -83,7 +83,7 @@ function cluster(days: Day[]): Day[][] {
   return groups;
 }
 
-function inHoliday(month: number, day: number): boolean {
+export function inHoliday(month: number, day: number): boolean {
   return HOLIDAY_WINDOWS.some((w) => w.month === month && day >= w.from && day <= w.to);
 }
 

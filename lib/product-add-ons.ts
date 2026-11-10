@@ -35,7 +35,7 @@ export type UniversalAddOnId = (typeof UNIVERSAL_ADD_ON_IDS)[number];
  */
 const SYMPATHY_ALLOWED = new Set<UniversalAddOnId>(["x-card-premium"]);
 
-function isSympathy(product: Product): boolean {
+export function isSympathyProduct(product: Product): boolean {
   return (
     product.category === "sympathy" ||
     (product.occasions.length > 0 && product.occasions.every((o) => o === "sympathy"))
@@ -55,7 +55,7 @@ export function addOnsForProduct(product: Product): ProductAddOn[] {
 
   const own = product.addOns ?? [];
   const ownIds = new Set(own.map((a) => a.id));
-  const sympathy = isSympathy(product);
+  const sympathy = isSympathyProduct(product);
 
   const universal = UNIVERSAL_ADD_ON_IDS.filter(
     (id) =>
