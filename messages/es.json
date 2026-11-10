@@ -2438,5 +2438,32 @@
       "strong_scent": "Perfume fuerte",
       "heavy_pollen": "Mucho polen"
     }
+  },
+  "date_prompt": {
+    "eyebrow": "Para que no se te pase",
+    "date_title": "¿Quieres que te recordemos una fecha importante de {name}?",
+    "kind_birthday": "Cumpleaños",
+    "kind_anniversary": "Aniversario",
+    "day": "Día",
+    "month": "Mes",
+    "likes_eyebrow": "Para acertar con {name}",
+    "likes_title": "¿Qué le gusta?",
+    "flowers_label": "Flores favoritas",
+    "colors_label": "Colores",
+    "avoid_label": "Mejor evitar",
+    "consent_label": "Avísame por SMS de esta fecha y envíame ofertas",
+    "consent_fine": "Al marcar la casilla, aceptas recibir mensajes de texto automatizados y recurrentes con avisos y ofertas de Diva Flowers a este número. El consentimiento no es condición de compra. Pueden aplicar tarifas de mensajes y datos. La frecuencia varía. Responde STOP para cancelar, HELP para ayuda.",
+    "stopped_note": "Para recibir avisos, envía START a nuestro número.",
+    "reward_date": "Guarda esta fecha y llévate {reward} en tu próxima compra",
+    "reward_likes": "Guárdalo y llévate {reward} en tu próxima compra",
+    "reward_stamp": "Gana 1 sello",
+    "promise": "Te avisamos antes para que no se te pase.",
+    "save": "Guardar",
+    "dismiss": "No, gracias",
+    "saved_sms": "Listo. Te avisaremos antes de la fecha.",
+    "saved_no_sms": "Listo. Guardamos la fecha, pero sin permiso de SMS no te avisaremos.",
+    "saved_likes": "Listo. Lo tendremos en cuenta.",
+    "saved_stamp": "Tu sello va en camino a tu tarjeta.",
+    "error": "No se pudo guardar. Intenta de nuevo."
   }
 }

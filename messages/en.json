@@ -2438,5 +2438,32 @@
       "strong_scent": "Strong scent",
       "heavy_pollen": "Lots of pollen"
     }
+  },
+  "date_prompt": {
+    "eyebrow": "So you never miss it",
+    "date_title": "Want us to remind you of an important date for {name}?",
+    "kind_birthday": "Birthday",
+    "kind_anniversary": "Anniversary",
+    "day": "Day",
+    "month": "Month",
+    "likes_eyebrow": "To get it right for {name}",
+    "likes_title": "What do they like?",
+    "flowers_label": "Favorite flowers",
+    "colors_label": "Colors",
+    "avoid_label": "Best to avoid",
+    "consent_label": "Text me about this date and send me offers",
+    "consent_fine": "By checking the box, you agree to receive recurring automated texts with reminders and offers from Diva Flowers at this number. Consent is not a condition of purchase. Msg & data rates may apply. Message frequency varies. Reply STOP to cancel, HELP for help.",
+    "stopped_note": "To get reminders, text START to our number.",
+    "reward_date": "Save this date and get {reward} off your next order",
+    "reward_likes": "Save it and get {reward} off your next order",
+    "reward_stamp": "Earn 1 stamp",
+    "promise": "We'll remind you ahead of time.",
+    "save": "Save",
+    "dismiss": "No, thanks",
+    "saved_sms": "Done. We'll text you before the date.",
+    "saved_no_sms": "Done. We saved the date, but without SMS permission we won't text you.",
+    "saved_likes": "Done. We'll keep it in mind.",
+    "saved_stamp": "Your stamp is on its way to your card.",
+    "error": "Couldn't save. Try again."
   }
 }

@@ -8,6 +8,8 @@ import { ProductImage } from "@/components/product/ProductImage";
 import { formatMoneyCents, formatPhoneUS, formatDeliveryWindow } from "@/lib/format";
 import { Button } from "@/components/ui/Button";
 import { ReciprocityCard } from "@/components/conversion/ReciprocityCard";
+import { DatePromptCard } from "@/components/checkout/DatePromptCard";
+import { dateRewardsEnabled } from "@/lib/date-rewards-flags";
 import { grantReferralCode } from "@/lib/promo-grants";
 import { hasDigitalCard } from "@/lib/digital-card-offer";
 import type { Order } from "@/types/order";
@@ -127,6 +129,11 @@ export async function ConfirmationView({ order, locale }: { order: Order; locale
           </Link>
         </Button>
       </footer>
+      {dateRewardsEnabled() && (
+        <section className="mt-8">
+          <DatePromptCard orderId={order.id} locale={locale} />
+        </section>
+      )}
       <section className="mt-8">
         <ReciprocityCard order={order} locale={locale} referralCode={referralCode} />
       </section>
