@@ -27,11 +27,16 @@ export type DueReminder = {
   daysUntil: number;
 };
 
+export type ReminderStage = "d7" | "d3";
+export type SkipReason = "recent_order" | "daily_cap" | "21610";
+
 export function dueReminders({
   leadDays,
+  stage = "d7",
   now = new Date(),
 }: {
   leadDays: number;
+  stage?: ReminderStage;
   now?: Date;
 }): DueReminder[] {
   runMigrations();
@@ -40,6 +45,10 @@ export function dueReminders({
   const channelCondition = dateRewardsEnabled()
     ? ""
     : "(c.messaging_channel IS NULL OR c.messaging_channel <> 'none') AND";
+  // Once the feature is on, a number that already replied STOP is left alone.
+  const stoppedCondition = dateRewardsEnabled() ? "c.sms_stopped_at IS NULL AND" : "";
+  // The 3-day sales text is for birthdays and anniversaries only.
+  const kindCondition = stage === "d3" ? "d.kind IN ('birthday', 'anniversary') AND" : "";
   const rows = getDb()
     .prepare(
       `SELECT d.id AS date_id, d.customer_id, d.kind, d.label, d.month, d.day,
@@ -47,6 +56,8 @@ export function dueReminders({
          FROM customer_important_dates d
          JOIN customers c ON c.id = d.customer_id
         WHERE ${channelCondition}
+          ${stoppedCondition}
+          ${kindCondition}
           EXISTS (
                 SELECT 1 FROM customer_tags t
                  WHERE t.customer_id = c.id AND t.tag = 'sms-marketing'
@@ -65,7 +76,7 @@ export function dueReminders({
   }>;
 
   const alreadySent = getDb().prepare(
-    "SELECT 1 FROM date_reminder_sends WHERE date_id = ? AND occurrence_date = ? AND stage = 'd7' LIMIT 1",
+    "SELECT 1 FROM date_reminder_sends WHERE date_id = ? AND occurrence_date = ? AND stage = ? LIMIT 1",
   );
 
   return rows
@@ -74,7 +85,7 @@ export function dueReminders({
       return { r, next };
     })
     .filter(({ next }) => next.daysUntil === leadDays)
-    .filter(({ r, next }) => !alreadySent.get(r.date_id, next.date))
+    .filter(({ r, next }) => !alreadySent.get(r.date_id, next.date, stage))
     .map(({ r, next }) => ({
       dateId: r.date_id,
       customerId: r.customer_id,
@@ -88,14 +99,41 @@ export function dueReminders({
     }));
 }
 
-export function markReminderSent(dateId: string, occurrenceDate: string): void {
+/** Records a send or a skip for one stage of one occurrence; recording twice is harmless. */
+export function recordReminder(
+  dateId: string,
+  occurrenceDate: string,
+  stage: ReminderStage,
+  status: "sent" | "skipped",
+  skipReason?: SkipReason,
+): void {
   runMigrations();
   getDb()
     .prepare(
-      `INSERT OR IGNORE INTO date_reminder_sends (date_id, occurrence_date, stage, status, recorded_at)
-       VALUES (?, ?, 'd7', 'sent', ?)`,
+      `INSERT OR IGNORE INTO date_reminder_sends (date_id, occurrence_date, stage, status, skip_reason, recorded_at)
+       VALUES (?, ?, ?, ?, ?, ?)`,
     )
-    .run(dateId, occurrenceDate, new Date().toISOString());
+    .run(dateId, occurrenceDate, stage, status, skipReason ?? null, new Date().toISOString());
+}
+
+export function markReminderSent(dateId: string, occurrenceDate: string): void {
+  recordReminder(dateId, occurrenceDate, "d7", "sent");
+}
+
+/** A paid, non-canceled order in the last `days` days: no sales text on top of a fresh purchase. */
+export function hasRecentPaidOrder(customerId: string, now: Date, days = 7): boolean {
+  runMigrations();
+  const since = new Date(now.getTime() - days * 86400_000).toISOString();
+  return Boolean(
+    getDb()
+      .prepare(
+        `SELECT 1 FROM orders
+          WHERE customer_id = ? AND payment_status = 'paid'
+            AND fulfillment_status != 'canceled' AND created_at >= ?
+          LIMIT 1`,
+      )
+      .get(customerId, since),
+  );
 }
 
 function firstName(full: string): string {

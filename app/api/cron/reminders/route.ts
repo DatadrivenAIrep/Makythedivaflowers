@@ -1,17 +1,49 @@
 import { NextResponse } from "next/server";
-import { dueReminders, markReminderSent, renderReminder } from "@/lib/date-reminders";
-import { sendSms } from "@/lib/twilio-server";
+import {
+  dueReminders,
+  hasRecentPaidOrder,
+  recordReminder,
+  renderReminder,
+  type DueReminder,
+  type ReminderStage,
+} from "@/lib/date-reminders";
+import { renderSaleReminder } from "@/lib/date-sale-message";
+import { getDatePreferences } from "@/lib/date-preferences-storage";
+import { dateRewardsEnabled, d3RemindersEnabled } from "@/lib/date-rewards-flags";
+import { lookupCustomer, loyaltyEnabled } from "@/lib/loyalty-client";
+import { applicableRewards } from "@/lib/loyalty-rewards";
+import { removeTag, updateCustomer } from "@/lib/customer-storage";
+import { markSmsStopped } from "@/lib/promo-consent";
+import { sendSms, e164 } from "@/lib/twilio-server";
 import { twilioSmsEnabled, twilioDryRun } from "@/lib/twilio-config";
 
 export const runtime = "nodejs";
 // Never cached: the answer depends on today's date and on what has been sent.
 export const dynamic = "force-dynamic";
 
-/** How many days before the date the reminder goes out. */
-const LEAD_DAYS = 7;
+/** How many days before the date each reminder goes out. */
+const LEAD_DAYS: Record<ReminderStage, number> = { d7: 7, d3: 3 };
+
+function isCode21610(e: unknown): boolean {
+  return typeof e === "object" && e !== null && (e as { code?: number }).code === 21610;
+}
+
+/** Best card discount for this customer, or null on any failure, a disabled card or no reward. */
+async function bestRewardPercent(phone: string): Promise<number | null> {
+  if (!loyaltyEnabled()) return null;
+  try {
+    const card = await lookupCustomer(e164(phone), { timeoutMs: 5000 });
+    if (!card) return null;
+    const percents = applicableRewards(card.rewards.available).map((r) => r.percent);
+    return percents.length ? Math.max(...percents) : null;
+  } catch {
+    return null;
+  }
+}
 
 /**
- * Sends the "your mother's birthday is in a week" texts.
+ * Sends the "your mother's birthday is coming" texts: the 3-day sales text first
+ * (when switched on), then the 7-day reminder.
  *
  * Driven by an external cron (see docs/ops/date-reminders.md) rather than a
  * timer inside the app, because this deploys to a single Node process that
@@ -19,7 +51,7 @@ const LEAD_DAYS = 7;
  * nobody would notice until a customer mentioned it.
  *
  * Safe to call more than once a day: `dueReminders` excludes anything already
- * recorded for that occurrence, and each send is recorded immediately.
+ * recorded for that occurrence and stage, and each result is recorded immediately.
  */
 export async function POST(req: Request) {
   const secret = process.env.CRON_SECRET;
@@ -32,26 +64,82 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const due = dueReminders({ leadDays: LEAD_DAYS });
+  const now = new Date();
   const dry = twilioDryRun() || !twilioSmsEnabled();
+  const d3On = d3RemindersEnabled();
+  // One date text per customer per run, but only once the new features are on:
+  // with both flags off the loop behaves exactly as it always has.
+  const capOn = d3On || dateRewardsEnabled();
+  const written = new Set<string>();
 
+  let total = 0;
   let sent = 0;
   let failed = 0;
-  for (const r of due) {
-    const body = renderReminder(r, r.locale);
+  let skipped = 0;
+
+  // Returns true when the text went out (or counted as sent in a dry run).
+  async function send(r: DueReminder, stage: ReminderStage, body: string) {
     try {
       if (!dry) await sendSms(r.phone, body);
       // Recorded even in a dry run: a dry run that leaves everything "due"
       // would text the whole list the moment SMS is switched on.
-      markReminderSent(r.dateId, r.occurrenceDate);
+      recordReminder(r.dateId, r.occurrenceDate, stage, "sent");
+      written.add(r.customerId);
       sent += 1;
     } catch (e) {
-      // One bad number must not stop the rest of the batch.
+      if (isCode21610(e)) {
+        updateCustomer(r.customerId, { messagingChannel: "none" });
+        removeTag(r.customerId, "sms-marketing");
+        markSmsStopped(r.customerId);
+        recordReminder(r.dateId, r.occurrenceDate, stage, "skipped", "21610");
+        skipped += 1;
+        return;
+      }
+      // One bad number must not stop the rest of the batch; stays due for the next run.
       failed += 1;
       console.error("[reminders] send failed", r.customerId, e);
     }
   }
 
-  console.log(JSON.stringify({ event: "date_reminders_run", due: due.length, sent, failed, dry }));
-  return NextResponse.json({ due: due.length, sent, failed, dryRun: dry });
+  if (d3On) {
+    const due = dueReminders({ leadDays: LEAD_DAYS.d3, stage: "d3", now });
+    total += due.length;
+    for (const r of due) {
+      if (r.kind === "custom") continue; // dueReminders already excludes these
+      if (hasRecentPaidOrder(r.customerId, now)) {
+        recordReminder(r.dateId, r.occurrenceDate, "d3", "skipped", "recent_order");
+        skipped += 1;
+        continue;
+      }
+      if (written.has(r.customerId)) {
+        recordReminder(r.dateId, r.occurrenceDate, "d3", "skipped", "daily_cap");
+        skipped += 1;
+        continue;
+      }
+      const rewardPercent = await bestRewardPercent(r.phone);
+      const body = renderSaleReminder({
+        customerName: r.customerName,
+        kind: r.kind,
+        label: r.label,
+        locale: r.locale,
+        prefs: getDatePreferences(r.dateId),
+        rewardPercent,
+      });
+      await send(r, "d3", body);
+    }
+  }
+
+  const due7 = dueReminders({ leadDays: LEAD_DAYS.d7, stage: "d7", now });
+  total += due7.length;
+  for (const r of due7) {
+    if (capOn && written.has(r.customerId)) {
+      recordReminder(r.dateId, r.occurrenceDate, "d7", "skipped", "daily_cap");
+      skipped += 1;
+      continue;
+    }
+    await send(r, "d7", renderReminder(r, r.locale));
+  }
+
+  console.log(JSON.stringify({ event: "date_reminders_run", due: total, sent, failed, skipped, dry }));
+  return NextResponse.json({ due: total, sent, failed, skipped, dryRun: dry });
 }

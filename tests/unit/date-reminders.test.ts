@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { closeDb, getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import { addImportantDate } from "@/lib/customer-dates-storage";
-import { dueReminders, markReminderSent, renderReminder } from "@/lib/date-reminders";
+import { dueReminders, markReminderSent, recordReminder, hasRecentPaidOrder, renderReminder } from "@/lib/date-reminders";
 
 beforeEach(() => {
   vi.stubEnv("SQLITE_FILE", ":memory:");
@@ -161,5 +161,85 @@ describe("renderReminder", () => {
       "es",
     );
     expect(body.toUpperCase()).toContain("STOP");
+  });
+});
+
+describe("etapa d3 y registro por etapa", () => {
+  const rows = (): Array<{ stage: string; status: string; skip_reason: string | null }> =>
+    getDb().prepare("SELECT stage, status, skip_reason FROM date_reminder_sends ORDER BY stage").all() as never;
+
+  it("d3 solo trae cumpleaños y aniversarios, no fechas custom", () => {
+    seedCustomer("1");
+    const { month, day } = monthDayIn(3);
+    addImportantDate("1", { kind: "birthday", month, day });
+    addImportantDate("1", { kind: "anniversary", month, day });
+    addImportantDate("1", { kind: "custom", month, day, label: "Otra" });
+    const due = dueReminders({ leadDays: 3, stage: "d3", now: NOW });
+    expect(due.map((d) => d.kind).sort()).toEqual(["anniversary", "birthday"]);
+  });
+
+  it("un d7 ya registrado no impide el d3", () => {
+    seedCustomer("1");
+    const { month, day } = monthDayIn(3);
+    addImportantDate("1", { kind: "birthday", month, day });
+    const [due] = dueReminders({ leadDays: 3, stage: "d3", now: NOW });
+    markReminderSent(due.dateId, due.occurrenceDate);
+    expect(dueReminders({ leadDays: 3, stage: "d3", now: NOW })).toHaveLength(1);
+  });
+
+  it("lo omitido o enviado en d3 deja de ser pendiente", () => {
+    seedCustomer("1");
+    const { month, day } = monthDayIn(3);
+    addImportantDate("1", { kind: "birthday", month, day });
+    const [due] = dueReminders({ leadDays: 3, stage: "d3", now: NOW });
+    recordReminder(due.dateId, due.occurrenceDate, "d3", "skipped", "recent_order");
+    expect(dueReminders({ leadDays: 3, stage: "d3", now: NOW })).toEqual([]);
+    expect(rows()).toEqual([{ stage: "d3", status: "skipped", skip_reason: "recent_order" }]);
+  });
+
+  it("recordReminder guarda etapa, estado y motivo; markReminderSent es d7/sent", () => {
+    seedCustomer("1");
+    const { month, day } = monthDayIn(7);
+    addImportantDate("1", { kind: "birthday", month, day });
+    const [due] = dueReminders({ leadDays: 7, now: NOW });
+    markReminderSent(due.dateId, due.occurrenceDate);
+    expect(rows()).toEqual([{ stage: "d7", status: "sent", skip_reason: null }]);
+  });
+
+  it("con DATE_REWARDS_ENABLED excluye a quien ya respondió STOP; sin la variable no", () => {
+    seedCustomer("1");
+    const { month, day } = monthDayIn(7);
+    addImportantDate("1", { kind: "birthday", month, day });
+    getDb().prepare("UPDATE customers SET sms_stopped_at = ? WHERE id = '1'").run(NOW.toISOString());
+    expect(dueReminders({ leadDays: 7, now: NOW })).toHaveLength(1);
+    vi.stubEnv("DATE_REWARDS_ENABLED", "1");
+    expect(dueReminders({ leadDays: 7, now: NOW })).toHaveLength(0);
+  });
+});
+
+describe("hasRecentPaidOrder", () => {
+  function order(id: string, customerId: string, o: { paid?: boolean; canceled?: boolean; at: string }) {
+    getDb()
+      .prepare(
+        `INSERT INTO orders (id, locale, source, customer_id, recipient_name, recipient_phone, contact_phone,
+           fulfillment_method, window_date, lines_json, subtotal_cents, delivery_cents,
+           tax_cents, total_cents, fulfillment_status, payment_status, created_at, updated_at)
+         VALUES (?, 'es', 'walk-in', ?, 'R', '555', '555', 'delivery', '2026-06-01', '[]',
+           0,0,0,0, ?, ?, ?, ?)`,
+      )
+      .run(id, customerId, o.canceled ? "canceled" : "pending", o.paid === false ? "unpaid" : "paid", o.at, o.at);
+  }
+
+  it("cuenta una compra pagada de los últimos 7 días", () => {
+    seedCustomer("1");
+    order("o1", "1", { at: "2026-08-30T12:00:00Z" });
+    expect(hasRecentPaidOrder("1", NOW)).toBe(true);
+  });
+  it("no cuenta una vieja, una sin pagar ni una cancelada", () => {
+    seedCustomer("1");
+    order("o1", "1", { at: "2026-08-20T12:00:00Z" });
+    order("o2", "1", { at: "2026-09-01T12:00:00Z", paid: false });
+    order("o3", "1", { at: "2026-09-01T12:00:00Z", canceled: true });
+    expect(hasRecentPaidOrder("1", NOW)).toBe(false);
   });
 });
