@@ -22,6 +22,22 @@ const TABLE: [string, unknown][] = [
   ["Happy birthday! Enjoy the trip", { result: "date", kind: "birthday" }],
   ["Get well soon", { result: "none" }],
   ["", { result: "none" }],
+  ["Happy birthday to my mother-in-law", { result: "date", kind: "birthday" }],
+  ["Happy birthday my sister in law", { result: "date", kind: "birthday" }],
+  ["Happy birthday! From my husband and me", { result: "date", kind: "birthday" }],
+  ["Feliz cumpleaños de parte de mi esposo", { result: "date", kind: "birthday" }],
+  ["Felices cumpleaños mamá", { result: "date", kind: "birthday", relationship: "madre" }],
+  ["Feliz cumpleaños a mi mamá", { result: "date", kind: "birthday", relationship: "madre" }],
+  ["Happy 50th birthday Mom", { result: "date", kind: "birthday", relationship: "madre", years: 50 }],
+  ["Feliz cumpleaños mom", { result: "date", kind: "birthday", relationship: "madre" }],
+  ["Que se cumplen todos tus deseos", { result: "none" }],
+  ["Hoy cumples 30, te quiero", { result: "date", kind: "birthday" }],
+  ["Heavenly roses for a happy birthday", { result: "date", kind: "birthday" }],
+  ["Que descanses, feliz cumpleaños", { result: "date", kind: "birthday" }],
+  ["Happy 110th birthday", { result: "date", kind: "birthday", years: 110 }],
+  ["Happy 111th birthday", { result: "date", kind: "birthday" }],
+  ["Happy 80th anniversary", { result: "date", kind: "anniversary", years: 80 }],
+  ["Happy 81st anniversary", { result: "date", kind: "anniversary" }],
 ];
 
 describe("readCard", () => {
