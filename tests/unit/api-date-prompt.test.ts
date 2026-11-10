@@ -20,6 +20,18 @@ vi.mock("@/lib/product-prices", () => ({
   ],
 }));
 
+const failPrefs = vi.fn();
+vi.mock("@/lib/date-preferences-storage", async (orig) => {
+  const actual = await orig<typeof import("@/lib/date-preferences-storage")>();
+  return {
+    ...actual,
+    setDatePreferences: (...a: Parameters<typeof actual.setDatePreferences>) => {
+      failPrefs();
+      return actual.setDatePreferences(...a);
+    },
+  };
+});
+
 import { GET, POST } from "@/app/api/orders/[id]/date-prompt/route";
 
 const BUYER = "5165550100";
@@ -208,6 +220,24 @@ describe("POST /api/orders/:id/date-prompt", () => {
     expect(dates()).toHaveLength(1);
     await vi.waitFor(() => expect(bonusRows()[0]?.attempts).toBe(1));
     expect(bonusRows()[0]).toMatchObject({ slot: "fecha", status: "pending", attempts: 1 });
+  });
+
+  it("si falla el guardado, todo se revierte y se puede reintentar sin duplicar la fecha", async () => {
+    // A custom date with likes for Laura: the new date inherits them, which is the step that fails.
+    const [custom] = addImportantDate("c1", { kind: "custom", label: "Laura", month: 1, day: 5, source: "customer" });
+    const { setDatePreferences } = await import("@/lib/date-preferences-storage");
+    setDatePreferences(custom.id, { flowers: ["roses"], colors: [], avoid: [] });
+    failPrefs.mockReset().mockImplementationOnce(() => {
+      throw new Error("boom");
+    });
+    await expect(post(DATE)).rejects.toThrow("boom");
+    expect(dates()).toHaveLength(1);
+    expect(getDb().prepare("SELECT 1 FROM date_prompt_answers").get()).toBeUndefined();
+    const retry = await post(DATE);
+    expect(retry.status).toBe(200);
+    expect(dates()).toHaveLength(2);
+    const birthday = dates().find((d) => d.kind === "birthday")!;
+    expect(getDatePreferences(birthday.id).flowers).toEqual(["roses"]);
   });
 
   it("límite por IP: la llamada 31 recibe 429", async () => {

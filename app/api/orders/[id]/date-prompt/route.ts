@@ -5,7 +5,8 @@ import { runMigrations } from "@/lib/db-migrate";
 import { getOrder } from "@/lib/order-storage";
 import { rateLimit, ipFromRequest } from "@/lib/rate-limit";
 import { isValidMonthDay } from "@/lib/customer-dates";
-import { addImportantDate, findRecipientDate } from "@/lib/customer-dates-storage";
+import { withTransaction } from "@/lib/db-tx";
+import { addImportantDate, listDatesFor } from "@/lib/customer-dates-storage";
 import { preferencesForRecipient, setDatePreferences } from "@/lib/date-preferences-storage";
 import { FLOWERS, COLORS, AVOID } from "@/lib/date-preference-options";
 import { orderQualifiesForPrompt, promptQuestion, promptReward } from "@/lib/date-prompt";
@@ -85,46 +86,45 @@ export async function POST(req: Request, ctx: Ctx) {
     return json({ error: "stale_question" }, 409);
   }
 
-  // The primary key is the lock: of two simultaneous taps only one gets past this line.
-  try {
-    db.prepare("INSERT INTO date_prompt_answers (order_id, answer, created_at) VALUES (?, ?, ?)").run(
-      order.id,
-      body.action,
-      new Date().toISOString(),
-    );
-  } catch (e) {
-    if (e instanceof Error && /UNIQUE|PRIMARY KEY/i.test(e.message)) return json({ error: "already_answered" }, 409);
-    throw e;
-  }
-
+  // One transaction: the answer row and every write of the save land together or not at all.
+  // The primary key is the lock: of two simultaneous taps only one gets past the INSERT.
   let slot: BonusSlot | null = null;
   try {
-    if (body.action === "date" && question.kind === "date") {
-      const who = { name: question.recipientName, phone: order.fulfillment.recipient.phone };
-      const inherited = preferencesForRecipient(customerId, who);
-      addImportantDate(customerId, {
-        kind: body.kind,
-        label: question.recipientName,
-        month: body.month,
-        day: body.day,
-        recipientPhone: order.fulfillment.recipient.phone,
-        source: "customer",
-      });
-      const saved = findRecipientDate(customerId, who, [body.kind]);
-      if (inherited && saved) setDatePreferences(saved.id, inherited);
-      slot = "fecha";
-    } else if (body.action === "likes" && question.kind === "likes") {
-      const stored = setDatePreferences(question.dateId, {
-        flowers: body.flowers,
-        colors: body.colors,
-        avoid: body.avoid,
-      });
-      // "Avoid" alone never earns a stamp.
-      if (stored.flowers.length > 0 || stored.colors.length > 0) slot = "gustos";
-    }
+    withTransaction(() => {
+      db.prepare("INSERT INTO date_prompt_answers (order_id, answer, created_at) VALUES (?, ?, ?)").run(
+        order.id,
+        body.action,
+        new Date().toISOString(),
+      );
+      if (body.action === "date" && question.kind === "date") {
+        const inherited = preferencesForRecipient(customerId, {
+          name: question.recipientName,
+          phone: order.fulfillment.recipient.phone,
+        });
+        const before = new Set(listDatesFor(customerId).map((d) => d.id));
+        const after = addImportantDate(customerId, {
+          kind: body.kind,
+          label: question.recipientName,
+          month: body.month,
+          day: body.day,
+          recipientPhone: order.fulfillment.recipient.phone,
+          source: "customer",
+        });
+        const created = after.find((d) => !before.has(d.id));
+        if (inherited && created) setDatePreferences(created.id, inherited);
+        slot = "fecha";
+      } else if (body.action === "likes" && question.kind === "likes") {
+        const stored = setDatePreferences(question.dateId, {
+          flowers: body.flowers,
+          colors: body.colors,
+          avoid: body.avoid,
+        });
+        // "Avoid" alone never earns a stamp.
+        if (stored.flowers.length > 0 || stored.colors.length > 0) slot = "gustos";
+      }
+    });
   } catch (e) {
-    // Nothing was saved: free the answer so the customer can try again.
-    db.prepare("DELETE FROM date_prompt_answers WHERE order_id = ?").run(order.id);
+    if (e instanceof Error && /UNIQUE|PRIMARY KEY/i.test(e.message)) return json({ error: "already_answered" }, 409);
     throw e;
   }
 
