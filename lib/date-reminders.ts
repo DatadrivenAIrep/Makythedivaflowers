@@ -1,6 +1,7 @@
 import { getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import { nextOccurrence, type DateKind } from "@/lib/customer-dates";
+import { dateRewardsEnabled } from "@/lib/date-rewards-flags";
 import { OPT_OUT_FOOTER } from "@/lib/campaign-sender";
 
 /**
@@ -34,14 +35,19 @@ export function dueReminders({
   now?: Date;
 }): DueReminder[] {
   runMigrations();
+  // With the feature on, the sms-marketing tag alone decides (promo permission is
+  // independent of messaging_channel); with it off, behaviour is unchanged.
+  const channelCondition = dateRewardsEnabled()
+    ? ""
+    : "(c.messaging_channel IS NULL OR c.messaging_channel <> 'none') AND";
   const rows = getDb()
     .prepare(
       `SELECT d.id AS date_id, d.customer_id, d.kind, d.label, d.month, d.day,
               c.name AS customer_name, c.phone, c.locale
          FROM customer_important_dates d
          JOIN customers c ON c.id = d.customer_id
-        WHERE (c.messaging_channel IS NULL OR c.messaging_channel <> 'none')
-          AND EXISTS (
+        WHERE ${channelCondition}
+          EXISTS (
                 SELECT 1 FROM customer_tags t
                  WHERE t.customer_id = c.id AND t.tag = 'sms-marketing'
               )`,

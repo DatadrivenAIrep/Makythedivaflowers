@@ -1,6 +1,7 @@
 import twilio from "twilio";
 import { twilioAuthToken } from "@/lib/twilio-config";
 import { getByPhoneUS, updateCustomer, removeTag, normalizePhone } from "@/lib/customer-storage";
+import { markSmsStopped, clearSmsStopped } from "@/lib/promo-consent";
 import { insertInboundMessage } from "@/lib/inbound-storage";
 
 export const runtime = "nodejs";
@@ -61,10 +62,15 @@ export async function POST(req: Request): Promise<Response> {
       if (STOP_WORDS.has(keyword)) {
         updateCustomer(customer.id, { messagingChannel: "none" });
         removeTag(customer.id, "sms-marketing");
+        markSmsStopped(customer.id);
         console.log(JSON.stringify({ event: "sms_opt_out", customerId: customer.id }));
-      } else if (START_WORDS.has(keyword) && customer.messagingChannel === "none") {
-        updateCustomer(customer.id, { messagingChannel: "sms" });
-        console.log(JSON.stringify({ event: "sms_opt_in", customerId: customer.id }));
+      } else if (START_WORDS.has(keyword)) {
+        // START never re-adds the sms-marketing tag; the customer opts in again themselves.
+        clearSmsStopped(customer.id);
+        if (customer.messagingChannel === "none") {
+          updateCustomer(customer.id, { messagingChannel: "sms" });
+          console.log(JSON.stringify({ event: "sms_opt_in", customerId: customer.id }));
+        }
       }
     }
     return xml(200);

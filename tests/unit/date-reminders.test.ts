@@ -62,6 +62,21 @@ describe("dueReminders", () => {
     expect(dueReminders({ leadDays: 7, now: NOW })).toEqual([]);
   });
 
+  it("con DATE_REWARDS_ENABLED, quien solo aceptó promociones recibe el aviso", () => {
+    vi.stubEnv("DATE_REWARDS_ENABLED", "1");
+    seedCustomer("4", { channel: "none" });
+    const { month, day } = monthDayIn(7);
+    addImportantDate("4", { kind: "birthday", month, day });
+    expect(dueReminders({ leadDays: 7, now: NOW })).toHaveLength(1);
+  });
+
+  it("sin la variable, todo sigue igual", () => {
+    seedCustomer("4", { channel: "none" });
+    const { month, day } = monthDayIn(7);
+    addImportantDate("4", { kind: "birthday", month, day });
+    expect(dueReminders({ leadDays: 7, now: NOW })).toHaveLength(0);
+  });
+
   it("skips a customer who asked for no messages at all", () => {
     seedCustomer("3", { channel: "none" });
     const { month, day } = monthDayIn(7);

@@ -22,6 +22,11 @@ vi.mock("@/lib/customer-storage", () => ({
   removeTag: (...a: unknown[]) => removeTagMock(...a),
 }));
 
+const markSmsStoppedMock = vi.fn();
+vi.mock("@/lib/promo-consent", () => ({
+  markSmsStopped: (...a: unknown[]) => markSmsStoppedMock(...a),
+}));
+
 const sendSmsMock = vi.fn();
 vi.mock("@/lib/twilio-server", () => ({
   sendSms: (...a: unknown[]) => sendSmsMock(...a),
@@ -49,6 +54,7 @@ beforeEach(() => {
   getCustomerByIdMock.mockReset();
   updateCustomerMock.mockReset();
   removeTagMock.mockReset();
+  markSmsStoppedMock.mockReset();
   sendSmsMock.mockReset().mockResolvedValue({ sid: "SM1" });
   twilioDryRunMock.mockReset().mockReturnValue(false);
 });
@@ -150,6 +156,7 @@ describe("sendCampaign", () => {
     expect(res.skipped).toBe(1);
     expect(updateCustomerMock).toHaveBeenCalledWith("cus_1", { messagingChannel: "none" });
     expect(removeTagMock).toHaveBeenCalledWith("cus_1", "sms-marketing");
+    expect(markSmsStoppedMock).toHaveBeenCalledWith("cus_1");
   });
 
   it("records a non-21610 error as failed without aborting the batch", async () => {

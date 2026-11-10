@@ -17,6 +17,13 @@ vi.mock("@/lib/customer-storage", () => ({
   normalizePhone: (p: string) => p.replace(/\D/g, ""),
 }));
 
+const markSmsStoppedMock = vi.fn();
+const clearSmsStoppedMock = vi.fn();
+vi.mock("@/lib/promo-consent", () => ({
+  markSmsStopped: (...a: unknown[]) => markSmsStoppedMock(...a),
+  clearSmsStopped: (...a: unknown[]) => clearSmsStoppedMock(...a),
+}));
+
 const insertInboundMock = vi.fn();
 vi.mock("@/lib/inbound-storage", () => ({ insertInboundMessage: (...a: unknown[]) => insertInboundMock(...a) }));
 
@@ -41,6 +48,8 @@ beforeEach(() => {
   getByPhoneUSMock.mockReset().mockReturnValue({ id: "cus_1", messagingChannel: "sms" });
   updateCustomerMock.mockReset();
   removeTagMock.mockReset();
+  markSmsStoppedMock.mockReset();
+  clearSmsStoppedMock.mockReset();
   insertInboundMock.mockReset();
 });
 
@@ -51,6 +60,26 @@ describe("POST /api/twilio/inbound", () => {
     expect(updateCustomerMock).toHaveBeenCalledWith("cus_1", { messagingChannel: "none" });
     expect(removeTagMock).toHaveBeenCalledWith("cus_1", "sms-marketing");
     expect(await res.text()).toContain("<Response>");
+  });
+
+  it("STOP marca sms_stopped_at además de lo de hoy", async () => {
+    await POST(makeReq({ From: "+15168512815", Body: "STOP" }));
+    expect(markSmsStoppedMock).toHaveBeenCalledWith("cus_1");
+    expect(updateCustomerMock).toHaveBeenCalledWith("cus_1", { messagingChannel: "none" });
+    expect(removeTagMock).toHaveBeenCalledWith("cus_1", "sms-marketing");
+  });
+
+  it("START limpia sms_stopped_at y no devuelve la etiqueta", async () => {
+    getByPhoneUSMock.mockReturnValue({ id: "cus_1", messagingChannel: "none" });
+    await POST(makeReq({ From: "+15168512815", Body: "start" }));
+    expect(clearSmsStoppedMock).toHaveBeenCalledWith("cus_1");
+    expect(removeTagMock).not.toHaveBeenCalled();
+  });
+
+  it("START limpia sms_stopped_at aunque messaging_channel ya sea sms", async () => {
+    await POST(makeReq({ From: "+15168512815", Body: "START" }));
+    expect(clearSmsStoppedMock).toHaveBeenCalledWith("cus_1");
+    expect(updateCustomerMock).not.toHaveBeenCalled();
   });
 
   it("START re-enables the channel for an opted-out customer, no marketing re-tag", async () => {

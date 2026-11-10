@@ -4,6 +4,7 @@ import { twilioDryRun } from "@/lib/twilio-config";
 import {
   listMarketingRecipients, getCustomerById, updateCustomer, removeTag,
 } from "@/lib/customer-storage";
+import { markSmsStopped } from "@/lib/promo-consent";
 import {
   getCampaign, markSending, recordSend, finalizeCampaign, type Campaign,
 } from "@/lib/campaign-storage";
@@ -82,6 +83,7 @@ export async function sendCampaign(id: string): Promise<{ sent: number; failed: 
       if (isCode21610(e)) {
         updateCustomer(r.id, { messagingChannel: "none" });
         removeTag(r.id, "sms-marketing");
+        markSmsStopped(r.id);
         recordSend({ campaignId: id, customerId: r.id, phone: r.phone, status: "skipped", error: "21610" });
         skipped++;
       } else {
