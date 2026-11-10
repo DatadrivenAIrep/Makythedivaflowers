@@ -6,7 +6,8 @@ import "server-only";
 import { getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import { withTransaction } from "@/lib/db-tx";
-import { readCard } from "@/lib/card-dates";
+import { NAME_MAX, NAME_PATTERN } from "@/lib/account-dates";
+import { readCard, type CardReading } from "@/lib/card-dates";
 import type { RelationshipCode } from "@/lib/customer-dates";
 import { addImportantDate, findDateByRelationship, findRecipientDate } from "@/lib/customer-dates-storage";
 import { getCustomerById } from "@/lib/customer-storage";
@@ -239,4 +240,186 @@ export function scanOrderByIdSafe(orderId: string): void {
   } catch (e) {
     console.error(JSON.stringify({ event: "card_dates_scan_failed", orderId, error: safeErrorMessage(e) }));
   }
+}
+
+// ── History, preview and review ─────────────────────────────────────────────
+
+export type CardScanReport = { scanned: number; saved: number; review: number; duplicate: number; excluded: number; none: number };
+export type CardScanPreview = { pendingOrders: number; wouldSave: number; wouldReview: number; unlinkedOrders: number };
+export type CardReview = {
+  orderId: string;
+  orderNumber?: number;
+  customerId: string;
+  customerName: string;
+  recipientName: string;
+  cardMessage: string;
+  month: number;
+  day: number;
+  relationship?: RelationshipCode;
+  years?: number;
+  /** The recipient is the buyer: staff must type who it is for. */
+  needsName: boolean;
+};
+
+/** SQL for "has a card": not null and not only spaces, tabs or line breaks. */
+const HAS_CARD = "o.card_message IS NOT NULL AND TRIM(o.card_message, char(32, 9, 10, 13)) <> ''";
+const READABLE_STATUS = "o.fulfillment_status NOT IN ('canceled', 'failed')";
+
+/**
+ * Reads every order not read yet, oldest first: a card, a customer that still
+ * exists, not canceled or failed. Each order commits on its own (or joins the
+ * caller's transaction). Counts only orders that were actually read.
+ */
+export function scanPendingCardDates(now: Date = new Date()): CardScanReport {
+  runMigrations();
+  const rows = getDb()
+    .prepare(
+      `SELECT o.* FROM orders o
+         JOIN customers c ON c.id = o.customer_id
+         LEFT JOIN card_date_scans s ON s.order_id = o.id
+        WHERE s.order_id IS NULL AND ${HAS_CARD} AND ${READABLE_STATUS}
+        ORDER BY o.created_at, o.id`,
+    )
+    .all() as OrderRow[];
+  const report: CardScanReport = { scanned: 0, saved: 0, review: 0, duplicate: 0, excluded: 0, none: 0 };
+  for (const row of rows) {
+    const outcome = scanOrderForDates(rowToOrder(row), now);
+    if (outcome === null) continue;
+    report.scanned += 1;
+    report[outcome] += 1;
+  }
+  return report;
+}
+
+/** Orders with a card that would be read once linked to a customer. */
+function countUnlinkedOrders(): number {
+  const row = getDb()
+    .prepare(`SELECT COUNT(*) AS n FROM orders o WHERE o.customer_id IS NULL AND ${HAS_CARD} AND ${READABLE_STATUS}`)
+    .get() as { n: number };
+  return row.n;
+}
+
+/** Thrown only to undo the preview's run. */
+class PreviewRollback extends Error {}
+
+/**
+ * What scanPendingCardDates would do now, without keeping any of it: the same
+ * run inside one transaction that is always rolled back. Call it at top level,
+ * never from inside another transaction (the rollback would not happen).
+ */
+export function previewCardScan(now: Date = new Date()): CardScanPreview {
+  runMigrations();
+  let report: CardScanReport | undefined;
+  try {
+    withTransaction(() => {
+      report = scanPendingCardDates(now);
+      throw new PreviewRollback();
+    });
+  } catch (e) {
+    if (!(e instanceof PreviewRollback)) throw e;
+  }
+  if (!report) throw new Error("card scan preview did not run");
+  return {
+    pendingOrders: report.scanned,
+    wouldSave: report.saved,
+    wouldReview: report.review,
+    unlinkedOrders: countUnlinkedOrders(),
+  };
+}
+
+/** The relationship and years the card gives, if any. */
+function cluesOf(reading: CardReading): { relationship?: RelationshipCode; years?: number } {
+  if (reading.result !== "date" && reading.result !== "review") return {};
+  return {
+    ...(reading.relationship ? { relationship: reading.relationship } : {}),
+    ...(reading.years !== undefined ? { years: reading.years } : {}),
+  };
+}
+
+/** The orders left in review, oldest first, read fresh from the order and its customer. */
+export function listCardReviews(): CardReview[] {
+  runMigrations();
+  const rows = getDb()
+    .prepare(
+      `SELECT o.*, c.name AS review_customer_name FROM card_date_scans s
+         JOIN orders o ON o.id = s.order_id
+         JOIN customers c ON c.id = o.customer_id
+        WHERE s.outcome = 'review'
+        ORDER BY o.created_at, o.id`,
+    )
+    .all() as Array<OrderRow & { review_customer_name: string }>;
+  const reviews: CardReview[] = [];
+  for (const row of rows) {
+    const order = rowToOrder(row);
+    const buyer = buyerOf(order);
+    if (!buyer) continue;
+    const cardMessage = order.fulfillment.cardMessage ?? "";
+    const clues = cluesOf(readCard(cardMessage));
+    const day = dayOf(order);
+    reviews.push({
+      orderId: order.id,
+      ...(order.orderNumber !== undefined ? { orderNumber: order.orderNumber } : {}),
+      customerId: order.customerId as string,
+      customerName: row.review_customer_name,
+      recipientName: order.fulfillment.recipient.name,
+      cardMessage,
+      month: day.month,
+      day: day.day,
+      ...clues,
+      needsName: recipientIsBuyer(order, buyer) && !clues.relationship,
+    });
+  }
+  return reviews;
+}
+
+/** Most years each occasion can mean, as the card reader allows. */
+const MAX_YEARS: Record<CardKind, number> = { birthday: 110, anniversary: 80 };
+
+function setOutcome(orderId: string, outcome: "saved" | "duplicate" | "dismissed", dateId: string | null): void {
+  getDb()
+    .prepare("UPDATE card_date_scans SET outcome = ?, date_id = ? WHERE order_id = ? AND outcome = 'review'")
+    .run(outcome, dateId, orderId);
+}
+
+/**
+ * Staff settle an order left in review: save it as a birthday or anniversary
+ * (with a typed name when the card does not say who it is for), or dismiss it.
+ * The order's scan row is updated in place; it is never read again.
+ */
+export function resolveCardReview(
+  orderId: string,
+  choice: { kind: "birthday" | "anniversary"; name?: string } | "dismiss",
+  now: Date = new Date(),
+): "saved" | "duplicate" | "dismissed" | "name_required" | "not_found" {
+  runMigrations();
+  return withTransaction(() => {
+    const scan = getDb().prepare("SELECT outcome FROM card_date_scans WHERE order_id = ?").get(orderId) as
+      | { outcome: string }
+      | undefined;
+    if (scan?.outcome !== "review") return "not_found";
+    if (choice === "dismiss") {
+      setOutcome(orderId, "dismissed", null);
+      return "dismissed";
+    }
+
+    const name = choice.name?.trim() || undefined;
+    if (name !== undefined && (name.length > NAME_MAX || !NAME_PATTERN.test(name))) return "name_required";
+
+    const order = loadOrder(orderId);
+    const buyer = order ? buyerOf(order) : null;
+    if (!order || !buyer) return "not_found";
+
+    const { relationship, years } = cluesOf(readCard(order.fulfillment.cardMessage ?? ""));
+    const inRange = years !== undefined && years >= 1 && years <= MAX_YEARS[choice.kind];
+    const placed = placeCardDate(
+      order,
+      buyer,
+      { kind: choice.kind, relationship, years: inRange ? years : undefined },
+      now,
+      name,
+    );
+    if (placed.outcome === "review") return "name_required";
+    setOutcome(orderId, placed.outcome, placed.outcome === "saved" ? placed.dateId : null);
+    return placed.outcome;
+  });
 }
