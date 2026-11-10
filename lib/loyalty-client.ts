@@ -5,7 +5,10 @@ import "server-only";
 export type LoyaltyCustomer = {
   id: number;
   cardUrl: string;
-  rewards: { available: { id: string; reward: string; final: boolean }[] };
+  rewards: {
+    available: { id: string; reward: string; final: boolean }[];
+    next?: { at: number; reward: string; remaining: number };
+  };
 };
 
 type CallOpts = { timeoutMs: number };
@@ -73,7 +76,22 @@ function parseCustomer(value: unknown): LoyaltyCustomer {
     Array.isArray(available) &&
     available.every((r) => typeof r?.id === "string" && typeof r?.reward === "string");
   if (!valid) throw new LoyaltyApiError("unavailable", 0);
-  return c as LoyaltyCustomer;
+  const customer = c as LoyaltyCustomer;
+  // Optional: anything that is not the expected shape is dropped, never an error.
+  const next = (customer.rewards as { next?: Partial<NonNullable<LoyaltyCustomer["rewards"]["next"]>> }).next;
+  const nextOk =
+    typeof next === "object" &&
+    next !== null &&
+    typeof next.at === "number" &&
+    typeof next.reward === "string" &&
+    typeof next.remaining === "number";
+  return {
+    ...customer,
+    rewards: {
+      available: customer.rewards.available,
+      ...(nextOk ? { next: { at: next.at!, reward: next.reward!, remaining: next.remaining! } } : {}),
+    },
+  };
 }
 
 export async function lookupCustomer(phone: string, opts: CallOpts): Promise<LoyaltyCustomer | null> {
@@ -115,6 +133,11 @@ export async function redeemReward(
 
 export async function addStamp(customerId: number, orderId: string, opts: CallOpts): Promise<void> {
   await call("POST", `/customers/${customerId}/stamps`, { orderId, count: 1 }, opts);
+}
+
+/** Stamps for shared data; the program de-duplicates on orderId and a repeat answers 200. */
+export async function addBonus(customerId: number, orderId: string, note: string, opts: CallOpts): Promise<void> {
+  await call("POST", `/customers/${customerId}/bonus`, { orderId, count: 1, note }, opts);
 }
 
 export async function reverseOrder(

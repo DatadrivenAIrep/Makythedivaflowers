@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { runDuePending } from "@/lib/loyalty-sync";
+import { runDueBonuses } from "@/lib/loyalty-bonus";
+import { dateRewardsEnabled } from "@/lib/date-rewards-flags";
 
 export const runtime = "nodejs";
 // Never cached: the answer depends on what is pending right now.
@@ -23,6 +25,11 @@ export async function POST(req: Request) {
   }
 
   const counts = await runDuePending();
-  console.log(JSON.stringify({ event: "loyalty_sync_run", ...counts }));
-  return NextResponse.json(counts);
+  if (!dateRewardsEnabled()) {
+    console.log(JSON.stringify({ event: "loyalty_sync_run", ...counts }));
+    return NextResponse.json(counts);
+  }
+  const bonus = await runDueBonuses();
+  console.log(JSON.stringify({ event: "loyalty_sync_run", ...counts, bonus }));
+  return NextResponse.json({ ...counts, bonus });
 }

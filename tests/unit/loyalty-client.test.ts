@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
-  loyaltyEnabled, lookupCustomer, createCustomer, reverseOrder, addStamp, redeemReward, LoyaltyApiError,
+  loyaltyEnabled, lookupCustomer, createCustomer, reverseOrder, addStamp, addBonus, redeemReward, LoyaltyApiError,
 } from "@/lib/loyalty-client";
 
 const customer = { id: 42, cardUrl: "https://x/c/1", rewards: { available: [] } };
@@ -84,6 +84,25 @@ describe("loyalty client", () => {
     await addStamp(42, "diva-9", { timeoutMs: 100 });
     expect(fetchMock.mock.calls[1][0]).toBe("https://loyalty.test/api/v1/customers/42/stamps");
     expect(JSON.parse(fetchMock.mock.calls[1][1].body)).toEqual({ orderId: "diva-9", count: 1 });
+  });
+
+  it("addBonus posts the order id, count and note", async () => {
+    fetchMock.mockResolvedValueOnce(json({ duplicate: true }));
+    await addBonus(5, "diva-dato-fecha-5", "Diva: fecha guardada", { timeoutMs: 100 });
+    expect(fetchMock.mock.calls[0][0]).toBe("https://loyalty.test/api/v1/customers/5/bonus");
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({
+      orderId: "diva-dato-fecha-5", count: 1, note: "Diva: fecha guardada",
+    });
+  });
+
+  it("reads rewards.next when present and tolerates its absence or a bad shape", async () => {
+    const next = { at: 8, reward: "Ramo", remaining: 3 };
+    fetchMock.mockResolvedValueOnce(json({ customer: { ...customer, rewards: { available: [], next } } }));
+    expect((await lookupCustomer("+1", { timeoutMs: 100 }))?.rewards.next).toEqual(next);
+    fetchMock.mockResolvedValueOnce(json({ customer }));
+    expect((await lookupCustomer("+1", { timeoutMs: 100 }))?.rewards.next).toBeUndefined();
+    fetchMock.mockResolvedValueOnce(json({ customer: { ...customer, rewards: { available: [], next: { at: "x" } } } }));
+    expect((await lookupCustomer("+1", { timeoutMs: 100 }))?.rewards.next).toBeUndefined();
   });
 
   describe("a 200 with an unexpected shape", () => {
