@@ -3,6 +3,7 @@ import { closeDb, getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import { addImportantDate } from "@/lib/customer-dates-storage";
 import { dueReminders } from "@/lib/date-reminders";
+import * as sale from "@/lib/date-sale-message";
 
 const sendSms = vi.fn();
 vi.mock("@/lib/twilio-server", () => ({
@@ -242,6 +243,31 @@ describe("POST /api/cron/reminders", () => {
       expect(c.sms_stopped_at).toBeTruthy();
       expect(getDb().prepare("SELECT 1 FROM customer_tags WHERE customer_id = '1' AND tag = 'sms-marketing'").get()).toBeUndefined();
       expect(sends()).toEqual([{ stage: "d7", status: "skipped", skip_reason: "21610" }]);
+    });
+
+    it("un fallo en el d3 de un cliente no impide el d7 de otro", async () => {
+      vi.stubEnv("DATE_REMINDER_D3_ENABLED", "1");
+      seedDueCustomer("1", 3);
+      seedDueCustomer("2", 7);
+      const spy = vi.spyOn(sale, "renderSaleReminder").mockImplementation(() => {
+        throw new Error("boom");
+      });
+      const data = await (await post("Bearer s3cret")).json();
+      spy.mockRestore();
+      expect(data).toMatchObject({ sent: 1, failed: 1 });
+      expect(sendSms).toHaveBeenCalledTimes(1);
+      expect(sends()).toEqual([{ stage: "d7", status: "sent", skip_reason: null }]);
+    });
+
+    it("si falla la consulta de la tarjeta, deja rastro sin teléfono ni mensaje", async () => {
+      vi.stubEnv("DATE_REMINDER_D3_ENABLED", "1");
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      lookupCustomer.mockRejectedValue(Object.assign(new Error("fail for +15165550001"), { code: "unavailable" }));
+      seedDueCustomer("1", 3);
+      await post("Bearer s3cret");
+      expect(warn).toHaveBeenCalledWith("[reminders] card lookup failed", "unavailable");
+      expect(JSON.stringify(warn.mock.calls)).not.toContain("5165550001");
+      warn.mockRestore();
     });
   });
 });

@@ -36,7 +36,12 @@ async function bestRewardPercent(phone: string): Promise<number | null> {
     if (!card) return null;
     const percents = applicableRewards(card.rewards.available).map((r) => r.percent);
     return percents.length ? Math.max(...percents) : null;
-  } catch {
+  } catch (e) {
+    // Fall back to no discount sentence, but leave a trace: a bad key or an
+    // outage would otherwise quietly strip it from every text. Log the code or
+    // name only, never the phone or the message (messages can carry phones).
+    const code = (e as { code?: unknown })?.code;
+    console.warn("[reminders] card lookup failed", typeof code === "string" ? code : (e as Error)?.name ?? "unknown");
     return null;
   }
 }
@@ -77,67 +82,84 @@ export async function POST(req: Request) {
   let failed = 0;
   let skipped = 0;
 
-  // Returns true when the text went out (or counted as sent in a dry run).
   async function send(r: DueReminder, stage: ReminderStage, body: string) {
     try {
-      if (!dry) await sendSms(r.phone, body);
-      // Recorded even in a dry run: a dry run that leaves everything "due"
-      // would text the whole list the moment SMS is switched on.
-      recordReminder(r.dateId, r.occurrenceDate, stage, "sent");
-      written.add(r.customerId);
-      sent += 1;
-    } catch (e) {
-      if (isCode21610(e)) {
+      try {
+        if (!dry) await sendSms(r.phone, body);
+        // Recorded even in a dry run: a dry run that leaves everything "due"
+        // would text the whole list the moment SMS is switched on.
+        recordReminder(r.dateId, r.occurrenceDate, stage, "sent");
+        written.add(r.customerId);
+        sent += 1;
+      } catch (e) {
+        if (!isCode21610(e)) throw e;
         updateCustomer(r.customerId, { messagingChannel: "none" });
         removeTag(r.customerId, "sms-marketing");
         markSmsStopped(r.customerId);
         recordReminder(r.dateId, r.occurrenceDate, stage, "skipped", "21610");
         skipped += 1;
-        return;
       }
-      // One bad number must not stop the rest of the batch; stays due for the next run.
+    } catch (e) {
+      // One bad number (or a failed write) must not stop the rest of the batch;
+      // it stays due for the next run.
       failed += 1;
       console.error("[reminders] send failed", r.customerId, e);
     }
   }
 
   if (d3On) {
-    const due = dueReminders({ leadDays: LEAD_DAYS.d3, stage: "d3", now });
-    total += due.length;
-    for (const r of due) {
-      if (r.kind === "custom") continue; // dueReminders already excludes these
-      if (hasRecentPaidOrder(r.customerId, now)) {
-        recordReminder(r.dateId, r.occurrenceDate, "d3", "skipped", "recent_order");
-        skipped += 1;
-        continue;
+    // Nothing in the 3-day phase may keep the 7-day reminders from going out:
+    // they are due on one day only and would never be retried.
+    try {
+      const due = dueReminders({ leadDays: LEAD_DAYS.d3, stage: "d3", now });
+      total += due.length;
+      for (const r of due) {
+        try {
+          if (r.kind === "custom") continue; // dueReminders already excludes these
+          if (hasRecentPaidOrder(r.customerId, now)) {
+            recordReminder(r.dateId, r.occurrenceDate, "d3", "skipped", "recent_order");
+            skipped += 1;
+            continue;
+          }
+          if (written.has(r.customerId)) {
+            recordReminder(r.dateId, r.occurrenceDate, "d3", "skipped", "daily_cap");
+            skipped += 1;
+            continue;
+          }
+          const rewardPercent = await bestRewardPercent(r.phone);
+          const body = renderSaleReminder({
+            customerName: r.customerName,
+            kind: r.kind,
+            label: r.label,
+            locale: r.locale,
+            prefs: getDatePreferences(r.dateId),
+            rewardPercent,
+          });
+          await send(r, "d3", body);
+        } catch (e) {
+          failed += 1;
+          console.error("[reminders] d3 failed", r.customerId, e);
+        }
       }
-      if (written.has(r.customerId)) {
-        recordReminder(r.dateId, r.occurrenceDate, "d3", "skipped", "daily_cap");
-        skipped += 1;
-        continue;
-      }
-      const rewardPercent = await bestRewardPercent(r.phone);
-      const body = renderSaleReminder({
-        customerName: r.customerName,
-        kind: r.kind,
-        label: r.label,
-        locale: r.locale,
-        prefs: getDatePreferences(r.dateId),
-        rewardPercent,
-      });
-      await send(r, "d3", body);
+    } catch (e) {
+      console.error("[reminders] d3 phase failed", e);
     }
   }
 
   const due7 = dueReminders({ leadDays: LEAD_DAYS.d7, stage: "d7", now });
   total += due7.length;
   for (const r of due7) {
-    if (capOn && written.has(r.customerId)) {
-      recordReminder(r.dateId, r.occurrenceDate, "d7", "skipped", "daily_cap");
-      skipped += 1;
-      continue;
+    try {
+      if (capOn && written.has(r.customerId)) {
+        recordReminder(r.dateId, r.occurrenceDate, "d7", "skipped", "daily_cap");
+        skipped += 1;
+        continue;
+      }
+      await send(r, "d7", renderReminder(r, r.locale));
+    } catch (e) {
+      failed += 1;
+      console.error("[reminders] d7 failed", r.customerId, e);
     }
-    await send(r, "d7", renderReminder(r, r.locale));
   }
 
   console.log(JSON.stringify({ event: "date_reminders_run", due: total, sent, failed, skipped, dry }));
