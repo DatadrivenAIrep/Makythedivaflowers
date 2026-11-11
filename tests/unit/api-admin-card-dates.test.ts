@@ -131,6 +131,20 @@ describe("POST /api/admin/occasions/card-dates/review", () => {
     expect((await REVIEW(req({ orderId: "nope", action: "dismiss" }))).status).toBe(404);
   });
 
+  it("still answers 200 with the result when re-listing fails", async () => {
+    const o = await seedOrder("Happy 25th!");
+    await POST(req());
+    const scan = await import("@/lib/card-dates-scan");
+    vi.spyOn(scan, "listCardReviews").mockImplementation(() => {
+      throw new Error("boom");
+    });
+    const err = vi.spyOn(console, "error").mockImplementation(() => {});
+    const res = await REVIEW(req({ orderId: o.id, action: "dismiss" }));
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ result: "dismissed", reviews: null });
+    expect(String(err.mock.calls[0][0])).not.toContain("boom");
+  });
+
   it("answers 400 when a name is required", async () => {
     // Recipient is the buyer himself: staff must say who it is for.
     const o = await seedOrder("Happy 25th!", "Ana", "5165550100");

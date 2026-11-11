@@ -4,7 +4,8 @@ import CardDatesPanel from "@/components/admin/occasions/CardDatesPanel";
 import DateResults from "@/components/admin/occasions/DateResults";
 import { dateResults } from "@/lib/date-results";
 import { dateRewardsEnabled } from "@/lib/date-rewards-flags";
-import { listCardReviews, previewCardScan } from "@/lib/card-dates-scan";
+import { listCardReviews, previewCardScan, type CardReview, type CardScanPreview } from "@/lib/card-dates-scan";
+import { errorClass } from "@/lib/card-dates-log";
 import { listUpcomingOccasions } from "@/lib/customer-dates-storage";
 
 export const dynamic = "force-dynamic";
@@ -17,12 +18,17 @@ export default async function AdminOccasionsPage({
   const { locale } = await params;
   const initial = listUpcomingOccasions(30);
   const results = dateRewardsEnabled() ? dateResults() : null;
-  const cardPreview = previewCardScan();
-  const cardReviews = listCardReviews();
+  // The card panel is an extra: if reading it fails, hide it and keep the page.
+  let card: { preview: CardScanPreview; reviews: CardReview[] } | null = null;
+  try {
+    card = { preview: previewCardScan(), reviews: listCardReviews() };
+  } catch (e) {
+    console.error(JSON.stringify({ event: "card_dates_page_failed", error: errorClass(e) }));
+  }
   return (
     <DashboardShell locale={locale}>
       {results && <DateResults results={results} />}
-      <CardDatesPanel initialPreview={cardPreview} initialReviews={cardReviews} locale={locale} />
+      {card && <CardDatesPanel initialPreview={card.preview} initialReviews={card.reviews} locale={locale} />}
       <OccasionsView locale={locale} initial={initial} />
     </DashboardShell>
   );

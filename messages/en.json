@@ -2532,6 +2532,8 @@
     "anniversary": "Anniversary",
     "dismiss": "Dismiss",
     "name_placeholder": "Who is it for?",
+    "name_required": "Type who it is for.",
+    "already_resolved": "This card was already settled elsewhere.",
     "error": "Couldn't complete that. Try again.",
     "relationship": {
       "madre": "mom",

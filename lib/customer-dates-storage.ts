@@ -345,12 +345,13 @@ export function findDateByRelationship(
   customerId: string,
   kind: DateKind,
   relationship: RelationshipCode,
+  opts: { unnamedOnly?: boolean } = {},
 ): ImportantDate | null {
   runMigrations();
   const row = getDb()
     .prepare(
       `SELECT * FROM customer_important_dates
-       WHERE customer_id = ? AND kind = ? AND relationship = ?
+       WHERE customer_id = ? AND kind = ? AND relationship = ?${opts.unnamedOnly ? " AND (label IS NULL OR label = '')" : ""}
        ORDER BY created_at, id LIMIT 1`,
     )
     .get(customerId, kind, relationship) as DateRow | undefined;

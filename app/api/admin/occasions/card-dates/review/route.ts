@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/admin-auth";
 import { listCardReviews, resolveCardReview } from "@/lib/card-dates-scan";
+import { errorClass } from "@/lib/card-dates-log";
 import { routeFailed } from "@/lib/card-dates-route";
 
 export const runtime = "nodejs";
@@ -28,7 +29,14 @@ export async function POST(req: Request): Promise<Response> {
     const result = resolveCardReview(orderId, action === "dismiss" ? "dismiss" : { kind: action, name });
     if (result === "not_found") return NextResponse.json({ result }, { status: 404, headers: NO_STORE });
     if (result === "name_required") return NextResponse.json({ result }, { status: 400, headers: NO_STORE });
-    return NextResponse.json({ result, reviews: listCardReviews() }, { headers: NO_STORE });
+    // The resolution is committed; if re-listing fails the client drops the row itself.
+    let reviews: ReturnType<typeof listCardReviews> | null = null;
+    try {
+      reviews = listCardReviews();
+    } catch (e) {
+      console.error(JSON.stringify({ event: "card_dates_review_relist_failed", error: errorClass(e) }));
+    }
+    return NextResponse.json({ result, reviews }, { headers: NO_STORE });
   } catch (e) {
     return routeFailed(e);
   }

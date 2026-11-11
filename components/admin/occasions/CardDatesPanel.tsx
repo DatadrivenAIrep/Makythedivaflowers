@@ -16,6 +16,7 @@ export default function CardDatesPanel({ initialPreview, initialReviews, locale 
   const [report, setReport] = useState<CardScanReport | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(false);
+  const [note, setNote] = useState<string | null>(null);
   const [names, setNames] = useState<Record<string, string>>({});
 
   async function run() {
@@ -38,6 +39,7 @@ export default function CardDatesPanel({ initialPreview, initialReviews, locale 
   async function resolve(r: CardReview, action: "birthday" | "anniversary" | "dismiss") {
     setBusy(true);
     setError(false);
+    setNote(null);
     try {
       const name = names[r.orderId]?.trim();
       const res = await fetch("/api/admin/occasions/card-dates/review", {
@@ -45,8 +47,20 @@ export default function CardDatesPanel({ initialPreview, initialReviews, locale 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ orderId: r.orderId, action, ...(name ? { name } : {}) }),
       });
+      if (res.status === 404) {
+        // Already settled somewhere else: drop it and say so.
+        setReviews((list) => list.filter((x) => x.orderId !== r.orderId));
+        setNote(t("already_resolved"));
+        return;
+      }
+      if (res.status === 400 && action !== "dismiss") {
+        setNote(t("name_required"));
+        return;
+      }
       if (!res.ok) throw new Error(String(res.status));
-      setReviews(((await res.json()) as { reviews: CardReview[] }).reviews);
+      const body = (await res.json()) as { reviews: CardReview[] | null };
+      // A null list means the date was settled but the list could not be re-read.
+      setReviews((list) => body.reviews ?? list.filter((x) => x.orderId !== r.orderId));
     } catch {
       setError(true);
     } finally {
@@ -82,6 +96,7 @@ export default function CardDatesPanel({ initialPreview, initialReviews, locale 
         </div>
       )}
       {error && <p className="mt-2 text-sm text-rouge" role="alert">{t("error")}</p>}
+      {note && <p className="mt-2 text-sm text-ink/70" role="status">{note}</p>}
 
       {reviews.length > 0 && (
         <div className="mt-4">
@@ -93,7 +108,8 @@ export default function CardDatesPanel({ initialPreview, initialReviews, locale 
               return (
                 <li key={r.orderId} className="py-2">
                   <p className="text-sm font-medium">
-                    {r.customerName} · {formatMonthDay(r.month, r.day, locale)}
+                    {r.customerName} · {r.recipientName}
+                    {r.orderNumber !== undefined ? ` · #${r.orderNumber}` : ""} · {formatMonthDay(r.month, r.day, locale)}
                     {r.relationship ? ` · ${t(`relationship.${r.relationship}`)}` : ""}
                   </p>
                   <p className="my-1 whitespace-pre-line text-sm italic text-ink/70">{r.cardMessage}</p>

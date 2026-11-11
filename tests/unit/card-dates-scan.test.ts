@@ -295,6 +295,19 @@ describe("scanOrderForDates", () => {
     expect(scans().find((s) => s.order_id === unnamed.id)).toMatchObject({ outcome: "duplicate", date_id: null });
   });
 
+  it("a named card is a duplicate of an unnamed date for the same relative", async () => {
+    // Unnamed "madre" birthday first (the buyer sent it to herself).
+    const unnamed = await saved({
+      fulfillment: delivery("Happy birthday Mom", { name: "Ana", phone: BUYER_PHONE }),
+    });
+    expect(scanOrderForDates(unnamed, NOW)).toBe("saved");
+    const named = await saved({ fulfillment: delivery("Happy birthday Mom", { date: "2026-04-02" }) });
+    expect(scanOrderForDates(named, NOW)).toBe("duplicate");
+    const dates = listDatesFor("c1", NOW);
+    expect(dates).toHaveLength(1);
+    expect(dates[0]).toMatchObject({ label: undefined, relationship: "madre", sourceOrderId: unnamed.id });
+  });
+
   it("reads an order once, even after the date is deleted", async () => {
     const o = await saved();
     expect(scanOrderForDates(o, NOW)).toBe("saved");

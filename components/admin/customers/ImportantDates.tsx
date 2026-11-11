@@ -180,7 +180,7 @@ export default function ImportantDates({ customerId, initial, locale, initialSug
               <div className="flex flex-wrap items-center gap-2">
                 <Icon size={16} weight="bold" className="text-rouge" />
                 <span className="font-semibold">{t(`date_kind_${d.kind}`)}</span>
-                {showPrefs && (
+                {showPrefs && d.source !== "card" && (
                   <span className="rounded-full bg-ink/5 px-2 py-0.5 text-xs text-ink/70">
                     {d.source === "customer" ? t("date_source_customer") : t("date_source_panel")}
                   </span>

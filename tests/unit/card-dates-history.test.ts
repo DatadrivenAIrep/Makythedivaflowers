@@ -14,6 +14,7 @@ vi.mock("@/lib/product-prices", () => ({
   ],
 }));
 
+import { errorClass } from "@/lib/card-dates-log";
 import {
   listCardReviews,
   previewCardScan,
@@ -173,11 +174,24 @@ describe("scanPendingCardDates", () => {
     expect(err).toHaveBeenCalledTimes(1);
     expect(err.mock.calls[0]).toHaveLength(1);
     const line = String(err.mock.calls[0][0]);
-    expect(JSON.parse(line)).toEqual({ event: "card_dates_scan_failed", orderId: broken.id, error: expect.any(String) });
+    expect(JSON.parse(line)).toEqual({ event: "card_dates_scan_failed", orderId: broken.id, error: "SyntaxError" });
     for (const fragment of ["Feliz", "cumple", "Luz", "Gómez"]) expect(line).not.toContain(fragment);
 
     expect(scanPendingCardDates(NOW)).toEqual({ ...EMPTY, failed: 1 });
     expect(scanOf(broken.id)).toBeUndefined();
+  });
+
+  it("logs only the error class, even when the message has odd quotes and a name", async () => {
+    await saved();
+    const broken = await saved({ fulfillment: delivery("x", { name: "Rosa Perez" }) });
+    getDb().prepare("UPDATE orders SET lines_json = ? WHERE id = ?").run('x"name":"Rosa Perez"', broken.id);
+    const err = vi.spyOn(console, "error").mockImplementation(() => {});
+    scanPendingCardDates(NOW);
+    const line = String(err.mock.calls[0][0]);
+    expect(JSON.parse(line).error).toBe("SyntaxError");
+    expect(line).not.toContain("Rosa");
+    expect(errorClass(new SyntaxError('Unexpected "Rosa Perez"'))).toBe("SyntaxError");
+    expect(errorClass("Rosa Perez")).toBe("string");
   });
 });
 
@@ -194,12 +208,17 @@ describe("previewCardScan", () => {
   });
 
   it("counts orders waiting for a customer", async () => {
-    await saved({ customerId: undefined });
+    await saved({ customerId: undefined, paymentStatus: "paid" });
     // Not waiting: canceled or failed orders are never read, and neither is an order without a card.
-    await saved({ customerId: undefined, status: "canceled" });
-    await saved({ customerId: undefined, status: "failed" });
-    await saved({ customerId: undefined, fulfillment: delivery("  ") });
+    await saved({ customerId: undefined, paymentStatus: "paid", status: "canceled" });
+    await saved({ customerId: undefined, paymentStatus: "paid", status: "failed" });
+    await saved({ customerId: undefined, paymentStatus: "paid", fulfillment: delivery("  ") });
     expect(previewCardScan(NOW)).toEqual({ pendingOrders: 0, wouldSave: 0, wouldReview: 0, unlinkedOrders: 1 });
+  });
+
+  it("does not count unpaid orders, which linking never picks up", async () => {
+    await saved({ customerId: undefined, paymentStatus: "pending" });
+    expect(previewCardScan(NOW)).toEqual({ pendingOrders: 0, wouldSave: 0, wouldReview: 0, unlinkedOrders: 0 });
   });
 
   it("reads past a damaged order and writes nothing", async () => {
@@ -239,6 +258,25 @@ describe("previewCardScan", () => {
 });
 
 describe("card reviews", () => {
+  it("skips a corrupt review row and lists the others, logging only the order id", async () => {
+    const a = await saved({ fulfillment: delivery("Happy 25th!") });
+    const card = "Feliz cumpleaños, Luz Gómez";
+    const broken = await saved({ fulfillment: delivery(card, { name: "Luz Gómez", phone: "5165550903" }) });
+    const c = await saved({ fulfillment: delivery("Happy 30th!", { name: "Marta Ruiz", phone: "5165550904" }) });
+    getDb()
+      .prepare("INSERT INTO card_date_scans (order_id, outcome, date_id, scanned_at) VALUES (?, 'review', NULL, ?)")
+      .run(broken.id, NOW.toISOString());
+    scanPendingCardDates(NOW);
+    getDb().prepare("UPDATE orders SET lines_json = ? WHERE id = ?").run(card, broken.id);
+    const err = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    expect(listCardReviews().map((r) => r.orderId)).toEqual([a.id, c.id]);
+    expect(err).toHaveBeenCalledTimes(1);
+    const line = String(err.mock.calls[0][0]);
+    expect(JSON.parse(line)).toEqual({ event: "card_dates_review_row_failed", orderId: broken.id });
+    for (const fragment of ["Feliz", "Luz", "Gómez"]) expect(line).not.toContain(fragment);
+  });
+
   it("review list and resolution", async () => {
     const { unclear } = await threeOrders();
     const both = await saved({ fulfillment: delivery("Happy birthday and happy anniversary, Mom!") });

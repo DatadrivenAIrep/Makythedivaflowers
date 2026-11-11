@@ -96,4 +96,37 @@ describe("CardDatesPanel", () => {
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
     expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({ orderId: "o1", action: "birthday", name: "Luz" });
   });
+
+  it("shows who the card is for and the order number", () => {
+    wrap(<CardDatesPanel initialPreview={preview} initialReviews={[review({ orderNumber: 1234 })]} />);
+    expect(screen.getByText(/Ana Flores · Rosa Pérez · #1234 ·/)).toBeDefined();
+  });
+
+  it("drops a row that was already resolved elsewhere (404) and says so", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockImplementation(() => json({ result: "not_found" }, 404)));
+    const user = userEvent.setup();
+    wrap(<CardDatesPanel initialPreview={preview} initialReviews={[review()]} />);
+    await user.click(screen.getByRole("button", { name: "Descartar" }));
+    await waitFor(() => expect(screen.queryByText(/Feliz cumpleaños mamá/)).toBeNull());
+    expect(screen.getByText("Esta tarjeta ya se resolvió en otro lado.")).toBeDefined();
+  });
+
+  it("keeps the row and shows the name hint on name_required (400)", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockImplementation(() => json({ result: "name_required" }, 400)));
+    const user = userEvent.setup();
+    wrap(<CardDatesPanel initialPreview={preview} initialReviews={[review({ needsName: true })]} />);
+    await user.type(screen.getByPlaceholderText("¿Para quién es?"), "x");
+    await user.click(screen.getByRole("button", { name: "Cumpleaños" }));
+    await waitFor(() => expect(screen.getByText("Escribe para quién es.")).toBeDefined());
+    expect(screen.getByText(/Feliz cumpleaños mamá/)).toBeDefined();
+  });
+
+  it("drops the resolved row locally when the server could not re-list (reviews: null)", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockImplementation(() => json({ result: "dismissed", reviews: null })));
+    const user = userEvent.setup();
+    wrap(<CardDatesPanel initialPreview={preview} initialReviews={[review(), review({ orderId: "o2", cardMessage: "Otra tarjeta" })]} />);
+    await user.click(screen.getAllByRole("button", { name: "Descartar" })[0]);
+    await waitFor(() => expect(screen.queryByText(/Feliz cumpleaños mamá/)).toBeNull());
+    expect(screen.getByText(/Otra tarjeta/)).toBeDefined();
+  });
 });

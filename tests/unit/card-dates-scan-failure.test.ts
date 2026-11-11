@@ -66,7 +66,7 @@ describe("scanOrderByIdSafe", () => {
     expect(err).toHaveBeenCalledTimes(1);
     expect(err.mock.calls[0]).toHaveLength(1);
     const line = String(err.mock.calls[0][0]);
-    expect(JSON.parse(line)).toEqual({ event: "card_dates_scan_failed", orderId: order.id, error: "reader exploded" });
+    expect(JSON.parse(line)).toEqual({ event: "card_dates_scan_failed", orderId: order.id, error: "Error" });
     for (const secret of ["Zebulon", "birthday", "Mom", "Rosa", "Ana"]) {
       expect(line).not.toContain(secret);
     }

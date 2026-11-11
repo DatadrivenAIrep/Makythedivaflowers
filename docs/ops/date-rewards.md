@@ -25,7 +25,7 @@ Los sellos usan la conexión de la tarjeta (`LOYALTY_API_URL`, `LOYALTY_API_KEY`
 2. Cron de `/api/cron/reminders` creado, a diario a las 09:15 de Nueva York (`docs/ops/date-reminders.md`).
 3. SMS reales activos. En modo de prueba el aviso se marca como enviado y se pierde.
 4. Registro A2P de Twilio que cubra mensajes promocionales.
-5. Un abogado revisa la casilla, la política de privacidad (datos de terceros y premio por compartirlos) y las reglas del premio.
+5. Un abogado revisa la casilla, la política de privacidad (datos de terceros y premio por compartirlos) y las reglas del premio. Debe cubrir también las fechas leídas de los mensajes de tarjeta, que los clientes ven en «Mis fechas».
 6. Maky revisa las listas de flores y colores.
 
 ## Despliegue

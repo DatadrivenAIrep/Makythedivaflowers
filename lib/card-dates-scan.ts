@@ -4,6 +4,7 @@ import "server-only";
 // Each order is read once: the result lands in card_date_scans, so a date the
 // shop deletes never comes back. Nothing here sends a message.
 import { getDb } from "@/lib/db";
+import { errorClass } from "@/lib/card-dates-log";
 import { runMigrations } from "@/lib/db-migrate";
 import { inTransaction, withTransaction } from "@/lib/db-tx";
 import { isValidPersonName } from "@/lib/account-dates";
@@ -116,7 +117,11 @@ function isDuplicate(
   relationship: RelationshipCode | undefined,
 ): boolean {
   if (person.label) {
-    return findRecipientDate(customerId, { name: person.label, phone: person.recipientPhone }, [kind]) !== null;
+    if (findRecipientDate(customerId, { name: person.label, phone: person.recipientPhone }, [kind]) !== null) return true;
+    // Symmetric rule: an unnamed date for the same relative (made from an earlier
+    // card) is the same person even when this card names her.
+    if (relationship === undefined) return false;
+    return findDateByRelationship(customerId, kind, relationship, { unnamedOnly: true }) !== null;
   }
   // personFor only returns an unnamed person when there is a relationship.
   return relationship !== undefined && findDateByRelationship(customerId, kind, relationship) !== null;
@@ -223,22 +228,13 @@ function loadOrder(orderId: string): Order | null {
   return row ? rowToOrder(row) : null;
 }
 
-/**
- * The error's message with any quoted fragment blanked: a parser error can quote
- * the text it choked on, and the log must never carry card text or names.
- */
-function safeErrorMessage(e: unknown): string {
-  const message = e instanceof Error ? e.message : "non-error thrown";
-  return message.replace(/"[^"]*"|'[^']*'/g, "…").slice(0, 200);
-}
-
 /** Loads the order by id and scans it. Never throws; logs card_dates_scan_failed with the orderId only. */
 export function scanOrderByIdSafe(orderId: string): void {
   try {
     const order = loadOrder(orderId);
     if (order) scanOrderForDates(order);
   } catch (e) {
-    console.error(JSON.stringify({ event: "card_dates_scan_failed", orderId, error: safeErrorMessage(e) }));
+    console.error(JSON.stringify({ event: "card_dates_scan_failed", orderId, error: errorClass(e) }));
   }
 }
 
@@ -301,7 +297,7 @@ export function scanPendingCardDates(now: Date = new Date()): CardScanReport {
     try {
       outcome = scanOrderForDates(rowToOrder(row), now);
     } catch (e) {
-      console.error(JSON.stringify({ event: "card_dates_scan_failed", orderId: row.id, error: safeErrorMessage(e) }));
+      console.error(JSON.stringify({ event: "card_dates_scan_failed", orderId: row.id, error: errorClass(e) }));
       report.failed += 1;
       continue;
     }
@@ -315,7 +311,7 @@ export function scanPendingCardDates(now: Date = new Date()): CardScanReport {
 /** Orders with a card that would be read once linked to a customer. */
 function countUnlinkedOrders(): number {
   const row = getDb()
-    .prepare(`SELECT COUNT(*) AS n FROM orders o WHERE o.customer_id IS NULL AND ${HAS_CARD} AND ${READABLE_STATUS}`)
+    .prepare(`SELECT COUNT(*) AS n FROM orders o WHERE o.customer_id IS NULL AND o.payment_status = 'paid' AND o.contact_phone <> '' AND ${HAS_CARD} AND ${READABLE_STATUS}`)
     .get() as { n: number };
   return row.n;
 }
@@ -372,26 +368,36 @@ export function listCardReviews(): CardReview[] {
     .all() as Array<OrderRow & { review_customer_name: string }>;
   const reviews: CardReview[] = [];
   for (const row of rows) {
-    const order = rowToOrder(row);
-    const buyer = buyerOf(order);
-    if (!buyer) continue;
-    const cardMessage = order.fulfillment.cardMessage ?? "";
-    const clues = cluesOf(readCard(cardMessage));
-    const day = dayOf(order);
-    reviews.push({
-      orderId: order.id,
-      ...(order.orderNumber !== undefined ? { orderNumber: order.orderNumber } : {}),
-      customerId: order.customerId as string,
-      customerName: row.review_customer_name,
-      recipientName: order.fulfillment.recipient.name,
-      cardMessage,
-      month: day.month,
-      day: day.day,
-      ...clues,
-      needsName: recipientIsBuyer(order, buyer) && !clues.relationship,
-    });
+    try {
+      const review = reviewOf(row);
+      if (review) reviews.push(review);
+    } catch {
+      // One unreadable order must not hide the rest; log the id only.
+      console.error(JSON.stringify({ event: "card_dates_review_row_failed", orderId: row.id }));
+    }
   }
   return reviews;
+}
+
+function reviewOf(row: OrderRow & { review_customer_name: string }): CardReview | null {
+  const order = rowToOrder(row);
+  const buyer = buyerOf(order);
+  if (!buyer) return null;
+  const cardMessage = order.fulfillment.cardMessage ?? "";
+  const clues = cluesOf(readCard(cardMessage));
+  const day = dayOf(order);
+  return {
+    orderId: order.id,
+    ...(order.orderNumber !== undefined ? { orderNumber: order.orderNumber } : {}),
+    customerId: order.customerId as string,
+    customerName: row.review_customer_name,
+    recipientName: order.fulfillment.recipient.name,
+    cardMessage,
+    month: day.month,
+    day: day.day,
+    ...clues,
+    needsName: recipientIsBuyer(order, buyer) && !clues.relationship,
+  };
 }
 
 function setOutcome(orderId: string, outcome: "saved" | "duplicate" | "dismissed", dateId: string | null): void {

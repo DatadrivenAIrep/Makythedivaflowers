@@ -89,6 +89,12 @@ describe("ImportantDates fecha de tarjeta", () => {
     expect(screen.getByText(/cumple 50/)).toBeDefined();
   });
 
+  it("con showPrefs una fecha de tarjeta no muestra además el chip Panel", () => {
+    wrap(<ImportantDates customerId="c1" initial={[card]} locale="es" showPrefs />);
+    expect(screen.getByText("Tarjeta · #1234")).toBeDefined();
+    expect(screen.queryByText("Panel")).toBeNull();
+  });
+
   it("el chip abre el pedido", () => {
     const onOpenOrder = vi.fn();
     wrap(<ImportantDates customerId="c1" initial={[card]} locale="es" onOpenOrder={onOpenOrder} />);

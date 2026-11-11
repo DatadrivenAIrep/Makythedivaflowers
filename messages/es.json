@@ -2532,6 +2532,8 @@
     "anniversary": "Aniversario",
     "dismiss": "Descartar",
     "name_placeholder": "¿Para quién es?",
+    "name_required": "Escribe para quién es.",
+    "already_resolved": "Esta tarjeta ya se resolvió en otro lado.",
     "error": "No se pudo completar. Intenta de nuevo.",
     "relationship": {
       "madre": "mamá",
