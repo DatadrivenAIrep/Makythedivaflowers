@@ -58,6 +58,34 @@ describe("MyDates", () => {
     expect(screen.getByRole("button", { name: "Borrar la fecha de mamá" })).toBeTruthy();
   });
 
+  it("una fecha de tarjeta sin nombre conserva su palabra de aniversario, nunca la neutra", () => {
+    renderIt(
+      view({
+        dates: [
+          { id: "d9", kind: "anniversary", source: "card", relationship: "esposa", month: 6, day: 1, prefs: EMPTY_PREFS },
+          { id: "d8", kind: "birthday", source: "card", label: "Rosa", relationship: "madre", month: 3, day: 18, prefs: EMPTY_PREFS },
+          { id: "d7", kind: "birthday", source: "card", month: 4, day: 2, prefs: EMPTY_PREFS },
+        ],
+      }),
+    );
+    const list = screen.getByRole("region", { name: "Fechas guardadas" });
+    const items = within(list).getAllByRole("listitem");
+    // No label: the relationship is the who-line and the kind keeps its own word.
+    expect(within(items[0]).getByText("esposa")).toBeTruthy();
+    expect(items[0].textContent).toContain("Aniversario");
+    expect(items[0].textContent).toContain("Guardada de un pedido tuyo");
+    expect(list.textContent).not.toContain("Fecha especial");
+    // A label wins over the relationship.
+    expect(within(items[1]).getByText("Rosa")).toBeTruthy();
+    expect(within(items[1]).queryByText("mamá")).toBeNull();
+    expect(items[1].textContent).toContain("Cumpleaños");
+    // Neither label nor relationship: no who-line, the delete button names the kind.
+    expect(items[2].textContent).toContain("Cumpleaños");
+    expect(screen.getByRole("button", { name: "Borrar la fecha de esposa" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Borrar la fecha de Rosa" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Borrar la fecha de Cumpleaños" })).toBeTruthy();
+  });
+
   it("con STOP muestra START y no hay casilla", () => {
     renderIt(view({ permission: "stopped" }));
     expect(

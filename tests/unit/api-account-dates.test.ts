@@ -7,7 +7,7 @@ import { signCustomerSession, CUSTOMER_SESSION_COOKIE } from "@/lib/customer-aut
 import { addImportantDate, listDatesFor } from "@/lib/customer-dates-storage";
 import { getDatePreferences, setDatePreferences } from "@/lib/date-preferences-storage";
 import { markSmsStopped } from "@/lib/promo-consent";
-import { accountDatesView } from "@/lib/account-dates";
+import { accountDatesView, isValidPersonName } from "@/lib/account-dates";
 import type { Order } from "@/types/order";
 import type { Product } from "@/types/product";
 
@@ -173,6 +173,14 @@ describe("/api/account/dates", () => {
     const labels = dates().map((d) => d.label).sort();
     expect(labels).toEqual(["José", "O'Brien"]);
     expect(labels[0]).toBe("José".normalize("NFC"));
+  });
+
+  it("el único validador de nombres normaliza antes de comprobar", () => {
+    expect(isValidPersonName(" O’Brien ")).toBe(true);
+    expect(isValidPersonName("Jose\u0301")).toBe(true);
+    expect(isValidPersonName("   ")).toBe(false);
+    expect(isValidPersonName("Ana & Luis")).toBe(false);
+    expect(isValidPersonName("A".repeat(41))).toBe(false);
   });
 
   it("no borra fechas de otro cliente", async () => {

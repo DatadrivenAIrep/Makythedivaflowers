@@ -7,7 +7,7 @@ import { getDb } from "@/lib/db";
 import { errorClass } from "@/lib/card-dates-log";
 import { runMigrations } from "@/lib/db-migrate";
 import { inTransaction, withTransaction } from "@/lib/db-tx";
-import { isValidPersonName } from "@/lib/account-dates";
+import { isValidPersonName, normalizeName } from "@/lib/account-dates";
 import { readCard, yearsInRange, type CardReading } from "@/lib/card-dates";
 import type { RelationshipCode } from "@/lib/customer-dates";
 import { addImportantDate, findDateByRelationship, findRecipientDate } from "@/lib/customer-dates-storage";
@@ -427,7 +427,8 @@ export function resolveCardReview(
       return "dismissed";
     }
 
-    const name = choice.name?.trim() || undefined;
+    // Stored as the Mis fechas form stores it: "O’Brien" from a phone keyboard becomes "O'Brien".
+    const name = normalizeName(choice.name ?? "") || undefined;
     if (name !== undefined && !isValidPersonName(name)) return "name_required";
 
     const order = loadOrder(orderId);

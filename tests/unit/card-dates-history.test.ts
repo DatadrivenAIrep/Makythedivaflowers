@@ -351,6 +351,20 @@ describe("card reviews", () => {
     expect(scanOf(self.id)).toMatchObject({ outcome: "saved", date_id: d.id });
   });
 
+  it("a staff-typed name is stored normalised, like the Mis fechas form", async () => {
+    const curly = await saved({ fulfillment: delivery("Happy 25th!", { name: " ana ", phone: BUYER_PHONE }) });
+    const decomposed = await saved({ fulfillment: delivery("Happy 30th!", { name: "Ana", phone: BUYER_PHONE }) });
+    scanPendingCardDates(NOW);
+
+    expect(resolveCardReview(curly.id, { kind: "birthday", name: " O’Brien " }, LATER)).toBe("saved");
+    // "José" typed as e + combining accent.
+    expect(resolveCardReview(decomposed.id, { kind: "anniversary", name: "José" }, LATER)).toBe("saved");
+    const labels = listDatesFor("c1", LATER).map((d) => d.label);
+    expect(labels).toContain("O'Brien");
+    expect(labels).toContain("José");
+    expect(labels).not.toContain("O’Brien");
+  });
+
   it("a relationship stands in for the name", async () => {
     const self = await saved({ fulfillment: delivery("Happy 30th to my wife", { name: "Ana", phone: BUYER_PHONE }) });
     scanPendingCardDates(NOW);
