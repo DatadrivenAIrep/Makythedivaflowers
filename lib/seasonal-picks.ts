@@ -21,6 +21,17 @@ export type SeasonalPick = {
 
 /** Always listed, after the seasonal ones. */
 export const EVERGREEN_PICKS: SeasonalPick[] = [
+  // The digital card is an add-on, not a collection, but it sells well once
+  // people see it, and the home block that explains it sits further down. The
+  // chip is the first way in, right under the hero.
+  {
+    slug: "digital-card",
+    label: { en: "Digital card", es: "Tarjeta digital" },
+    // The QR card from the promo poster: the product photo (a rose) does not read as a card.
+    img: "/digital-cards/chip-qr.jpg",
+    path: (l) => `/${l}/digital-cards`,
+    badge: { en: "New", es: "Nuevo" },
+  },
   {
     slug: "roses",
     label: { en: "Roses", es: "Rosas" },

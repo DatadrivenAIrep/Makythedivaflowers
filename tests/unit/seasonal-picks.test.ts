@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
+import { existsSync } from "node:fs";
 import { EVERGREEN_PICKS, THANKSGIVING_IMG, seasonalPicks } from "@/lib/seasonal-picks";
 import { isCenterpieceProduct, isRoseProduct } from "@/lib/shop-categories";
 import { PRODUCTS } from "@/data/products";
@@ -10,6 +11,7 @@ describe("home seasonal picks", () => {
     expect(slugsAt("2026-10-28T16:00:00Z")).toEqual([
       "fall",
       "thanksgiving",
+      "digital-card",
       "roses",
       "designers-choice",
       "centerpieces",
@@ -34,6 +36,14 @@ describe("home seasonal picks", () => {
 
   it("shows only the evergreen picks outside every season", () => {
     expect(slugsAt("2026-07-01T16:00:00Z")).toEqual(EVERGREEN_PICKS.map((p) => p.slug));
+  });
+
+  it("offers the digital card right after the seasonal chips, marked new", () => {
+    const pick = EVERGREEN_PICKS[0];
+    expect(pick.slug).toBe("digital-card");
+    expect(pick.path("es")).toBe("/es/digital-cards");
+    expect(pick.badge?.es).toBe("Nuevo");
+    expect(existsSync(`public${pick.img}`)).toBe(true);
   });
 
   it("dates the Thanksgiving badge in both languages", () => {
