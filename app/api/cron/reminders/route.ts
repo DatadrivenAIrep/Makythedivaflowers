@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import {
   dueReminders,
+  hasOrderForWindow,
   hasRecentPaidOrder,
   recordReminder,
   renderReminder,
@@ -26,6 +27,17 @@ const LEAD_DAYS: Record<ReminderStage, number> = { d7: 7, d3: 3 };
 
 function isCode21610(e: unknown): boolean {
   return typeof e === "object" && e !== null && (e as { code?: number }).code === 21610;
+}
+
+/**
+ * What a failure log may carry: the error code (Twilio's numeric one, or a string
+ * code) or else the error's class name. Never the message: Twilio puts the
+ * destination number in it ("The 'To' number +1516... is not a valid phone number").
+ */
+function errorTag(e: unknown): string {
+  const code = typeof e === "object" && e !== null ? (e as { code?: unknown }).code : undefined;
+  if (typeof code === "number" || (typeof code === "string" && code !== "")) return String(code);
+  return e instanceof Error ? e.name : typeof e;
 }
 
 /** Best card discount for this customer, or null on any failure, a disabled card or no reward. */
@@ -70,6 +82,8 @@ export async function POST(req: Request) {
   }
 
   const now = new Date();
+  // Same UTC calendar day nextOccurrence counts from.
+  const today = now.toISOString().slice(0, 10);
   const dry = twilioDryRun() || !twilioSmsEnabled();
   const d3On = d3RemindersEnabled();
   // One date text per customer per run, but only once the new features are on:
@@ -86,10 +100,13 @@ export async function POST(req: Request) {
     try {
       try {
         if (!dry) await sendSms(r.phone, body);
+        // Counted against the daily cap the moment the text is out, before the
+        // ledger write: if that write fails, a second date text must still not
+        // go to the same customer in this run.
+        written.add(r.customerId);
         // Recorded even in a dry run: a dry run that leaves everything "due"
         // would text the whole list the moment SMS is switched on.
         recordReminder(r.dateId, r.occurrenceDate, stage, "sent");
-        written.add(r.customerId);
         sent += 1;
       } catch (e) {
         if (!isCode21610(e)) throw e;
@@ -103,7 +120,7 @@ export async function POST(req: Request) {
       // One bad number (or a failed write) must not stop the rest of the batch;
       // it stays due for the next run.
       failed += 1;
-      console.error("[reminders] send failed", r.customerId, e);
+      console.error("[reminders] send failed", r.customerId, errorTag(e));
     }
   }
 
@@ -121,6 +138,12 @@ export async function POST(req: Request) {
             skipped += 1;
             continue;
           }
+          // Already has flowers on the way for this date (ordered more than a week ago).
+          if (hasOrderForWindow(r.customerId, today, r.occurrenceDate)) {
+            recordReminder(r.dateId, r.occurrenceDate, "d3", "skipped", "already_ordered");
+            skipped += 1;
+            continue;
+          }
           if (written.has(r.customerId)) {
             recordReminder(r.dateId, r.occurrenceDate, "d3", "skipped", "daily_cap");
             skipped += 1;
@@ -131,6 +154,7 @@ export async function POST(req: Request) {
             customerName: r.customerName,
             kind: r.kind,
             label: r.label,
+            source: r.source,
             locale: r.locale,
             prefs: getDatePreferences(r.dateId),
             rewardPercent,
@@ -138,11 +162,11 @@ export async function POST(req: Request) {
           await send(r, "d3", body);
         } catch (e) {
           failed += 1;
-          console.error("[reminders] d3 failed", r.customerId, e);
+          console.error("[reminders] d3 failed", r.customerId, errorTag(e));
         }
       }
     } catch (e) {
-      console.error("[reminders] d3 phase failed", e);
+      console.error("[reminders] d3 phase failed", errorTag(e));
     }
   }
 
@@ -158,7 +182,7 @@ export async function POST(req: Request) {
       await send(r, "d7", renderReminder(r, r.locale));
     } catch (e) {
       failed += 1;
-      console.error("[reminders] d7 failed", r.customerId, e);
+      console.error("[reminders] d7 failed", r.customerId, errorTag(e));
     }
   }
 

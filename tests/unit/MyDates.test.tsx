@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import es from "@/messages/es.json";
 import { MyDates, type MyDatesView } from "@/components/account/MyDates";
@@ -50,8 +50,29 @@ describe("MyDates", () => {
 
   it("con STOP muestra START y no hay casilla", () => {
     renderIt(view({ permission: "stopped" }));
-    expect(screen.getByText(es.date_prompt.stopped_note)).toBeTruthy();
+    expect(
+      screen.getByText("Para recibir avisos, envía START a nuestro número y luego activa los avisos en Mis fechas."),
+    ).toBeTruthy();
     expect(screen.queryByRole("checkbox")).toBeNull();
+  });
+
+  it("una fecha custom muestra su ocasión con una palabra neutra, nunca como cumpleaños", () => {
+    renderIt(view({ dates: [{ id: "d9", kind: "custom", label: "Graduación", month: 5, day: 20, prefs: EMPTY_PREFS }] }));
+    // The add form below has its own "Cumpleaños" button: look only at the saved list.
+    const list = screen.getByRole("region", { name: "Fechas guardadas" });
+    expect(within(list).getByText("Graduación")).toBeTruthy();
+    expect(list.textContent).toContain("Fecha especial");
+    expect(list.textContent).not.toContain("Cumpleaños");
+    expect(screen.getByRole("button", { name: "Borrar la fecha de Graduación" })).toBeTruthy();
+  });
+
+  it("se dibuja con un código de gusto que ya no está en la lista", () => {
+    const odd = { flowers: ["nope"], colors: ["nada"], avoid: ["tampoco"] } as unknown as MyDatesView["dates"][number]["prefs"];
+    renderIt(view({ dates: [{ id: "d1", kind: "birthday", label: "Laura", month: 3, day: 18, prefs: odd }] }));
+    expect(screen.getByText("Laura")).toBeTruthy();
+    expect(screen.queryByText(/Le gustan/)).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Editar gustos" }));
+    expect(screen.getByRole("button", { name: "Guardar gustos" })).toBeTruthy();
   });
 
   it("la casilla empieza sin marcar y lleva la letra pequeña", () => {

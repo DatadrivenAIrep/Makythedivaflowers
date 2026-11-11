@@ -25,6 +25,7 @@ vi.mock("@/lib/product-prices", () => ({
 
 import { addImportantDate, findRecipientDate } from "@/lib/customer-dates-storage";
 import { setDatePreferences } from "@/lib/date-preferences-storage";
+import { addFuneralHome } from "@/lib/funeral-homes";
 import { orderQualifiesForPrompt, promptQuestion, promptReward } from "@/lib/date-prompt";
 
 const NOW = new Date("2026-11-10T12:00:00Z");
@@ -117,6 +118,50 @@ describe("orderQualifiesForPrompt", () => {
   ])("no califica: %s", (_n, over) => {
     expect(orderQualifiesForPrompt(makeOrder(over), NOW)).toBe(false);
   });
+  it("un producto que ya no está en el catálogo cuenta como condolencias", () => {
+    const lines: Order["lines"] = [
+      { kind: "catalog", productId: "p-normal", variantId: "v", addOnIds: [], qty: 1 },
+      { kind: "catalog", productId: "retirado", variantId: "v", addOnIds: [], qty: 1 },
+    ];
+    expect(orderQualifiesForPrompt(makeOrder({ lines }), NOW)).toBe(false);
+  });
+  it("una línea a medida sin producto de catálogo sí califica", () => {
+    const lines: Order["lines"] = [{ kind: "custom", title: "Ramo especial", priceCents: 5000, qty: 1 }];
+    expect(orderQualifiesForPrompt(makeOrder({ lines }), NOW)).toBe(true);
+  });
+  it("entrega en una funeraria guardada no califica, aunque el producto sea normal", () => {
+    addFuneralHome({
+      name: "Capilla Inventada",
+      address: { street1: "12 Calle Falsa", city: "Hempstead", state: "NY", zip: "11550", country: "US" },
+    });
+    const toHome = makeOrder({
+      fulfillment: {
+        method: "delivery",
+        recipient: { name: "Familia Ruiz", phone: "5165559999" },
+        address: { street1: "12 calle falsa.", city: "Hempstead", state: "NY", zip: "11550-1234", country: "US" },
+        window: { date: "2026-03-18", slot: "morning" },
+      },
+    });
+    expect(orderQualifiesForPrompt(toHome, NOW)).toBe(false);
+    const elsewhere = makeOrder({
+      fulfillment: {
+        method: "delivery",
+        recipient: { name: "Familia Ruiz", phone: "5165559999" },
+        address: { street1: "99 Otra Calle", city: "Hempstead", state: "NY", zip: "11550", country: "US" },
+        window: { date: "2026-03-18", slot: "morning" },
+      },
+    });
+    expect(orderQualifiesForPrompt(elsewhere, NOW)).toBe(true);
+  });
+  it.each(["Funeraria San Inventado", "Inventado Funeral Home", "CAPILLA FUNERÁRIA"])(
+    "destinatario que es una funeraria no califica: %s",
+    (name) => {
+      const o = makeOrder({
+        fulfillment: { method: "pickup", recipient: { name, phone: "5165559999" }, window: { date: "2026-03-18", slot: "morning" } },
+      });
+      expect(orderQualifiesForPrompt(o, NOW)).toBe(false);
+    },
+  );
   it("get-well mezclado con otro producto sí califica", () => {
     const lines: Order["lines"] = [
       { kind: "catalog", productId: "p-gw", variantId: "v", addOnIds: [], qty: 1 },
@@ -153,6 +198,20 @@ describe("promptQuestion", () => {
   it("no precarga en tienda", () => {
     const o = makeOrder({ fulfillment: { method: "in-store", recipient: { name: "Laura", phone: "" } } });
     expect(promptQuestion(o, NOW)).toEqual({ kind: "date", recipientName: "Laura", prefill: null });
+  });
+  it("no pregunta si el destinatario es el mismo comprador", () => {
+    const o = makeOrder({
+      fulfillment: {
+        method: "pickup",
+        recipient: { name: "Ana", phone: "+1 (516) 555-0100" },
+        window: { date: "2026-03-18", slot: "morning" },
+      },
+    });
+    expect(promptQuestion(o, NOW)).toBeNull();
+  });
+  it("sin teléfono del destinatario sí pregunta", () => {
+    const o = makeOrder({ fulfillment: { method: "in-store", recipient: { name: "Laura", phone: "" } } });
+    expect(promptQuestion(o, NOW)?.kind).toBe("date");
   });
   it("sin nombre de destinatario no pregunta", () => {
     const o = makeOrder({

@@ -1,5 +1,5 @@
 import "server-only";
-import type { Order } from "@/types/order";
+import type { CatalogCartLine, Order } from "@/types/order";
 import { getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import { e164 } from "@/lib/twilio-server";
@@ -7,6 +7,8 @@ import { dateRewardsEnabled } from "@/lib/date-rewards-flags";
 import { getPricedProducts } from "@/lib/product-prices";
 import { isSympathyProduct } from "@/lib/product-add-ons";
 import { inHoliday } from "@/lib/date-suggestions";
+import { listFuneralHomes } from "@/lib/funeral-homes";
+import { sameAddress } from "@/lib/address-key";
 import { findRecipientDate } from "@/lib/customer-dates-storage";
 import { getDatePreferences, preferencesForRecipient, type DatePreferences } from "@/lib/date-preferences-storage";
 import { bonusSlotFree, type BonusSlot } from "@/lib/loyalty-bonus";
@@ -32,6 +34,29 @@ function db() {
   return getDb();
 }
 
+function folded(text: string): string {
+  return text.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
+}
+
+/**
+ * A web order never carries the shop's funeral flag, so the product tags alone
+ * would decide. Two more signs of a funeral: the delivery goes to a funeral home
+ * the shop has saved, or the recipient is one ("Funeraria San José", "Smith Funeral Home").
+ */
+function looksLikeFuneral(order: Order): boolean {
+  const recipient = folded(order.fulfillment.recipient.name);
+  if (recipient.includes("funeral") || recipient.includes("funeraria")) return true;
+  if (order.fulfillment.method !== "delivery") return false;
+  const address = order.fulfillment.address;
+  if (!address?.street1?.trim()) return false;
+  return listFuneralHomes().some((h) => sameAddress(h.address, address));
+}
+
+function last10(phone: string | undefined): string {
+  const digits = (phone ?? "").replace(/\D/g, "");
+  return digits.length >= 10 ? digits.slice(-10) : "";
+}
+
 export function orderQualifiesForPrompt(order: Order, now: Date = new Date()): boolean {
   if (!dateRewardsEnabled()) return false;
   if (order.paymentStatus !== "paid" || order.status === "canceled") return false;
@@ -39,9 +64,14 @@ export function orderQualifiesForPrompt(order: Order, now: Date = new Date()): b
   if (!Number.isFinite(created) || now.getTime() - created > MAX_AGE_MS) return false;
   if (!order.customerId || order.source !== "web" || order.funeral) return false;
 
+  if (looksLikeFuneral(order)) return false;
+
   const products = new Map(getPricedProducts().map((p) => [p.id, p]));
-  const catalog = order.lines.flatMap((l) => {
-    if (l.kind !== "catalog") return [];
+  const catalogLines = order.lines.filter((l): l is CatalogCartLine => l.kind === "catalog");
+  // A product no longer in the catalog may have been a sympathy piece: we cannot
+  // tell, so the order is treated as one (same rule as the Mis fechas suggestions).
+  if (catalogLines.some((l) => !products.has(l.productId))) return false;
+  const catalog = catalogLines.flatMap((l) => {
     const p = products.get(l.productId);
     return p ? [p] : [];
   });
@@ -60,6 +90,9 @@ export function promptQuestion(order: Order, now: Date = new Date()): DatePrompt
   const recipient = order.fulfillment.recipient;
   const name = recipient.name.trim();
   if (!name) return null;
+  // Flowers for themselves (same phone as the buyer) say nothing about someone they love.
+  const own = last10(recipient.phone);
+  if (own !== "" && own === last10(order.contact.phone)) return null;
   const who = { name, phone: recipient.phone };
 
   const date = findRecipientDate(order.customerId, who, ["birthday", "anniversary"]);

@@ -27,10 +27,24 @@ Los sellos usan la conexión de la tarjeta (`LOYALTY_API_URL`, `LOYALTY_API_KEY`
 4. Registro A2P de Twilio que cubra mensajes promocionales.
 5. Un abogado revisa la casilla, la política de privacidad (datos de terceros y premio por compartirlos) y las reglas del premio.
 6. Maky revisa las listas de flores y colores.
+7. Cron de `/api/cron/loyalty-sync` funcionando (`docs/ops/loyalty-card.md`). Es el
+   que reintenta los sellos por datos que no llegaron al guardar y los marca como
+   fallidos a las 72 horas. Sin él, un sello que falló la primera vez no llega nunca
+   y se rompe la promesa de la pantalla.
+8. Webhook de entrada de Twilio apuntando a `/api/twilio/inbound`, para que STOP y
+   START lleguen a Diva. Sin él, Diva no se entera de un STOP (solo del error 21610
+   al intentar enviar) y seguiría ofreciendo la casilla a quien ya se dio de baja.
 
 ## Despliegue
 
 Siempre en este orden, y comprobando después de cada uno que el despliegue salió.
+
+**No publicar cerca de las 09:15 de Nueva York**, cuando corre el cron de avisos.
+`next build` aplica la migración 042 (rehace el registro `date_reminder_sends`)
+mientras el proceso viejo sigue atendiendo: si el cron cae en ese rato, el código
+viejo intenta registrar en una tabla que ya cambió, el aviso sale pero no queda
+anotado, y si el cron se vuelve a llamar ese día (a mano o por un reintento) sale
+otra vez. Publicar con al menos una hora de margen.
 
 1. **Copia de seguridad.** Copiar el archivo SQLite de Diva antes de publicar:
    `/home/u283940187/domains/makythedivaflowers.com/diva-data/diva.sqlite`
@@ -83,6 +97,14 @@ Siempre en este orden, y comprobando después de cada uno que el despliegue sali
 
 Con `DATE_REWARDS_ENABLED`, la respuesta del cron de `loyalty-sync` suma
 `bonus: { done, pending, failed }` (sellos por datos); ver `docs/ops/loyalty-card.md`.
+
+### Volver atrás
+
+Hay que restaurar la copia de la base, no solo el código. El código viejo no entiende el registro nuevo de la 042: con solo la versión anterior, cada aviso de
+7 días sale pero falla al anotarse, con el mismo riesgo de repetirse. Con la app
+detenida, restaurar `diva.sqlite.bak-AAAAMMDD` (paso 1) y luego publicar la versión
+anterior. Lo que se guardó entre medias (pedidos incluidos) se pierde: anotar antes
+los pedidos de ese rato para volver a cargarlos.
 
 ## Leer los resultados a los 90 días
 

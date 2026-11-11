@@ -150,6 +150,16 @@ describe("/api/account/dates", () => {
     expect((await add({ name: "María José", month: 2, day: 29 })).status).toBe(200);
   });
 
+  it("acepta el apóstrofo curvo del teléfono y los acentos descompuestos", async () => {
+    expect((await add({ name: "O’Brien" })).status).toBe(200);
+    const nfd = "Jose\u0301"; // "José" as e + combining acute accent
+    expect(nfd).not.toBe("José");
+    expect((await add({ name: nfd, month: 4, day: 2 })).status).toBe(200);
+    const labels = dates().map((d) => d.label).sort();
+    expect(labels).toEqual(["José", "O'Brien"]);
+    expect(labels[0]).toBe("José".normalize("NFC"));
+  });
+
   it("no borra fechas de otro cliente", async () => {
     const [mine] = addImportantDate("c2", { kind: "birthday", label: "Rosa", month: 5, day: 5, source: "customer" });
     const res = await DELETE(req("DELETE", "/x"), ctx(mine.id));
@@ -221,6 +231,18 @@ describe("/api/account/dates", () => {
     await saveOrder(
       forRosa("f2", "2026-10-02", { lines: [{ kind: "catalog", productId: "p-funeral", variantId: "v", addOnIds: [], qty: 1 }] }),
     );
+    const names = accountDatesView("c1").suggestions.map((s) => s.recipientName);
+    expect(names).toEqual(["Laura"]);
+  });
+
+  it("no sugiere un nombre que no se podría guardar", async () => {
+    await saveOrder(makeOrder("o2", "2025-09-10"));
+    await saveOrder(makeOrder("o3", "2026-09-12"));
+    const pair = { name: "Ana & Luis", phone: "5165557777" };
+    const forPair = (id: string, day: string) =>
+      makeOrder(id, day, { fulfillment: { method: "pickup", recipient: pair, window: { date: day, slot: "morning" } } });
+    await saveOrder(forPair("p1", "2025-10-01"));
+    await saveOrder(forPair("p2", "2026-10-02"));
     const names = accountDatesView("c1").suggestions.map((s) => s.recipientName);
     expect(names).toEqual(["Laura"]);
   });

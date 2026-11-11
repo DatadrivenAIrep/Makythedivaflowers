@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { PreferencePicker, type PickerValue } from "@/components/dates/PreferencePicker";
 import { DAYS_IN_MONTH, formatMonthDay } from "@/lib/customer-dates";
-import { flowersPhrase } from "@/lib/date-preference-options";
+import { AVOID, COLORS, FLOWERS, flowersPhrase } from "@/lib/date-preference-options";
 import type { Locale } from "@/types/locale";
 
 type Permission = "granted" | "stopped" | "none";
@@ -154,7 +154,12 @@ export function MyDates({ locale, initial }: Props) {
 
   function startEditing(d: MyDate) {
     setEditing(d.id);
-    setDraft({ flowers: [...d.prefs.flowers], colors: [...d.prefs.colors], avoid: [...d.prefs.avoid] });
+    // A code no longer on the lists cannot be shown or saved back: leave it out of the draft.
+    setDraft({
+      flowers: d.prefs.flowers.filter((c) => FLOWERS.includes(c)),
+      colors: d.prefs.colors.filter((c) => COLORS.includes(c)),
+      avoid: d.prefs.avoid.filter((c) => AVOID.includes(c)),
+    });
   }
 
   const kindButtons = (value: Kind, onPick: (k: Kind) => void) => (
@@ -192,14 +197,23 @@ export function MyDates({ locale, initial }: Props) {
             {view.dates.map((d) => {
               const phrase = flowersPhrase(d.prefs.flowers[0], d.prefs.colors[0], locale);
               const hasAny = d.prefs.flowers.length + d.prefs.colors.length + d.prefs.avoid.length > 0;
+              // Birthdays and anniversaries keep the person's name in `label`; a custom date
+              // (only staff create those) keeps the occasion there instead, so it is shown
+              // as the occasion with a neutral word, never as somebody's birthday.
               const who = d.label ?? "";
+              const kindWord =
+                d.kind === "birthday"
+                  ? prompt("kind_birthday")
+                  : d.kind === "anniversary"
+                    ? prompt("kind_anniversary")
+                    : t("kind_custom");
               return (
                 <li key={d.id} className="py-4 space-y-3">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="text-ink">{who}</p>
+                      {who && <p className="text-ink">{who}</p>}
                       <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60">
-                        {d.kind === "anniversary" ? prompt("kind_anniversary") : prompt("kind_birthday")}
+                        {kindWord}
                         {" · "}
                         {formatMonthDay(d.month, d.day, locale)}
                       </p>
@@ -207,7 +221,7 @@ export function MyDates({ locale, initial }: Props) {
                     </div>
                     <button
                       type="button"
-                      aria-label={t("delete_label", { name: who })}
+                      aria-label={t("delete_label", { name: who || kindWord })}
                       onClick={() => remove(d.id)}
                       className={quiet}
                     >

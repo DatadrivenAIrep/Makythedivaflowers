@@ -16,11 +16,11 @@ function customer(id: string, opts: { tag?: boolean; stoppedAt?: string } = {}) 
   ).run(id, `555${id}`, opts.stoppedAt ?? null);
   if (opts.tag) getDb().prepare("INSERT INTO customer_tags (customer_id, tag) VALUES (?, 'sms-marketing')").run(id);
 }
-function date(id: string, customerId: string, source = "customer") {
+function date(id: string, customerId: string, source = "customer", createdAt = day(0)) {
   getDb().prepare(
     `INSERT INTO customer_important_dates (id, customer_id, kind, label, month, day, created_at, source)
-     VALUES (?, ?, 'birthday', 'M', 3, 15, '2026-01-01T00:00:00Z', ?)`,
-  ).run(id, customerId, source);
+     VALUES (?, ?, 'birthday', 'M', 3, 15, ?, ?)`,
+  ).run(id, customerId, createdAt, source);
 }
 function send(dateId: string, stage: "d7" | "d3", status: "sent" | "skipped", at: string) {
   getDb().prepare(
@@ -82,6 +82,16 @@ describe("dateResults", () => {
     customer("1", { tag: true }); date("d1", "1", "customer");
     customer("2", { tag: true }); date("d2", "2", "admin");
     customer("3"); date("d3", "3", "customer");
+    const r = dateResults(NOW);
+    expect(r.customersWithOwnDates).toBe(2);
+    expect(r.withSms).toBe(1);
+  });
+
+  it("solo cuenta fechas propias creadas en los últimos 90 días", () => {
+    const at = (daysAgo: number) => new Date(NOW.getTime() - daysAgo * 86400_000).toISOString();
+    customer("1", { tag: true }); date("d1", "1", "customer", at(89));
+    customer("2", { tag: true }); date("d2", "2", "customer", at(91));
+    customer("3"); date("d3", "3", "customer", at(200)); date("d4", "3", "customer", at(10));
     const r = dateResults(NOW);
     expect(r.customersWithOwnDates).toBe(2);
     expect(r.withSms).toBe(1);

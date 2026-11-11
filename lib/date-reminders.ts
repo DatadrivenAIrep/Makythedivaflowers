@@ -22,13 +22,15 @@ export type DueReminder = {
   locale: "en" | "es";
   kind: DateKind;
   label?: string;
+  /** Who saved the date: the customer, or the shop (also every date from before 042). */
+  source: "admin" | "customer";
   /** YYYY-MM-DD of the occurrence this reminder is about. */
   occurrenceDate: string;
   daysUntil: number;
 };
 
 export type ReminderStage = "d7" | "d3";
-export type SkipReason = "recent_order" | "daily_cap" | "21610";
+export type SkipReason = "recent_order" | "already_ordered" | "daily_cap" | "21610";
 
 export function dueReminders({
   leadDays,
@@ -51,7 +53,7 @@ export function dueReminders({
   const kindCondition = stage === "d3" ? "d.kind IN ('birthday', 'anniversary') AND" : "";
   const rows = getDb()
     .prepare(
-      `SELECT d.id AS date_id, d.customer_id, d.kind, d.label, d.month, d.day,
+      `SELECT d.id AS date_id, d.customer_id, d.kind, d.label, d.month, d.day, d.source,
               c.name AS customer_name, c.phone, c.locale
          FROM customer_important_dates d
          JOIN customers c ON c.id = d.customer_id
@@ -70,6 +72,7 @@ export function dueReminders({
     label: string | null;
     month: number;
     day: number;
+    source: string | null;
     customer_name: string;
     phone: string;
     locale: string | null;
@@ -94,6 +97,7 @@ export function dueReminders({
       locale: r.locale === "en" ? ("en" as const) : ("es" as const),
       kind: r.kind as DateKind,
       label: r.label ?? undefined,
+      source: r.source === "customer" ? ("customer" as const) : ("admin" as const),
       occurrenceDate: next.date,
       daysUntil: next.daysUntil,
     }));
@@ -118,6 +122,26 @@ export function recordReminder(
 
 export function markReminderSent(dateId: string, occurrenceDate: string): void {
   recordReminder(dateId, occurrenceDate, "d7", "sent");
+}
+
+/**
+ * A paid, non-canceled order already set for delivery or pickup between today and the
+ * occurrence (both inclusive, YYYY-MM-DD): the customer has flowers for that date, so
+ * a sales text would be selling them what they already bought.
+ */
+export function hasOrderForWindow(customerId: string, today: string, occurrenceDate: string): boolean {
+  runMigrations();
+  return Boolean(
+    getDb()
+      .prepare(
+        `SELECT 1 FROM orders
+          WHERE customer_id = ? AND payment_status = 'paid'
+            AND fulfillment_status != 'canceled'
+            AND window_date IS NOT NULL AND window_date >= ? AND window_date <= ?
+          LIMIT 1`,
+      )
+      .get(customerId, today, occurrenceDate),
+  );
 }
 
 /** A paid, non-canceled order in the last `days` days: no sales text on top of a fresh purchase. */
