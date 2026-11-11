@@ -2513,5 +2513,36 @@
     "saved_likes": "Listo. Lo tendremos en cuenta.",
     "saved_stamp": "Tu sello va en camino a tu tarjeta.",
     "error": "No se pudo guardar. Intenta de nuevo."
+  },
+  "card_dates": {
+    "title": "Fechas en las tarjetas",
+    "pending": "{orders} pedidos con tarjeta sin leer: se guardarían {saved} fechas y {review} quedarían por revisar.",
+    "unlinked": "{count} pedidos con tarjeta todavía no tienen cliente. Corre primero «Ligar pedidos» en Clientes.",
+    "run": "Buscar fechas en tarjetas",
+    "done": "Listo: {saved} fechas guardadas y {review} por revisar.",
+    "failed": "{count} pedidos no se pudieron leer; se volverán a intentar.",
+    "nothing": "No hay tarjetas por leer.",
+    "review_title": "Por revisar ({count})",
+    "birthday": "Cumpleaños",
+    "anniversary": "Aniversario",
+    "dismiss": "Descartar",
+    "name_placeholder": "¿Para quién es?",
+    "error": "No se pudo completar. Intenta de nuevo.",
+    "relationship": {
+      "madre": "mamá",
+      "padre": "papá",
+      "esposa": "esposa",
+      "esposo": "esposo",
+      "hija": "hija",
+      "hijo": "hijo",
+      "hermana": "hermana",
+      "hermano": "hermano",
+      "abuela": "abuela",
+      "abuelo": "abuelo",
+      "tia": "tía",
+      "tio": "tío",
+      "novia": "novia",
+      "novio": "novio"
+    }
   }
 }

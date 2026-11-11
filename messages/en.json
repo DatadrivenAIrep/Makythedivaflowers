@@ -2513,5 +2513,36 @@
     "saved_likes": "Done. We'll keep it in mind.",
     "saved_stamp": "Your stamp is on its way to your card.",
     "error": "Couldn't save. Try again."
+  },
+  "card_dates": {
+    "title": "Dates on card messages",
+    "pending": "{orders} card messages not read yet: {saved} dates would be saved and {review} left to review.",
+    "unlinked": "{count} orders with a card have no customer yet. Run “Link orders” in Customers first.",
+    "run": "Find dates in card messages",
+    "done": "Done: {saved} dates saved and {review} to review.",
+    "failed": "{count} orders couldn't be read; they'll be retried.",
+    "nothing": "No card messages left to read.",
+    "review_title": "To review ({count})",
+    "birthday": "Birthday",
+    "anniversary": "Anniversary",
+    "dismiss": "Dismiss",
+    "name_placeholder": "Who is it for?",
+    "error": "Couldn't complete that. Try again.",
+    "relationship": {
+      "madre": "mom",
+      "padre": "dad",
+      "esposa": "wife",
+      "esposo": "husband",
+      "hija": "daughter",
+      "hijo": "son",
+      "hermana": "sister",
+      "hermano": "brother",
+      "abuela": "grandma",
+      "abuelo": "grandpa",
+      "tia": "aunt",
+      "tio": "uncle",
+      "novia": "girlfriend",
+      "novio": "boyfriend"
+    }
   }
 }
