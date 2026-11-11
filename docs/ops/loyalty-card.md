@@ -31,9 +31,10 @@ After that they are marked failed and Maky is notified once.
 The route answers `{ "done": n, "pending": n, "failed": n }`. With
 `DATE_REWARDS_ENABLED` (`docs/ops/date-rewards.md`) the answer gains
 `bonus: { done, pending, failed }`, the same counts for the stamps given for
-dates and tastes. Without
-`CRON_SECRET` it returns 503; with a wrong one, 401. Running it more than once
-is safe: every step carries the same order id.
+dates and tastes.
+
+Without `CRON_SECRET` the route returns 503; with a wrong one, 401. Running it
+more than once is safe: every step carries the same order id.
 
 ## Go-live steps
 

@@ -24,8 +24,22 @@ export const MAX_DATES = 12;
 export const NAME_PATTERN = /^\p{L}[\p{L} .'-]*$/u;
 export const NAME_MAX = 40;
 
-/** A name a date can be saved under: starts with a letter, then letters, spaces, . ' -; at most NAME_MAX. */
-export function isValidPersonName(name: string): boolean {
+/**
+ * Phones type "O’Brien" with a curly apostrophe, and some send "José" decomposed
+ * (e + combining accent): both are ordinary names, so they are folded to the plain
+ * apostrophe and the composed form before the check, and stored that way.
+ */
+export function normalizeName(raw: string): string {
+  return raw.normalize("NFC").replace(/[’‘]/g, "'").trim();
+}
+
+/**
+ * A name a date can be saved under, once normalised (normalizeName): starts with a
+ * letter, then letters, spaces, . ' -; at most NAME_MAX. Callers store the
+ * normalizeName() form, never the raw input.
+ */
+export function isValidPersonName(raw: string): boolean {
+  const name = normalizeName(raw);
   return name.length >= 1 && name.length <= NAME_MAX && NAME_PATTERN.test(name);
 }
 
@@ -66,7 +80,11 @@ export function accountDatesView(customerId: string, now: Date = new Date()): Ac
   const recipients = recipientsForSender({ customerId, phone: customer?.phone });
   const excluded = sympathyRecipients(customerId);
   const suggestions = dateSuggestionsFor(customerId, recipients, dates).filter(
-    (s) => !excluded.some((m) => m({ label: s.recipientName, recipient_phone: s.recipientPhone || null })),
+    (s) =>
+      // Saving a suggestion sends its name as-is and there is no way to edit it here:
+      // one the save would reject ("Ana & Luis") is not offered at all.
+      isValidPersonName(s.recipientName) &&
+      !excluded.some((m) => m({ label: s.recipientName, recipient_phone: s.recipientPhone || null })),
   );
   return {
     dates: dates.map((d) => ({ ...d, prefs: getDatePreferences(d.id) })),
@@ -82,7 +100,7 @@ export function addCustomerDate(
   input: AddDateInput,
   now: Date = new Date(),
 ): { ok: true; date: ImportantDate; stamp: boolean } | { ok: false; error: "too_many_dates" | "invalid" } {
-  const name = input.name.trim();
+  const name = normalizeName(input.name);
   if (!isValidPersonName(name)) return { ok: false, error: "invalid" };
   if (!isValidMonthDay(input.month, input.day)) return { ok: false, error: "invalid" };
 

@@ -2,7 +2,14 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { closeDb, getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import { addImportantDate } from "@/lib/customer-dates-storage";
-import { dueReminders, markReminderSent, recordReminder, hasRecentPaidOrder, renderReminder } from "@/lib/date-reminders";
+import {
+  dueReminders,
+  markReminderSent,
+  recordReminder,
+  hasOrderForWindow,
+  hasRecentPaidOrder,
+  renderReminder,
+} from "@/lib/date-reminders";
 
 beforeEach(() => {
   vi.stubEnv("SQLITE_FILE", ":memory:");
@@ -258,5 +265,54 @@ describe("fechas leídas de tarjetas", () => {
     addImportantDate("9", { kind: "birthday", label: "Beto", month, day, source: "card" });
     const due = dueReminders({ leadDays: days, stage, now: NOW });
     expect(due.map((d) => d.label)).toEqual(["Ana"]);
+  });
+});
+
+describe("hasOrderForWindow", () => {
+  function order(id: string, o: { window: string | null; paid?: boolean; canceled?: boolean; customerId?: string }) {
+    getDb()
+      .prepare(
+        `INSERT INTO orders (id, locale, source, customer_id, recipient_name, recipient_phone, contact_phone,
+           fulfillment_method, window_date, lines_json, subtotal_cents, delivery_cents,
+           tax_cents, total_cents, fulfillment_status, payment_status, created_at, updated_at)
+         VALUES (?, 'es', 'web', ?, 'R', '555', '555', 'delivery', ?, '[]',
+           0,0,0,0, ?, ?, '2026-08-01T12:00:00Z', '2026-08-01T12:00:00Z')`,
+      )
+      .run(id, o.customerId ?? "1", o.window, o.canceled ? "canceled" : "pending", o.paid === false ? "pending" : "paid");
+  }
+
+  it("cuenta un pedido pagado con entrega entre hoy y la fecha, ambos incluidos", () => {
+    seedCustomer("1");
+    order("a", { window: "2026-09-02" });
+    expect(hasOrderForWindow("1", "2026-09-02", "2026-09-05")).toBe(true);
+    getDb().prepare("DELETE FROM orders").run();
+    order("b", { window: "2026-09-05" });
+    expect(hasOrderForWindow("1", "2026-09-02", "2026-09-05")).toBe(true);
+  });
+
+  it("no cuenta fuera del rango, sin pagar, cancelado, sin fecha ni de otro cliente", () => {
+    seedCustomer("1");
+    seedCustomer("2");
+    order("antes", { window: "2026-09-01" });
+    order("despues", { window: "2026-09-06" });
+    order("sin-pagar", { window: "2026-09-03", paid: false });
+    order("cancelado", { window: "2026-09-03", canceled: true });
+    order("sin-fecha", { window: null });
+    order("otro", { window: "2026-09-03", customerId: "2" });
+    expect(hasOrderForWindow("1", "2026-09-02", "2026-09-05")).toBe(false);
+  });
+});
+
+describe("dueReminders: origen de la fecha", () => {
+  it("trae quién guardó la fecha", () => {
+    seedCustomer("1");
+    const { month, day } = monthDayIn(3);
+    addImportantDate("1", { kind: "birthday", month, day, label: "Laura" });
+    addImportantDate("1", { kind: "anniversary", month, day, label: "Sam", source: "customer" });
+    const due = dueReminders({ leadDays: 3, stage: "d3", now: NOW });
+    expect(due.map((d) => [d.label, d.source]).sort()).toEqual([
+      ["Laura", "admin"],
+      ["Sam", "customer"],
+    ]);
   });
 });

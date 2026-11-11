@@ -22,6 +22,8 @@ type Input = {
   customerName: string;
   kind: "birthday" | "anniversary";
   label?: string;
+  /** Who saved the date. Only the customer's own may be called "the one you saved". */
+  source: "admin" | "customer";
   locale: "es" | "en";
   prefs: DatePreferences | null;
   rewardPercent: number | null;
@@ -32,29 +34,29 @@ function safeFirstName(full: string): string | null {
   return safePersonName(first);
 }
 
-function occasion(kind: Input["kind"], person: string | null, locale: "es" | "en"): string {
+/**
+ * Neutral wording, as in the 7-day text: an anniversary is "{person}'s", never "yours
+ * with", because the label is whoever the date was saved for. "That you saved" is only
+ * said of a date the customer saved; one the shop loaded gets the plain form.
+ */
+function occasion(kind: Input["kind"], person: string | null, saved: boolean, locale: "es" | "en"): string {
   if (locale === "es") {
-    if (kind === "birthday") {
-      return person ? `en 3 días es el cumpleaños de ${person}.` : "en 3 días es un cumpleaños que guardaste.";
-    }
-    return person ? `en 3 días es tu aniversario con ${person}.` : "en 3 días es tu aniversario.";
+    const word = kind === "birthday" ? "cumpleaños" : "aniversario";
+    if (person) return `en 3 días es el ${word} de ${person}.`;
+    return saved ? `en 3 días es un ${word} que guardaste.` : `en 3 días hay un ${word}.`;
   }
-  if (kind === "birthday") {
-    return person ? `${person}'s birthday is in 3 days.` : "a birthday you saved is in 3 days.";
-  }
-  return person ? `your anniversary with ${person} is in 3 days.` : "your anniversary is in 3 days.";
+  const word = kind === "birthday" ? "birthday" : "anniversary";
+  const article = kind === "birthday" ? "a" : "an";
+  if (person) return `${person}'s ${word} is in 3 days.`;
+  return saved ? `${article} ${word} you saved is in 3 days.` : `there's ${article} ${word} in 3 days.`;
 }
 
 function likes(prefs: DatePreferences | null, locale: "es" | "en"): string | null {
   if (!prefs) return null;
-  try {
-    const phrase = flowersPhrase(prefs.flowers[0], prefs.colors[0], locale);
-    if (!phrase) return null;
-    return locale === "es" ? `Le preparamos ${phrase}, sus favoritas.` : `We can make ${phrase}, their favorites.`;
-  } catch {
-    // A code outside the list must never stop a text going out.
-    return null;
-  }
+  // flowersPhrase skips a code outside the lists, so it never stops a text going out.
+  const phrase = flowersPhrase(prefs.flowers[0], prefs.colors[0], locale);
+  if (!phrase) return null;
+  return locale === "es" ? `Le preparamos ${phrase}, sus flores favoritas.` : `We can make ${phrase}, their favorites.`;
 }
 
 export function renderSaleReminder(input: Input): string {
@@ -71,7 +73,7 @@ export function renderSaleReminder(input: Input): string {
         ? `Tienes ${input.rewardPercent}% en tu tarjeta.`
         : `You have ${input.rewardPercent}% off on your card.`;
 
-  let occ = occasion(kind, person, locale);
+  let occ = occasion(kind, person, input.source === "customer", locale);
   if (!name && locale === "en") occ = occ.charAt(0).toUpperCase() + occ.slice(1);
 
   const build = (offer: string) =>

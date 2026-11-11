@@ -29,15 +29,18 @@ export function dateResults(now: Date = new Date(), days = 90): DateResults {
     d3: { sent: 0, skipped: 0, orders: 0, revenueCents: 0 },
   };
 
+  // Customers who saved a date themselves within the window (a date deleted since
+  // no longer counts: the table keeps no history of deletions).
   const own = db
     .prepare(
       `SELECT COUNT(DISTINCT d.customer_id) AS n,
               COUNT(DISTINCT CASE WHEN EXISTS (
                 SELECT 1 FROM customer_tags t WHERE t.customer_id = d.customer_id AND t.tag = 'sms-marketing'
               ) THEN d.customer_id END) AS sms
-         FROM customer_important_dates d WHERE d.source = 'customer'`,
+         FROM customer_important_dates d
+        WHERE d.source = 'customer' AND d.created_at >= ? AND d.created_at <= ?`,
     )
-    .get() as { n: number; sms: number };
+    .get(since, now.toISOString()) as { n: number; sms: number };
 
   const counts = db
     .prepare(

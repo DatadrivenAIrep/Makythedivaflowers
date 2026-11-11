@@ -124,14 +124,29 @@ describe("DatePromptCard", () => {
     renderCard();
     await screen.findByText("Guardar");
     expect(screen.queryByRole("checkbox")).toBeNull();
-    expect(screen.queryByText("Para recibir avisos, envía START a nuestro número.")).toBeNull();
+    expect(screen.queryByText(es.date_prompt.stopped_note)).toBeNull();
   });
 
   it("con STOP muestra la instrucción de START", async () => {
     mockFetch({ status: 200, body: prompt({ permission: "stopped" }) });
     renderCard();
-    await screen.findByText("Para recibir avisos, envía START a nuestro número.");
+    await screen.findByText(
+      "Para recibir avisos, envía START a nuestro número y luego activa los avisos en Mis fechas.",
+    );
     expect(screen.queryByRole("checkbox")).toBeNull();
+  });
+
+  it("con STOP no promete el aviso antes de guardar", async () => {
+    mockFetch({ status: 200, body: prompt({ permission: "stopped", reward: null }) });
+    renderCard();
+    await screen.findByText(es.date_prompt.stopped_note);
+    expect(screen.queryByText(es.date_prompt.promise)).toBeNull();
+  });
+
+  it("sin STOP y sin premio sí promete el aviso", async () => {
+    mockFetch({ status: 200, body: prompt({ permission: "none", reward: null }) });
+    renderCard();
+    await screen.findByText(es.date_prompt.promise);
   });
 
   it("Guardar envía smsOptIn false por defecto", async () => {

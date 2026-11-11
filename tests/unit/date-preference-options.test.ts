@@ -18,6 +18,13 @@ describe("flowersPhrase", () => {
     expect(flowersPhrase(undefined, undefined, "en")).toBeNull();
     expect(flowersPhrase(undefined, undefined, "es")).toBeNull();
   });
+  it("skips a code that is not on the lists instead of throwing", () => {
+    expect(() => flowersPhrase("nope", "nada", "es")).not.toThrow();
+    expect(flowersPhrase("nope", "nada", "es")).toBeNull();
+    expect(flowersPhrase("nope", "lavender", "es")).toBe("flores en tonos lavanda");
+    expect(flowersPhrase("roses", "nada", "en")).toBe("roses");
+    expect(flowersPhrase("constructor", "toString", "en")).toBeNull();
+  });
 });
 
 describe("option labels", () => {

@@ -37,13 +37,19 @@ const COLOR_SMS: Record<ColorCode, Record<Locale, string>> = {
   pastel: { es: "pastel", en: "pastel" },
 };
 
+// Codes come back from the database, so one outside today's lists (renamed, removed)
+// is skipped instead of throwing: neither a text nor a page may break over it.
+function wording(table: Record<string, Record<Locale, string>>, code: string | undefined, locale: Locale): string | null {
+  return code && Object.prototype.hasOwnProperty.call(table, code) ? (table[code]?.[locale] ?? null) : null;
+}
+
 export function flowersPhrase(
-  flower: FlowerCode | undefined,
-  color: ColorCode | undefined,
+  flower: FlowerCode | string | undefined,
+  color: ColorCode | string | undefined,
   locale: Locale,
 ): string | null {
-  const f = flower ? FLOWER_SMS[flower][locale] : null;
-  const c = color ? COLOR_SMS[color][locale] : null;
+  const f = wording(FLOWER_SMS, flower, locale);
+  const c = wording(COLOR_SMS, color, locale);
   if (locale === "es") {
     if (f && c) return `${f} en tonos ${c}`;
     if (f) return f;

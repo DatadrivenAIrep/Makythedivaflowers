@@ -3,6 +3,7 @@ import { closeDb, getDb } from "@/lib/db";
 import { runMigrations } from "@/lib/db-migrate";
 import { addImportantDate } from "@/lib/customer-dates-storage";
 import { dueReminders } from "@/lib/date-reminders";
+import * as reminders from "@/lib/date-reminders";
 import * as sale from "@/lib/date-sale-message";
 
 const sendSms = vi.fn();
@@ -187,6 +188,125 @@ describe("POST /api/cron/reminders", () => {
       expect(data).toMatchObject({ sent: 0, skipped: 1 });
       expect(sendSms).not.toHaveBeenCalled();
       expect(sends()).toEqual([{ stage: "d3", status: "skipped", skip_reason: "recent_order" }]);
+    });
+
+    function seedOrder(id: string, o: { createdDaysAgo: number; windowInDays: number | null; paid?: boolean; canceled?: boolean }) {
+      const at = new Date(Date.now() - o.createdDaysAgo * 86400_000).toISOString();
+      const windowDate = o.windowInDays === null ? null : new Date(Date.now() + o.windowInDays * 86400_000).toISOString().slice(0, 10);
+      getDb()
+        .prepare(
+          `INSERT INTO orders (id, locale, source, customer_id, recipient_name, recipient_phone, contact_phone,
+             fulfillment_method, window_date, lines_json, subtotal_cents, delivery_cents,
+             tax_cents, total_cents, fulfillment_status, payment_status, created_at, updated_at)
+           VALUES (?, 'es', 'web', '1', 'R', '555', '555', ?, ?, '[]', 0,0,0,0, ?, ?, ?, ?)`,
+        )
+        .run(
+          id,
+          windowDate === null ? "in-store" : "delivery",
+          windowDate,
+          o.canceled ? "canceled" : "pending",
+          o.paid === false ? "pending" : "paid",
+          at,
+          at,
+        );
+    }
+
+    it("d3 omitido si ya hay un pedido para esa fecha, aunque se haya hecho hace más de 7 días", async () => {
+      vi.stubEnv("DATE_REMINDER_D3_ENABLED", "1");
+      seedDueCustomer("1", 3);
+      seedOrder("o-hoy", { createdDaysAgo: 20, windowInDays: 0 });
+      const data = await (await post("Bearer s3cret")).json();
+      expect(data).toMatchObject({ sent: 0, skipped: 1 });
+      expect(sendSms).not.toHaveBeenCalled();
+      expect(sends()).toEqual([{ stage: "d3", status: "skipped", skip_reason: "already_ordered" }]);
+    });
+
+    it("el pedido el mismo día de la fecha también cuenta", async () => {
+      vi.stubEnv("DATE_REMINDER_D3_ENABLED", "1");
+      seedDueCustomer("1", 3);
+      seedOrder("o-dia", { createdDaysAgo: 15, windowInDays: 3 });
+      await post("Bearer s3cret");
+      expect(sends()).toEqual([{ stage: "d3", status: "skipped", skip_reason: "already_ordered" }]);
+    });
+
+    it("un pedido para después de la fecha, de ayer, sin pagar o cancelado no frena el d3", async () => {
+      vi.stubEnv("DATE_REMINDER_D3_ENABLED", "1");
+      seedDueCustomer("1", 3);
+      seedOrder("o-despues", { createdDaysAgo: 15, windowInDays: 4 });
+      seedOrder("o-ayer", { createdDaysAgo: 15, windowInDays: -1 });
+      seedOrder("o-sin-pagar", { createdDaysAgo: 15, windowInDays: 2, paid: false });
+      seedOrder("o-cancelado", { createdDaysAgo: 15, windowInDays: 2, canceled: true });
+      seedOrder("o-tienda", { createdDaysAgo: 15, windowInDays: null });
+      const data = await (await post("Bearer s3cret")).json();
+      expect(data).toMatchObject({ sent: 1, skipped: 0 });
+      expect(sends()).toEqual([{ stage: "d3", status: "sent", skip_reason: null }]);
+    });
+
+    it("una fecha cargada por el personal nunca dice 'que guardaste'", async () => {
+      vi.stubEnv("DATE_REMINDER_D3_ENABLED", "1");
+      seedDueCustomer("1", 3);
+      getDb().prepare("UPDATE customer_important_dates SET label = NULL").run();
+      await post("Bearer s3cret");
+      const [, body] = sendSms.mock.calls[0];
+      expect(body).not.toContain("guardaste");
+      expect(body).toContain("en 3 días hay un cumpleaños.");
+    });
+
+    it("una fecha guardada por el cliente sin nombre sí dice 'que guardaste'", async () => {
+      vi.stubEnv("DATE_REMINDER_D3_ENABLED", "1");
+      seedDueCustomer("1", 3);
+      getDb().prepare("UPDATE customer_important_dates SET label = NULL, source = 'customer'").run();
+      await post("Bearer s3cret");
+      expect(sendSms.mock.calls[0][1]).toContain("en 3 días es un cumpleaños que guardaste.");
+    });
+
+    it("si falla el registro tras enviar, no sale un segundo SMS de fechas al mismo cliente", async () => {
+      vi.stubEnv("DATE_REMINDER_D3_ENABLED", "1");
+      seedDueCustomer("1", 3);
+      const d7 = new Date(Date.now() + 7 * 86400_000);
+      addImportantDate("1", { kind: "birthday", month: d7.getUTCMonth() + 1, day: d7.getUTCDate(), label: "Ana" });
+      const error = vi.spyOn(console, "error").mockImplementation(() => {});
+      const spy = vi.spyOn(reminders, "recordReminder").mockImplementationOnce(() => {
+        throw new Error("disk I/O error");
+      });
+      const data = await (await post("Bearer s3cret")).json();
+      spy.mockRestore();
+      error.mockRestore();
+      expect(sendSms).toHaveBeenCalledTimes(1);
+      expect(data).toMatchObject({ sent: 0, failed: 1, skipped: 1 });
+      expect(sends()).toEqual([{ stage: "d7", status: "skipped", skip_reason: "daily_cap" }]);
+    });
+
+    // What console.error would really print: an Error shows its message and stack.
+    const printed = (calls: unknown[][]) =>
+      calls
+        .flat()
+        .map((a) => (a instanceof Error ? `${a.name}: ${a.message} ${a.stack ?? ""}` : typeof a === "string" ? a : JSON.stringify(a)))
+        .join(" ");
+
+    it("un fallo de Twilio deja en el log el código, nunca el teléfono", async () => {
+      seedDueCustomer("1");
+      const error = vi.spyOn(console, "error").mockImplementation(() => {});
+      sendSms.mockRejectedValueOnce(
+        Object.assign(new Error("The 'To' number +15165550001 is not a valid phone number."), { code: 21211 }),
+      );
+      const data = await (await post("Bearer s3cret")).json();
+      expect(data.failed).toBe(1);
+      const logged = printed(error.mock.calls);
+      error.mockRestore();
+      expect(logged).toContain("21211");
+      expect(logged).not.toMatch(/5165550001|516\D?555\D?0001/);
+    });
+
+    it("un fallo sin código deja solo el nombre del error", async () => {
+      seedDueCustomer("1");
+      const error = vi.spyOn(console, "error").mockImplementation(() => {});
+      sendSms.mockRejectedValueOnce(new TypeError("fetch failed for +15165550001"));
+      await post("Bearer s3cret");
+      const logged = printed(error.mock.calls);
+      error.mockRestore();
+      expect(logged).toContain("TypeError");
+      expect(logged).not.toContain("5165550001");
     });
 
     it("un solo SMS por cliente al día; va primero d3", async () => {

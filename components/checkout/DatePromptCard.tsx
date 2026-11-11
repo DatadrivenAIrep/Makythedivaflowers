@@ -108,11 +108,12 @@ export function DatePromptCard({ orderId, locale }: Props) {
   const name = question.recipientName;
   // Only flowers or colors earn the likes reward; "avoid" alone or nothing never does.
   const earnsLikes = prefs.flowers.length > 0 || prefs.colors.length > 0;
+  // "We'll remind you" is not a promise we can keep for a number that replied STOP.
   const rewardLine =
     question.kind === "likes" && !earnsLikes
       ? null
       : reward === null
-        ? t("promise")
+        ? permission === "stopped" ? null : t("promise")
         : reward.kind === "stamp"
           ? t("reward_stamp")
           : t(question.kind === "date" ? "reward_date" : "reward_likes", { reward: reward.reward });
