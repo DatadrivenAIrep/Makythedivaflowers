@@ -13,8 +13,8 @@ import { byZone, type ZoneRank } from "@/lib/metrics";
 import { delta, resolvePeriod, shopDay, type Delta, type MetricsRange, type Period } from "@/lib/metrics/period";
 import { between, isLive, pendingPayments, periodStats, salesTrend, type MetricOrder, type TrendPoint } from "@/lib/metrics/orders";
 import {
-  channelShares, channelTrend, productRevenue, promoStats,
-  type ChannelBucket, type ChannelShare, type LineValue, type ProductRevenue, type PromoStats,
+  channelShares, channelTrend, productRevenue, promoStats, digitalCardStats,
+  type ChannelBucket, type ChannelShare, type LineValue, type ProductRevenue, type PromoStats, type DigitalCardStats,
 } from "@/lib/metrics/sales";
 import { peakDay, upcomingLoad, weekdaySlotHeatmap, type DayLoad, type Heatmap } from "@/lib/metrics/operations";
 import { holidaysForYear, nextHoliday, weekRevenueUpTo } from "@/lib/metrics/holidays";
@@ -42,7 +42,7 @@ export type MetricsPayload = {
   insights: Insight[];
   sales: {
     channels: ChannelShare[]; channelTrend: ChannelBucket[]; products: ProductRevenue[];
-    promos: PromoStats & { giftCardsIssuedCents: number }; byZone: ZoneRank[];
+    promos: PromoStats & DigitalCardStats & { giftCardsIssuedCents: number }; byZone: ZoneRank[];
   };
   operations: { heatmap: Heatmap; upcoming: DayLoad[] };
   customers: { split: BuyerSplit; top: TopCustomer[]; atRisk: AtRiskCustomer[]; atRiskCount: number; upcomingDates: UpcomingDate[] };
@@ -209,7 +209,7 @@ export function getMetrics(range: MetricsRange, now: Date, locale: "en" | "es", 
       channels,
       channelTrend: channelTrend(cur, period),
       products: productRevenue(cur, prev, lineResolver(locale, labels.customProducts)),
-      promos: { ...promoStats(cur), giftCardsIssuedCents: giftCardsIssuedCents(period.start, period.end) },
+      promos: { ...promoStats(cur), ...digitalCardStats(cur), giftCardsIssuedCents: giftCardsIssuedCents(period.start, period.end) },
       byZone: byZone(cur.filter(isLive), resolveZone, labels.unknownZone),
     },
     operations: { heatmap, upcoming: upcomingLoad(all, today) },

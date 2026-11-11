@@ -1,7 +1,7 @@
 // tests/unit/metrics-sales.test.ts
 import { describe, it, expect } from "vitest";
 import { resolvePeriod } from "@/lib/metrics/period";
-import { channelOf, channelTrend, channelShares, productRevenue, promoStats, type LineValue } from "@/lib/metrics/sales";
+import { channelOf, channelTrend, channelShares, productRevenue, promoStats, digitalCardStats, type LineValue } from "@/lib/metrics/sales";
 import { mo } from "./metrics-fixtures";
 
 describe("channelOf", () => {
@@ -74,5 +74,24 @@ describe("promoStats", () => {
       mo({ day: "2026-10-02", giftCardCents: 2500, funeral: true, amountPaidCents: 1000 }),
       mo({ day: "2026-10-03", fulfillmentStatus: "canceled", discountCents: 999, promoCode: "X" }),
     ])).toEqual({ discountCents: 1000, promoOrders: 1, giftCardRedeemedCents: 2500, funeralOrders: 1, funeralSharePct: 10 });
+  });
+});
+
+describe("digitalCardStats", () => {
+  it("counts live orders that carry the digital card, as a line or as an add-on", () => {
+    const asLine = JSON.stringify([{ kind: "catalog", productId: "x-card-digital", variantId: "default", addOnIds: [], qty: 1 }]);
+    const asAddOn = JSON.stringify([{ kind: "catalog", productId: "rose-1", variantId: "lush", addOnIds: ["x-card-digital"], qty: 1 }]);
+    const without = JSON.stringify([{ kind: "catalog", productId: "rose-1", variantId: "lush", addOnIds: [], qty: 1 }]);
+    expect(digitalCardStats([
+      mo({ day: "2026-10-01", linesJson: asLine }),
+      mo({ day: "2026-10-02", linesJson: asAddOn }),
+      mo({ day: "2026-10-03", linesJson: without }),
+      mo({ day: "2026-10-04", linesJson: "not json" }),
+      mo({ day: "2026-10-05", linesJson: asLine, fulfillmentStatus: "canceled" }),
+    ])).toEqual({ digitalCardOrders: 2, digitalCardSharePct: 50 });
+  });
+
+  it("is zero with no live orders", () => {
+    expect(digitalCardStats([])).toEqual({ digitalCardOrders: 0, digitalCardSharePct: 0 });
   });
 });

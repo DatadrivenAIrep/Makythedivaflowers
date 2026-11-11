@@ -145,6 +145,16 @@ export function MobileDrawer({
               >
                 {t("gift_cards")} →
               </Link>
+              <Link
+                href={`/${locale}/digital-cards`}
+                onClick={onClose}
+                className="flex items-center gap-3 font-display text-xl text-rouge py-3 border-b border-ink/[0.08]"
+              >
+                {locale === "es" ? "Tarjeta digital" : "Digital card"} →
+                <span className="rounded-full bg-petal/40 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.16em] text-ink">
+                  {locale === "es" ? "Nuevo" : "New"}
+                </span>
+              </Link>
 
               {/* Main links */}
               {NAV_LINKS(locale).map((l) => (

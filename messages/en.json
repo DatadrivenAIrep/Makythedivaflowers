@@ -972,7 +972,13 @@
     "upsell": {
       "title": "Complete the gift",
       "added_label": "Added",
-      "add_aria": "Add {item} for {price}"
+      "add_aria": "Add {item} for {price}",
+      "digital_eyebrow": "New · Digital card",
+      "digital_body": "Make their card come alive: they scan the QR and your letter opens on their phone, with your photos.",
+      "digital_add": "Add",
+      "digital_added": "Added",
+      "digital_add_aria": "Add the digital card for {price}",
+      "digital_how": "How it works"
     },
     "assurance": {
       "hand_built_title": "Hand-built today",
@@ -2122,6 +2128,8 @@
     "promo_orders": "Orders with a code",
     "gift_issued": "Gift cards issued",
     "gift_redeemed": "Gift cards redeemed",
+    "digital_cards": "Digital cards",
+    "digital_cards_value": "{pct}% of orders · {n, plural, one {# order} other {# orders}}",
     "funeral_share": "Funerals",
     "funeral_share_value": "{pct}% of sales · {n, plural, one {# order} other {# orders}}",
     "heatmap_title": "Deliveries & pickups by day and slot",

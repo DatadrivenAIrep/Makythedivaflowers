@@ -972,7 +972,13 @@
     "upsell": {
       "title": "Completa el regalo",
       "added_label": "Agregado",
-      "add_aria": "Agrega {item} por {price}"
+      "add_aria": "Agrega {item} por {price}",
+      "digital_eyebrow": "Nuevo · Tarjeta digital",
+      "digital_body": "Haz que su tarjeta cobre vida: escanean el QR y se abre tu carta con tus fotos en su teléfono.",
+      "digital_add": "Añadir",
+      "digital_added": "Añadida",
+      "digital_add_aria": "Añade la tarjeta digital por {price}",
+      "digital_how": "Cómo funciona"
     },
     "assurance": {
       "hand_built_title": "Hecho hoy a mano",
@@ -2122,6 +2128,8 @@
     "promo_orders": "Órdenes con código",
     "gift_issued": "Gift cards emitidas",
     "gift_redeemed": "Gift cards canjeadas",
+    "digital_cards": "Tarjetas digitales",
+    "digital_cards_value": "{pct}% de órdenes · {n, plural, one {# orden} other {# órdenes}}",
     "funeral_share": "Funerales",
     "funeral_share_value": "{pct}% de ventas · {n, plural, one {# orden} other {# órdenes}}",
     "heatmap_title": "Entregas y recogidas por día y franja",

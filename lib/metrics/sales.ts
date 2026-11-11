@@ -1,6 +1,7 @@
 // Ventas tab: revenue by channel, products by revenue, promos and gift cards. Pure.
 import { bucketKey, bucketKeys, delta, inPeriod, type Delta, type Period } from "@/lib/metrics/period";
 import { isLive, revenueOf, type MetricOrder } from "@/lib/metrics/orders";
+import { DIGITAL_CARD_ID } from "@/lib/digital-card-offer";
 
 export const CHANNELS = ["web", "phone", "whatsapp", "walk-in", "event"] as const;
 export type ChannelId = (typeof CHANNELS)[number];
@@ -120,4 +121,33 @@ export function promoStats(orders: MetricOrder[]): PromoStats {
     }
   }
   return { discountCents, promoOrders, giftCardRedeemedCents, funeralOrders, funeralSharePct: totalCents ? Math.round((funeralCents / totalCents) * 100) : 0 };
+}
+
+export type DigitalCardStats = { digitalCardOrders: number; digitalCardSharePct: number };
+
+/** True when an order's stored lines carry the digital card, as its own line or as a bouquet's add-on. */
+function linesHaveDigitalCard(linesJson: string): boolean {
+  let lines: unknown;
+  try {
+    lines = JSON.parse(linesJson);
+  } catch {
+    return false;
+  }
+  if (!Array.isArray(lines)) return false;
+  return lines.some((raw) => {
+    const l = raw as Record<string, unknown>;
+    return l.productId === DIGITAL_CARD_ID || (Array.isArray(l.addOnIds) && l.addOnIds.includes(DIGITAL_CARD_ID));
+  });
+}
+
+/** How many live orders took the digital card, and what share of all live orders that is. */
+export function digitalCardStats(orders: MetricOrder[]): DigitalCardStats {
+  let live = 0;
+  let digitalCardOrders = 0;
+  for (const o of orders) {
+    if (!isLive(o)) continue;
+    live += 1;
+    if (linesHaveDigitalCard(o.linesJson)) digitalCardOrders += 1;
+  }
+  return { digitalCardOrders, digitalCardSharePct: live ? Math.round((digitalCardOrders / live) * 100) : 0 };
 }
