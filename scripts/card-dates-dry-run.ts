@@ -12,6 +12,7 @@
  *
  * --sample prints real card text to the terminal: never paste it anywhere.
  */
+import fs from "node:fs";
 import path from "node:path";
 import { getDb } from "../lib/db";
 import { withTransaction } from "../lib/db-tx";
@@ -20,16 +21,31 @@ import { listCardReviews, previewCardScan, scanPendingCardDates } from "../lib/c
 
 class SampleRollback extends Error {}
 
+function resolveTarget(file: string): string {
+  return fs.existsSync(file) ? fs.realpathSync(file) : path.resolve(file);
+}
+
+/**
+ * Why this SQLITE_FILE must not be used, or null when it is a fine copy. Follows
+ * symlinks and ignores case (macOS is case-insensitive): any file named
+ * diva.sqlite, or living in a data/ folder under that name, is treated as real.
+ */
+export function refuseTarget(file: string | undefined): string | null {
+  if (!file) return "SQLITE_FILE is not set. Point it at a COPY of the database (e.g. diva-copy.sqlite).";
+  const resolved = resolveTarget(file).replace(/\\/g, "/").toLowerCase();
+  if (path.posix.basename(resolved) === "diva.sqlite" || resolved.endsWith("/data/diva.sqlite")) {
+    return `SQLITE_FILE resolves to ${resolveTarget(file)}, which looks like the real database. Make a copy with another name (e.g. diva-copy.sqlite).`;
+  }
+  return null;
+}
+
 function guard(): void {
-  const file = process.env.SQLITE_FILE;
-  if (!file) {
-    console.error("Refusing to run: SQLITE_FILE is not set. Point it at a COPY of the database.");
+  const reason = refuseTarget(process.env.SQLITE_FILE);
+  if (reason) {
+    console.error(`Refusing to run: ${reason}`);
     process.exit(1);
   }
-  if (path.resolve(file) === path.resolve(process.cwd(), "data", "diva.sqlite")) {
-    console.error("Refusing to run: SQLITE_FILE points at data/diva.sqlite. Use a copy.");
-    process.exit(1);
-  }
+  console.log(`Target: ${resolveTarget(process.env.SQLITE_FILE as string)}`);
 }
 
 function sample(n: number): void {
@@ -85,7 +101,9 @@ function checkReminders(): void {
     }
   }
   console.log(JSON.stringify({ cardDatesInDb: cardIds.size, remindersSeen: total, cardDatesInReminders: cardHits }, null, 2));
-  console.log(cardHits === 0 ? "OK: 0 card dates in reminders." : "FAIL: card dates leaked into reminders.");
+  if (cardHits !== 0) console.log("FAIL: card dates leaked into reminders.");
+  else if (total === 0) console.log("WARNING: 0 reminders seen — this check proved nothing on this copy.");
+  else console.log(`OK: 0 card dates among ${total} reminders.`);
   if (cardHits !== 0) process.exitCode = 1;
 }
 
