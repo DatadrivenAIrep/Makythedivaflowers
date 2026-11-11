@@ -13,7 +13,7 @@ enciende solo con `1` o `true`; cualquier otro valor (o vacía) es apagado.
 
 | Variable | Qué enciende |
 | --- | --- |
-| `DATE_REWARDS_ENABLED` | La pregunta tras la compra, Mis fechas y los sellos. |
+| `DATE_REWARDS_ENABLED` | La pregunta tras la compra, Mis fechas y los sellos. También el bloque de resultados en `/admin/occasions`, las preferencias en el perfil del cliente del panel y el cambio de permiso de `dueReminders`: con la variable encendida decide solo la etiqueta de SMS de venta, y se saltan los números que respondieron STOP. |
 | `DATE_REMINDER_D3_ENABLED` | El mensaje de 3 días. |
 
 Los sellos usan la conexión de la tarjeta (`LOYALTY_API_URL`, `LOYALTY_API_KEY`,
@@ -35,17 +35,48 @@ Siempre en este orden, y comprobando después de cada uno que el despliegue sali
 1. **Copia de seguridad.** Copiar el archivo SQLite de Diva antes de publicar:
    `/home/u283940187/domains/makythedivaflowers.com/diva-data/diva.sqlite`
    (por ejemplo a `diva.sqlite.bak-AAAAMMDD` en la misma carpeta).
-2. **Primero el programa.** Publicarlo y comprobar que la ruta nueva existe y
-   exige clave:
+2. **Primero el programa.** Publicarlo y comprobar dos cosas:
    ```bash
+   # a) La app responde y exige clave (también lo hace la versión vieja)
    curl -i -X POST https://<programa>/api/v1/customers/1/bonus
    # HTTP 401
+
+   # b) Solo la versión nueva: con una clave real y un cuerpo vacío
+   curl -i -X POST https://<programa>/api/v1/customers/1/bonus \
+     -H "Authorization: Bearer <CLAVE_DE_API>" \
+     -H "Content-Type: application/json" \
+     -d '{}'
+   # Versión nueva:  HTTP 400  {"error":{"code":"invalid", ...}}  (falta orderId)
+   # Versión vieja:  HTTP 404  {"error":{"code":"invalid","message":"No encontrado."}}
    ```
-3. **Luego Diva.** Publicarlo y comprobar que la ruta nueva del cron exige clave:
+   La comprobación (a) solo dice "la app está arriba y pide clave": la versión
+   vieja también responde 401 antes de buscar la ruta. La (b) es la que prueba
+   el despliegue: la ruta nueva valida el cuerpo y no suma nada con `{}`. Usar
+   una clave real solo en la terminal; no pegarla en documentos ni mensajes.
+3. **Luego Diva.** Publicarlo y comprobar:
    ```bash
+   # a) La app responde y exige clave (también lo hace la versión vieja)
    curl -i -X POST https://makythedivaflowers.com/api/cron/loyalty-sync
    # HTTP 401
    ```
+   Eso solo prueba que la app está arriba. Para probar que salió la versión nueva:
+   - **El identificador de compilación cambió.** En el servidor, `cat .next/BUILD_ID`
+     (en la carpeta de la app). Desde fuera, el mismo identificador aparece en las
+     rutas de la página:
+     ```bash
+     curl -s https://makythedivaflowers.com/en | grep -o '/_next/static/[^/"]*/_buildManifest.js' | head -1
+     ```
+     Anotarlo antes de publicar y comparar después: si es igual, sigue la versión vieja
+     (o la CDN guarda el HTML; purgarla y repetir).
+   - **Con `DATE_REWARDS_ENABLED` encendido** (paso 4), el cron de `loyalty-sync`
+     responde con el campo `bonus`. Llamarlo con el secreto real:
+     ```bash
+     curl -s -X POST https://makythedivaflowers.com/api/cron/loyalty-sync \
+       -H "Authorization: Bearer $CRON_SECRET"
+     # {"done":0,"pending":0,"failed":0,"bonus":{"done":0,"pending":0,"failed":0}}
+     ```
+     Sin `bonus`, la variable no llegó (falta reiniciar) o sigue la versión vieja.
+   - No usar `/api/cron/reminders` como comprobación: puede enviar SMS reales.
 4. Con las variables aún apagadas, confirmar que nada cambió. Solo después de la
    lista "Antes de encender", poner `DATE_REWARDS_ENABLED=1` y, cuando se quiera
    el mensaje de 3 días, `DATE_REMINDER_D3_ENABLED=1`, y reiniciar.
