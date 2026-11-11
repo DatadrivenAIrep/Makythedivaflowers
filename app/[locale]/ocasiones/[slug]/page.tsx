@@ -20,6 +20,8 @@ import { Reveal } from "@/components/motion/Reveal";
 import { Grain } from "@/components/brand/Grain";
 import { CutoffPill } from "@/components/conversion/CutoffPill";
 import { GiftAssuranceBar } from "@/components/conversion/GiftAssuranceBar";
+import { DigitalCardsFeature } from "@/components/home/DigitalCardsFeature";
+import { DIGITAL_CARD_ID } from "@/lib/digital-card-offer";
 
 /** Sympathy keeps its own dedicated page; it is not funnelled through here. */
 const ROUTED_ELSEWHERE = new Set<Occasion>(["sympathy"]);
@@ -77,6 +79,11 @@ export default async function OccasionPage({
     "recommended",
     { sales: getSalesRanking() },
   ).slice(0, 12);
+  // The digital card is offered on celebrations only (its own `occasions`), so
+  // it is shown on exactly the occasion pages where a bouquet can carry it.
+  const showDigitalCard = Boolean(
+    PRODUCTS.find((p) => p.id === DIGITAL_CARD_ID)?.occasions.includes(slug as Occasion),
+  );
 
   return (
     <main className="bg-bone text-ink">
@@ -131,6 +138,8 @@ export default async function OccasionPage({
         </div>
         <ProductGrid products={products} locale={locale} />
       </section>
+
+      {showDigitalCard && <DigitalCardsFeature locale={locale} />}
 
       <section className="border-t border-ink/10 bg-bone">
         <div className="mx-auto max-w-[var(--container-max)] px-6 py-20 md:py-28">

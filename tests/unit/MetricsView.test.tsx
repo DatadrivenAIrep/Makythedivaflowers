@@ -43,7 +43,7 @@ const payload: MetricsPayload = {
     ],
     channelTrend: [{ key: "2026-10-12", ...zeroCh, web: 60000 }],
     products: [{ key: "a", name: "Docena de rosas", qty: 18, cents: 171000, delta: { kind: "pct", pct: 22 } }],
-    promos: { discountCents: 41000, promoOrders: 23, giftCardRedeemedCents: 54000, funeralOrders: 6, funeralSharePct: 11, giftCardsIssuedCents: 125000 },
+    promos: { discountCents: 41000, promoOrders: 23, giftCardRedeemedCents: 54000, funeralOrders: 6, funeralSharePct: 11, digitalCardOrders: 9, digitalCardSharePct: 16, giftCardsIssuedCents: 125000 },
     byZone: [{ zoneId: "albertson", label: "Albertson", orderCount: 20, cents: 210000 }],
   },
   operations: {

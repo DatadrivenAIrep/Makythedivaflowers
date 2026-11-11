@@ -125,7 +125,7 @@ function PdpConfiguratorImpl({ product, locale, cutoff, motionMode }: Props) {
         campaign={campaign}
       />
 
-      <DigitalCardOffer product={product} locale={locale} value={addOnIds} onChange={setAddOnIds} />
+      <DigitalCardOffer product={product} locale={locale} value={addOnIds} onChange={setAddOnIds} message={message} />
 
       <div ref={inlineRef}>
         <AddToBag

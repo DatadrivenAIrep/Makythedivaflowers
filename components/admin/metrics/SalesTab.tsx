@@ -22,6 +22,8 @@ export default function SalesTab({ data, locale }: { data: MetricsPayload; local
           <dt className="text-ink/70">{t("promo_orders")}</dt><dd className="text-right font-semibold">{s.promos.promoOrders}</dd>
           <dt className="text-ink/70">{t("gift_issued")}</dt><dd className="text-right font-semibold">{money(s.promos.giftCardsIssuedCents)}</dd>
           <dt className="text-ink/70">{t("gift_redeemed")}</dt><dd className="text-right font-semibold">{money(s.promos.giftCardRedeemedCents)}</dd>
+          <dt className="text-ink/70">{t("digital_cards")}</dt>
+          <dd className="text-right font-semibold">{t("digital_cards_value", { pct: s.promos.digitalCardSharePct, n: s.promos.digitalCardOrders })}</dd>
           <dt className="text-ink/70">{t("funeral_share")}</dt>
           <dd className="text-right font-semibold">{t("funeral_share_value", { pct: s.promos.funeralSharePct, n: s.promos.funeralOrders })}</dd>
         </dl>

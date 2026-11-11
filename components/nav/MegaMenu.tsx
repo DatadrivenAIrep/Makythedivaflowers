@@ -107,6 +107,18 @@ function MegaMenuImpl({ locale, label }: Props) {
                   ? "¿No sabes qué mandar? Que elijan ellos."
                   : "Not sure what to send? Let them choose."}
               </span>
+              {/* The digital card: an extra people love once they see it, so it
+                  gets a way in before the product page, where it is sold. */}
+              <Link
+                role="menuitem"
+                href={`/${locale}/digital-cards`}
+                className="inline-flex items-center gap-2 font-sans text-sm tracking-tight text-rouge underline-offset-4 transition-colors hover:underline"
+              >
+                {locale === "es" ? "Tarjeta digital" : "Digital card"}
+                <span className="rounded-full bg-petal/40 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.16em] text-ink">
+                  {locale === "es" ? "Nuevo" : "New"}
+                </span>
+              </Link>
             </div>
             </div>
           </motion.div>

@@ -14,23 +14,39 @@ type Props = {
   locale: Locale;
   value: string[];
   onChange: (next: string[]) => void;
+  /** The card message being typed, so a long one can be met with the card that has room for it. */
+  message?: string;
 };
+
+/**
+ * From this many characters the buyer clearly has a lot to say: the offer's
+ * copy turns to "your whole letter fits", the moment it is most persuasive.
+ */
+export const LONG_MESSAGE_CHARS = 120;
 
 /**
  * The digital card, shown where the buyer is deciding what to say: under the card
  * message. Same add-on as the chip in AddOnToggles (one `addOnIds` state), so the
  * two always agree; only offered where `addOnsForProduct` offers it.
  */
-function DigitalCardOfferImpl({ product, locale, value, onChange }: Props) {
+function DigitalCardOfferImpl({ product, locale, value, onChange, message = "" }: Props) {
   const offer = addOnsForProduct(product).find((a) => a.id === DIGITAL_CARD_ID);
   if (!offer) return null;
   const es = locale === "es";
   const selected = value.includes(DIGITAL_CARD_ID);
+  const longMessage = !selected && message.trim().length >= LONG_MESSAGE_CHARS;
   const toggle = () =>
     onChange(selected ? value.filter((v) => v !== DIGITAL_CARD_ID) : [...value, DIGITAL_CARD_ID]);
 
   return (
-    <section aria-labelledby="digital-card-offer" className="flex gap-4 rounded-2xl bg-ink p-3 text-bone">
+    <section
+      aria-labelledby="digital-card-offer"
+      data-long-message={longMessage || undefined}
+      className={cn(
+        "flex gap-4 rounded-2xl bg-ink p-3 text-bone transition-shadow",
+        longMessage && "ring-2 ring-petal ring-offset-2 ring-offset-bone",
+      )}
+    >
       <div className="relative aspect-[9/16] w-[84px] shrink-0 overflow-hidden rounded-xl bg-charcoal">
         <PromoLoop locale={locale} shape="9x16" className="absolute inset-0 h-full w-full object-cover" />
       </div>
@@ -38,8 +54,12 @@ function DigitalCardOfferImpl({ product, locale, value, onChange }: Props) {
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-petal">
           {es ? "Nuevo · Tarjeta digital" : "New · Digital card"}
         </p>
-        <p id="digital-card-offer" className="font-sans text-sm leading-snug text-bone/90">
-          {es
+        <p id="digital-card-offer" aria-live="polite" className="font-sans text-sm leading-snug text-bone/90">
+          {longMessage
+            ? es
+              ? "¿Mucho que decir? En la tarjeta digital cabe tu carta completa, con tus fotos: escanean el QR y se abre en su teléfono."
+              : "A lot to say? The digital card has room for your whole letter, with your photos: they scan the QR and it opens on their phone."
+            : es
             ? "Su tarjeta cobra vida: escanean el QR de la tarjeta y se abre en su teléfono, con sus nombres, tu carta y tus fotos."
             : "Their card comes alive: they scan the QR on the card and it opens on their phone, with their names, your letter and your photos."}
         </p>
