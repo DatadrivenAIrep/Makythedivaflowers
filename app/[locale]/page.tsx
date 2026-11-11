@@ -48,9 +48,11 @@ export default async function Home({ params }: { params: Promise<{ locale: Local
       <SeasonalPicks locale={locale} />
       <OccasionStrip locale={locale} />
       <BestSellers locale={locale} />
+      {/* Right after the best sellers: the digital card is the extra people
+          take most, and lower down it sat five screens deep on phones. */}
+      <DigitalCardsFeature locale={locale} />
       <SocialProof />
       <CategoryStrip locale={locale} />
-      <DigitalCardsFeature locale={locale} />
       <SympathyShowcase locale={locale} />
       <Verticals locale={locale} />
       <BehindTheScenes locale={locale} />

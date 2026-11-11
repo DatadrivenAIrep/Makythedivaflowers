@@ -5,7 +5,8 @@ import { DEMOS_URL } from "@/lib/digital-card-offer";
 import { PromoLoop } from "@/components/digital-cards/PromoVideo";
 
 /**
- * The digital card on the homepage: the 10 s promo looping beside what it is,
+ * The digital card on the homepage: the 10 s promo looping beside what it is
+ * (above it on phones),
  * with the way to the page that explains it and to the live demos. A dark panel
  * on the bone page, the film's own black, so the loop sits in it without an edge.
  */
@@ -40,7 +41,8 @@ export function DigitalCardsFeature({ locale }: { locale: Locale }) {
           </div>
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-bone/55">{P.price[locale]}</p>
         </div>
-        <div className="relative aspect-[9/16] md:aspect-video">
+        {/* On phones the moving card comes first, above the words: it is what stops the thumb. */}
+        <div className="relative order-first aspect-[9/16] md:order-none md:aspect-video">
           <PromoLoop locale={locale} className="absolute inset-0 h-full w-full object-cover" />
         </div>
       </div>
