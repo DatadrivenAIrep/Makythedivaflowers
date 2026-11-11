@@ -48,6 +48,16 @@ describe("MyDates", () => {
     );
   });
 
+  it("una fecha de tarjeta dice de dónde viene y usa el parentesco sin nombre", () => {
+    const v = view({
+      dates: [{ id: "d9", kind: "birthday", source: "card", relationship: "madre", month: 3, day: 18, prefs: EMPTY_PREFS }],
+    });
+    renderIt(v);
+    expect(screen.getByText("Guardada de un pedido tuyo")).toBeTruthy();
+    expect(screen.getByText("mamá")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Borrar la fecha de mamá" })).toBeTruthy();
+  });
+
   it("con STOP muestra START y no hay casilla", () => {
     renderIt(view({ permission: "stopped" }));
     expect(screen.getByText(es.date_prompt.stopped_note)).toBeTruthy();

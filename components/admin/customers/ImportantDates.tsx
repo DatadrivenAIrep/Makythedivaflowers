@@ -25,6 +25,8 @@ type Props = {
   initialSuggestions?: DateSuggestion[];
   /** Lets the profile keep other sections (e.g. the recipients list) in sync. */
   onDatesChange?: (dates: AccountDate[]) => void;
+  /** Opens the order a card-read date came from. */
+  onOpenOrder?: (orderId: string) => void;
 };
 
 const KIND_ICONS: Record<DateKind, typeof Cake> = {
@@ -34,11 +36,17 @@ const KIND_ICONS: Record<DateKind, typeof Cake> = {
 };
 const MONTHS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
+/** Age (or years together) at the next occurrence: its year minus the year read from the card. */
+function age(d: ImportantDate): number {
+  return Number(d.next.date.slice(0, 4)) - (d.year as number);
+}
+
 const EMPTY_PREFS: PickerValue = { flowers: [], colors: [], avoid: [] };
 
-export default function ImportantDates({ customerId, initial, locale, initialSuggestions = [], onDatesChange, showPrefs = false }: Props) {
+export default function ImportantDates({ customerId, initial, locale, initialSuggestions = [], onDatesChange, showPrefs = false, onOpenOrder }: Props) {
   const t = useTranslations("admin_customers");
   const tp = useTranslations("date_prefs");
+  const tc = useTranslations("card_dates");
   const [dates, setDatesState] = useState<ImportantDate[]>(initial);
   // Server lists after add/remove carry no likes; keep what we know by date id.
   const [prefs, setPrefs] = useState<Record<string, PickerValue>>(() => {
@@ -177,10 +185,29 @@ export default function ImportantDates({ customerId, initial, locale, initialSug
                     {d.source === "customer" ? t("date_source_customer") : t("date_source_panel")}
                   </span>
                 )}
+                {d.source === "card" && (() => {
+                  const chip = d.sourceOrderNumber
+                    ? t("date_source_card", { number: d.sourceOrderNumber })
+                    : t("date_source_card_nonumber");
+                  const cls = "rounded-full bg-ink/5 px-2 py-0.5 text-xs text-ink/70";
+                  return d.sourceOrderId && onOpenOrder ? (
+                    <button type="button" onClick={() => onOpenOrder(d.sourceOrderId as string)} className={`${cls} underline hover:text-ink`}>
+                      {chip}
+                    </button>
+                  ) : (
+                    <span className={cls}>{chip}</span>
+                  );
+                })()}
                 {d.label && <span className="text-ink/70">· {d.label}</span>}
+                {d.source === "card" && d.relationship && (
+                  <span className="text-ink/70">· {tc(`relationship.${d.relationship}`)}</span>
+                )}
                 <span className="text-ink/70">
                   · {formatMonthDay(d.month, d.day, locale)}
                   {d.year ? ` · ${d.year}` : ""}
+                  {d.source === "card" && d.year
+                    ? ` · ${(d.kind === "birthday" ? t("card_turns", { n: age(d) }) : t("card_years", { n: age(d) }))}`
+                    : ""}
                 </span>
                 <span
                   className={`ml-auto rounded-full px-2 py-0.5 text-xs font-semibold ${

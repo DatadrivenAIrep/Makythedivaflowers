@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import esMessages from "@/messages/es.json";
@@ -71,5 +71,34 @@ describe("ImportantDates gustos", () => {
     wrap(<ImportantDates customerId="c1" initial={withPrefs} locale="es" showPrefs />);
     fireEvent.click(screen.getAllByText("Editar gustos")[0]);
     expect(screen.getByRole("group", { name: "Flores favoritas" })).toBeDefined();
+  });
+});
+
+describe("ImportantDates fecha de tarjeta", () => {
+  const card: ImportantDate = {
+    id: "dc", customerId: "c1", kind: "birthday",
+    month: 3, day: 15, year: 1976, source: "card", relationship: "madre",
+    sourceOrderId: "o1", sourceOrderNumber: 1234, createdAt: "2026-07-01T00:00:00Z",
+    next: { date: "2026-03-15", daysUntil: 10 },
+  };
+
+  it("muestra origen, parentesco y edad aunque showPrefs sea falso", () => {
+    wrap(<ImportantDates customerId="c1" initial={[card]} locale="es" />);
+    expect(screen.getByText("Tarjeta · #1234")).toBeDefined();
+    expect(screen.getByText(/mamá/)).toBeDefined();
+    expect(screen.getByText(/cumple 50/)).toBeDefined();
+  });
+
+  it("el chip abre el pedido", () => {
+    const onOpenOrder = vi.fn();
+    wrap(<ImportantDates customerId="c1" initial={[card]} locale="es" onOpenOrder={onOpenOrder} />);
+    fireEvent.click(screen.getByText("Tarjeta · #1234"));
+    expect(onOpenOrder).toHaveBeenCalledWith("o1");
+  });
+
+  it("una fecha del panel no muestra el chip de tarjeta", () => {
+    wrap(<ImportantDates customerId="c1" initial={dates} locale="es" />);
+    expect(screen.queryByText(/Tarjeta/)).toBeNull();
+    expect(screen.queryByText(/cumple \d/)).toBeNull();
   });
 });

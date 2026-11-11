@@ -17,6 +17,8 @@ export type MyDate = {
   month: number;
   day: number;
   prefs: PickerValue;
+  source?: "admin" | "customer" | "card";
+  relationship?: string;
 };
 export type MySuggestion = { key: string; recipientName: string; month: number; day: number };
 export type MyDatesView = { dates: MyDate[]; suggestions: MySuggestion[]; permission: Permission };
@@ -31,6 +33,7 @@ const quiet = "font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60 hov
 export function MyDates({ locale, initial }: Props) {
   const t = useTranslations("account.dates");
   const prompt = useTranslations("date_prompt");
+  const cardT = useTranslations("card_dates");
 
   const [view, setView] = useState<MyDatesView>(initial);
   const [error, setError] = useState<string | null>(null);
@@ -192,7 +195,7 @@ export function MyDates({ locale, initial }: Props) {
             {view.dates.map((d) => {
               const phrase = flowersPhrase(d.prefs.flowers[0], d.prefs.colors[0], locale);
               const hasAny = d.prefs.flowers.length + d.prefs.colors.length + d.prefs.avoid.length > 0;
-              const who = d.label ?? "";
+              const who = d.label ?? (d.source === "card" && d.relationship ? cardT(`relationship.${d.relationship}`) : "");
               return (
                 <li key={d.id} className="py-4 space-y-3">
                   <div className="flex items-start justify-between gap-4">
@@ -203,6 +206,7 @@ export function MyDates({ locale, initial }: Props) {
                         {" · "}
                         {formatMonthDay(d.month, d.day, locale)}
                       </p>
+                      {d.source === "card" && <p className="mt-1 text-sm text-ink/60">{t("from_card")}</p>}
                       {phrase && <p className="mt-1 text-sm text-ink/70">{t("likes_line", { likes: phrase })}</p>}
                     </div>
                     <button

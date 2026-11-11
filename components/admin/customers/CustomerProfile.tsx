@@ -357,6 +357,7 @@ export default function CustomerProfile({ locale, initial, suggestions }: Props)
         showPrefs={data.showDatePrefs}
         initialSuggestions={data.dateSuggestions ?? []}
         locale={locale}
+        onOpenOrder={setOpenOrderId}
         onDatesChange={(dates) => setData((d) => ({ ...d, dates }))}
       />
       <PreferenceChips customerId={customer.id} initial={data.preferences} suggestions={suggestions} />
