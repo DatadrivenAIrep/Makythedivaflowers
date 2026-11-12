@@ -67,7 +67,7 @@ describe("sendInvoice", () => {
     const [mail] = emailSend.mock.calls[0] as [{ to: string; subject: string; html: string; replyTo: string; from: string }];
     expect(mail.to).toBe("ap@corp.com");
     expect(mail.subject).toBe("Invoice INV-1001 · Diva Flowers");
-    expect(mail.replyTo).toBe("studio@divaflowers.com");
+    expect(mail.replyTo).toBe("makythedivaflowers@gmail.com");
     expect(mail.html).toContain("INV-1001");
     expect(mail.html).toContain(`href="${link}"`);
     expect(mail.html).toContain('src="https://x.test/print/logo.jpg"');
