@@ -55,7 +55,7 @@ describe("sendStep", () => {
     expect(emailArgs.html).toContain("ST-1001");
     expect(emailArgs.html).toContain('href="https://x.test/s/AbCdEfGh"');
     expect(emailArgs.html).not.toContain("<form");
-    expect(emailArgs.replyTo).toBe("studio@divaflowers.com");
+    expect(emailArgs.replyTo).toBe("makythedivaflowers@gmail.com");
   });
   it("skips when neither channel is available, naming the reasons", async () => {
     const a = createAccount({ name: "Org" });

@@ -23,7 +23,7 @@ describe("SITE content", () => {
   });
 
   it("exposes a canonical email address used across the site", () => {
-    expect(SITE.email).toBe("studio@divaflowers.com");
+    expect(SITE.email).toBe("makythedivaflowers@gmail.com");
     expect(SITE.emailHref).toBe(`mailto:${SITE.email}`);
   });
 

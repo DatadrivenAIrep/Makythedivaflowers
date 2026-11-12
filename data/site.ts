@@ -11,8 +11,8 @@ export const SITE = {
     tel: "tel:+15168512815",
     e164: "+15168512815",
   },
-  email: "studio@divaflowers.com",
-  emailHref: "mailto:studio@divaflowers.com",
+  email: "makythedivaflowers@gmail.com",
+  emailHref: "mailto:makythedivaflowers@gmail.com",
   address: {
     line1: "1077 Willis Ave",
     locality: "Albertson",
