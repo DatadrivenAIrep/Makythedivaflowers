@@ -41,7 +41,6 @@ const APP_ID = ELFSIGHT_APPS.siteReviews;
 const platformScripts = () =>
   [...document.querySelectorAll('script[src="https://elfsightcdn.com/platform.js"]')];
 
-const mockAggregate = { rating: 4.9, total: 127, placeUrl: "https://g.page/r/test" } as const;
 
 const mockReviews: Review[] = [
   {
@@ -66,18 +65,17 @@ const mockReviews: Review[] = [
 ];
 
 describe("buildReviewsJsonLd", () => {
-  it("returns valid JSON-LD with AggregateRating and Review entries", () => {
+  it("returns valid JSON-LD with Review entries and no second AggregateRating", () => {
     const parsed = JSON.parse(
-      buildReviewsJsonLd(mockReviews, mockAggregate, "Diva Flowers", "https://example.com/#florist"),
+      buildReviewsJsonLd(mockReviews, "Diva Flowers", "https://example.com/#florist"),
     );
     expect(parsed["@context"]).toBe("https://schema.org");
     expect(parsed["@type"]).toBe("Florist");
     // Must match the Florist node in LocalBusinessLD so Google merges the two.
     expect(parsed["@id"]).toBe("https://example.com/#florist");
     expect(parsed.name).toBe("Diva Flowers");
-    expect(parsed.aggregateRating["@type"]).toBe("AggregateRating");
-    expect(parsed.aggregateRating.ratingValue).toBe(4.9);
-    expect(parsed.aggregateRating.reviewCount).toBe(127);
+    // The rating lives once, on the Florist node in LocalBusinessLD.
+    expect(parsed.aggregateRating).toBeUndefined();
     expect(parsed.review).toHaveLength(2);
     expect(parsed.review[0].author.name).toBe("Jessica Morales");
     expect(parsed.review[0].datePublished).toBe("2026-04");

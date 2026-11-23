@@ -80,7 +80,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     for (const product of PRODUCTS.filter((p) => isAvailableNow(p))) {
       entries.push({
         url: `${SITE}/${locale}/product/${product.slug}`,
-        lastModified: now,
+        // The day the product was published, not the deploy time. Stamping all
+        // ~480 product URLs "modified now" on every deploy teaches Google the
+        // field is noise, and it then ignores lastmod for the whole sitemap.
+        lastModified: product.addedAt ? new Date(product.addedAt + "T00:00:00") : now,
         changeFrequency: "weekly",
         priority: 0.6,
         alternates: { languages: langs(`product/${product.slug}`) },
