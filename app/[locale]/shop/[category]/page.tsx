@@ -51,6 +51,65 @@ const CATEGORY_TITLES: Record<ShopSlug, { en: string; es: string }> = {
   subscriptions: { en: "Subscriptions", es: "Suscripciones" },
 };
 
+// What the <title> says. The on-page H1 stays the short CATEGORY_TITLES name;
+// a bare "Roses — Diva Flowers" gave Google nothing to match "rose delivery
+// nassau county" against, and three of these hubs sat unindexed (2026-11).
+const CATEGORY_SEO_TITLES: Record<ShopSlug, { en: string; es: string }> = {
+  arrangements: {
+    en: "Flower Arrangements Delivered in Nassau County, NY",
+    es: "Arreglos florales a domicilio en Nassau County, NY",
+  },
+  bouquets: {
+    en: "Hand-Tied Flower Bouquets Delivered in Nassau County, NY",
+    es: "Ramos de flores a domicilio en Nassau County, NY",
+  },
+  roses: {
+    en: "Rose Bouquets & Arrangements Delivered in Nassau County, NY",
+    es: "Ramos y arreglos de rosas a domicilio en Nassau County, NY",
+  },
+  exotic: {
+    en: "Exotic & Tropical Flower Arrangements on Long Island, NY",
+    es: "Arreglos de flores exóticas y tropicales en Long Island, NY",
+  },
+  centerpieces: {
+    en: "Floral Centerpieces Delivered in Nassau County, NY",
+    es: "Centros de mesa florales a domicilio en Nassau County, NY",
+  },
+  fall: {
+    en: "Fall & Thanksgiving Flowers Delivered in Nassau County, NY",
+    es: "Flores de otoño y Thanksgiving a domicilio en Nassau County, NY",
+  },
+  christmas: {
+    en: "Christmas Flowers & Centerpieces in Nassau County, NY",
+    es: "Flores y centros de mesa de Navidad en Nassau County, NY",
+  },
+  valentines: {
+    en: "Valentine's Day Roses & Flowers Delivered in Nassau County, NY",
+    es: "Rosas y flores de San Valentín a domicilio en Nassau County, NY",
+  },
+  plants: {
+    en: "Orchids & Plants Delivered in Nassau County, NY",
+    es: "Orquídeas y plantas a domicilio en Nassau County, NY",
+  },
+  gifts: {
+    en: "Flower Gift Sets Delivered in Nassau County, NY",
+    es: "Flores con regalo a domicilio en Nassau County, NY",
+  },
+  sympathy: {
+    en: "Sympathy & Funeral Flowers in Nassau County, NY",
+    es: "Flores de condolencias y funeral en Nassau County, NY",
+  },
+  subscriptions: {
+    en: "Flower Subscriptions on Long Island, NY",
+    es: "Suscripciones de flores en Long Island, NY",
+  },
+};
+
+const DELIVERY_AREA = {
+  en: "Delivered from Albertson to Roslyn, Manhasset, Great Neck, Garden City and all of Nassau County.",
+  es: "Entrega desde Albertson a Roslyn, Manhasset, Great Neck, Garden City y todo Nassau County.",
+};
+
 const CATEGORY_DESCS: Record<ShopSlug, { en: string; es: string }> = {
   arrangements: {
     en: "Statement arrangements, hand-built daily.",
@@ -115,8 +174,8 @@ export async function generateMetadata({
   if (!(ALLOWED as string[]).includes(category)) return {};
   const cat = category as ShopSlug;
   return {
-    title: `${CATEGORY_TITLES[cat][locale]} — Diva Flowers`,
-    description: CATEGORY_DESCS[cat][locale],
+    title: `${CATEGORY_SEO_TITLES[cat][locale]} | Diva Flowers`,
+    description: `${CATEGORY_DESCS[cat][locale]} ${DELIVERY_AREA[locale]}`,
     alternates: localeAlternates(locale, `/shop/${category}`),
   };
 }

@@ -32,10 +32,13 @@ export const REVIEWS_AGGREGATE = {
  * Google saw two unrelated businesses on one page and could attach the stars to
  * neither. The aggregateRating now lives on the Florist node; this block only
  * adds the review bodies to that same entity.
+ *
+ * It must NOT repeat `aggregateRating`: with the same rating on both blocks,
+ * Search Console flagged every review on the home as "review has multiple
+ * aggregate ratings" (9 invalid items, 2026-11) and dropped them.
  */
 export function buildReviewsJsonLd(
   reviews: Review[],
-  aggregate: ReviewsAggregate,
   brandName: string,
   businessId: string,
 ): string {
@@ -44,12 +47,6 @@ export function buildReviewsJsonLd(
     "@type": "Florist",
     "@id": businessId,
     name: brandName,
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: aggregate.rating,
-      reviewCount: aggregate.total,
-      bestRating: 5,
-    },
     review: reviews.map((r) => ({
       "@type": "Review",
       author: { "@type": "Person", name: r.author },

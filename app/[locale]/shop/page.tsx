@@ -30,12 +30,12 @@ export async function generateMetadata({
   return {
     title:
       locale === "es"
-        ? "Tienda — Diva Flowers"
-        : "Shop — Diva Flowers",
+        ? "Flores a domicilio en Nassau County, NY — Tienda | Diva Flowers"
+        : "Shop Flowers Online — Delivery in Nassau County, NY | Diva Flowers",
     description:
       locale === "es"
-        ? "Compra arreglos, ramos, plantas y regalos. Entrega el mismo día en Long Island."
-        : "Shop arrangements, bouquets, plants, and gifts. Same-day delivery on Long Island.",
+        ? "Compra arreglos, ramos, rosas, orquídeas y regalos hechos a mano en Albertson, NY. Entrega el mismo día en Roslyn, Manhasset, Great Neck, Garden City y todo Nassau County."
+        : "Shop hand-built arrangements, bouquets, roses, orchids and gifts from a local Albertson, NY florist. Same-day delivery to Roslyn, Manhasset, Great Neck, Garden City and all of Nassau County.",
     alternates: localeAlternates(locale, "/shop"),
   };
 }

@@ -7,7 +7,36 @@ const intlMiddleware = createMiddleware({
   locales,
   defaultLocale,
   localePrefix: "always",
+  // The pages already emit hreflang <link> tags (lib/seo/alternates.ts) with
+  // x-default -> /en/.... The middleware's own `Link` header pointed x-default
+  // at the UNPREFIXED url instead, which only redirects: Google crawled 202 of
+  // those and filed them under "page with redirect".
+  alternateLinks: false,
 });
+
+/**
+ * next-intl sends `/` and every unprefixed path to its locale with a 307.
+ * A temporary redirect tells Google to keep the source URL, so the home was
+ * indexed three times over (`http://…/`, `/` and `/en`) with its clicks split.
+ * Re-issue those as 308 so the signals consolidate on the prefixed URL.
+ * The target depends on the visitor's language, so no shared cache may keep it.
+ */
+function permanentLocaleRedirect(req: NextRequest, res: NextResponse): NextResponse {
+  if (res.status !== 307) return res;
+  const location = res.headers.get("location");
+  if (!location) return res;
+  const { pathname } = req.nextUrl;
+  if (locales.some((l) => pathname === `/${l}` || pathname.startsWith(`/${l}/`))) return res;
+  const target = new URL(location, req.url);
+  if (!locales.some((l) => target.pathname === `/${l}` || target.pathname.startsWith(`/${l}/`))) return res;
+  const out = NextResponse.redirect(target, 308);
+  res.headers.forEach((value, key) => {
+    if (key.toLowerCase() === "set-cookie") out.headers.append(key, value);
+  });
+  out.headers.set("Cache-Control", "private, no-cache");
+  out.headers.set("Vary", "Accept-Language, Cookie");
+  return out;
+}
 
 const SESSION_COOKIE = "intake_session";
 
@@ -51,7 +80,7 @@ export default async function middleware(req: NextRequest) {
   }
   const adminAuthResponse = await adminAuthMiddleware(req);
   if (adminAuthResponse) return adminAuthResponse;
-  return intlMiddleware(req);
+  return permanentLocaleRedirect(req, intlMiddleware(req));
 }
 
 export const config = {

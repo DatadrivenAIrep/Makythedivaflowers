@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { REVIEWS, REVIEWS_AGGREGATE, buildReviewsJsonLd } from "@/data/reviews";
+import { REVIEWS, buildReviewsJsonLd } from "@/data/reviews";
 import { SITE } from "@/data/site";
 import { ElfsightReviews } from "@/components/social/ElfsightReviews";
 import { ELFSIGHT_APPS } from "@/data/elfsight";
@@ -22,7 +22,7 @@ export async function GoogleReviewsContent() {
   // The Elfsight widget paints client-side, so crawlers never see the review
   // bodies inside it. This block keeps emitting the same markup Google has
   // been indexing all along, attached to the Florist node in LocalBusinessLD.
-  const jsonLd = buildReviewsJsonLd(REVIEWS, REVIEWS_AGGREGATE, SITE.merchantName, SITE.ld.businessId);
+  const jsonLd = buildReviewsJsonLd(REVIEWS, SITE.merchantName, SITE.ld.businessId);
 
   return (
     <>

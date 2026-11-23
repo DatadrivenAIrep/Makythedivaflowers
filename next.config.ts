@@ -14,6 +14,14 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // One host only. `www` used to serve a full copy of the site, which
+      // Search Console filed as "alternate page with proper canonical".
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.makythedivaflowers.com" }],
+        destination: "https://makythedivaflowers.com/:path*",
+        permanent: true,
+      },
       { source: "/:locale(en|es)/prom", destination: "/:locale/corsages-boutonnieres", permanent: true },
       // Sign-in is by SMS code, so there is nothing to sign up for: the
       // account exists once you have ordered.
