@@ -20,6 +20,8 @@ import { getAllImageOverrides, applyImageOverrides } from "@/lib/product-images"
 import { getAllPriceOverrides, applyPriceOverrides } from "@/lib/product-prices";
 import { getSalesRanking } from "@/lib/product-sales";
 import { localeAlternates } from "@/lib/seo/alternates";
+import { SHOP_CATEGORY_COPY } from "@/data/shop-category-copy";
+import { formatMoneyCents } from "@/lib/format";
 
 // sympathy and subscriptions redirect (next.config) to their own pages.
 const ALLOWED: ShopSlug[] = [
@@ -203,6 +205,13 @@ export default async function CategoryPage({
   const all = productsInShopCategory(products, cat);
   const filtered = sortProducts(filterProducts(all, filter), sort, { sales: getSalesRanking() });
 
+  // Facts for the category paragraph come from the whole category, not the
+  // filtered view, so the text does not change as a shopper toggles filters.
+  const copy = SHOP_CATEGORY_COPY[cat];
+  const fromCents = Math.min(
+    ...all.flatMap((p) => p.variants.map((v) => v.priceCents)).filter((c) => c > 0),
+  );
+
   const isSympathy = cat === "sympathy";
   const isRoses = cat === "roses";
   const motionMode = isSympathy ? "sympathy" : "default";
@@ -257,6 +266,24 @@ export default async function CategoryPage({
           <ProductGrid products={filtered} locale={locale} motionMode={motionMode} />
         )}
       </section>
+
+      {copy && all.length > 0 && (
+        <section className="mx-auto max-w-[var(--container-max)] px-6 pb-24">
+          <div className="max-w-3xl border-t border-ink/10 pt-10">
+            <h2 className="font-display text-2xl leading-tight tracking-tight md:text-3xl">
+              {copy.heading[locale]}
+            </h2>
+            <p className="mt-3 font-mono text-[11px] uppercase tracking-wider text-mute-500">
+              {locale === "es"
+                ? `${all.length} ${all.length === 1 ? "diseño" : "diseños"} · desde ${formatMoneyCents(fromCents, locale)}`
+                : `${all.length} ${all.length === 1 ? "design" : "designs"} · from ${formatMoneyCents(fromCents, locale)}`}
+            </p>
+            <p className="mt-5 font-sans text-base leading-relaxed text-ink/75">
+              {copy.body[locale].replace("{cutoff}", SITE.cutoffTime)}
+            </p>
+          </div>
+        </section>
+      )}
 
       {isSympathy && (
         <section className="mx-auto max-w-[var(--container-max)] px-6 pb-24">
