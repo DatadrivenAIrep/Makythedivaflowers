@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "NODE_OPTIONS='--experimental-sqlite' next dev",
-    "build": "next build",
+    "build": "node scripts/check-build-platform.mjs && next build --webpack",
     "start": "node scripts/clean-image-cache.mjs; NODE_OPTIONS='--experimental-sqlite' next start",
     "test": "NODE_OPTIONS='--experimental-sqlite' vitest run",
     "test:watch": "NODE_OPTIONS='--experimental-sqlite' vitest",
