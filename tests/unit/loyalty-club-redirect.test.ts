@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect } from "vitest";
-import config from "../../next.config";
+import config from "../../next.config.mjs";
 
 describe("/club loyalty redirect", () => {
   it("sends the printed-poster QR path to the loyalty sign-up, temporarily", async () => {

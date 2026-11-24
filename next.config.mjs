@@ -1,4 +1,10 @@
-import type { NextConfig } from "next";
+// Plain ESM on purpose, not next.config.ts. Hostinger's build server has an
+// old glibc, so Next 16.3+ cannot load its native SWC binary there (it needs
+// GLIBC_2.29+) and falls back to WebAssembly SWC. That fallback cannot
+// transpile a TypeScript config ("Cannot find module …next.config imported
+// from next.config.compiled.js") and cannot run Turbopack, which is why
+// `npm run build` passes --webpack. Reproduce locally with
+// `NEXT_TEST_WASM=1 npm run build`.
 import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./i18n.ts");
@@ -6,7 +12,8 @@ const withNextIntl = createNextIntlPlugin("./i18n.ts");
 // Maky's loyalty card lives in a separate app (Tarjeta Fiel).
 const LOYALTY_SIGNUP_URL = "https://lightsalmon-dinosaur-949507.hostingersite.com/maky-the-diva-flowers";
 
-const nextConfig: NextConfig = {
+/** @type {import("next").NextConfig} */
+const nextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "picsum.photos" },
@@ -95,14 +102,12 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["@phosphor-icons/react", "framer-motion"],
     staleTimes: { dynamic: 0 },
-    // Turbopack runs PostCSS/Tailwind in a helper Node process that has to
-    // connect back to the build over a local socket. Since late September 2026
-    // Hostinger's build environment stops that: the helper exits and the build
-    // dies on the first CSS file with "node process exited before we could
-    // connect to it with exit status: 0". Worker threads do the same work
-    // inside the build process, so nothing has to connect. Reproduce with
-    // `sandbox-exec` denying outbound loopback before removing this.
-    turbopackPluginRuntimeStrategy: "workerThreads",
+    // Production builds use webpack (see the top of this file), which runs
+    // PostCSS in-process. If builds ever move back to Turbopack on Hostinger,
+    // restore `turbopackPluginRuntimeStrategy: "workerThreads"`: Turbopack's
+    // PostCSS helper process cannot connect back to the build there ("node
+    // process exited before we could connect to it"), and note that Next 16.4
+    // ignores "workerThreads" on Node >= 24.13.1.
   },
 };
 
