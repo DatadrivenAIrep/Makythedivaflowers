@@ -8,6 +8,11 @@
 // pushed the account to its 400-process limit and took the site down
 // (2026-11-24). Dropping empty entries at startup lets the cache initialise.
 //
+// Next 16.4.6 fixes this upstream (the LRU skips entries of size <= 0 and
+// refuses to write empty buffers), so this is now a second line of defence:
+// cheap, and it keeps 0-byte files from lingering in the cache. Safe to drop
+// once we are sure we will never run an older Next again.
+//
 // Never fails the start: any error here is logged and ignored.
 import { promises as fs } from "node:fs";
 import path from "node:path";

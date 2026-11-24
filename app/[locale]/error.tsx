@@ -5,10 +5,10 @@ import Link from "next/link";
 
 export default function LocaleError({
   error,
-  unstable_retry,
+  retry,
 }: {
   error: Error & { digest?: string };
-  unstable_retry: () => void;
+  retry: () => void;
 }) {
   useEffect(() => {
     console.error(error);
@@ -35,7 +35,7 @@ export default function LocaleError({
       )}
       <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
         <button
-          onClick={() => unstable_retry()}
+          onClick={() => retry()}
           className="rounded-full bg-rouge px-8 py-3 text-sm font-medium text-bone transition-opacity hover:opacity-90"
         >
           Try again
