@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "NODE_OPTIONS='--experimental-sqlite' next dev",
     "build": "next build",
-    "start": "NODE_OPTIONS='--experimental-sqlite' next start",
+    "start": "node scripts/clean-image-cache.mjs; NODE_OPTIONS='--experimental-sqlite' next start",
     "test": "NODE_OPTIONS='--experimental-sqlite' vitest run",
     "test:watch": "NODE_OPTIONS='--experimental-sqlite' vitest",
     "test:ui": "NODE_OPTIONS='--experimental-sqlite' vitest --ui",
